@@ -1,4 +1,4 @@
-package ru.vez.abdd;
+package ru.vez.iso.shared.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

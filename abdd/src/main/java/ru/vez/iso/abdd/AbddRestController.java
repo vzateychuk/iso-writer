@@ -1,7 +1,8 @@
-package ru.vez.abdd;
+package ru.vez.iso.abdd;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.vez.iso.shared.model.EXcard;
 
 import java.time.LocalDateTime;
 import java.util.List;

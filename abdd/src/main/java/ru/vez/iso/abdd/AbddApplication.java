@@ -1,4 +1,4 @@
-package ru.vez.abdd;
+package ru.vez.iso.abdd;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
