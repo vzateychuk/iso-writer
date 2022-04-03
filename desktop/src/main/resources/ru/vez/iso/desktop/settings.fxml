@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="ru.vez.iso.desktop.controllers.Settings"
+      prefHeight="400.0" prefWidth="600.0">
+
+    <Text text="Settings View"/>
+
+    <Button text="Save" onAction="#onSave"/>
+    <Button text="Cancel" onAction="#onCancel"/>
+</VBox>

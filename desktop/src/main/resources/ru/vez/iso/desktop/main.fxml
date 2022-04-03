@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.VBox?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="ru.vez.iso.desktop.controllers.Main"
+      prefHeight="400.0" prefWidth="600.0">
+
+    <TextArea text="Main View"/>
+
+    <Button text="Login" onAction="#onLogin"/>
+    <Button text="Logout" onAction="#onLogout"/>
+    <Button text="About" onAction="#onSettings"/>
+</VBox>
