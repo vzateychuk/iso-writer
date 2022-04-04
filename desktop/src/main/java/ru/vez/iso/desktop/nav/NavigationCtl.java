@@ -15,8 +15,15 @@ import java.util.Map;
  */
 public class NavigationCtl {
 
-    private final Map<View, Parent> viewCache = new HashMap<>();
+    private final AppService appService;
 
+    public NavigationCtl(AppService appService) {
+        this.appService = appService;
+    }
+
+    //region Controls
+
+    private final Map<View, Parent> viewCache = new HashMap<>();
     @FXML private BorderPane navigationView;
 
     private View currView = View.WELCOME;
@@ -24,19 +31,17 @@ public class NavigationCtl {
     public void onShowLogin(ActionEvent ev) {
         loadView(View.LOGIN);
     }
-
     public void onShowMain(ActionEvent ev) {
         loadView(View.MAIN);
     }
-
     public void onShowSettings(ActionEvent ev) {
         loadView(View.SETTINGS);
     }
-
     public void onShowDisks(ActionEvent ev) {
         loadView(View.DISK);
     }
 
+    //endregion
     //region Private
 
     private void loadView(View view) {

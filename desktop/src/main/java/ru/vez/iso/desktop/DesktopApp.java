@@ -2,10 +2,10 @@ package ru.vez.iso.desktop;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import ru.vez.iso.desktop.repo.DerbyDAOImpl;
+import ru.vez.iso.desktop.nav.AppServiceNavImpl;
+import ru.vez.iso.desktop.nav.NavigationCtl;
 
 import java.io.IOException;
 
@@ -13,21 +13,17 @@ public class DesktopApp extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("navigation.fxml"));
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("navigation.fxml"));
+        loader.setControllerFactory(
+                t -> new NavigationCtl(new AppServiceNavImpl())
+        );
+
+        stage.setScene(new Scene(loader.load()));
         stage.setTitle("ISO Writer App");
         stage.show();
     }
 
     public static void main(String[] args) {
-        try {
-            DerbyDAOImpl dao = new DerbyDAOImpl();
-            dao.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         launch(args);
     }
 }
