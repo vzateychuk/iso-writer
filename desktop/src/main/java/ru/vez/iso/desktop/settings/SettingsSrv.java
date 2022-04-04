@@ -1,4 +1,4 @@
 package ru.vez.iso.desktop.settings;
 
-public interface SettingsService {
+public interface SettingsSrv {
 }

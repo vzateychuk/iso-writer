@@ -1,4 +1,4 @@
 package ru.vez.iso.desktop.main;
 
-public interface MainService {
+public interface MainSrv {
 }

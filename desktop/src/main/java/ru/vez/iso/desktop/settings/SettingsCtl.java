@@ -4,9 +4,9 @@ import javafx.event.ActionEvent;
 
 public class SettingsCtl {
 
-    private final SettingsService service;
+    private final SettingsSrv service;
 
-    public SettingsCtl(SettingsService service) {
+    public SettingsCtl(SettingsSrv service) {
         this.service = service;
     }
 

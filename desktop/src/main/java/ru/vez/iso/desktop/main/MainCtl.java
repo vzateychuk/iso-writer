@@ -5,9 +5,9 @@ package ru.vez.iso.desktop.main;
 */
 public class MainCtl {
 
-    private final MainService service;
+    private final MainSrv service;
 
-    public MainCtl(MainService service) {
+    public MainCtl(MainSrv service) {
         this.service = service;
     }
 

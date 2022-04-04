@@ -2,9 +2,9 @@ package ru.vez.iso.desktop.login;
 
 public class LoginCtl {
 
-    private final LoginService service;
+    private final LoginSrv service;
 
-    public LoginCtl(LoginService service) {
+    public LoginCtl(LoginSrv service) {
         this.service = service;
     }
 

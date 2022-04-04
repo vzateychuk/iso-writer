@@ -2,9 +2,9 @@ package ru.vez.iso.desktop.disks;
 
 public class DiskCtl {
 
-    private final DisksService service;
+    private final DisksSrv service;
 
-    public DiskCtl(DisksService service) {
+    public DiskCtl(DisksSrv service) {
         this.service = service;
     }
 
