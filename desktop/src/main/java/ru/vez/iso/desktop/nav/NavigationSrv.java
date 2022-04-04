@@ -1,6 +1,6 @@
 package ru.vez.iso.desktop.nav;
 
-public interface AppService {
+public interface NavigationSrv {
 
     void setLogged(boolean logged);
     boolean isLogged();

@@ -2,12 +2,10 @@ package ru.vez.iso.desktop.nav;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.layout.BorderPane;
+import ru.vez.iso.desktop.ViewType;
 
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -15,62 +13,45 @@ import java.util.Map;
  */
 public class NavigationCtl {
 
-    private final AppService appService;
+    private final NavigationSrv service;
+    private final Map<ViewType, Parent> viewCache;
 
-    public NavigationCtl(AppService appService) {
-        this.appService = appService;
+    public NavigationCtl(NavigationSrv service, Map<ViewType, Parent> viewCache) {
+        this.service = service;
+        this.viewCache = viewCache;
     }
 
     //region Controls
 
-    private final Map<View, Parent> viewCache = new HashMap<>();
     @FXML private BorderPane navigationView;
 
-    private View currView = View.WELCOME;
+    private ViewType currView = ViewType.WELCOME;
 
     public void onShowLogin(ActionEvent ev) {
-        loadView(View.LOGIN);
+        loadView(ViewType.LOGIN);
     }
     public void onShowMain(ActionEvent ev) {
-        loadView(View.MAIN);
+        loadView(ViewType.MAIN);
     }
     public void onShowSettings(ActionEvent ev) {
-        loadView(View.SETTINGS);
+        loadView(ViewType.SETTINGS);
     }
     public void onShowDisks(ActionEvent ev) {
-        loadView(View.DISK);
+        loadView(ViewType.DISK);
     }
 
     //endregion
     //region Private
 
-    private void loadView(View view) {
+    private void loadView(ViewType view) {
 
         if (currView == view) {
             return;
         }
 
-        try {
-            Parent root;
-            if (view.isCacheable() && viewCache.containsKey(view)) {
-
-                System.out.println("Load from Cache: " + view.name());
-                root = viewCache.get(view);
-
-            } else {
-                System.out.println("Load from File: " + view.getFileName());
-                root = FXMLLoader.load(
-                        getClass().getResource(view.getFileName())
-                );
-                viewCache.put(view, root);
-            }
-
-            navigationView.setCenter(root);
-            currView = view;
-
-        } catch (IOException e) {
-            throw new RuntimeException("Unable to load: " + view.getFileName());
-        }
+        Parent root = viewCache.get(view);
+        navigationView.setCenter(root);
+        currView = view;
     }
 
     //endregion

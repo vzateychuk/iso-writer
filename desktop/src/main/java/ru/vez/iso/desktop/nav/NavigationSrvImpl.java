@@ -7,7 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class AppServiceNavImpl implements AppService {
+public class NavigationSrvImpl implements NavigationSrv {
 
     private boolean logged;
+
 }
