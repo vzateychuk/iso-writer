@@ -5,12 +5,12 @@
 <?import javafx.scene.layout.VBox?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="ru.vez.iso.desktop.controllers.Login"
+      fx:controller="ru.vez.iso.desktop.login.LoginCtl"
       prefHeight="400.0" prefWidth="600.0">
 
     <TextField text="UserName"/>
 
     <TextField text="Password"/>
 
-    <Button text="Submit" onAction="#onLogin"/>
+    <Button text="Submit" onAction="#onSubmit"/>
 </VBox>

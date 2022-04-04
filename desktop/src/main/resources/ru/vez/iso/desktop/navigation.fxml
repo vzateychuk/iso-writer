@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.Pane?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:id="navigationView"
+            fx:controller="ru.vez.iso.desktop.nav.NavigationCtl"
+            prefHeight="400.0" prefWidth="600.0">
+    <left>
+        <Pane BorderPane.alignment="CENTER">
+            <children>
+                <VBox spacing="5">
+                    <Button text="Login" onAction="#onShowLogin"/>
+                    <Button text="Main" onAction="#onShowMain"/>
+                    <Button text="Disks" onAction="#onShowDisks"/>
+                    <Button text="Settings" onAction="#onShowSettings"/>
+                </VBox>
+            </children>
+        </Pane>
+    </left>
+    <center>
+        <fx:include source="welcome.fxml"/>
+    </center>
+</BorderPane>

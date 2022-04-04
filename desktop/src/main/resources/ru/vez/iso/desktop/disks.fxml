@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="ru.vez.iso.desktop.main.MainCtl"
+      fx:controller="ru.vez.iso.desktop.disks.DiskCtl"
       prefHeight="400.0" prefWidth="600.0">
 
-    <TextArea text="Получить - сохранить ISO образы"/>
+    <Text text="Write/Check DVD/CD Disks"/>
 
-    <Button text="Submit" onAction="#onSubmit"/>
+    <Button text="Write" onAction="#onWrite"/>
+    <Button text="Check" onAction="#onCheck"/>
 
 </VBox>

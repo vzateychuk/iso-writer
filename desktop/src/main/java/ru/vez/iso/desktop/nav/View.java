@@ -1,10 +1,12 @@
-package ru.vez.iso.desktop;
+package ru.vez.iso.desktop.nav;
 
-public enum View {
+enum View {
 
-    LOGIN("login.fxml", true),
-    MAIN("main.fxml", true),
-    SETTINGS("settings.fxml", false);
+    WELCOME("../welcome.fxml", true),
+    MAIN("../main.fxml", true),
+    LOGIN("../login.fxml", true),
+    SETTINGS("../settings.fxml", true),
+    DISK("../disks.fxml", true);
 
     private final String fileName;
     private final boolean cacheable;
