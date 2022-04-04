@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import ru.vez.iso.desktop.repo.DerbyDAOImpl;
 
 public class DesktopApp extends Application {
 
@@ -19,6 +20,13 @@ public class DesktopApp extends Application {
     }
 
     public static void main(String[] args) {
+        try {
+            DerbyDAOImpl dao = new DerbyDAOImpl();
+            dao.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         launch(args);
     }
 }

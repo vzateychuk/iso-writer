@@ -6,6 +6,9 @@ target/
 # MAVEN
 .mvn/
 
+# DB
+desktop/db/
+
 # Compiled class file
 *.class
 

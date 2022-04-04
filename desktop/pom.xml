@@ -35,6 +35,27 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>ru.vez.iso</groupId>
+            <artifactId>shared</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- Derby DB -->
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derby</artifactId>
+            <version>10.14.2.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-dbutils</groupId>
+            <artifactId>commons-dbutils</artifactId>
+            <version>1.7</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -56,7 +77,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>ru.vez.iso.desktop.DesktopApp</mainClass>
+                            <mainClass>ru.vez.iso.desktop.DesktopFxApp</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
