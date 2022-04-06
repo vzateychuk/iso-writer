@@ -3,8 +3,10 @@ package ru.vez.iso.desktop.main;
 import ru.vez.iso.desktop.model.OperatingDayFX;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public interface MainSrv {
 
-    List<OperatingDayFX> findByDays(int periodDays);
+    CompletableFuture<List<OperatingDayFX>> findOperatingDaysAsync(int periodDays);
+
 }

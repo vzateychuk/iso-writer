@@ -4,6 +4,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class OperatingDayFX {
 
@@ -39,5 +40,29 @@ public class OperatingDayFX {
 
     public ObjectProperty<ExStatus> statusProperty() {
         return status;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OperatingDayFX dayFX = (OperatingDayFX) o;
+        return getOperatingDay().equals(dayFX.getOperatingDay()) &&
+                getTypeSu().equals(dayFX.getTypeSu()) &&
+                getStatus().equals(dayFX.getStatus());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getOperatingDay(), getTypeSu(), getStatus());
+    }
+
+    @Override
+    public String toString() {
+        return "OperatingDayFX{" +
+                "operatingDay=" + getOperatingDay() +
+                ", typeSu=" + getTypeSu() +
+                ", status=" + getStatus() +
+                '}';
     }
 }

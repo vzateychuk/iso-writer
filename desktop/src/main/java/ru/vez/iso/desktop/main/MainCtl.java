@@ -36,23 +36,25 @@ public class MainCtl implements Initializable {
     public MainCtl(MainSrv service) {
         this.service = service;
     }
+    private int counter = 1;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
         // TODO: make periodDays configurable
-        int periodDays = 30;
-        // Getting data from backend
-        List<OperatingDayFX> days = service.findByDays(periodDays);
-        operatingDays = FXCollections.observableList(days);
 
         // Setting UI
+        operatingDays = FXCollections.emptyObservableList();
         tblOperatingDays.setItems(operatingDays);
         tblOperatingDays.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         operatingDay.setCellValueFactory(cell -> cell.getValue().operatingDayProperty());
         exType.setCellValueFactory(cell -> cell.getValue().typeSuProperty());
         status.setCellValueFactory(cell -> cell.getValue().statusProperty());
+
+        // Getting data from backend
+        service.findOperatingDaysAsync(counter++)
+                .thenAccept(this::display);
     }
 
     @FXML
@@ -60,7 +62,19 @@ public class MainCtl implements Initializable {
         System.out.println("MainCtl.onSubmit");
     }
 
+    @FXML
     public void onReload(ActionEvent ev) {
-        System.out.println("MainCtl.onReload");
+        service.findOperatingDaysAsync(counter++)
+                .thenAccept(this::display);
     }
+
+    //region Private
+
+    private void display(List<OperatingDayFX> operatingDays) {
+
+        this.operatingDays = FXCollections.observableList(operatingDays);
+        tblOperatingDays.setItems(this.operatingDays);
+    }
+
+    //endregion
 }
