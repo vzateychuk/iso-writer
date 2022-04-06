@@ -1,15 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.VBox?>
-<VBox xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="ru.vez.iso.desktop.main.MainCtl"
-      prefHeight="400.0" prefWidth="600.0">
 
-    <TextArea text="Получить - сохранить ISO образы"/>
-
-    <Button text="Submit" onAction="#onSubmit"/>
+<VBox prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.vez.iso.desktop.main.MainCtl">
+   <TableView fx:id="tblOperatingDays" prefHeight="200.0" prefWidth="200.0">
+     <columns>
+       <TableColumn fx:id="operatingDay" minWidth="50.0" prefWidth="150.0" text="Дата опер.дня" />
+       <TableColumn fx:id="exType" prefWidth="75.0" text="Вид EX" />
+       <TableColumn fx:id="status" prefWidth="150.0" text="Статус" />
+     </columns>
+   </TableView>
+   <ButtonBar prefHeight="40.0" prefWidth="200.0">
+     <buttons>
+       <Button fx:id="butReload" onAction="#onReload"  text="Button" />
+       <Button fx:id="butSubmit" onAction="#onSubmit" text="Submit" />
+       <Button fx:id="butCancel" text="Cancel" />
+     </buttons>
+   </ButtonBar>
 
 </VBox>
