@@ -24,7 +24,7 @@ class AbddRestController {
     private List<ExCard> getListOf(long size) {
 
         return ThreadLocalRandom.current().ints(size)
-                .mapToObj(i -> new ExCard(Integer.valueOf(i).toString(), ExState.READY, LocalDateTime.now(), "card " + i))
+                .mapToObj(i -> new ExCard(size, ExState.READY, LocalDateTime.now(), "card " + i))
                 .collect(Collectors.toList());
     }
 

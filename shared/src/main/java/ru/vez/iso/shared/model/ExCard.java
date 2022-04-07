@@ -14,13 +14,12 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ExCard {
     private Long id;
-    private String name;
     private ExState state;
     private LocalDateTime start;
     private String desc;
 
     public String toString() {
-        return "ExCard(key=" + this.getName()
+        return "ExCard(id=" + this.getId()
                 + ", state=" + this.getState()
                 + ", start=" + this.getStart()
                 + ", desc=" + this.getDesc() + ")";

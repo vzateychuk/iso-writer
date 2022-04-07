@@ -16,6 +16,7 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.CompletableFuture;
 
 /**
 * Main controller for logged user
@@ -51,27 +52,21 @@ public class MainCtl implements Initializable {
         operatingDay.setCellValueFactory(cell -> cell.getValue().operatingDayProperty());
         exType.setCellValueFactory(cell -> cell.getValue().typeSuProperty());
         status.setCellValueFactory(cell -> cell.getValue().statusProperty());
+    }
 
-        // Getting data from backend
-        service.findOperatingDaysAsync(counter++)
+    @FXML public void onReload(ActionEvent ev) {
+        CompletableFuture.supplyAsync(()->service.findOperatingDays(counter))
                 .thenAccept(this::display);
     }
 
-    @FXML
-    void onSubmit(ActionEvent ev) {
+    @FXML void onSubmit(ActionEvent ev) {
         System.out.println("MainCtl.onSubmit");
-    }
-
-    @FXML
-    public void onReload(ActionEvent ev) {
-        service.findOperatingDaysAsync(counter++)
-                .thenAccept(this::display);
     }
 
     //region Private
 
     private void display(List<OperatingDayFX> operatingDays) {
-
+        System.out.println("MainCtl.display: " + Thread.currentThread().getName());
         this.operatingDays = FXCollections.observableList(operatingDays);
         tblOperatingDays.setItems(this.operatingDays);
     }
