@@ -20,6 +20,9 @@ import ru.vez.iso.desktop.settings.SettingsSrvImpl;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * DI implemented for all Views/Services
@@ -28,7 +31,12 @@ public class DesktopApp extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        Map<ViewType, Parent> viewCache = buildViewCache();
+        // Create executors
+        int numOfCores = Runtime.getRuntime().availableProcessors();
+        ExecutorService executorService = Executors.newFixedThreadPool(numOfCores * 4);
+
+        // Build ViewCache
+        Map<ViewType, Parent> viewCache = buildViewCache(executorService);
         Parent navigation = buildView(ViewType.NAVIGATION, t->new NavigationCtl(new NavigationSrvImpl(), viewCache));
 
         stage.setTitle("ISO Writer App");
@@ -42,12 +50,12 @@ public class DesktopApp extends Application {
 
     //region Private
 
-    private Map<ViewType, Parent> buildViewCache() throws IOException {
+    private Map<ViewType, Parent> buildViewCache(Executor exec) throws IOException {
 
         Map<ViewType, Parent> viewCache = new HashMap<>();
 
         viewCache.put(ViewType.LOGIN, buildView( ViewType.LOGIN, t -> new LoginCtl(new LoginSrvImpl())));
-        viewCache.put(ViewType.MAIN, buildView( ViewType.MAIN, t -> new MainCtl(new MainSrvImpl())));
+        viewCache.put(ViewType.MAIN, buildView( ViewType.MAIN, t -> new MainCtl(new MainSrvImpl(exec))));
         viewCache.put(ViewType.DISK, buildView( ViewType.DISK, t -> new DiskCtl(new DisksSrvImpl())));
         viewCache.put(ViewType.SETTINGS, buildView( ViewType.SETTINGS, t -> new SettingsCtl(new SettingsSrvImpl())));
 
@@ -59,8 +67,7 @@ public class DesktopApp extends Application {
         System.out.println("buildView from file: " + view.getFileName());
         FXMLLoader loader = new FXMLLoader(getClass().getResource(view.getFileName()));
         loader.setControllerFactory(controllerFactory);
-        Parent parent = loader.load();
-        return parent;
+        return loader.load();
     }
 
     //endregion

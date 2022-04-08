@@ -1,5 +1,6 @@
 package ru.vez.iso.desktop.main;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -16,7 +17,6 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.concurrent.CompletableFuture;
 
 /**
 * Main controller for logged user
@@ -31,13 +31,13 @@ public class MainCtl implements Initializable {
     @FXML private Button butSubmit;
     @FXML private Button butReload;
 
-    private final MainSrv service;
     private ObservableList<OperatingDayFX> operatingDays;
+    private final MainSrv service;
+    private int period = 1;
 
     public MainCtl(MainSrv service) {
         this.service = service;
     }
-    private int counter = 1;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -55,8 +55,8 @@ public class MainCtl implements Initializable {
     }
 
     @FXML public void onReload(ActionEvent ev) {
-        CompletableFuture.supplyAsync(()->service.findOperatingDays(counter))
-                .thenAccept(this::display);
+        service.findOperatingDaysAsync(period++)
+                .thenAccept(l -> Platform.runLater(() -> display(l)) );
     }
 
     @FXML void onSubmit(ActionEvent ev) {
