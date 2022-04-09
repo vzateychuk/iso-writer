@@ -54,7 +54,7 @@ public class DesktopApp extends Application {
 
         Map<ViewType, Parent> viewCache = new HashMap<>();
 
-        viewCache.put(ViewType.LOGIN, buildView( ViewType.LOGIN, t -> new LoginCtl(new LoginSrvImpl())));
+        viewCache.put(ViewType.LOGIN, buildView( ViewType.LOGIN, t -> new LoginCtl(new LoginSrvImpl(exec))));
         viewCache.put(ViewType.MAIN, buildView( ViewType.MAIN, t -> new MainCtl(new MainSrvImpl(exec))));
         viewCache.put(ViewType.DISK, buildView( ViewType.DISK, t -> new DiskCtl(new DisksSrvImpl())));
         viewCache.put(ViewType.SETTINGS, buildView( ViewType.SETTINGS, t -> new SettingsCtl(new SettingsSrvImpl())));

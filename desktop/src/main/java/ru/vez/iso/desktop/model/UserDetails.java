@@ -1,19 +1,17 @@
 package ru.vez.iso.desktop.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 @Data
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDetails {
-    private String login;
-    private String name;
-    private String password;
-    private String token;
+    private String username = "";
+    private String password = "";
+    private String token = "";
+
+    public static UserDetails NOT_SIGNED_USER = new UserDetails();
 
     public boolean isLogged() {
         return token != null && !token.isEmpty();
