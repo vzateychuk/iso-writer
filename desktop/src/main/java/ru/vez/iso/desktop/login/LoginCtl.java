@@ -42,11 +42,7 @@ public class LoginCtl {
     }
 
     @FXML void onLogin(ActionEvent ev) {
-        if (!isValid(username.getText(), password.getText())) {
-            lbStatus.setText("Username/Password invalid");
-        } else {
-            service.tryLogin(username.getText(), password.getText());
-        }
+        service.tryLogin(username.getText(), password.getText());
     }
 
     @FXML public void onPressEnter(KeyEvent ev) {
@@ -58,20 +54,22 @@ public class LoginCtl {
     //region Private
 
     private void displayLogin(UserDetails userDetails) {
+        String statusMessage = "Logged out";
         if (userDetails.isLogged()) {
-            lbStatus.setText(String.format("Logged as '%s'", userDetails.getUsername()));
             username.setText("");
             password.setText("");
-
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Information");
-            alert.setHeaderText(null);
-            alert.setContentText(String.format("Logged as '%s'", userDetails.getUsername()));
-            alert.showAndWait();
-
-        } else {
-            lbStatus.setText("Logged out.");
+            statusMessage = String.format("Logged as '%s'", userDetails.getUsername());
         }
+        showAlert(statusMessage);
+        lbStatus.setText(statusMessage);
+    }
+
+    private void showAlert(String msg) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Alert");
+        alert.setHeaderText(null);
+        alert.setContentText(msg);
+        alert.showAndWait();
     }
 
     private boolean isValid(String username, String pwd) {
