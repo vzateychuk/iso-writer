@@ -37,5 +37,6 @@
    <Label fx:id="lbStatus" layoutX="171.0" layoutY="329.0" prefHeight="22.0" prefWidth="154.0" text="User is logged out">
       <font>
          <Font name="Arial Black" size="14.0" />
-      </font></Label>
+      </font>
+   </Label>
 </AnchorPane>

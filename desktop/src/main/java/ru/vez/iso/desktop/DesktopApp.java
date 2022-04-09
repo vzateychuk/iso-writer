@@ -59,15 +59,13 @@ public class DesktopApp extends Application {
 
         // Build and show the navigation view
         stage.setTitle("ISO Writer App");
-/*
         stage.setOnCloseRequest(e -> {
             e.consume();
-            if (getCloseConfirmation()) {
+//            if (getCloseConfirmation()) {
                 executorService.shutdownNow();
                 stage.close();
-            }
+//            }
         });
-*/
         Parent navigation = buildView(
                 ViewType.NAVIGATION, t->new NavigationCtl(appState, new NavigationSrvImpl(), viewCache)
         );
