@@ -1,11 +1,14 @@
 package ru.vez.iso.desktop.login;
 
 import javafx.application.Platform;
+import javafx.collections.MapChangeListener;
+import javafx.collections.ObservableMap;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import ru.vez.iso.desktop.ApplicationState;
 import ru.vez.iso.desktop.model.UserDetails;
 
 import java.util.function.Predicate;
@@ -17,10 +20,19 @@ public class LoginCtl {
     @FXML private Button butLogin;
     @FXML private Label lbStatus;
 
+    private final ObservableMap<String, ApplicationState> appState;
+
     private final LoginSrv service;
 
-    public LoginCtl(LoginSrv service) {
+    public LoginCtl(ObservableMap<String, ApplicationState> appState, LoginSrv service) {
+        this.appState = appState;
         this.service = service;
+        appState.addListener(
+                (MapChangeListener<String, ApplicationState>) change -> {
+                  if (ApplicationState.USER_DETAILS.equals(change.getKey())) {
+                    System.out.println("LoginCtl.onChanged: " + change.getValueAdded());
+                  }
+                });
     }
 
     @FXML void onLogin(ActionEvent ev) {

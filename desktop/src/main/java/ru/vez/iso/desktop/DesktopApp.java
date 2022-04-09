@@ -1,6 +1,8 @@
 package ru.vez.iso.desktop;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableMap;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -31,12 +33,17 @@ public class DesktopApp extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
+        // Create application state
+        Map<String, ApplicationState> mapState = new HashMap<>();
+        mapState.put(ApplicationState.USER_DETAILS, new ApplicationState());
+        ObservableMap<String, ApplicationState> appState = FXCollections.observableMap(mapState);
+
         // Create executors
         int numOfCores = Runtime.getRuntime().availableProcessors();
         ExecutorService executorService = Executors.newFixedThreadPool(numOfCores * 4);
 
         // Build ViewCache
-        Map<ViewType, Parent> viewCache = buildViewCache(executorService);
+        Map<ViewType, Parent> viewCache = buildViewCache(executorService, appState);
         Parent navigation = buildView(ViewType.NAVIGATION, t->new NavigationCtl(new NavigationSrvImpl(), viewCache));
 
         stage.setTitle("ISO Writer App");
@@ -50,11 +57,11 @@ public class DesktopApp extends Application {
 
     //region Private
 
-    private Map<ViewType, Parent> buildViewCache(Executor exec) throws IOException {
+    private Map<ViewType, Parent> buildViewCache(Executor exec, ObservableMap<String, ApplicationState> appState) throws IOException {
 
         Map<ViewType, Parent> viewCache = new HashMap<>();
 
-        viewCache.put(ViewType.LOGIN, buildView( ViewType.LOGIN, t -> new LoginCtl(new LoginSrvImpl(exec))));
+        viewCache.put(ViewType.LOGIN, buildView( ViewType.LOGIN, t -> new LoginCtl(appState, new LoginSrvImpl(exec, appState))));
         viewCache.put(ViewType.MAIN, buildView( ViewType.MAIN, t -> new MainCtl(new MainSrvImpl(exec))));
         viewCache.put(ViewType.DISK, buildView( ViewType.DISK, t -> new DiskCtl(new DisksSrvImpl())));
         viewCache.put(ViewType.SETTINGS, buildView( ViewType.SETTINGS, t -> new SettingsCtl(new SettingsSrvImpl())));
