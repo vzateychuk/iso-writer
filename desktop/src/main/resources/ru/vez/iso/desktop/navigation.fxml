@@ -1,27 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.Pane?>
-<BorderPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:id="navigationView"
-            fx:controller="ru.vez.iso.desktop.nav.NavigationCtl"
-            prefHeight="400.0" prefWidth="600.0">
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:id="navigationView" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.vez.iso.desktop.nav.NavigationCtl">
     <left>
         <Pane BorderPane.alignment="CENTER">
             <children>
                 <VBox spacing="5">
-                    <Button text="Login" onAction="#onShowLogin"/>
-                    <Button text="Main" onAction="#onShowMain"/>
-                    <Button text="Disks" onAction="#onShowDisks"/>
-                    <Button text="Settings" onAction="#onShowSettings"/>
+                    <Button fx:id="login" onAction="#onShowLogin" text="Login" />
+                    <Button fx:id="main" disable="true" onAction="#onShowMain" text="Main" />
+                    <Button fx:id="disks" disable="true" onAction="#onShowDisks" text="Disks" />
+                    <Button fx:id="settings" onAction="#onShowSettings" text="Settings" />
                 </VBox>
             </children>
         </Pane>
     </left>
     <center>
-        <fx:include source="welcome.fxml"/>
+        <fx:include source="welcome.fxml" />
     </center>
 </BorderPane>

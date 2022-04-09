@@ -6,6 +6,8 @@ import javafx.collections.ObservableMap;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import lombok.extern.java.Log;
@@ -26,6 +28,8 @@ import ru.vez.iso.desktop.state.AppStateType;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -51,11 +55,22 @@ public class DesktopApp extends Application {
         ExecutorService executorService = Executors.newFixedThreadPool(numOfCores * 4);
 
         // Build ViewCache with all views
-        Map<ViewType, Parent> viewCache = buildViewCache(executorService, appState);
+        Map<ViewType, Parent> viewCache = buildViewCache(appState, executorService);
 
         // Build and show the navigation view
-        Parent navigation = buildView(ViewType.NAVIGATION, t->new NavigationCtl(new NavigationSrvImpl(), viewCache));
         stage.setTitle("ISO Writer App");
+/*
+        stage.setOnCloseRequest(e -> {
+            e.consume();
+            if (getCloseConfirmation()) {
+                executorService.shutdownNow();
+                stage.close();
+            }
+        });
+*/
+        Parent navigation = buildView(
+                ViewType.NAVIGATION, t->new NavigationCtl(appState, new NavigationSrvImpl(), viewCache)
+        );
         stage.setScene(new Scene(navigation));
         stage.show();
     }
@@ -67,11 +82,23 @@ public class DesktopApp extends Application {
     //region Private
 
     /**
+     * @See https://betacode.net/11529/javafx-alert-dialog
+     * */
+    private boolean getCloseConfirmation() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Warning!");
+        alert.setHeaderText(null);
+        alert.setContentText("Are you sure? Some process might be running.");
+        Optional<ButtonType> option = alert.showAndWait();
+        return option.isPresent() && option.get() == ButtonType.OK;
+    }
+
+    /**
      * Create Listenable application state Map just to to keep UI consistent by listening state change events.
      * */
     private ObservableMap<AppStateType, AppStateData> createDefaultAppState() {
 
-        Map<AppStateType, AppStateData> mapState = new HashMap<>();
+        Map<AppStateType, AppStateData> mapState = new ConcurrentHashMap<>();
         mapState.put( AppStateType.USER_DETAILS, AppStateData.builder().value(UserDetails.NOT_SIGNED_USER).build() );
 
         return FXCollections.observableMap(mapState);
@@ -81,12 +108,12 @@ public class DesktopApp extends Application {
      * Create viewCache Map just to switch between views
      * Application state and services created and injected
      * */
-    private Map<ViewType, Parent> buildViewCache(Executor exec, ObservableMap<AppStateType, AppStateData> state) throws IOException {
+    private Map<ViewType, Parent> buildViewCache(ObservableMap<AppStateType, AppStateData> state, Executor exec) throws IOException {
 
         Map<ViewType, Parent> viewCache = new HashMap<>();
 
         viewCache.put(ViewType.LOGIN, buildView( ViewType.LOGIN, t->new LoginCtl(state, new LoginSrvImpl(state, exec))));
-        viewCache.put(ViewType.MAIN, buildView( ViewType.MAIN, t->new MainCtl(new MainSrvImpl(exec))));
+        viewCache.put(ViewType.MAIN, buildView( ViewType.MAIN, t->new MainCtl(state, new MainSrvImpl(state, exec))));
         viewCache.put(ViewType.DISK, buildView( ViewType.DISK, t->new DiskCtl(new DisksSrvImpl())));
         viewCache.put(ViewType.SETTINGS, buildView( ViewType.SETTINGS, t -> new SettingsCtl(new SettingsSrvImpl())));
 

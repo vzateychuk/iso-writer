@@ -5,9 +5,12 @@ import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableMap;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import lombok.extern.java.Log;
 import ru.vez.iso.desktop.model.UserDetails;
 import ru.vez.iso.desktop.state.AppStateData;
@@ -27,12 +30,11 @@ public class LoginCtl {
     private final LoginSrv service;
 
     public LoginCtl(ObservableMap<AppStateType, AppStateData> appState, LoginSrv service) {
-        this.appState = appState;
         this.service = service;
-        appState.addListener(
+        this.appState = appState;
+        this.appState.addListener(
                 (MapChangeListener<AppStateType, AppStateData>) change -> {
                   if (AppStateType.USER_DETAILS.equals(change.getKey())) {
-                      log.info("LoginCtl.onChanged: " + Thread.currentThread().getName());
                       UserDetails userDetails = (UserDetails) change.getValueAdded().getValue();
                       Platform.runLater(()->displayLogin(userDetails));
                   }
@@ -40,11 +42,16 @@ public class LoginCtl {
     }
 
     @FXML void onLogin(ActionEvent ev) {
-        log.info("LoginCtl.onLogin: " + Thread.currentThread().getName());
         if (!isValid(username.getText(), password.getText())) {
-            lbStatus.setText("Username/Password invalid. User is logged out.");
+            lbStatus.setText("Username/Password invalid");
         } else {
             service.tryLogin(username.getText(), password.getText());
+        }
+    }
+
+    @FXML public void onPressEnter(KeyEvent ev) {
+        if( ev.getCode() == KeyCode.ENTER ) {
+            onLogin(null);
         }
     }
 
@@ -52,11 +59,18 @@ public class LoginCtl {
 
     private void displayLogin(UserDetails userDetails) {
         if (userDetails.isLogged()) {
-            lbStatus.setText(String.format("'%s' logged in successfully", username.getText()));
+            lbStatus.setText(String.format("Logged as '%s'", userDetails.getUsername()));
             username.setText("");
             password.setText("");
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Information");
+            alert.setHeaderText(null);
+            alert.setContentText(String.format("Logged as '%s'", userDetails.getUsername()));
+            alert.showAndWait();
+
         } else {
-            lbStatus.setText(String.format("'%s' unable to login. User is logged out.", username.getText()));
+            lbStatus.setText("Logged out.");
         }
     }
 

@@ -1,9 +1,12 @@
 package ru.vez.iso.desktop.main;
 
+import javafx.collections.ObservableMap;
 import lombok.extern.java.Log;
 import ru.vez.iso.desktop.model.ExStatus;
 import ru.vez.iso.desktop.model.ExType;
 import ru.vez.iso.desktop.model.OperatingDayFX;
+import ru.vez.iso.desktop.state.AppStateData;
+import ru.vez.iso.desktop.state.AppStateType;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -17,14 +20,14 @@ public class MainSrvImpl implements MainSrv {
 
     private final Executor exec;
 
-    public MainSrvImpl(Executor exec) {
+    public MainSrvImpl(ObservableMap<AppStateType, AppStateData> state, Executor exec) {
         this.exec = exec;
     }
 
     @Override
     public CompletableFuture<List<OperatingDayFX>> findOperatingDaysAsync(int period) {
 
-        log.info("findOperatingDaysAsync: " + Thread.currentThread().getName());
+        log.info("findOperatingDaysAsync. period: " + period);
         return CompletableFuture.supplyAsync(() -> getListWithDelay(period), exec);
     }
 

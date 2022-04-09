@@ -2,7 +2,9 @@ package ru.vez.iso.desktop.main;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -13,6 +15,9 @@ import lombok.extern.java.Log;
 import ru.vez.iso.desktop.model.ExStatus;
 import ru.vez.iso.desktop.model.ExType;
 import ru.vez.iso.desktop.model.OperatingDayFX;
+import ru.vez.iso.desktop.model.UserDetails;
+import ru.vez.iso.desktop.state.AppStateData;
+import ru.vez.iso.desktop.state.AppStateType;
 
 import java.net.URL;
 import java.time.LocalDate;
@@ -33,19 +38,26 @@ public class MainCtl implements Initializable {
     @FXML private Button butSubmit;
     @FXML private Button butReload;
 
-    private ObservableList<OperatingDayFX> operatingDays;
+    private final ObservableMap<AppStateType, AppStateData> appState;
     private final MainSrv service;
+
+    private ObservableList<OperatingDayFX> operatingDays;
     private int period = 1;
 
-    public MainCtl(MainSrv service) {
+    public MainCtl(ObservableMap<AppStateType, AppStateData> appState, MainSrv service) {
         this.service = service;
+        this.appState = appState;
+        this.appState.addListener(
+                (MapChangeListener<AppStateType, AppStateData>) change -> {
+                    if (AppStateType.USER_DETAILS.equals(change.getKey())) {
+                        UserDetails userDetails = (UserDetails) change.getValueAdded().getValue();
+                        Platform.runLater(()->lockControls(userDetails == UserDetails.NOT_SIGNED_USER));
+                    }
+                });
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
-        // TODO: make periodDays configurable
-
         // Setting UI
         operatingDays = FXCollections.emptyObservableList();
         tblOperatingDays.setItems(operatingDays);
@@ -67,8 +79,12 @@ public class MainCtl implements Initializable {
 
     //region Private
 
+    private void lockControls(boolean lock) {
+        butReload.setDisable(lock);
+        butSubmit.setDisable(lock);
+    }
+
     private void display(List<OperatingDayFX> operatingDays) {
-        log.info("MainCtl.display: " + Thread.currentThread().getName());
         this.operatingDays = FXCollections.observableList(operatingDays);
         tblOperatingDays.setItems(this.operatingDays);
     }
