@@ -1,51 +1,45 @@
 package ru.vez.iso.desktop.login;
 
 import javafx.collections.ObservableMap;
-import ru.vez.iso.desktop.ApplicationState;
+import lombok.extern.java.Log;
 import ru.vez.iso.desktop.model.UserDetails;
+import ru.vez.iso.desktop.state.AppStateData;
+import ru.vez.iso.desktop.state.AppStateType;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
+@Log
 public class LoginSrvImpl implements LoginSrv {
 
+    private final ObservableMap<AppStateType, AppStateData> appState;
     private final Executor exec;
-    private final ObservableMap<String, ApplicationState> appState;
 
-    public LoginSrvImpl(Executor exec, ObservableMap<String, ApplicationState> appState) {
-        this.exec = exec;
+    public LoginSrvImpl(ObservableMap<AppStateType, AppStateData> appState, Executor exec) {
         this.appState = appState;
+        this.exec = exec;
     }
-
 
     @Override
-    public CompletableFuture<UserDetails> loginAsync(String username, String password) {
+    public void tryLogin(String username, String password) {
 
-        if ("admin".equals(username) && "admin".equals(password) ) {
-            return CompletableFuture.supplyAsync(() -> {
-                System.out.println("loginAsync: " + Thread.currentThread().getName());
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                UserDetails logged = new UserDetails(username, password, username+"-"+password);
-                ApplicationState loggedState = new ApplicationState();
-                loggedState.setUserDetails(logged);
-                appState.put(ApplicationState.USER_DETAILS, loggedState);
-                return logged;
-            }, exec);
-        } else {
-            return CompletableFuture.supplyAsync(() -> {
-                System.out.println("loginAsync: " + Thread.currentThread().getName());
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                return UserDetails.NOT_SIGNED_USER;
-            }, exec);
-        }
-
+        CompletableFuture.supplyAsync(() -> {
+            log.info("tryLoginAsync: " + Thread.currentThread().getName());
+            makeDelaySec(1);    // TODO make LOGIN HTTP call
+            return "admin".equals(username) && "admin".equals(password)
+                    ? new UserDetails(username, password, username+"-"+password)
+                    : UserDetails.NOT_SIGNED_USER;
+        }, exec).thenAccept(userDetails ->
+                appState.put(AppStateType.USER_DETAILS, AppStateData.<UserDetails>builder().value(userDetails).build())
+        );
     }
+
+    private void makeDelaySec(int delay) {
+        try {
+            Thread.sleep(delay * 1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

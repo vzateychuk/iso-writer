@@ -1,7 +1,9 @@
 package ru.vez.iso.desktop.settings;
 
 import javafx.event.ActionEvent;
+import lombok.extern.java.Log;
 
+@Log
 public class SettingsCtl {
 
     private final SettingsSrv service;
@@ -11,10 +13,10 @@ public class SettingsCtl {
     }
 
     public void onSave(ActionEvent ev) {
-        System.out.println("SettingsCtl.onSave");
+        log.info("SettingsCtl.onSave");
     }
 
     public void onCancel(ActionEvent ev) {
-        System.out.println("SettingsCtl.onCancel");
+        log.info("SettingsCtl.onCancel");
     }
 }

@@ -1,5 +1,8 @@
 package ru.vez.iso.desktop.disks;
 
+import lombok.extern.java.Log;
+
+@Log
 public class DiskCtl {
 
     private final DisksSrv service;
@@ -9,10 +12,10 @@ public class DiskCtl {
     }
 
     public void onWrite() {
-        System.out.println("DiskCtl.onWrite");
+        log.info("DiskCtl.onWrite");
     }
 
     public void onCheck() {
-        System.out.println("DiskCtl.onCheck");
+        log.info("DiskCtl.onCheck");
     }
 }

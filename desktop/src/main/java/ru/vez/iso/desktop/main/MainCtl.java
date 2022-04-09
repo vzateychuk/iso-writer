@@ -9,6 +9,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import lombok.extern.java.Log;
 import ru.vez.iso.desktop.model.ExStatus;
 import ru.vez.iso.desktop.model.ExType;
 import ru.vez.iso.desktop.model.OperatingDayFX;
@@ -21,6 +22,7 @@ import java.util.ResourceBundle;
 /**
 * Main controller for logged user
 */
+@Log
 public class MainCtl implements Initializable {
 
     @FXML private TableView<OperatingDayFX> tblOperatingDays;
@@ -60,13 +62,13 @@ public class MainCtl implements Initializable {
     }
 
     @FXML void onSubmit(ActionEvent ev) {
-        System.out.println("MainCtl.onSubmit");
+        log.info("MainCtl.onSubmit");
     }
 
     //region Private
 
     private void display(List<OperatingDayFX> operatingDays) {
-        System.out.println("MainCtl.display: " + Thread.currentThread().getName());
+        log.info("MainCtl.display: " + Thread.currentThread().getName());
         this.operatingDays = FXCollections.observableList(operatingDays);
         tblOperatingDays.setItems(this.operatingDays);
     }

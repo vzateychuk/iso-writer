@@ -8,11 +8,14 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import ru.vez.iso.desktop.ApplicationState;
+import lombok.extern.java.Log;
 import ru.vez.iso.desktop.model.UserDetails;
+import ru.vez.iso.desktop.state.AppStateData;
+import ru.vez.iso.desktop.state.AppStateType;
 
 import java.util.function.Predicate;
 
+@Log
 public class LoginCtl {
 
     @FXML private TextField username;
@@ -20,30 +23,32 @@ public class LoginCtl {
     @FXML private Button butLogin;
     @FXML private Label lbStatus;
 
-    private final ObservableMap<String, ApplicationState> appState;
-
+    private final ObservableMap<AppStateType, AppStateData> appState;
     private final LoginSrv service;
 
-    public LoginCtl(ObservableMap<String, ApplicationState> appState, LoginSrv service) {
+    public LoginCtl(ObservableMap<AppStateType, AppStateData> appState, LoginSrv service) {
         this.appState = appState;
         this.service = service;
         appState.addListener(
-                (MapChangeListener<String, ApplicationState>) change -> {
-                  if (ApplicationState.USER_DETAILS.equals(change.getKey())) {
-                    System.out.println("LoginCtl.onChanged: " + change.getValueAdded());
+                (MapChangeListener<AppStateType, AppStateData>) change -> {
+                  if (AppStateType.USER_DETAILS.equals(change.getKey())) {
+                      log.info("LoginCtl.onChanged: " + Thread.currentThread().getName());
+                      UserDetails userDetails = (UserDetails) change.getValueAdded().getValue();
+                      Platform.runLater(()->displayLogin(userDetails));
                   }
                 });
     }
 
     @FXML void onLogin(ActionEvent ev) {
-        System.out.println("LoginCtl.onLogin: " + Thread.currentThread().getName());
+        log.info("LoginCtl.onLogin: " + Thread.currentThread().getName());
         if (!isValid(username.getText(), password.getText())) {
             lbStatus.setText("Username/Password invalid. User is logged out.");
         } else {
-            service.loginAsync(username.getText(), password.getText())
-                    .thenAccept(userDetails -> Platform.runLater(()->displayLogin(userDetails)));
+            service.tryLogin(username.getText(), password.getText());
         }
     }
+
+    //region Private
 
     private void displayLogin(UserDetails userDetails) {
         if (userDetails.isLogged()) {
@@ -60,4 +65,5 @@ public class LoginCtl {
         return notEmpty.test(username) && notEmpty.test(pwd);
     }
 
+    //endregion
 }
