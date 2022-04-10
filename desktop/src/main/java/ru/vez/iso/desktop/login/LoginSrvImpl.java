@@ -24,7 +24,7 @@ public class LoginSrvImpl implements LoginSrv {
     public void tryLogin(String username, String password) {
 
         CompletableFuture.supplyAsync(() -> {
-            log.info("tryLoginAsync: " + Thread.currentThread().getName());
+            log.info(String.format("tryLoginAsync, user: '%s'", username));
             makeDelaySec(1);    // TODO make LOGIN HTTP call
             return "admin".equals(username) && "admin".equals(password)
                     ? new UserDetails(username, password, username+"-"+password)

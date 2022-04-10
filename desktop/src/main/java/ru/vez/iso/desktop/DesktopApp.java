@@ -20,7 +20,9 @@ import ru.vez.iso.desktop.main.MainSrvImpl;
 import ru.vez.iso.desktop.model.UserDetails;
 import ru.vez.iso.desktop.nav.NavigationCtl;
 import ru.vez.iso.desktop.nav.NavigationSrvImpl;
+import ru.vez.iso.desktop.settings.SettingType;
 import ru.vez.iso.desktop.settings.SettingsCtl;
+import ru.vez.iso.desktop.settings.SettingsSrv;
 import ru.vez.iso.desktop.settings.SettingsSrvImpl;
 import ru.vez.iso.desktop.state.AppStateData;
 import ru.vez.iso.desktop.state.AppStateType;
@@ -37,9 +39,9 @@ import java.util.concurrent.Executors;
 /**
  * Runnable Application class
  * DI implemented for :
- * Views/Controllers
- * Services
- * ApplicationState
+ * - Views/Controllers
+ * - Services
+ * - ApplicationState
  * */
 @Log
 public class DesktopApp extends Application {
@@ -113,7 +115,11 @@ public class DesktopApp extends Application {
         viewCache.put(ViewType.LOGIN, buildView( ViewType.LOGIN, t->new LoginCtl(state, new LoginSrvImpl(state, exec))));
         viewCache.put(ViewType.MAIN, buildView( ViewType.MAIN, t->new MainCtl(state, new MainSrvImpl(state, exec))));
         viewCache.put(ViewType.DISK, buildView( ViewType.DISK, t->new DiskCtl(new DisksSrvImpl())));
-        viewCache.put(ViewType.SETTINGS, buildView( ViewType.SETTINGS, t -> new SettingsCtl(new SettingsSrvImpl())));
+
+        // create SettingsView and read application settings async
+        SettingsSrv settingsSrv = new SettingsSrvImpl(state, exec);
+        viewCache.put(ViewType.SETTINGS, buildView( ViewType.SETTINGS, t -> new SettingsCtl(state, settingsSrv)));
+        settingsSrv.loadAsync(SettingType.SETTING_FILE.getDefaultValue());
 
         return viewCache;
     }

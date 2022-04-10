@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="366.0" prefWidth="472.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.vez.iso.desktop.login.LoginCtl">
+<AnchorPane prefHeight="366.0" prefWidth="472.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.vez.iso.desktop.login.LoginCtl">
 
     <TextField fx:id="username" layoutX="133.0" layoutY="157.0" prefHeight="26.0" prefWidth="274.0" promptText="Enter username" />
 
