@@ -6,6 +6,9 @@ import javafx.beans.property.SimpleObjectProperty;
 import java.time.LocalDate;
 import java.util.Objects;
 
+/**
+ * DataModel used in "Выбор Единицы хранения для записи на диск"
+ * */
 public class OperatingDayFX {
 
     private final ObjectProperty<LocalDate> operatingDay = new SimpleObjectProperty<>();
@@ -59,9 +62,9 @@ public class OperatingDayFX {
 
     @Override
     public String toString() {
-        return "OperatingDayFX{" +
-                "operatingDay=" + getOperatingDay() +
-                ", typeSu=" + getTypeSu() +
+        return "OperatingDay{" +
+                "date=" + getOperatingDay() +
+                ", typeSU=" + getTypeSu() +
                 ", status=" + getStatus() +
                 '}';
     }

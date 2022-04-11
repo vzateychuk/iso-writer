@@ -15,7 +15,7 @@ import ru.vez.iso.desktop.state.AppStateType;
 import java.util.Properties;
 
 /**
- * Форма настроек
+ * Controller for View "Форма настроек"
  * */
 @Log
 public class SettingsCtl {

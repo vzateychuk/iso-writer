@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 /**
- * Форма: окно "Выбор Единицы хранения для записи на диск"
+ * Controller for: "Выбор Единицы хранения для записи на диск"
  * */
 @Log
 public class MainCtl implements Initializable {
@@ -34,8 +34,7 @@ public class MainCtl implements Initializable {
     @FXML private TableColumn<OperatingDayFX, LocalDate> operatingDay;
     @FXML private TableColumn<OperatingDayFX, ExType> exType;
     @FXML private TableColumn<OperatingDayFX, ExStatus> status;
-    @FXML private Button butCancel;
-    @FXML private Button butSubmit;
+    @FXML private Button butWrite;
     @FXML private Button butReload;
 
     private final ObservableMap<AppStateType, AppStateData> appState;
@@ -73,15 +72,15 @@ public class MainCtl implements Initializable {
                 .thenAccept(l -> Platform.runLater(() -> display(l)) );
     }
 
-    @FXML void onSubmit(ActionEvent ev) {
-        log.info("MainCtl.onSubmit");
+    @FXML void onWrite(ActionEvent ev) {
+        log.info("MainCtl.onWrite");
     }
 
     //region Private
 
     private void lockControls(boolean lock) {
         butReload.setDisable(lock);
-        butSubmit.setDisable(lock);
+        butWrite.setDisable(lock);
     }
 
     private void display(List<OperatingDayFX> operatingDays) {

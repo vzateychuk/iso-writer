@@ -18,13 +18,16 @@ import ru.vez.iso.desktop.state.AppStateType;
 
 import java.util.function.Predicate;
 
+/**
+ * Controller for LoginForm
+ * */
 @Log
 public class LoginCtl {
 
     @FXML private TextField username;
     @FXML private TextField password;
     @FXML private Button butLogin;
-    @FXML public Button butCancel;
+    @FXML public Button butLogout;
     @FXML private Label lbStatus;
 
     private final ObservableMap<AppStateType, AppStateData> appState;
@@ -52,7 +55,7 @@ public class LoginCtl {
         }
     }
 
-    @FXML public void onCancel(ActionEvent ev) {
+    @FXML public void onLogout(ActionEvent ev) {
         service.logoutAsync();
     }
 
@@ -66,7 +69,7 @@ public class LoginCtl {
             statusMessage = String.format("Logged as '%s'", userDetails.getUsername());
         }
         butLogin.setDisable(userDetails.isLogged());
-        butCancel.setDisable(!userDetails.isLogged());
+        butLogout.setDisable(!userDetails.isLogged());
         lbStatus.setText(statusMessage);
         showAlert(statusMessage);
     }
