@@ -25,8 +25,8 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 /**
-* Main controller for logged user
-*/
+ * Форма: окно "Выбор Единицы хранения для записи на диск"
+ * */
 @Log
 public class MainCtl implements Initializable {
 

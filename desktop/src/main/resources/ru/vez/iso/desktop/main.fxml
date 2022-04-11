@@ -4,22 +4,39 @@
 <?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
 
-<VBox prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.vez.iso.desktop.main.MainCtl">
-   <TableView fx:id="tblOperatingDays" prefHeight="200.0" prefWidth="200.0">
-     <columns>
-       <TableColumn fx:id="operatingDay" minWidth="50.0" prefWidth="150.0" text="Дата опер.дня" />
-       <TableColumn fx:id="exType" prefWidth="75.0" text="Вид EX" />
-       <TableColumn fx:id="status" prefWidth="150.0" text="Статус" />
-     </columns>
+<GridPane fx:id="startView" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.vez.iso.desktop.main.MainCtl">
+
+    <TableView fx:id="tblOperatingDays" minHeight="200.0" prefWidth="300.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
+        <columns>
+            <TableColumn fx:id="operatingDay" minWidth="50.0" prefWidth="150.0" text="Дата опер.дня" />
+            <TableColumn fx:id="exType" prefWidth="75.0" text="Вид EX" />
+            <TableColumn fx:id="status" prefWidth="150.0" text="Статус" />
+        </columns>
+    </TableView>
+   <TableView fx:id="tblStorageUnits" minHeight="200.0" prefHeight="399.0" prefWidth="349.0" GridPane.columnIndex="1">
+      <columns>
+         <TableColumn fx:id="operatingDay1" minWidth="50.0" prefWidth="150.0" text="Дата опер.дня" />
+         <TableColumn fx:id="exType1" prefWidth="75.0" text="Вид EX" />
+         <TableColumn fx:id="status1" prefWidth="150.0" text="Статус" />
+      </columns>
    </TableView>
-   <ButtonBar prefHeight="40.0" prefWidth="200.0">
-     <buttons>
-       <Button fx:id="butReload" onAction="#onReload" text="Reload" />
-       <Button fx:id="butSubmit" onAction="#onSubmit" text="Submit" />
-       <Button fx:id="butCancel" text="Cancel" />
-     </buttons>
-   </ButtonBar>
-
-</VBox>
+    <ButtonBar prefHeight="40.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+        <buttons>
+            <Button fx:id="butReload" onAction="#onReload" text="Reload" />
+            <Button fx:id="butSubmit" onAction="#onSubmit" text="Submit" />
+            <Button fx:id="butCancel" text="Cancel" />
+        </buttons>
+    </ButtonBar>
+   <columnConstraints>
+      <ColumnConstraints percentWidth="50.0" prefWidth="300.0" />
+      <ColumnConstraints percentWidth="50.0" />
+   </columnConstraints>
+   <rowConstraints>
+      <RowConstraints />
+      <RowConstraints minHeight="40.0" prefHeight="40.0" />
+   </rowConstraints>
+</GridPane>

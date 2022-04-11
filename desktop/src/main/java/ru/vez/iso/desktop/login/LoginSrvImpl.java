@@ -21,10 +21,10 @@ public class LoginSrvImpl implements LoginSrv {
     }
 
     @Override
-    public void tryLogin(String username, String password) {
+    public void loginAsync(String username, String password) {
 
         CompletableFuture.supplyAsync(() -> {
-            log.info(String.format("tryLoginAsync, user: '%s'", username));
+            log.info(String.format("loginAsync, user: '%s'", username));
             makeDelaySec(1);    // TODO make LOGIN HTTP call
             return "admin".equals(username) && "admin".equals(password)
                     ? new UserDetails(username, password, username+"-"+password)
@@ -34,6 +34,14 @@ public class LoginSrvImpl implements LoginSrv {
         );
     }
 
+    @Override
+    public void logoutAsync() {
+        log.info("logoutAsync");
+        appState.put(AppStateType.USER_DETAILS, AppStateData.builder().value(UserDetails.NOT_SIGNED_USER).build());
+    }
+
+    //region Private
+
     private void makeDelaySec(int delay) {
         try {
             Thread.sleep(delay * 1000);
@@ -42,4 +50,5 @@ public class LoginSrvImpl implements LoginSrv {
         }
     }
 
+    //endregion
 }

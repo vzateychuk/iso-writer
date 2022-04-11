@@ -14,6 +14,9 @@ import ru.vez.iso.desktop.state.AppStateType;
 
 import java.util.Properties;
 
+/**
+ * Форма настроек
+ * */
 @Log
 public class SettingsCtl {
 

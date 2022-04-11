@@ -24,6 +24,7 @@ public class LoginCtl {
     @FXML private TextField username;
     @FXML private TextField password;
     @FXML private Button butLogin;
+    @FXML public Button butCancel;
     @FXML private Label lbStatus;
 
     private final ObservableMap<AppStateType, AppStateData> appState;
@@ -41,14 +42,18 @@ public class LoginCtl {
                 });
     }
 
-    @FXML void onLogin(ActionEvent ev) {
-        service.tryLogin(username.getText(), password.getText());
+    @FXML public void onLogin(ActionEvent ev) {
+        service.loginAsync(username.getText(), password.getText());
     }
 
     @FXML public void onPressEnter(KeyEvent ev) {
         if( ev.getCode() == KeyCode.ENTER ) {
             onLogin(null);
         }
+    }
+
+    @FXML public void onCancel(ActionEvent ev) {
+        service.logoutAsync();
     }
 
     //region Private
@@ -60,8 +65,10 @@ public class LoginCtl {
             password.setText("");
             statusMessage = String.format("Logged as '%s'", userDetails.getUsername());
         }
-        showAlert(statusMessage);
+        butLogin.setDisable(userDetails.isLogged());
+        butCancel.setDisable(!userDetails.isLogged());
         lbStatus.setText(statusMessage);
+        showAlert(statusMessage);
     }
 
     private void showAlert(String msg) {
