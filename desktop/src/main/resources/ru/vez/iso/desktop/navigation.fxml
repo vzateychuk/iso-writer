@@ -6,27 +6,31 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="navigationView" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.vez.iso.desktop.nav.NavigationCtl">
+<BorderPane fx:id="navigationView" prefHeight="400.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.vez.iso.desktop.nav.NavigationCtl">
     <left>
         <Pane prefHeight="371.0" prefWidth="110.0" style="-fx-background-color: #AAB2BD;" BorderPane.alignment="CENTER">
             <children>
                 <VBox alignment="CENTER" layoutY="34.0" prefHeight="161.0" prefWidth="110.0" spacing="5">
                     <Button fx:id="login" onAction="#onShowLogin" prefWidth="100.0" text="Login">
-                  <font>
-                     <Font name="Arial Black" size="14.0" />
-                  </font></Button>
+                        <font>
+                            <Font name="Arial Black" size="14.0" />
+                        </font>
+                    </Button>
                     <Button fx:id="main" disable="true" onAction="#onShowMain" prefWidth="100.0" text="Main">
-                  <font>
-                     <Font name="Arial Black" size="14.0" />
-                  </font></Button>
+                        <font>
+                            <Font name="Arial Black" size="14.0" />
+                        </font>
+                    </Button>
                     <Button fx:id="disks" disable="true" onAction="#onShowDisks" prefWidth="100.0" text="Disks">
-                  <font>
-                     <Font name="Arial Black" size="14.0" />
-                  </font></Button>
+                        <font>
+                            <Font name="Arial Black" size="14.0" />
+                        </font>
+                    </Button>
                     <Button fx:id="settings" onAction="#onShowSettings" prefWidth="100.0" text="Settings">
-                  <font>
-                     <Font name="Arial Black" size="14.0" />
-                  </font></Button>
+                        <font>
+                            <Font name="Arial Black" size="14.0" />
+                        </font>
+                    </Button>
                 </VBox>
             </children>
         </Pane>
