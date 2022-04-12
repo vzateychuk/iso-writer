@@ -5,6 +5,7 @@
 <?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.ToggleGroup?>
@@ -12,92 +13,124 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<GridPane fx:id="startView" maxHeight="1.7976931348623157E308" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.vez.iso.desktop.main.MainCtl">
-   <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
-      <children>
-         <RadioButton mnemonicParsing="false" selected="true" text="Все">
-            <font>
-               <Font name="Arial Black" size="12.0" />
-            </font>
-            <padding>
-               <Insets bottom="5.0" left="5.0" right="5.0" top="10.0" />
-            </padding>
-            <toggleGroup>
-               <ToggleGroup fx:id="filterGroup" />
-            </toggleGroup>
-         </RadioButton>
-         <RadioButton mnemonicParsing="false" text="Доступные для записи" toggleGroup="$filterGroup">
-            <font>
-               <Font name="Arial Black" size="12.0" />
-            </font>
-            <padding>
-               <Insets bottom="5.0" left="5.0" right="5.0" top="10.0" />
-            </padding>
-         </RadioButton>
-         <RadioButton mnemonicParsing="false" text="Готовые" toggleGroup="$filterGroup">
-            <font>
-               <Font name="Arial Black" size="12.0" />
-            </font>
-            <padding>
-               <Insets bottom="5.0" left="5.0" right="5.0" top="10.0" />
-            </padding>
-         </RadioButton>
-      </children>
-   </HBox>
-
-    <TableView fx:id="tblOperatingDays" maxHeight="1.7976931348623157E308" minHeight="200.0" minWidth="300.0" GridPane.columnIndex="0" GridPane.rowIndex="2">
-        <columns>
-            <TableColumn fx:id="operatingDay" minWidth="50.0" prefWidth="150.0" text="Дата опер.дня" />
-            <TableColumn fx:id="exType" prefWidth="75.0" text="Вид EX" />
-            <TableColumn fx:id="status" prefWidth="150.0" text="Статус" />
-        </columns>
-    </TableView>
-   <TableView fx:id="tblStorageUnits" maxHeight="1.7976931348623157E308" minHeight="200.0" minWidth="300.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
-      <columns>
-         <TableColumn fx:id="operatingDay1" maxWidth="1.7976931348623157E308" minWidth="50.0" prefWidth="75.0" text="Номер EX" />
-         <TableColumn fx:id="exType1" maxWidth="1.7976931348623157E308" prefWidth="100.0" text="Дата создания" />
-         <TableColumn fx:id="status1" maxWidth="1.7976931348623157E308" prefWidth="75.0" text="Статус" />
-         <TableColumn fx:id="status11" maxWidth="1.7976931348623157E308" prefWidth="75.0" text="Дата записи" />
-         <TableColumn fx:id="status111" maxWidth="1.7976931348623157E308" prefWidth="75.0" text="Срок хранения" />
-      </columns>
-   </TableView>
-    <ButtonBar buttonMinWidth="80.0" prefHeight="40.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
-        <buttons>
-            <Button fx:id="butWrite" onAction="#onWrite" prefWidth="80.0" text="Write" ButtonBar.buttonData="LEFT">
-            <font>
-               <Font name="Arial Black" size="14.0" />
-            </font></Button>
-        </buttons>
-    </ButtonBar>
-   <ButtonBar buttonMinWidth="80.0" prefHeight="40.0" prefWidth="200.0" GridPane.rowIndex="3">
-      <buttons>
-         <Button fx:id="butReload" defaultButton="true" onAction="#onReload" prefWidth="80.0" text="Reload" ButtonBar.buttonData="LEFT">
-            <font>
-               <Font name="Arial Black" size="14.0" />
-            </font>
-         </Button>
-      </buttons>
-   </ButtonBar>
-   <Label alignment="CENTER" maxWidth="1.7976931348623157E308" text="Список единиц хранения" GridPane.columnIndex="1">
-      <font>
-         <Font name="Arial Black" size="14.0" />
-      </font>
-   </Label>
-   <Label alignment="CENTER" maxWidth="1.7976931348623157E308" text="Список операционных дней">
-      <font>
-         <Font name="Arial Black" size="14.0" />
-      </font>
-   </Label>
-   <columnConstraints>
-      <ColumnConstraints percentWidth="50.0" prefWidth="300.0" />
-      <ColumnConstraints percentWidth="50.0" />
-   </columnConstraints>
-   <rowConstraints>
-      <RowConstraints maxHeight="40.0" minHeight="40.0" prefHeight="40.0" />
-      <RowConstraints maxHeight="40.0" minHeight="40.0" prefHeight="40.0" />
-      <RowConstraints maxHeight="1.7976931348623157E308" />
-      <RowConstraints maxHeight="50.0" minHeight="40.0" prefHeight="50.0" />
-   </rowConstraints>
-</GridPane>
+<SplitPane fx:id="mainView" dividerPositions="0.5066844919786095" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.vez.iso.desktop.main.MainCtl">
+  <items>
+      <VBox prefWidth="400.0">
+         <children>
+            <GridPane gridLinesVisible="true">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Label alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="200.0" text="Список операционных дней">
+                     <font>
+                        <Font name="Arial Black" size="14.0" />
+                     </font>
+                  </Label>
+                  <Label maxWidth="1.7976931348623157E308" prefHeight="200.0" text="Фильтр:" GridPane.rowIndex="1">
+                     <font>
+                        <Font name="Arial Black" size="12.0" />
+                     </font>
+                  </Label>
+               </children>
+            </GridPane>
+            <TableView fx:id="tblOperatingDays" maxHeight="1.7976931348623157E308" VBox.vgrow="ALWAYS">
+              <columns>
+                  <TableColumn fx:id="operatingDay" editable="false" minWidth="50.0" prefWidth="100.0" text="Дата опер.дня" />
+                  <TableColumn fx:id="exType" editable="false" text="Вид EX" />
+                  <TableColumn fx:id="edited" editable="false" text="Исправлен?" />
+                  <TableColumn fx:id="status" editable="false" text="Статус" />
+                  <TableColumn fx:id="createdAt" editable="false" minWidth="50.0" prefWidth="100.0" text="Создан" />
+              </columns>
+            </TableView>
+            <ButtonBar buttonMinWidth="80.0" maxHeight="40.0" minHeight="40.0">
+               <buttons>
+                  <Button fx:id="butReload" defaultButton="true" onAction="#onReload" prefWidth="80.0" text="Reload" ButtonBar.buttonData="LEFT">
+                     <font>
+                        <Font name="Arial Black" size="14.0" />
+                     </font>
+                  </Button>
+               </buttons>
+            </ButtonBar>
+         </children>
+      </VBox>
+      <VBox prefWidth="400.0">
+         <children>
+            <GridPane gridLinesVisible="true">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+                  <Label alignment="CENTER" maxHeight="200.0" maxWidth="1.7976931348623157E308" prefHeight="200.0" text="Список единиц хранения">
+                     <font>
+                        <Font name="Arial Black" size="14.0" />
+                     </font>
+                  </Label>
+                  <HBox maxHeight="200.0" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
+                     <children>
+                        <RadioButton mnemonicParsing="false" selected="true" text="Все">
+                           <font>
+                              <Font name="Arial Black" size="12.0" />
+                           </font>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="10.0" />
+                           </padding>
+                           <toggleGroup>
+                              <ToggleGroup fx:id="filterGroup" />
+                           </toggleGroup>
+                        </RadioButton>
+                        <RadioButton mnemonicParsing="false" text="Доступные для записи" toggleGroup="$filterGroup">
+                           <font>
+                              <Font name="Arial Black" size="12.0" />
+                           </font>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="10.0" />
+                           </padding>
+                        </RadioButton>
+                        <RadioButton mnemonicParsing="false" text="Готовые" toggleGroup="$filterGroup">
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="10.0" />
+                           </padding>
+                           <font>
+                              <Font name="Arial Black" size="12.0" />
+                           </font>
+                        </RadioButton>
+                     </children>
+                  </HBox>
+               </children>
+            </GridPane>
+            <TableView fx:id="tblStorageUnits" maxHeight="1.7976931348623157E308" VBox.vgrow="ALWAYS">
+              <columns>
+                  <TableColumn fx:id="numberEx" minWidth="50.0" prefWidth="75.0" text="Номер EX" />
+                  <TableColumn fx:id="createdEx" prefWidth="100.0" text="Создан" />
+                  <TableColumn fx:id="isoSizeEx" editable="false" minWidth="50.0" prefWidth="100.0" text="Размер ISO" />
+                  <TableColumn fx:id="shelfLifeEx" prefWidth="75.0" text="Срок хранения" />
+                  <TableColumn fx:id="statusEx" prefWidth="75.0" text="Статус EX" />
+                  <TableColumn fx:id="writeDateEx" prefWidth="75.0" text="Дата записи" />
+                  <TableColumn fx:id="statusIsoEx" prefWidth="75.0" text="Статус ISO" />
+              </columns>
+            </TableView>
+            <ButtonBar buttonMinWidth="80.0" maxHeight="40.0" minHeight="40.0">
+               <buttons>
+                  <Button fx:id="butWrite" onAction="#onWrite" prefWidth="80.0" text="Write" ButtonBar.buttonData="LEFT">
+                     <font>
+                        <Font name="Arial Black" size="14.0" />
+                     </font>
+                  </Button>
+               </buttons>
+            </ButtonBar>
+         </children>
+      </VBox>
+  </items>
+</SplitPane>

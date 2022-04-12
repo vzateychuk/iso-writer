@@ -43,7 +43,10 @@ public class MainSrvImpl implements MainSrv {
         }
 
         return IntStream.rangeClosed(0, period)
-                .mapToObj(i -> new OperatingDayFX(LocalDate.of(1900+i, i+1, i+1), ExType.CD, ExStatus.READY_WRITE))
+                .mapToObj(i -> {
+                    LocalDate date = LocalDate.of(1900+i, i+1, i+1);
+                    return new OperatingDayFX(date, ExType.CD, ExStatus.READY_WRITE, date, i%2==0);
+                })
                 .collect(Collectors.toList());
     }
 
