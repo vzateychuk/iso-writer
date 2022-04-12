@@ -35,7 +35,7 @@ public class LoginSrvImpl implements LoginSrv {
     }
 
     @Override
-    public void logoutAsync() {
+    public void logout() {
         log.info("logoutAsync");
         appState.put(AppStateType.USER_DETAILS, AppStateData.builder().value(UserDetails.NOT_SIGNED_USER).build());
     }

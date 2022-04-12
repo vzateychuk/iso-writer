@@ -56,7 +56,7 @@ public class LoginCtl {
     }
 
     @FXML public void onLogout(ActionEvent ev) {
-        service.logoutAsync();
+        service.logout();
     }
 
     //region Private

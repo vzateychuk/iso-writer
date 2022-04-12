@@ -4,6 +4,6 @@ public interface LoginSrv {
 
     void loginAsync(String username, String password);
 
-    void logoutAsync();
+    void logout();
 
 }
