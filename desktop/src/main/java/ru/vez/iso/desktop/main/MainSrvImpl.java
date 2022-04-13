@@ -2,9 +2,7 @@ package ru.vez.iso.desktop.main;
 
 import javafx.collections.ObservableMap;
 import lombok.extern.java.Log;
-import ru.vez.iso.desktop.model.ExStatus;
-import ru.vez.iso.desktop.model.ExType;
-import ru.vez.iso.desktop.model.OperatingDayFX;
+import ru.vez.iso.desktop.model.*;
 import ru.vez.iso.desktop.state.AppStateData;
 import ru.vez.iso.desktop.state.AppStateType;
 
@@ -38,17 +36,27 @@ public class MainSrvImpl implements MainSrv {
         }
 
         log.info("getOperatingDaysAsync. period: " + period);
-        future = CompletableFuture.supplyAsync(() -> getListWithDelay(period), exec)
-                .thenAccept(opsDay -> appState.put(
-                        AppStateType.OPERATION_DAYS, AppStateData.builder().value(opsDay).build()
-                ));
+        CompletableFuture<List<OperatingDayFX>> opsDaysFut = CompletableFuture.supplyAsync(() -> getOpsDaysWithDelay(period), exec);
+        CompletableFuture<List<StorageUnitFX>> storeUnitsFut = CompletableFuture.supplyAsync(() -> getStorageUnitsWithDelay(period), exec);
+
+        future = opsDaysFut.thenCombine(
+                storeUnitsFut,
+                (opsDaysList, storeUnitList) -> {
+                    opsDaysList.forEach(day -> {
+                        List<StorageUnitFX> units = storeUnitList.stream().filter(u -> u.getOperatingDayId().equals(day.getObjectId())).collect(Collectors.toList());
+                        day.setStorageUnits(units);
+                    });
+                    return opsDaysList;
+        }).thenAccept(opsDay -> appState.put(
+                AppStateType.OPERATION_DAYS, AppStateData.builder().value(opsDay).build()
+        ));
     }
 
     //region PRIVATE
 
-    private List<OperatingDayFX> getListWithDelay(int period) {
+    private List<OperatingDayFX> getOpsDaysWithDelay(int period) {
 
-        log.info("getListWithDelay: " + Thread.currentThread().getName());
+        log.info("getOpsDaysWithDelay: " + Thread.currentThread().getName());
         try {
             Thread.sleep(period * 1000);
         } catch (InterruptedException e) {
@@ -57,7 +65,27 @@ public class MainSrvImpl implements MainSrv {
         return IntStream.rangeClosed(0, period)
                 .mapToObj(i -> {
                     LocalDate date = LocalDate.of(1900+i, i+1, i+1);
-                    return new OperatingDayFX(String.valueOf(i), date, ExType.CD, ExStatus.READY_WRITE, date, i%2==0);
+                    return new OperatingDayFX(String.valueOf(i), date, TypeSu.CD, OpsDayStatus.READY_TO_RECORDING, date, i%2==0);
+                })
+                .collect(Collectors.toList());
+    }
+
+    private List<StorageUnitFX> getStorageUnitsWithDelay(int period) {
+
+        log.info("getStorageUnitsWithDelay: " + Thread.currentThread().getName());
+        try {
+            Thread.sleep(period * 1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return IntStream.rangeClosed(0, period * 2)
+                .mapToObj(i -> {
+                    LocalDate date = LocalDate.of(1900+i, i+1, i+1);
+                    String opsDayId = String.valueOf((int)(i/2));
+                    return new StorageUnitFX(
+                            String.valueOf(i), opsDayId, "numberSu-" + i,
+                            date, i, date, StorageUnitStatus.DRAFT, date
+                    );
                 })
                 .collect(Collectors.toList());
     }

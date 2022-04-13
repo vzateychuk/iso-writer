@@ -5,6 +5,8 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -14,20 +16,21 @@ import java.util.Objects;
  * */
 public class OperatingDayFX {
 
-    private final ObjectProperty<String> objectId = new SimpleObjectProperty<>();
+    private final String objectId;
     private final ObjectProperty<LocalDate> operatingDay = new SimpleObjectProperty<>();
-    private final ObjectProperty<ExType> typeSu = new SimpleObjectProperty<>();
-    private final ObjectProperty<ExStatus> status = new SimpleObjectProperty<>();
+    private final ObjectProperty<TypeSu> typeSu = new SimpleObjectProperty<>();
+    private final ObjectProperty<OpsDayStatus> status = new SimpleObjectProperty<>();
     private final ObjectProperty<LocalDate> createdAt = new SimpleObjectProperty<>();
     private final SimpleBooleanProperty edited = new SimpleBooleanProperty();
+    private List<StorageUnitFX> storageUnits = Collections.emptyList();
 
     public OperatingDayFX(String objectId,
                           LocalDate operatingDay,
-                          ExType typeSu,
-                          ExStatus status,
+                          TypeSu typeSu,
+                          OpsDayStatus status,
                           LocalDate createdAt,
                           boolean edited) {
-        this.objectId.set(objectId);
+        this.objectId = objectId;
         this.operatingDay.set(operatingDay);
         this.typeSu.set(typeSu);
         this.status.set(status);
@@ -36,9 +39,6 @@ public class OperatingDayFX {
     }
 
     public String getObjectId() {
-        return objectId.get();
-    }
-    public ObjectProperty<String> objectIdProperty() {
         return objectId;
     }
 
@@ -49,17 +49,17 @@ public class OperatingDayFX {
         return operatingDay;
     }
 
-    public ExType getTypeSu() {
+    public TypeSu getTypeSu() {
         return typeSu.get();
     }
-    public ObjectProperty<ExType> typeSuProperty() {
+    public ObjectProperty<TypeSu> typeSuProperty() {
         return typeSu;
     }
 
-    public ExStatus getStatus() {
+    public OpsDayStatus getStatus() {
         return status.get();
     }
-    public ObjectProperty<ExStatus> statusProperty() {
+    public ObjectProperty<OpsDayStatus> statusProperty() {
         return status;
     }
 
@@ -75,6 +75,13 @@ public class OperatingDayFX {
     }
     public SimpleBooleanProperty editedProperty() {
         return edited;
+    }
+
+    public List<StorageUnitFX> getStorageUnits() {
+        return storageUnits;
+    }
+    public void setStorageUnits(List<StorageUnitFX> storageUnits) {
+        this.storageUnits = storageUnits == null ? Collections.emptyList() : storageUnits;
     }
 
     @Override

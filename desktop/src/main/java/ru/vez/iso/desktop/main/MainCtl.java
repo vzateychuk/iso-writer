@@ -8,12 +8,12 @@ import javafx.collections.ObservableMap;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import lombok.extern.java.Log;
-import ru.vez.iso.desktop.model.ExStatus;
-import ru.vez.iso.desktop.model.ExType;
-import ru.vez.iso.desktop.model.OperatingDayFX;
-import ru.vez.iso.desktop.model.UserDetails;
+import ru.vez.iso.desktop.model.*;
 import ru.vez.iso.desktop.state.AppStateData;
 import ru.vez.iso.desktop.state.AppStateType;
 
@@ -31,22 +31,19 @@ public class MainCtl implements Initializable {
     // Таблица "Список операционных дней"
     @FXML private TableView<OperatingDayFX> tblOperatingDays;
     @FXML private TableColumn<OperatingDayFX, LocalDate> operatingDay;
-    @FXML private TableColumn<OperatingDayFX, ExType> exType;
-    @FXML private TableColumn<OperatingDayFX, ExStatus> status;
+    @FXML private TableColumn<OperatingDayFX, TypeSu> typeSu;
+    @FXML private TableColumn<OperatingDayFX, OpsDayStatus> status;
     @FXML private TableColumn<OperatingDayFX, LocalDate> createdAt;
     @FXML private TableColumn<OperatingDayFX, Boolean> edited;
 
     // Таблица "Список единиц хранения"
-/*
-    @FXML private TableView<?> tblStorageUnits;
-    @FXML private TableColumn<?, ?> numberEx;
-    @FXML private TableColumn<?, ?> shelfLifeEx;
-    @FXML private TableColumn<?, ?> statusEx;
-    @FXML private TableColumn<?, ?> statusIsoEx;
-    @FXML private TableColumn<?, ?> writeDateEx;
-    @FXML private TableColumn<?, ?> createdEx;
-    @FXML private TableColumn<?, ?> isoSizeEx;
-*/
+    @FXML private TableView<StorageUnitFX> tblStorageUnits;
+    @FXML private TableColumn<StorageUnitFX, String> numberSu;
+    @FXML private TableColumn<StorageUnitFX, LocalDate> creationDate;
+    @FXML private TableColumn<StorageUnitFX, Integer> dataSize;
+    @FXML private TableColumn<StorageUnitFX, LocalDate> storageDate;
+    @FXML private TableColumn<StorageUnitFX, StorageUnitStatus> storageUnitStatus;
+    @FXML private TableColumn<StorageUnitFX, LocalDate> savingDate;
 
     // Кнопки
     @FXML private Button butWrite;
@@ -56,6 +53,7 @@ public class MainCtl implements Initializable {
     private final MainSrv service;
 
     private ObservableList<OperatingDayFX> operatingDays;
+    private ObservableList<StorageUnitFX> storageUnits;
     private int period = 1;
 
     public MainCtl(ObservableMap<AppStateType, AppStateData> appState, MainSrv service) {
@@ -87,12 +85,30 @@ public class MainCtl implements Initializable {
         operatingDays = FXCollections.emptyObservableList();
         tblOperatingDays.setItems(operatingDays);
         tblOperatingDays.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        // set selection mode to only 1 row
+        tblOperatingDays.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
+        // Таблица "Список операционных дней"
         operatingDay.setCellValueFactory(cell -> cell.getValue().operatingDayProperty());
-        exType.setCellValueFactory(cell -> cell.getValue().typeSuProperty());
+        typeSu.setCellValueFactory(cell -> cell.getValue().typeSuProperty());
         status.setCellValueFactory(cell -> cell.getValue().statusProperty());
         createdAt.setCellValueFactory(cell -> cell.getValue().createdAtProperty());
         edited.setCellValueFactory(cell -> cell.getValue().editedProperty());
+
+        // Таблица "Список единиц хранения"
+        storageUnits = FXCollections.emptyObservableList();
+        tblStorageUnits.setItems(storageUnits);
+        tblStorageUnits.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        // set selection mode to only 1 row
+        tblStorageUnits.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+
+        numberSu.setCellValueFactory(cell -> cell.getValue().numberSuProperty());
+        creationDate.setCellValueFactory(cell -> cell.getValue().creationDateProperty());
+        dataSize.setCellValueFactory(cell -> cell.getValue().dataSizeProperty());
+        storageDate.setCellValueFactory(cell -> cell.getValue().storageDateProperty());
+        storageUnitStatus.setCellValueFactory(cell -> cell.getValue().storageUnitStatusProperty());
+        savingDate.setCellValueFactory(cell -> cell.getValue().savingDateProperty());
+
     }
 
     @FXML public void onReload(ActionEvent ev) {
