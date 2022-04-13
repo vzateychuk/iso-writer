@@ -14,18 +14,32 @@ import java.util.Objects;
  * */
 public class OperatingDayFX {
 
+    private final ObjectProperty<String> objectId = new SimpleObjectProperty<>();
     private final ObjectProperty<LocalDate> operatingDay = new SimpleObjectProperty<>();
     private final ObjectProperty<ExType> typeSu = new SimpleObjectProperty<>();
     private final ObjectProperty<ExStatus> status = new SimpleObjectProperty<>();
     private final ObjectProperty<LocalDate> createdAt = new SimpleObjectProperty<>();
     private final SimpleBooleanProperty edited = new SimpleBooleanProperty();
 
-    public OperatingDayFX(LocalDate operatingDay, ExType typeSu, ExStatus status, LocalDate createdAt, boolean edited) {
+    public OperatingDayFX(String objectId,
+                          LocalDate operatingDay,
+                          ExType typeSu,
+                          ExStatus status,
+                          LocalDate createdAt,
+                          boolean edited) {
+        this.objectId.set(objectId);
         this.operatingDay.set(operatingDay);
         this.typeSu.set(typeSu);
         this.status.set(status);
         this.createdAt.set(createdAt);
         this.edited.set(edited);
+    }
+
+    public String getObjectId() {
+        return objectId.get();
+    }
+    public ObjectProperty<String> objectIdProperty() {
+        return objectId;
     }
 
     public LocalDate getOperatingDay() {

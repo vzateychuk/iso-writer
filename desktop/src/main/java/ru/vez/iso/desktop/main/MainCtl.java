@@ -61,11 +61,22 @@ public class MainCtl implements Initializable {
     public MainCtl(ObservableMap<AppStateType, AppStateData> appState, MainSrv service) {
         this.service = service;
         this.appState = appState;
+
+        // Add login listener
         this.appState.addListener(
                 (MapChangeListener<AppStateType, AppStateData>) change -> {
                     if (AppStateType.USER_DETAILS.equals(change.getKey())) {
                         UserDetails userDetails = (UserDetails) change.getValueAdded().getValue();
-                        Platform.runLater(()->lockControls(userDetails == UserDetails.NOT_SIGNED_USER));
+                        Platform.runLater(()-> unlockControls(userDetails != UserDetails.NOT_SIGNED_USER));
+                    }
+                });
+
+        // Data listener
+        this.appState.addListener(
+                (MapChangeListener<AppStateType, AppStateData>) change -> {
+                    if (AppStateType.OPERATION_DAYS.equals(change.getKey())) {
+                        List<OperatingDayFX> data = (List<OperatingDayFX>) change.getValueAdded().getValue();
+                        Platform.runLater(()-> display(data));
                     }
                 });
     }
@@ -85,8 +96,7 @@ public class MainCtl implements Initializable {
     }
 
     @FXML public void onReload(ActionEvent ev) {
-        service.findOperatingDaysAsync(period++)
-                .thenAccept(l -> Platform.runLater(() -> display(l)) );
+        service.loadOperatingDaysAsync(period++);
     }
 
     @FXML void onWrite(ActionEvent ev) {
@@ -95,9 +105,9 @@ public class MainCtl implements Initializable {
 
     //region Private
 
-    private void lockControls(boolean lock) {
-        butReload.setDisable(lock);
-        butWrite.setDisable(lock);
+    private void unlockControls(boolean unlock) {
+        butReload.setDisable(!unlock);
+        butWrite.setDisable(!unlock);
     }
 
     private void display(List<OperatingDayFX> operatingDays) {

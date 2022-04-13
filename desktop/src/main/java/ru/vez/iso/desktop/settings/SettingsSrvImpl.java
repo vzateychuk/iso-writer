@@ -9,12 +9,14 @@ import java.io.*;
 import java.util.Properties;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import java.util.concurrent.Future;
 
 @Log
 public class SettingsSrvImpl implements SettingsSrv {
 
     private final ObservableMap<AppStateType, AppStateData> appState;
     private final Executor exec;
+    private Future<Void> future = CompletableFuture.allOf();
 
     public SettingsSrvImpl(ObservableMap<AppStateType, AppStateData> appState, Executor exec) {
         this.appState = appState;
@@ -23,6 +25,12 @@ public class SettingsSrvImpl implements SettingsSrv {
 
     @Override
     public void saveAsync(Properties props, String filePath) {
+
+        // Avoid multiply pressing
+        if (!future.isDone()) {
+            log.info("Async operation in progress, skipping");
+            return;
+        }
 
         log.info(String.format("saveAsync to file: '%s'", filePath));
         CompletableFuture.supplyAsync( () -> {

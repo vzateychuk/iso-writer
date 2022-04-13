@@ -6,6 +6,7 @@ package ru.vez.iso.desktop.state;
 public enum AppStateType {
 
     USER_DETAILS,
+    OPERATION_DAYS,
     SETTINGS
 
 }

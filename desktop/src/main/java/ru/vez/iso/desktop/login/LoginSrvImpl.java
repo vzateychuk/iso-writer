@@ -8,12 +8,14 @@ import ru.vez.iso.desktop.state.AppStateType;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import java.util.concurrent.Future;
 
 @Log
 public class LoginSrvImpl implements LoginSrv {
 
     private final ObservableMap<AppStateType, AppStateData> appState;
     private final Executor exec;
+    private Future<Void> future = CompletableFuture.allOf();
 
     public LoginSrvImpl(ObservableMap<AppStateType, AppStateData> appState, Executor exec) {
         this.appState = appState;
@@ -23,8 +25,14 @@ public class LoginSrvImpl implements LoginSrv {
     @Override
     public void loginAsync(String username, String password) {
 
-        CompletableFuture.supplyAsync(() -> {
-            log.info(String.format("loginAsync, user: '%s'", username));
+        // Avoid multiply pressing
+        if (!future.isDone()) {
+            log.info("Async operation in progress, skipping");
+            return;
+        }
+
+        log.info(String.format("loginAsync, supplyAsync() user: '%s'", username));
+        future = CompletableFuture.supplyAsync(() -> {
             makeDelaySec(1);    // TODO make LOGIN HTTP call
             return "admin".equals(username) && "admin".equals(password)
                     ? new UserDetails(username, password, username+"-"+password)
