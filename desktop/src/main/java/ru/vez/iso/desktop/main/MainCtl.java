@@ -74,7 +74,7 @@ public class MainCtl implements Initializable {
                 (MapChangeListener<AppStateType, AppStateData>) change -> {
                     if (AppStateType.OPERATION_DAYS.equals(change.getKey())) {
                         List<OperatingDayFX> data = (List<OperatingDayFX>) change.getValueAdded().getValue();
-                        Platform.runLater(()-> display(data));
+                        Platform.runLater(()-> displayOperatingDays(data));
                     }
                 });
     }
@@ -109,7 +109,20 @@ public class MainCtl implements Initializable {
         storageUnitStatus.setCellValueFactory(cell -> cell.getValue().storageUnitStatusProperty());
         savingDate.setCellValueFactory(cell -> cell.getValue().savingDateProperty());
 
+        // disable the "Write" button if none selected
+        butWrite.disableProperty().bind(
+                tblOperatingDays.getSelectionModel().selectedItemProperty().isNull()
+        );
+        // add listener to select master table should refresh slave table
+        tblOperatingDays.getSelectionModel().selectedItemProperty()
+            .addListener(
+                (o, old, newValue) -> {
+                    if (newValue != null) {
+                        this.displayStorageUnits(newValue.getStorageUnits());
+                    }
+                });
     }
+
 
     @FXML public void onReload(ActionEvent ev) {
         service.loadOperatingDaysAsync(period++);
@@ -123,12 +136,22 @@ public class MainCtl implements Initializable {
 
     private void unlockControls(boolean unlock) {
         butReload.setDisable(!unlock);
-        butWrite.setDisable(!unlock);
     }
 
-    private void display(List<OperatingDayFX> operatingDays) {
+    /**
+     * Refresh master OperatingDays table
+     */
+    private void displayOperatingDays(List<OperatingDayFX> operatingDays) {
         this.operatingDays = FXCollections.observableList(operatingDays);
         tblOperatingDays.setItems(this.operatingDays);
+    }
+
+    /**
+     * Refresh slave storageUnits table
+     */
+    private void displayStorageUnits(List<StorageUnitFX> storageUnits) {
+        this.storageUnits = FXCollections.observableList(storageUnits);
+        tblStorageUnits.setItems(this.storageUnits);
     }
 
     //endregion

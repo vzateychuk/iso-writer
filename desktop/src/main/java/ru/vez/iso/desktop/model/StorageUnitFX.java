@@ -110,4 +110,18 @@ public class StorageUnitFX {
     public int hashCode() {
         return Objects.hash(objectId, numberSu, creationDate, dataSize, storageDate, storageUnitStatus, savingDate);
     }
+
+    @Override
+    public String toString() {
+        return "StorageUnit{" +
+                "objectId='" + objectId + '\'' +
+                ", operatingDayId='" + operatingDayId + '\'' +
+                ", numberSu=" + numberSu +
+                ", creationDate=" + creationDate +
+                ", dataSize=" + dataSize +
+                ", storageDate=" + storageDate +
+                ", storageUnitStatus=" + storageUnitStatus +
+                ", savingDate=" + savingDate +
+                '}';
+    }
 }
