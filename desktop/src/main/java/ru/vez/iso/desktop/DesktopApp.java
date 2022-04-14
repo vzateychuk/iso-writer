@@ -8,6 +8,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import lombok.extern.java.Log;
@@ -60,7 +61,8 @@ public class DesktopApp extends Application {
         Map<ViewType, Parent> viewCache = buildViewCache(appState, executorService);
 
         // Build and show the navigation view
-        stage.setTitle("ISO Writer App");
+        stage.setTitle("Writer App");
+        stage.getIcons().add(new Image(DesktopApp.class.getResourceAsStream("image/iso.png")));
         stage.setOnCloseRequest(e -> {
             e.consume();
 //            if (getCloseConfirmation()) {
