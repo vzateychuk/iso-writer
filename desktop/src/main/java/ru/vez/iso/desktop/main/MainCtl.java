@@ -109,10 +109,6 @@ public class MainCtl implements Initializable {
         storageUnitStatus.setCellValueFactory(cell -> cell.getValue().storageUnitStatusProperty());
         savingDate.setCellValueFactory(cell -> cell.getValue().savingDateProperty());
 
-        // disable the "Write" button if none selected
-        butWrite.disableProperty().bind(
-                tblOperatingDays.getSelectionModel().selectedItemProperty().isNull()
-        );
         // add listener to select master table should refresh slave table
         tblOperatingDays.getSelectionModel().selectedItemProperty()
             .addListener(
@@ -121,6 +117,12 @@ public class MainCtl implements Initializable {
                         this.displayStorageUnits(newValue.getStorageUnits());
                     }
                 });
+
+        // disable the "Write" button if none selected
+        butWrite.disableProperty().bind(
+                tblStorageUnits.getSelectionModel().selectedItemProperty().isNull()
+        );
+
     }
 
 

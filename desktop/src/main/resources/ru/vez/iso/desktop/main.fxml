@@ -86,7 +86,7 @@
                               <Insets bottom="5.0" left="5.0" right="5.0" top="10.0" />
                            </padding>
                         </RadioButton>
-                        <RadioButton mnemonicParsing="false" text="Готовые" toggleGroup="$filterGroup">
+                        <RadioButton mnemonicParsing="false" text="Готовятся" toggleGroup="$filterGroup">
                            <padding>
                               <Insets bottom="5.0" left="5.0" right="5.0" top="10.0" />
                            </padding>
