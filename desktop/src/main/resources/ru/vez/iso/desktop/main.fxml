@@ -40,7 +40,7 @@
             </TableView>
             <ButtonBar buttonMinWidth="80.0" maxHeight="40.0" minHeight="40.0">
                <buttons>
-                  <Button fx:id="butReload" defaultButton="true" onAction="#onReload" prefWidth="80.0" text="Reload" ButtonBar.buttonData="LEFT">
+                  <Button fx:id="butReload" defaultButton="true" onAction="#onReload" prefWidth="80.0" text="Обновить" ButtonBar.buttonData="LEFT">
                      <font>
                         <Font name="Arial Black" size="14.0" />
                      </font>
@@ -110,7 +110,7 @@
             </TableView>
             <ButtonBar buttonMinWidth="80.0" maxHeight="40.0" minHeight="40.0">
                <buttons>
-                  <Button fx:id="butWrite" onAction="#onWrite" prefWidth="80.0" text="Write" ButtonBar.buttonData="LEFT">
+                  <Button fx:id="butWrite" onAction="#onWrite" prefWidth="80.0" text="Записать" ButtonBar.buttonData="LEFT">
                      <font>
                         <Font name="Arial Black" size="14.0" />
                      </font>

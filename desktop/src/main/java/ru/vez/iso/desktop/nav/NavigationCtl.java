@@ -8,11 +8,15 @@ import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.FileChooser;
 import ru.vez.iso.desktop.ViewType;
 import ru.vez.iso.desktop.model.UserDetails;
 import ru.vez.iso.desktop.state.AppStateData;
 import ru.vez.iso.desktop.state.AppStateType;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
 
 /**
@@ -74,7 +78,15 @@ public class NavigationCtl {
         loadView(ViewType.DISK);
     }
     public void onShowSearch(ActionEvent ev) {
-    System.out.println("NavigationCtl.onShowSearch");
+        System.out.println("NavigationCtl.onShowSearch");
+        FileChooser chooseFile = new FileChooser();
+        chooseFile.setInitialDirectory(Paths.get(System.getProperty("user.home")).toFile());
+        chooseFile.setSelectedExtensionFilter(new FileChooser.ExtensionFilter("DEV.ZIP", "*.zip"));
+        File file = chooseFile.showOpenDialog(null);
+        if (file != null) {
+            Path path = file.toPath();
+            System.out.println("Choosed: " + path);
+        }
     }
 
     //region Private
