@@ -2,6 +2,7 @@ package ru.vez.iso.desktop.model;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 
 import java.time.LocalDate;
 import java.util.Objects;
@@ -14,7 +15,7 @@ public class StorageUnitFX {
 
     private final String objectId;
     private final String operatingDayId;
-    private final ObjectProperty<String> numberSu = new SimpleObjectProperty<>();
+    private final SimpleStringProperty numberSu = new SimpleStringProperty();
     private final ObjectProperty<LocalDate> creationDate = new SimpleObjectProperty<>();
     private final ObjectProperty<Integer> dataSize = new SimpleObjectProperty<>();
     private final ObjectProperty<LocalDate> storageDate = new SimpleObjectProperty<>();
@@ -52,7 +53,7 @@ public class StorageUnitFX {
     public String getNumberSu() {
         return numberSu.get();
     }
-    public ObjectProperty<String> numberSuProperty() {
+    public SimpleStringProperty numberSuProperty() {
         return numberSu;
     }
 

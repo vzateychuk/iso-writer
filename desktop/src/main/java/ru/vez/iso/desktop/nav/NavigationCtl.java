@@ -48,6 +48,14 @@ public class NavigationCtl {
                 });
     }
 
+    @FXML
+    public void initialize() {
+        System.out.println("NavigationCtl.initialize");
+        // lock controls in prod mode
+        boolean prodMode = (Boolean)appState.get(AppStateType.APP_PROD_MODE).getValue();
+        this.lockControls(prodMode);
+    }
+
     public void onShowLogin(ActionEvent ev) {
         loadView(ViewType.LOGIN);
     }

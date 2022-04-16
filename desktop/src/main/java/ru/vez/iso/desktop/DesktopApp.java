@@ -12,6 +12,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import lombok.extern.java.Log;
+import org.apache.commons.cli.*;
 import ru.vez.iso.desktop.disks.DiskCtl;
 import ru.vez.iso.desktop.disks.DisksSrvImpl;
 import ru.vez.iso.desktop.login.LoginCtl;
@@ -47,11 +48,14 @@ import java.util.concurrent.Executors;
 @Log
 public class DesktopApp extends Application {
 
+    private static boolean isProdMode = false;
+
     @Override
     public void start(Stage stage) throws IOException {
 
         // Create application state
         ObservableMap<AppStateType, AppStateData> appState = createDefaultAppState();
+        appState.put(AppStateType.APP_PROD_MODE, AppStateData.builder().value(isProdMode).build());
 
         // Create executor where all background tasks will be executed
         int numOfCores = Runtime.getRuntime().availableProcessors();
@@ -61,14 +65,15 @@ public class DesktopApp extends Application {
         Map<ViewType, Parent> viewCache = buildViewCache(appState, executorService);
 
         // Build and show the navigation view
-        stage.setTitle("Writer App");
+        stage.setTitle("Writer App" + (isProdMode ? "" : " DEV Mode"));
         stage.getIcons().add(new Image(DesktopApp.class.getResourceAsStream("image/iso.png")));
         stage.setOnCloseRequest(e -> {
             e.consume();
-//            if (getCloseConfirmation()) {
-                executorService.shutdownNow();
-                stage.close();
-//            }
+            if (isProdMode && !getCloseConfirmation()) {
+                return;
+            }
+            executorService.shutdownNow();
+            stage.close();
         });
         Parent navigation = buildView(
                 ViewType.NAVIGATION, t->new NavigationCtl(appState, new NavigationSrvImpl(), viewCache)
@@ -78,7 +83,35 @@ public class DesktopApp extends Application {
     }
 
     public static void main(String[] args) {
+
+        // parse command argument to define application run-mode
+        isProdMode = getAppIsProdMode(args);
+        System.out.println("DesktopApp.main. Running in DEV mode: " + !isProdMode);
         launch(args);
+    }
+
+    private static boolean getAppIsProdMode(String[] args) {
+
+        Options options = new Options();
+
+        Option input = new Option("m", "mode", true, "run mode: prod/dev");
+        input.setRequired(false);
+        options.addOption(input);
+
+        CommandLineParser parser = new DefaultParser();
+        HelpFormatter formatter = new HelpFormatter();
+        CommandLine cmd = null;//not a good practice, it serves it purpose
+
+        try {
+            cmd = parser.parse(options, args);
+            String mode = cmd.getOptionValue("mode", "prod");
+            return !mode.isEmpty() && "prod".equals(mode.toLowerCase());
+        } catch (ParseException e) {
+            System.out.println(e.getMessage());
+            formatter.printHelp("jar-name", options);
+            System.exit(1);
+        }
+        return false;
     }
 
     //region Private
