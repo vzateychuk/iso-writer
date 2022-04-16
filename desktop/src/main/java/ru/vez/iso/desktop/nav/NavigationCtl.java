@@ -25,6 +25,7 @@ public class NavigationCtl {
     @FXML private Button login;
     @FXML private Button main;
     @FXML private Button settings;
+    @FXML private Button search;
 
     private ViewType currView = ViewType.WELCOME;
     private final NavigationSrv service;
@@ -57,16 +58,26 @@ public class NavigationCtl {
     }
 
     public void onShowLogin(ActionEvent ev) {
+        System.out.println("NavigationCtl.onShowLogin");
         loadView(ViewType.LOGIN);
     }
     public void onShowMain(ActionEvent ev) {
+        System.out.println("NavigationCtl.onShowMain");
         loadView(ViewType.MAIN);
     }
     public void onShowSettings(ActionEvent ev) {
+        System.out.println("NavigationCtl.onShowSettings");
         loadView(ViewType.SETTINGS);
     }
     public void onShowDisks(ActionEvent ev) {
+        System.out.println("NavigationCtl.onShowDisks");
         loadView(ViewType.DISK);
+    }
+    public void onShowSearch(ActionEvent ev) {
+    System.out.println("NavigationCtl.onShowSearch");
+    }
+    public void onExit(ActionEvent ev) {
+    System.out.println("NavigationCtl.onExit");
     }
 
     //region Private
@@ -74,6 +85,7 @@ public class NavigationCtl {
     private void lockControls(boolean lock) {
         disks.setDisable(lock);
         main.setDisable(lock);
+        search.setDisable(lock);
     }
 
     private void loadView(ViewType view) {
