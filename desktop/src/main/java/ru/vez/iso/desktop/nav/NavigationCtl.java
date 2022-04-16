@@ -76,9 +76,6 @@ public class NavigationCtl {
     public void onShowSearch(ActionEvent ev) {
     System.out.println("NavigationCtl.onShowSearch");
     }
-    public void onExit(ActionEvent ev) {
-    System.out.println("NavigationCtl.onExit");
-    }
 
     //region Private
 

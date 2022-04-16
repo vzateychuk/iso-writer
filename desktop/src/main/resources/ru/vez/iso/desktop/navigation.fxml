@@ -35,11 +35,6 @@
                             <Font name="Arial Black" size="12.0" />
                         </font>
                     </Button>
-               <Button fx:id="exit" layoutX="15.0" layoutY="17.0" onAction="#onExit" prefWidth="120.0" text="Выход">
-                  <font>
-                     <Font name="Arial Black" size="12.0" />
-                  </font>
-               </Button>
                 </VBox>
             </children>
         </Pane>
