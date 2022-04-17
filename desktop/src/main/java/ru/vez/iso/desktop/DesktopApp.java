@@ -149,10 +149,10 @@ public class DesktopApp extends Application {
 
         Map<ViewType, Parent> viewCache = new HashMap<>();
 
-        viewCache.put(ViewType.LOGIN, buildView( ViewType.LOGIN, t->new LoginCtl(state, new LoginSrvImpl(state, exec))));
-        viewCache.put(ViewType.MAIN, buildView( ViewType.MAIN, t->new MainCtl(state, new MainSrvImpl(state, exec))));
-        viewCache.put(ViewType.DISK, buildView( ViewType.DISK, t->new DiskCtl(new DisksSrvImpl())));
-        viewCache.put(ViewType.DOCUMENTS, buildView( ViewType.DOCUMENTS, t->new DocumentCtl(new DocumentSrvImpl())));
+        viewCache.put(ViewType.LOGIN, buildView(ViewType.LOGIN,t->new LoginCtl(state, new LoginSrvImpl(state, exec))));
+        viewCache.put(ViewType.MAIN, buildView(ViewType.MAIN,t->new MainCtl(state, new MainSrvImpl(state, exec))));
+        viewCache.put(ViewType.DISK, buildView(ViewType.DISK,t->new DiskCtl(new DisksSrvImpl())));
+        viewCache.put(ViewType.DOCUMENTS, buildView(ViewType.DOCUMENTS,t->new DocumentCtl(state, new DocumentSrvImpl(state, exec))));
 
         // create SettingsView and read application settings async
         SettingsSrv settingsSrv = new SettingsSrvImpl(state, exec);

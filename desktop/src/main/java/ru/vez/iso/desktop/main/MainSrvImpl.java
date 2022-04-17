@@ -2,9 +2,9 @@ package ru.vez.iso.desktop.main;
 
 import javafx.collections.ObservableMap;
 import lombok.extern.java.Log;
-import ru.vez.iso.desktop.model.*;
 import ru.vez.iso.desktop.state.AppStateData;
 import ru.vez.iso.desktop.state.AppStateType;
+import ru.vez.iso.desktop.utils.UtilsHelper;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -27,15 +27,15 @@ public class MainSrvImpl implements MainSrv {
     }
 
     @Override
-    public void loadOperatingDaysAsync(int period) {
+    public void loadAsync(int period) {
 
-        // Avoid multiply pressing
+        // Avoid multiply invocation
         if (!future.isDone()) {
-            log.info("Async operation in progress, skipping");
+            System.out.println("MainSrv.loadOperatingDaysAsync: Async operation in progress, skipping");
             return;
         }
 
-        log.info("getOperatingDaysAsync. period: " + period);
+        System.out.println("MainSrv.loadOperatingDaysAsync: getOperatingDaysAsync. period: " + period);
         CompletableFuture<List<OperatingDayFX>> opsDaysFut = CompletableFuture.supplyAsync(() -> getOpsDaysWithDelay(period), exec);
         CompletableFuture<List<StorageUnitFX>> storeUnitsFut = CompletableFuture.supplyAsync(() -> getStorageUnitsWithDelay(period), exec);
 
@@ -57,11 +57,7 @@ public class MainSrvImpl implements MainSrv {
     private List<OperatingDayFX> getOpsDaysWithDelay(int period) {
 
         log.info("getOpsDaysWithDelay: " + Thread.currentThread().getName());
-        try {
-            Thread.sleep(period * 1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        UtilsHelper.makeDelaySec(period);    // TODO load from file
         return IntStream.rangeClosed(0, period)
                 .mapToObj(i -> {
                     LocalDate date = LocalDate.of(1900+i, i+1, i+1);

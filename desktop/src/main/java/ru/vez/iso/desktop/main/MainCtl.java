@@ -13,7 +13,7 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import lombok.extern.java.Log;
-import ru.vez.iso.desktop.model.*;
+import ru.vez.iso.desktop.model.UserDetails;
 import ru.vez.iso.desktop.state.AppStateData;
 import ru.vez.iso.desktop.state.AppStateType;
 
@@ -123,11 +123,12 @@ public class MainCtl implements Initializable {
                 tblStorageUnits.getSelectionModel().selectedItemProperty().isNull()
         );
 
+        this.onReload(null);
     }
 
 
     @FXML public void onReload(ActionEvent ev) {
-        service.loadOperatingDaysAsync(period++);
+        service.loadAsync(period++);
     }
 
     @FXML void onWrite(ActionEvent ev) {
