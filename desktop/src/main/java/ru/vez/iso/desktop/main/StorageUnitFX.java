@@ -1,4 +1,4 @@
-package ru.vez.iso.desktop.model;
+package ru.vez.iso.desktop.main;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;

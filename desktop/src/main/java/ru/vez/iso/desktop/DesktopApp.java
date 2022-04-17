@@ -15,6 +15,8 @@ import lombok.extern.java.Log;
 import org.apache.commons.cli.*;
 import ru.vez.iso.desktop.disks.DiskCtl;
 import ru.vez.iso.desktop.disks.DisksSrvImpl;
+import ru.vez.iso.desktop.document.DocumentCtl;
+import ru.vez.iso.desktop.document.DocumentSrvImpl;
 import ru.vez.iso.desktop.login.LoginCtl;
 import ru.vez.iso.desktop.login.LoginSrvImpl;
 import ru.vez.iso.desktop.main.MainCtl;
@@ -150,6 +152,7 @@ public class DesktopApp extends Application {
         viewCache.put(ViewType.LOGIN, buildView( ViewType.LOGIN, t->new LoginCtl(state, new LoginSrvImpl(state, exec))));
         viewCache.put(ViewType.MAIN, buildView( ViewType.MAIN, t->new MainCtl(state, new MainSrvImpl(state, exec))));
         viewCache.put(ViewType.DISK, buildView( ViewType.DISK, t->new DiskCtl(new DisksSrvImpl())));
+        viewCache.put(ViewType.DOCUMENTS, buildView( ViewType.DOCUMENTS, t->new DocumentCtl(new DocumentSrvImpl())));
 
         // create SettingsView and read application settings async
         SettingsSrv settingsSrv = new SettingsSrvImpl(state, exec);

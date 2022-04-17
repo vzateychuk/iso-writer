@@ -7,6 +7,7 @@ public enum ViewType {
     LOGIN("login.fxml", true),
     SETTINGS("settings.fxml", true),
     DISK("disks.fxml", true),
+    DOCUMENTS("documents.fxml", true),
     NAVIGATION("navigation.fxml", true);
 
     private final String fileName;

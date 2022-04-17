@@ -31,10 +31,10 @@ public class NavigationCtl {
     @FXML private Button settings;
     @FXML private Button search;
 
-    private ViewType currView = ViewType.WELCOME;
     private final NavigationSrv service;
     private final Map<ViewType, Parent> viewCache;
     private final ObservableMap<AppStateType, AppStateData> appState;
+    private ViewType currView = ViewType.WELCOME;
 
     public NavigationCtl(
             ObservableMap<AppStateType, AppStateData> appState,
@@ -44,6 +44,7 @@ public class NavigationCtl {
         this.service = service;
         this.viewCache = viewCache;
         this.appState = appState;
+        // Login listener: Enable controls on login
         this.appState.addListener(
                 (MapChangeListener<AppStateType, AppStateData>) change -> {
                     if (AppStateType.USER_DETAILS.equals(change.getKey())) {
@@ -63,19 +64,19 @@ public class NavigationCtl {
 
     public void onShowLogin(ActionEvent ev) {
         System.out.println("NavigationCtl.onShowLogin");
-        loadView(ViewType.LOGIN);
+        showView(ViewType.LOGIN);
     }
     public void onShowMain(ActionEvent ev) {
         System.out.println("NavigationCtl.onShowMain");
-        loadView(ViewType.MAIN);
+        showView(ViewType.MAIN);
     }
     public void onShowSettings(ActionEvent ev) {
         System.out.println("NavigationCtl.onShowSettings");
-        loadView(ViewType.SETTINGS);
+        showView(ViewType.SETTINGS);
     }
     public void onShowDisks(ActionEvent ev) {
         System.out.println("NavigationCtl.onShowDisks");
-        loadView(ViewType.DISK);
+        showView(ViewType.DISK);
     }
     public void onShowSearch(ActionEvent ev) {
         System.out.println("NavigationCtl.onShowSearch");
@@ -86,6 +87,8 @@ public class NavigationCtl {
         if (file != null) {
             Path path = file.toPath();
             System.out.println("Choosed: " + path);
+            // if opened, opening Documents form
+            showView(ViewType.DOCUMENTS);
         }
     }
 
@@ -97,7 +100,7 @@ public class NavigationCtl {
         search.setDisable(lock);
     }
 
-    private void loadView(ViewType view) {
+    private void showView(ViewType view) {
 
         if (currView == view) {
             return;

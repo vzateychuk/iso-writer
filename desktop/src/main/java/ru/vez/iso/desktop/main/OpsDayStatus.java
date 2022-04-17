@@ -1,4 +1,4 @@
-package ru.vez.iso.desktop.model;
+package ru.vez.iso.desktop.main;
 
 /**
  * Статус операционного дня

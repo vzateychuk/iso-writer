@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.text.*?>
+<BorderPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="ru.vez.iso.desktop.document.DocumentCtl">
+   <children>
+   </children>
+   <top>
+      <ToolBar maxWidth="1.7976931348623157E308" prefHeight="40.0" BorderPane.alignment="CENTER">
+        <items>
+            <Button fx:id="butSelectAll" mnemonicParsing="false" onAction="#onSelectAll">
+                <font>
+                    <Font name="Arial Black" size="12.0" />
+                </font>
+                <graphic>
+                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                            <Image url="@image/arrow.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button fx:id="butDownload" layoutX="10.0" layoutY="12.0" mnemonicParsing="false" onAction="#onDownload">
+                <font>
+                    <Font name="Arial Black" size="12.0" />
+                </font>
+                <graphic>
+                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                            <Image url="@image/download.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button fx:id="butSearch" layoutX="10.0" layoutY="12.0" mnemonicParsing="false" onAction="#onSearchDocs">
+               <font>
+                  <Font name="Arial Black" size="12.0" />
+               </font>
+               <graphic>
+                  <ImageView fx:id="butSearchDoc" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@image/search.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button fx:id="butWriteCopy" layoutX="90.0" layoutY="12.0" mnemonicParsing="false" onAction="#onWriteCopy">
+               <font>
+                  <Font name="Arial Black" size="12.0" />
+               </font>
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@image/write.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button fx:id="butPrint" layoutX="130.0" layoutY="12.0" mnemonicParsing="false" onAction="#onPrint">
+               <font>
+                  <Font name="Arial Black" size="12.0" />
+               </font>
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@image/print.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button fx:id="butCheckHash" layoutX="170.0" layoutY="12.0" mnemonicParsing="false" onAction="#onCheckHash">
+               <font>
+                  <Font name="Arial Black" size="12.0" />
+               </font>
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@image/hash.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+
+        </items>
+      </ToolBar>
+   </top>
+   <bottom>
+      <ButtonBar maxWidth="1.7976931348623157E308" prefHeight="40.0" BorderPane.alignment="CENTER">
+        <buttons>
+            <Button fx:id="butWriteCopy2" mnemonicParsing="false" onAction="#onWriteCopy" text="Записать резервную копию" />
+            <Button fx:id="butSeachDocs2" mnemonicParsing="false" onAction="#onSearchDocs" text="Поиск по документам" />
+            <Button fx:id="butCheckHash2" mnemonicParsing="false" onAction="#onCheckHash" text="Проверить целостность данных" />
+        </buttons>
+      </ButtonBar>
+   </bottom>
+   <center>
+       <TableView fx:id="tblDocuments" maxHeight="1.7976931348623157E308">
+           <columns>
+               <TableColumn fx:id="selection" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" />
+               <TableColumn fx:id="docNumber" prefWidth="100.0" text="Номер документа" />
+               <TableColumn fx:id="kindIdName" editable="false" minWidth="50.0" prefWidth="100.0" text="Вид документа" />
+               <TableColumn fx:id="operDayDate" prefWidth="75.0" text="Дата опер.дня" />
+               <TableColumn fx:id="sumDoc" prefWidth="75.0" text="Сумма" />
+               <TableColumn fx:id="branch" prefWidth="75.0" text="Подразделение" />
+            <TableColumn fx:id="docDate" prefWidth="75.0" text="Дата документа" />
+            <TableColumn fx:id="docStatusName" prefWidth="75.0" text="Статус документа" />
+           </columns>
+       </TableView>
+   </center>
+
+</BorderPane>
