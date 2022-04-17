@@ -22,18 +22,6 @@
                   </ImageView>
                </graphic>
             </Button>
-            <Button fx:id="butSelectAll" disable="true" mnemonicParsing="false" onAction="#onSelectAll">
-                <font>
-                    <Font name="Arial Black" size="12.0" />
-                </font>
-                <graphic>
-                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                        <image>
-                            <Image url="@image/arrow.png" />
-                        </image>
-                    </ImageView>
-                </graphic>
-            </Button>
             <Button fx:id="butDownload" disable="true" layoutX="10.0" layoutY="12.0" mnemonicParsing="false" onAction="#onDownload">
                 <font>
                     <Font name="Arial Black" size="12.0" />
@@ -110,7 +98,10 @@
    <center>
        <TableView fx:id="tblDocuments" maxHeight="1.7976931348623157E308">
            <columns>
-               <TableColumn fx:id="selection" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" />
+               <TableColumn fx:id="selection" maxWidth="30.0" minWidth="30.0" prefWidth="30.0">
+               <graphic>
+                  <CheckBox fx:id="selectAll" mnemonicParsing="false" onAction="#onSelectAll" />
+               </graphic></TableColumn>
                <TableColumn fx:id="docNumber" prefWidth="100.0" text="Номер документа" />
                <TableColumn fx:id="kindIdName" editable="false" minWidth="50.0" prefWidth="100.0" text="Вид документа" />
                <TableColumn fx:id="operDayDate" prefWidth="75.0" text="Дата опер.дня" />

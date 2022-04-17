@@ -39,8 +39,10 @@ public class DocumentSrvImpl implements DocumentSrv {
             return IntStream.range(0, 10)
                     .mapToObj(i -> {
                         LocalDate date = LocalDate.of(1910+i, i+1, i+1);
-                        return new DocumentFX("objectId-"+i, "docNumber-"+i, i, date,
+                        DocumentFX doc = new DocumentFX("objectId-"+i, "docNumber-"+i, i, date,
                                 DocType.ACCOUNT_CASH_WARRANT, date, BranchType.REGIONAL_BRANCH, DocStatus.MAIN_STATUS);
+                        doc.setSelected(i%2==0);
+                        return doc;
                     })
                     .collect(Collectors.toList());
         }, exec).thenAccept(docs ->

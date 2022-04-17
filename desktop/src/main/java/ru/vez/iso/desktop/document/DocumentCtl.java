@@ -9,6 +9,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.stage.FileChooser;
@@ -38,8 +39,8 @@ public class DocumentCtl implements Initializable {
     @FXML private TableColumn<DocumentFX, Double> sumDoc;
     @FXML private TableColumn<DocumentFX, Boolean> selection;
 
+    @FXML private CheckBox selectAll;
     @FXML private Button butOpenFile;
-    @FXML private Button butSelectAll;
     @FXML private Button butCheckHash;
     @FXML private Button butSearchDocs;
     @FXML private Button butPrint;
@@ -89,7 +90,7 @@ public class DocumentCtl implements Initializable {
 
     }
 
-    // load documents list
+    // open ChooseFile dialog and fire service to load from file
     @FXML void onOpenFile(ActionEvent ev) {
         System.out.println("DocumentCtl.onOpenFile");
         FileChooser chooseFile = new FileChooser();
@@ -103,11 +104,12 @@ public class DocumentCtl implements Initializable {
             // if opened, launch service to read data
             service.loadAsync(path);
         }
+    }
 
+    @FXML public void onSelectAll(ActionEvent ev) {
+        System.out.println("DocumentCtl.onSelected: " + selectAll.isSelected());
     }
-    @FXML void onSelectAll(ActionEvent ev) {
-        System.out.println("DocumentCtl.onSelectAll");
-    }
+
     @FXML void onDownload(ActionEvent ev) {
         System.out.println("DocumentCtl.onDownload");
     }
@@ -136,7 +138,7 @@ public class DocumentCtl implements Initializable {
 
     // Lock/Unlock all disk-related operations
     private void unlockDiskOpsButtons(boolean unlock) {
-        butSelectAll.setDisable(!unlock);
+        selectAll.setDisable(!unlock);
         butSearchDocs.setDisable(!unlock);
         butSearchDocs2.setDisable(!unlock);
         butWriteCopy.setDisable(!unlock);
