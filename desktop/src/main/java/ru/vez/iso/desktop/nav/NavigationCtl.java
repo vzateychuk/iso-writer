@@ -8,15 +8,11 @@ import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.FileChooser;
 import ru.vez.iso.desktop.ViewType;
 import ru.vez.iso.desktop.model.UserDetails;
 import ru.vez.iso.desktop.state.AppStateData;
 import ru.vez.iso.desktop.state.AppStateType;
 
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Map;
 
 /**
@@ -29,7 +25,7 @@ public class NavigationCtl {
     @FXML private Button login;
     @FXML private Button main;
     @FXML private Button settings;
-    @FXML private Button search;
+    @FXML private Button documents;
 
     private final NavigationSrv service;
     private final Map<ViewType, Parent> viewCache;
@@ -78,18 +74,9 @@ public class NavigationCtl {
         System.out.println("NavigationCtl.onShowDisks");
         showView(ViewType.DISK);
     }
-    public void onShowSearch(ActionEvent ev) {
-        System.out.println("NavigationCtl.onShowSearch");
-        FileChooser chooseFile = new FileChooser();
-        chooseFile.setInitialDirectory(Paths.get(System.getProperty("user.home")).toFile());
-        chooseFile.setSelectedExtensionFilter(new FileChooser.ExtensionFilter("DEV.ZIP", "*.zip"));
-        File file = chooseFile.showOpenDialog(null);
-        if (file != null) {
-            Path path = file.toPath();
-            System.out.println("Choosed: " + path);
-            // if opened, opening Documents form
-            showView(ViewType.DOCUMENTS);
-        }
+    public void onShowDocuments(ActionEvent ev) {
+        System.out.println("NavigationCtl.onShowDocuments");
+        showView(ViewType.DOCUMENTS);
     }
 
     //region Private
@@ -97,7 +84,7 @@ public class NavigationCtl {
     private void lockControls(boolean lock) {
         disks.setDisable(lock);
         main.setDisable(lock);
-        search.setDisable(lock);
+        documents.setDisable(lock);
     }
 
     private void showView(ViewType view) {

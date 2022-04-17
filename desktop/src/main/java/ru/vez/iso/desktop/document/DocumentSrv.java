@@ -1,7 +1,9 @@
 package ru.vez.iso.desktop.document;
 
+import java.nio.file.Path;
+
 public interface DocumentSrv {
 
-    void loadAsync();
+    void loadAsync(Path path);
 
 }

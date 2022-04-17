@@ -5,6 +5,7 @@ import ru.vez.iso.desktop.state.AppStateData;
 import ru.vez.iso.desktop.state.AppStateType;
 import ru.vez.iso.desktop.utils.UtilsHelper;
 
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -25,14 +26,14 @@ public class DocumentSrvImpl implements DocumentSrv {
     }
 
     @Override
-    public void loadAsync() {
+    public void loadAsync(Path path) {
 
         // Avoid multiply invocation
         if (!future.isDone()) {
             System.out.println("DocumentSrv.loadAsync: Async operation in progress, skipping");
             return;
         }
-
+        System.out.println("DocumentSrvImpl.loadAsync: Read from: " + path.toString());
         future = CompletableFuture.supplyAsync(() -> {
             UtilsHelper.makeDelaySec(1);    // TODO load from file
             return IntStream.range(0, 10)
