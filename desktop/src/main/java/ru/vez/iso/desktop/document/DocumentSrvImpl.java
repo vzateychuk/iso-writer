@@ -7,7 +7,10 @@ import ru.vez.iso.desktop.utils.UtilsHelper;
 
 import java.nio.file.Path;
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
@@ -36,11 +39,13 @@ public class DocumentSrvImpl implements DocumentSrv {
         System.out.println("DocumentSrvImpl.loadAsync: Read from: " + path.toString());
         future = CompletableFuture.supplyAsync(() -> {
             UtilsHelper.makeDelaySec(1);    // TODO load from file
+            Random rnd = new Random();
             return IntStream.range(0, 10)
                     .mapToObj(i -> {
+                        List<DocType> types = Collections.unmodifiableList(Arrays.asList(DocType.values()));
                         LocalDate date = LocalDate.of(1910+i, i+1, i+1);
-                        DocumentFX doc = new DocumentFX("objectId-"+i, "docNumber-"+i, i, date,
-                                DocType.ACCOUNT_CASH_WARRANT, date, BranchType.REGIONAL_BRANCH, DocStatus.MAIN_STATUS);
+                        DocumentFX doc = new DocumentFX(path.toString() + "-"+i, "docNumber-"+i, i, date,
+                                types.get(rnd.nextInt(types.size())), date, BranchType.REGIONAL_BRANCH, DocStatus.MAIN_STATUS);
                         doc.setSelected(i%2==0);
                         return doc;
                     })

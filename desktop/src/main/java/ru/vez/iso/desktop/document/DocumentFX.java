@@ -1,9 +1,6 @@
 package ru.vez.iso.desktop.document;
 
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 
 import java.time.LocalDate;
 import java.util.Objects;
@@ -22,7 +19,7 @@ public class DocumentFX {
     private final ObjectProperty<BranchType> branch;
     private final ObjectProperty<DocStatus> docStatusName;
     // uses in View when selecting the current row
-    private ObjectProperty<Boolean> selected;
+    private BooleanProperty selected;
 
   public DocumentFX(String objectId, String docNumber, double sumDoc, LocalDate operDayDate,
       DocType docType, LocalDate docDate, BranchType branch, DocStatus docStatusName) {
@@ -35,6 +32,7 @@ public class DocumentFX {
         this.docDate = new SimpleObjectProperty<>(docDate);
         this.branch = new SimpleObjectProperty<>(branch);
         this.docStatusName = new SimpleObjectProperty<>(docStatusName);
+        this.selected = new SimpleBooleanProperty(false);
     }
 
     public String getObjectId() {
@@ -42,12 +40,12 @@ public class DocumentFX {
     }
 
     public void setSelected(boolean selected) {
-        this.selected = new SimpleObjectProperty<>(selected);
+        this.selected.set(selected);
     }
     public Boolean isSelected() {
         return selected.get();
     }
-    public ObjectProperty<Boolean> selectedProperty() {
+    public BooleanProperty selectedProperty() {
         return selected;
     }
 

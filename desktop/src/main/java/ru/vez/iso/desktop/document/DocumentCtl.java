@@ -1,6 +1,8 @@
 package ru.vez.iso.desktop.document;
 
 import javafx.application.Platform;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
@@ -37,13 +39,14 @@ public class DocumentCtl implements Initializable {
     @FXML private TableColumn<DocumentFX, DocType> kindIdName;
     @FXML private TableColumn<DocumentFX, LocalDate> operDayDate;
     @FXML private TableColumn<DocumentFX, Double> sumDoc;
-    @FXML private TableColumn<DocumentFX, Boolean> selection;
+    @FXML private TableColumn<DocumentFX, CheckBox> selection;
 
     @FXML private CheckBox selectAll;
     @FXML private Button butOpenFile;
     @FXML private Button butCheckHash;
     @FXML private Button butSearchDocs;
     @FXML private Button butPrint;
+    @FXML private Button butDownload;
     @FXML private Button butWriteCopy;
     @FXML private Button butCheckHash2;
     @FXML private Button butSearchDocs2;
@@ -64,8 +67,6 @@ public class DocumentCtl implements Initializable {
         documents = FXCollections.emptyObservableList();
         tblDocuments.setItems(documents);
         tblDocuments.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        // set selection mode to only 1 row
-        // tblDocuments.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
         // Column settings
         branch.setCellValueFactory(cell -> cell.getValue().branchProperty());
@@ -75,7 +76,8 @@ public class DocumentCtl implements Initializable {
         kindIdName.setCellValueFactory(cell -> cell.getValue().docTypeProperty());
         operDayDate.setCellValueFactory(cell -> cell.getValue().operDayDateProperty());
         sumDoc.setCellValueFactory(cell -> cell.getValue().sumDocProperty());
-        selection.setCellValueFactory(cell -> cell.getValue().selectedProperty());
+
+        selection.setCellValueFactory(this::createObservableDocCheckbox);
 
         // Add load data listener
         this.appState.addListener(
@@ -107,7 +109,8 @@ public class DocumentCtl implements Initializable {
     }
 
     @FXML public void onSelectAll(ActionEvent ev) {
-        System.out.println("DocumentCtl.onSelected: " + selectAll.isSelected());
+        System.out.println("DocumentCtl.onSelectAll: " + selectAll.isSelected());
+        documents.forEach( d -> d.setSelected(selectAll.isSelected()));
     }
 
     @FXML void onDownload(ActionEvent ev) {
@@ -128,12 +131,38 @@ public class DocumentCtl implements Initializable {
 
     //region Private
 
+    /**
+     * Связывает DocumentFX and CheckBox чтобы при изменении значения
+     * checkBox, изменялось также значение DocFX
+     *
+     * @param cell - support class used in TableColumn as a wrapper class * to provide all necessary information for a particular Cell
+     * @return ObservableValue<CheckBox>
+     */
+    private ObservableValue<CheckBox> createObservableDocCheckbox(
+            TableColumn.CellDataFeatures<DocumentFX, CheckBox> cell) {
+        DocumentFX doc = cell.getValue();
+        CheckBox checkBox = new CheckBox();
+        checkBox.selectedProperty().setValue(doc.isSelected());
+        checkBox.selectedProperty().addListener((ov, old, newVal) -> {
+            System.out.println( (newVal ? "check" : "uncheck") + " docNum: " + doc.getDocNumber() );
+            doc.setSelected(newVal);
+            this.unlockDocumentButtonsIfAnySelected();
+        });
+        return new SimpleObjectProperty<>(checkBox);
+    }
+
+    /**
+     * Map list of documents to FXCollection and set to the TableView
+     *
+     * @param docs - list of documents
+     * */
     private void displayData(List<DocumentFX> docs) {
         // Set items to the tableView
         this.documents = FXCollections.observableList(docs);
         tblDocuments.setItems(this.documents);
         // Enable/disable disk-related buttons
-        unlockDiskOpsButtons( docs.size()>0 );
+        this.unlockDiskOpsButtons( docs.size()>0 );
+        this.unlockDocumentButtonsIfAnySelected();
     }
 
     // Lock/Unlock all disk-related operations
@@ -147,5 +176,13 @@ public class DocumentCtl implements Initializable {
         butCheckHash2.setDisable(!unlock);
     }
 
+    // lock/unlock document related operations
+    private void unlockDocumentButtonsIfAnySelected() {
+        boolean anySelected = documents.stream().anyMatch(DocumentFX::isSelected);
+        butPrint.setDisable(!anySelected);
+        butDownload.setDisable(!anySelected);
+    }
+
     //endregion
 }
+
