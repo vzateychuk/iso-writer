@@ -3,8 +3,10 @@ package ru.vez.iso.desktop.main;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 /**
@@ -12,6 +14,8 @@ import java.util.Objects;
  * used "Список операционных дней"
  * */
 public class StorageUnitFX {
+
+    private final DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     private final String objectId;
     private final String operatingDayId;
@@ -60,8 +64,8 @@ public class StorageUnitFX {
     public LocalDate getCreationDate() {
         return creationDate.get();
     }
-    public ObjectProperty<LocalDate> creationDateProperty() {
-        return creationDate;
+    public StringProperty creationDateProperty() {
+        return new SimpleStringProperty(creationDate.get().format(fmt));
     }
 
     public Integer getDataSize() {
@@ -74,22 +78,22 @@ public class StorageUnitFX {
     public LocalDate getStorageDate() {
         return storageDate.get();
     }
-    public ObjectProperty<LocalDate> storageDateProperty() {
-        return storageDate;
+    public StringProperty storageDateProperty() {
+        return new SimpleStringProperty(storageDate.get().format(fmt));
     }
 
     public StorageUnitStatus getStorageUnitStatus() {
         return storageUnitStatus.get();
     }
-    public ObjectProperty<StorageUnitStatus> storageUnitStatusProperty() {
-        return storageUnitStatus;
+    public StringProperty storageUnitStatusProperty() {
+        return new SimpleStringProperty(storageUnitStatus.get().getTitle());
     }
 
     public LocalDate getSavingDate() {
         return savingDate.get();
     }
-    public ObjectProperty<LocalDate> savingDateProperty() {
-        return savingDate;
+    public StringProperty savingDateProperty() {
+        return new SimpleStringProperty(savingDate.get().format(fmt));
     }
 
     @Override

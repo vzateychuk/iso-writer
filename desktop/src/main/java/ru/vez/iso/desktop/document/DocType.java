@@ -9,7 +9,8 @@ public enum DocType {
     PAYMENT_REQUEST("Платежное требование"),
     BANK_WARRANT("Банковский ордер"),
     ACCOUNT_CASH_WARRANT("Расходный кассовый ордер"),
-    COLLECTION_ORDER("Инкассовое поручение");
+    COLLECTION_ORDER("Инкассовое поручение"),
+    UNKNOWN_TYPE("Неизвестный тип");
 
     private final String title;
 

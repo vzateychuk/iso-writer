@@ -107,8 +107,8 @@
                <TableColumn fx:id="operDayDate" prefWidth="75.0" text="Дата опер.дня" />
                <TableColumn fx:id="sumDoc" prefWidth="75.0" text="Сумма" />
                <TableColumn fx:id="branch" prefWidth="75.0" text="Подразделение" />
-            <TableColumn fx:id="docDate" prefWidth="75.0" text="Дата документа" />
-            <TableColumn fx:id="docStatusName" prefWidth="75.0" text="Статус документа" />
+               <TableColumn fx:id="docDate" prefWidth="75.0" text="Дата документа" />
+               <TableColumn fx:id="docStatusName" prefWidth="75.0" text="Статус документа" />
            </columns>
        </TableView>
    </center>

@@ -22,7 +22,7 @@ import java.io.File;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -32,12 +32,12 @@ import java.util.ResourceBundle;
 public class DocumentCtl implements Initializable {
 
     @FXML private TableView<DocumentFX> tblDocuments;
-    @FXML private TableColumn<DocumentFX, BranchType> branch;
-    @FXML private TableColumn<DocumentFX, LocalDate> docDate;
+    @FXML private TableColumn<DocumentFX, String> branch;
+    @FXML private TableColumn<DocumentFX, String> docDate;
     @FXML private TableColumn<DocumentFX, String> docNumber;
-    @FXML private TableColumn<DocumentFX, DocStatus> docStatusName;
-    @FXML private TableColumn<DocumentFX, DocType> kindIdName;
-    @FXML private TableColumn<DocumentFX, LocalDate> operDayDate;
+    @FXML private TableColumn<DocumentFX, String> docStatusName;
+    @FXML private TableColumn<DocumentFX, String> kindIdName;
+    @FXML private TableColumn<DocumentFX, String> operDayDate;
     @FXML private TableColumn<DocumentFX, Double> sumDoc;
     @FXML private TableColumn<DocumentFX, CheckBox> selection;
 
@@ -54,6 +54,7 @@ public class DocumentCtl implements Initializable {
 
     private final ObservableMap<AppStateType, AppStateData> appState;
     private ObservableList<DocumentFX> documents;
+    private final List<CheckBox> checkBoxes = new ArrayList<>();
     private final DocumentSrv service;
 
     public DocumentCtl(ObservableMap<AppStateType, AppStateData> appState, DocumentSrv srv) {
@@ -109,8 +110,8 @@ public class DocumentCtl implements Initializable {
     }
 
     @FXML public void onSelectAll(ActionEvent ev) {
-        System.out.println("DocumentCtl.onSelectAll: " + selectAll.isSelected());
-        documents.forEach( d -> d.setSelected(selectAll.isSelected()));
+        System.out.println( "DocumentCtl.onSelectAll: " + selectAll.isSelected() );
+        this.checkBoxes.forEach( cbox -> cbox.setSelected(selectAll.isSelected()) );
     }
 
     @FXML void onDownload(ActionEvent ev) {
@@ -141,14 +142,16 @@ public class DocumentCtl implements Initializable {
     private ObservableValue<CheckBox> createObservableDocCheckbox(
             TableColumn.CellDataFeatures<DocumentFX, CheckBox> cell) {
         DocumentFX doc = cell.getValue();
-        CheckBox checkBox = new CheckBox();
-        checkBox.selectedProperty().setValue(doc.isSelected());
-        checkBox.selectedProperty().addListener((ov, old, newVal) -> {
+        CheckBox cbox = new CheckBox();
+        cbox.selectedProperty().setValue(doc.isSelected());
+        cbox.selectedProperty().addListener((ov, old, newVal) -> {
             System.out.println( (newVal ? "check" : "uncheck") + " docNum: " + doc.getDocNumber() );
             doc.setSelected(newVal);
             this.unlockDocumentButtonsIfAnySelected();
         });
-        return new SimpleObjectProperty<>(checkBox);
+        // save reference to the newly created checkbox for bulk operations
+        checkBoxes.add(cbox);
+        return new SimpleObjectProperty<>(cbox);
     }
 
     /**
@@ -157,6 +160,8 @@ public class DocumentCtl implements Initializable {
      * @param docs - list of documents
      * */
     private void displayData(List<DocumentFX> docs) {
+        // remove all previously saved references to checkboxes
+        this.checkBoxes.clear();
         // Set items to the tableView
         this.documents = FXCollections.observableList(docs);
         tblDocuments.setItems(this.documents);

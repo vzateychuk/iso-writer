@@ -45,7 +45,7 @@ public class DocumentSrvImpl implements DocumentSrv {
                         List<DocType> types = Collections.unmodifiableList(Arrays.asList(DocType.values()));
                         LocalDate date = LocalDate.of(1910+i, i+1, i+1);
                         DocumentFX doc = new DocumentFX(path.toString() + "-"+i, "docNumber-"+i, i, date,
-                                types.get(rnd.nextInt(types.size())), date, BranchType.REGIONAL_BRANCH, DocStatus.MAIN_STATUS);
+                                types.get(rnd.nextInt(types.size())), date, BranchType.REGIONAL_BRANCH, DocStatus.UNKNOWN_STATE);
                         doc.setSelected(i%2==0);
                         return doc;
                     })

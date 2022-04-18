@@ -18,7 +18,6 @@ import ru.vez.iso.desktop.state.AppStateData;
 import ru.vez.iso.desktop.state.AppStateType;
 
 import java.net.URL;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -30,20 +29,20 @@ public class MainCtl implements Initializable {
 
     // Таблица "Список операционных дней"
     @FXML private TableView<OperatingDayFX> tblOperatingDays;
-    @FXML private TableColumn<OperatingDayFX, LocalDate> operatingDay;
+    @FXML private TableColumn<OperatingDayFX, String> operatingDay;
     @FXML private TableColumn<OperatingDayFX, TypeSu> typeSu;
-    @FXML private TableColumn<OperatingDayFX, OpsDayStatus> status;
-    @FXML private TableColumn<OperatingDayFX, LocalDate> createdAt;
+    @FXML private TableColumn<OperatingDayFX, String> status;
+    @FXML private TableColumn<OperatingDayFX, String> createdAt;
     @FXML private TableColumn<OperatingDayFX, Boolean> edited;
 
     // Таблица "Список единиц хранения"
     @FXML private TableView<StorageUnitFX> tblStorageUnits;
     @FXML private TableColumn<StorageUnitFX, String> numberSu;
-    @FXML private TableColumn<StorageUnitFX, LocalDate> creationDate;
+    @FXML private TableColumn<StorageUnitFX, String> creationDate;
     @FXML private TableColumn<StorageUnitFX, Integer> dataSize;
-    @FXML private TableColumn<StorageUnitFX, LocalDate> storageDate;
-    @FXML private TableColumn<StorageUnitFX, StorageUnitStatus> storageUnitStatus;
-    @FXML private TableColumn<StorageUnitFX, LocalDate> savingDate;
+    @FXML private TableColumn<StorageUnitFX, String> storageDate;
+    @FXML private TableColumn<StorageUnitFX, String> storageUnitStatus;
+    @FXML private TableColumn<StorageUnitFX, String> savingDate;
 
     // Кнопки
     @FXML private Button butWrite;

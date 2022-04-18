@@ -1,10 +1,9 @@
 package ru.vez.iso.desktop.main;
 
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.*;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -15,6 +14,8 @@ import java.util.Objects;
  * in View main "Выбор Единицы хранения для записи на диск"
  * */
 public class OperatingDayFX {
+
+    private final DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     private final String objectId;
     private final ObjectProperty<LocalDate> operatingDay = new SimpleObjectProperty<>();
@@ -45,8 +46,8 @@ public class OperatingDayFX {
     public LocalDate getOperatingDay() {
         return operatingDay.get();
     }
-    public ObjectProperty<LocalDate> operatingDayProperty() {
-        return operatingDay;
+    public StringProperty operatingDayProperty() {
+        return new SimpleStringProperty(operatingDay.get().format(fmt));
     }
 
     public TypeSu getTypeSu() {
@@ -59,15 +60,15 @@ public class OperatingDayFX {
     public OpsDayStatus getStatus() {
         return status.get();
     }
-    public ObjectProperty<OpsDayStatus> statusProperty() {
-        return status;
+    public StringProperty statusProperty() {
+        return new SimpleStringProperty(status.get().getTitle());
     }
 
     public LocalDate getCreatedAt() {
         return createdAt.get();
     }
-    public ObjectProperty<LocalDate> createdAtProperty() {
-        return createdAt;
+    public StringProperty createdAtProperty() {
+        return new SimpleStringProperty(createdAt.get().format(fmt));
     }
 
     public boolean isEdited() {

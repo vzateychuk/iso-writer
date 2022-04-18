@@ -3,6 +3,7 @@ package ru.vez.iso.desktop.document;
 import javafx.beans.property.*;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 /**
@@ -19,7 +20,8 @@ public class DocumentFX {
     private final ObjectProperty<BranchType> branch;
     private final ObjectProperty<DocStatus> docStatusName;
     // uses in View when selecting the current row
-    private BooleanProperty selected;
+    private final BooleanProperty selected;
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
   public DocumentFX(String objectId, String docNumber, double sumDoc, LocalDate operDayDate,
       DocType docType, LocalDate docDate, BranchType branch, DocStatus docStatusName) {
@@ -45,9 +47,6 @@ public class DocumentFX {
     public Boolean isSelected() {
         return selected.get();
     }
-    public BooleanProperty selectedProperty() {
-        return selected;
-    }
 
     public double getSumDoc() {
         return sumDoc.get();
@@ -66,36 +65,36 @@ public class DocumentFX {
     public LocalDate getOperDayDate() {
         return operDayDate.get();
     }
-    public ObjectProperty<LocalDate> operDayDateProperty() {
-        return operDayDate;
+    public StringProperty operDayDateProperty() {
+        return new SimpleStringProperty(operDayDate.get().format(formatter));
     }
 
     public DocType getDocType() {
         return docType.get();
     }
-    public ObjectProperty<DocType> docTypeProperty() {
-        return docType;
+    public StringProperty docTypeProperty() {
+        return new SimpleStringProperty(docType.get().getTitle());
     }
 
     public LocalDate getDocDate() {
         return docDate.get();
     }
-    public ObjectProperty<LocalDate> docDateProperty() {
-        return docDate;
+    public StringProperty docDateProperty() {
+        return new SimpleStringProperty(docDate.get().format(formatter));
     }
 
     public BranchType getBranch() {
         return branch.get();
     }
-    public ObjectProperty<BranchType> branchProperty() {
-        return branch;
+    public StringProperty branchProperty() {
+        return new SimpleStringProperty(branch.get().getTitle());
     }
 
     public DocStatus getDocStatusName() {
         return docStatusName.get();
     }
-    public ObjectProperty<DocStatus> docStatusNameProperty() {
-        return docStatusName;
+    public StringProperty docStatusNameProperty() {
+        return new SimpleStringProperty(docStatusName.get().getTitle());
     }
 
     @Override

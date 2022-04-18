@@ -4,7 +4,7 @@ package ru.vez.iso.desktop.document;
  * Статус документа
  * */
 public enum DocStatus {
-    MAIN_STATUS("Статус документа");
+    UNKNOWN_STATE("Неизвестный статус");
 
     private final String title;
 
