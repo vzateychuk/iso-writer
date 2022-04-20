@@ -21,6 +21,9 @@
                      </image>
                   </ImageView>
                </graphic>
+               <tooltip>
+                  <Tooltip text="Выбрать диск с документами" />
+               </tooltip>
             </Button>
             <Button fx:id="butDownload" disable="true" layoutX="10.0" layoutY="12.0" mnemonicParsing="false" onAction="#onDownload">
                 <font>
@@ -33,6 +36,9 @@
                         </image>
                     </ImageView>
                 </graphic>
+               <tooltip>
+                  <Tooltip text="Загрузить документ" />
+               </tooltip>
             </Button>
             <Button fx:id="butPrint" disable="true" layoutX="130.0" layoutY="12.0" mnemonicParsing="false" onAction="#onPrint">
                 <font>
@@ -45,6 +51,9 @@
                         </image>
                     </ImageView>
                 </graphic>
+               <tooltip>
+                  <Tooltip text="Печатать документ" />
+               </tooltip>
             </Button>
             <Button fx:id="butCheckHash" disable="true" layoutX="170.0" layoutY="12.0" mnemonicParsing="false" onAction="#onCheckHash">
                <font>
@@ -57,6 +66,9 @@
                      </image>
                   </ImageView>
                </graphic>
+               <tooltip>
+                  <Tooltip text="Проверить контрольную сумму (hash)" />
+               </tooltip>
             </Button>
             <TextField promptText="фильтр" />
             <Button fx:id="butSearchDocs" disable="true" layoutX="10.0" layoutY="12.0" mnemonicParsing="false" onAction="#onSearchDocs">
@@ -70,6 +82,9 @@
                      </image>
                   </ImageView>
                </graphic>
+               <tooltip>
+                  <Tooltip text="Выполнить поиск" />
+               </tooltip>
             </Button>
 
         </items>
@@ -80,7 +95,10 @@
            <columns>
                <TableColumn fx:id="selection" maxWidth="30.0" minWidth="30.0" prefWidth="30.0">
                <graphic>
-                  <CheckBox fx:id="selectAll" mnemonicParsing="false" onAction="#onSelectAll" />
+                  <CheckBox fx:id="selectAll" mnemonicParsing="false" onAction="#onSelectAll">
+                     <tooltip>
+                        <Tooltip text="Выделить все/Снять выделение" />
+                     </tooltip></CheckBox>
                </graphic></TableColumn>
                <TableColumn fx:id="docNumber" prefWidth="100.0" text="Номер документа" />
                <TableColumn fx:id="kindIdName" editable="false" minWidth="50.0" prefWidth="100.0" text="Вид документа" />
