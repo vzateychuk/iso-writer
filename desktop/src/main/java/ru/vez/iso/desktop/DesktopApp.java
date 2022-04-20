@@ -88,9 +88,11 @@ public class DesktopApp extends Application {
 
         // parse command argument to define application run-mode
         isProdMode = getAppIsProdMode(args);
-        System.out.println("DesktopApp.main. Running in DEV mode: " + !isProdMode);
+        System.out.println("DesktopApp.main. DEV mode? " + !isProdMode);
         launch(args);
     }
+
+    //region Private
 
     private static boolean getAppIsProdMode(String[] args) {
 
@@ -115,8 +117,6 @@ public class DesktopApp extends Application {
         }
         return false;
     }
-
-    //region Private
 
     /**
      * @See https://betacode.net/11529/javafx-alert-dialog

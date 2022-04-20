@@ -47,10 +47,6 @@ public class DocumentCtl implements Initializable {
     @FXML private Button butSearchDocs;
     @FXML private Button butPrint;
     @FXML private Button butDownload;
-    @FXML private Button butWriteCopy;
-    @FXML private Button butCheckHash2;
-    @FXML private Button butSearchDocs2;
-    @FXML private Button butWriteCopy2;
 
     private final ObservableMap<AppStateType, AppStateData> appState;
     private ObservableList<DocumentFX> documents;
@@ -174,11 +170,7 @@ public class DocumentCtl implements Initializable {
     private void unlockDiskOpsButtons(boolean unlock) {
         selectAll.setDisable(!unlock);
         butSearchDocs.setDisable(!unlock);
-        butSearchDocs2.setDisable(!unlock);
-        butWriteCopy.setDisable(!unlock);
-        butWriteCopy2.setDisable(!unlock);
         butCheckHash.setDisable(!unlock);
-        butCheckHash2.setDisable(!unlock);
     }
 
     // lock/unlock document related operations

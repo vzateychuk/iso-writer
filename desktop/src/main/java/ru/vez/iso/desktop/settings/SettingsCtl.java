@@ -43,7 +43,11 @@ public class SettingsCtl {
     }
 
     @FXML public void onSave(ActionEvent ev) {
-        Properties props = readControls();
+        Properties props = ((AppStateData<Properties>)appState.get(AppStateType.SETTINGS)).getValue();
+        int operDays = parseIntOrDefault(operationDays.getText(), SettingType.OPERATION_DAYS.getDefaultValue());
+        props.setProperty(SettingType.OPERATION_DAYS.name(), String.valueOf(operDays));
+        int refreshPrd = parseIntOrDefault(refreshPeriod.getText(), SettingType.REFRESH_PERIOD.getDefaultValue());
+        props.setProperty(SettingType.REFRESH_PERIOD.name(), String.valueOf(refreshPrd));
         service.saveAsync(props, SettingType.SETTING_FILE.getDefaultValue());
     }
 
@@ -115,6 +119,7 @@ public class SettingsCtl {
      *
      * @return Properties read from controls
      * */
+/*
     private Properties readControls() {
         Properties props = new Properties();
         int operDays = parseIntOrDefault(operationDays.getText(), SettingType.OPERATION_DAYS.getDefaultValue());
@@ -123,6 +128,7 @@ public class SettingsCtl {
         props.setProperty(SettingType.REFRESH_PERIOD.name(), String.valueOf(refreshPrd));
         return props;
     }
+*/
 
     /**
      * Parse text value to int. Default value will be used if parse fails

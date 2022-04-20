@@ -10,7 +10,7 @@
    <top>
       <ToolBar maxWidth="1.7976931348623157E308" prefHeight="40.0" BorderPane.alignment="CENTER">
         <items>
-            <Button fx:id="butOpenFile" defaultButton="true" layoutX="10.0" layoutY="12.0" mnemonicParsing="false" onAction="#onOpenFile">
+            <Button fx:id="butOpenFile" accessibleHelp="Открыть диск" accessibleText="Открыть диск" defaultButton="true" layoutX="10.0" layoutY="12.0" mnemonicParsing="false" onAction="#onOpenFile">
                <font>
                   <Font name="Arial Black" size="12.0" />
                </font>
@@ -46,30 +46,6 @@
                     </ImageView>
                 </graphic>
             </Button>
-            <Button fx:id="butSearchDocs" disable="true" layoutX="10.0" layoutY="12.0" mnemonicParsing="false" onAction="#onSearchDocs">
-               <font>
-                  <Font name="Arial Black" size="12.0" />
-               </font>
-               <graphic>
-                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@image/search.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
-            <Button fx:id="butWriteCopy" disable="true" layoutX="90.0" layoutY="12.0" mnemonicParsing="false" onAction="#onWriteCopy">
-               <font>
-                  <Font name="Arial Black" size="12.0" />
-               </font>
-               <graphic>
-                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@image/write.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
             <Button fx:id="butCheckHash" disable="true" layoutX="170.0" layoutY="12.0" mnemonicParsing="false" onAction="#onCheckHash">
                <font>
                   <Font name="Arial Black" size="12.0" />
@@ -82,19 +58,23 @@
                   </ImageView>
                </graphic>
             </Button>
+            <TextField promptText="фильтр" />
+            <Button fx:id="butSearchDocs" disable="true" layoutX="10.0" layoutY="12.0" mnemonicParsing="false" onAction="#onSearchDocs">
+               <font>
+                  <Font name="Arial Black" size="12.0" />
+               </font>
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@image/search.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
 
         </items>
       </ToolBar>
    </top>
-   <bottom>
-      <ButtonBar maxWidth="1.7976931348623157E308" prefHeight="40.0" BorderPane.alignment="CENTER">
-        <buttons>
-            <Button fx:id="butWriteCopy2" disable="true" mnemonicParsing="false" onAction="#onWriteCopy" text="Записать резервную копию" />
-            <Button fx:id="butSearchDocs2" disable="true" mnemonicParsing="false" onAction="#onSearchDocs" text="Поиск по документам" />
-            <Button fx:id="butCheckHash2" disable="true" mnemonicParsing="false" onAction="#onCheckHash" text="Проверить целостность данных" />
-        </buttons>
-      </ButtonBar>
-   </bottom>
    <center>
        <TableView fx:id="tblDocuments" maxHeight="1.7976931348623157E308">
            <columns>

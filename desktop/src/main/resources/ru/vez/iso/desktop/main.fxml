@@ -8,25 +8,28 @@
   <items>
       <VBox prefWidth="400.0">
          <children>
-            <GridPane gridLinesVisible="true">
+            <GridPane>
               <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="202.199951171875" minWidth="10.0" prefWidth="95.60001220703126" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="348.6000205993652" minWidth="10.0" prefWidth="84.59998779296873" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="348.6000205993652" minWidth="10.0" prefWidth="237.80001220703127" />
               </columnConstraints>
               <rowConstraints>
                 <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Label alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="200.0" text="Список операционных дней">
+                  <Label alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="200.0" text="Список операционных дней" GridPane.columnSpan="3">
                      <font>
                         <Font name="Arial Black" size="14.0" />
                      </font>
                   </Label>
-                  <Label maxWidth="1.7976931348623157E308" prefHeight="200.0" text="Фильтр:" GridPane.rowIndex="1">
+                  <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" prefHeight="200.0" text="Показать:" GridPane.rowIndex="1">
                      <font>
                         <Font name="Arial Black" size="12.0" />
                      </font>
                   </Label>
+                  <TextField promptText="30" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                </children>
             </GridPane>
             <TableView fx:id="tblOperatingDays" maxHeight="1.7976931348623157E308" VBox.vgrow="ALWAYS">
@@ -40,9 +43,9 @@
             </TableView>
             <ButtonBar buttonMinWidth="80.0" maxHeight="40.0" minHeight="40.0">
                <buttons>
-                  <Button fx:id="butReload" defaultButton="true" onAction="#onReload" prefWidth="80.0" text="Обновить" ButtonBar.buttonData="LEFT">
+                  <Button fx:id="butReload" defaultButton="true" onAction="#onReload" text="Обновить" ButtonBar.buttonData="LEFT">
                      <font>
-                        <Font name="Arial Black" size="14.0" />
+                        <Font name="Arial Black" size="12.0" />
                      </font>
                   </Button>
                </buttons>
@@ -110,9 +113,9 @@
             </TableView>
             <ButtonBar buttonMinWidth="80.0" maxHeight="40.0" minHeight="40.0">
                <buttons>
-                  <Button fx:id="butWrite" onAction="#onWrite" prefWidth="80.0" text="Записать" ButtonBar.buttonData="LEFT">
+                  <Button fx:id="butWrite" onAction="#onWrite" text="Загрузить ISO" ButtonBar.buttonData="LEFT">
                      <font>
-                        <Font name="Arial Black" size="14.0" />
+                        <Font name="Arial Black" size="12.0" />
                      </font>
                   </Button>
                </buttons>

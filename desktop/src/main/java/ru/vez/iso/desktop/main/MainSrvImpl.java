@@ -27,7 +27,7 @@ public class MainSrvImpl implements MainSrv {
     }
 
     @Override
-    public void loadAsync(int period) {
+    public void loadOpsDayAsync(int period) {
 
         // Avoid multiply invocation
         if (!future.isDone()) {
@@ -50,6 +50,11 @@ public class MainSrvImpl implements MainSrv {
         }).thenAccept(opsDay -> appState.put(
                 AppStateType.OPERATION_DAYS, AppStateData.builder().value(opsDay).build()
         ));
+    }
+
+    @Override
+    public void loadISOAsync(String objectId) {
+        System.out.println("MainSrvImpl.loadISOAsync");
     }
 
     //region PRIVATE

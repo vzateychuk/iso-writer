@@ -127,7 +127,7 @@ public class MainCtl implements Initializable {
 
 
     @FXML public void onReload(ActionEvent ev) {
-        service.loadAsync(period++);
+        service.loadOpsDayAsync(period++);
     }
 
     @FXML void onWrite(ActionEvent ev) {

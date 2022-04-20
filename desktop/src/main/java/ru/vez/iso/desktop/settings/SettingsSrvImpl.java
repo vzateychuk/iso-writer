@@ -36,7 +36,7 @@ public class SettingsSrvImpl implements SettingsSrv {
         CompletableFuture.supplyAsync( () -> {
             Properties p = props;
             try(OutputStream outputStream = new FileOutputStream(filePath)){
-                p.store(outputStream, "ISO Writer properties");
+                p.store(outputStream, "ISO Writer");
             } catch (IOException e) {
                 log.warning(String.format("Unable to save file: '%s'\n%s", filePath, e));
                 p = getDefaultPropsConfig();

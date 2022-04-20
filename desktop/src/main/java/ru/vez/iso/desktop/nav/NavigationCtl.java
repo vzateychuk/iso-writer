@@ -82,9 +82,11 @@ public class NavigationCtl {
     //region Private
 
     private void lockControls(boolean lock) {
+        System.out.println("NavigationCtl.lockControls: " + lock);
         disks.setDisable(lock);
         main.setDisable(lock);
         documents.setDisable(lock);
+        login.setText(lock ? "Вход" : "Выход");
     }
 
     private void showView(ViewType view) {

@@ -15,12 +15,12 @@
                             <Font name="Arial Black" size="12.0" />
                         </font>
                     </Button>
-                    <Button fx:id="main" disable="true" onAction="#onShowMain" prefWidth="120.0" text="Запись EX">
+                    <Button fx:id="main" disable="true" onAction="#onShowMain" prefWidth="120.0" text="Получить EX">
                         <font>
                             <Font name="Arial Black" size="12.0" />
                         </font>
                     </Button>
-                    <Button fx:id="disks" disable="true" onAction="#onShowDisks" prefWidth="120.0" text="Проверка EX">
+                    <Button fx:id="disks" disable="true" onAction="#onShowDisks" prefWidth="120.0" text="Запись EX">
                         <font>
                             <Font name="Arial Black" size="12.0" />
                         </font>
