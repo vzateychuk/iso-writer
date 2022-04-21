@@ -1,6 +1,8 @@
 package ru.vez.iso.desktop.document;
 
 import javafx.collections.ObservableMap;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.state.AppStateData;
 import ru.vez.iso.desktop.state.AppStateType;
 import ru.vez.iso.desktop.utils.UtilsHelper;
@@ -19,6 +21,8 @@ import java.util.stream.IntStream;
 
 public class DocumentSrvImpl implements DocumentSrv {
 
+    private static Logger logger = LogManager.getLogger();
+
     private final ObservableMap<AppStateType, AppStateData> appState;
     private final Executor exec;
     private Future<Void> future = CompletableFuture.allOf();
@@ -33,10 +37,10 @@ public class DocumentSrvImpl implements DocumentSrv {
 
         // Avoid multiply invocation
         if (!future.isDone()) {
-            System.out.println("DocumentSrv.loadAsync: Async operation in progress, skipping");
+            logger.debug("DocumentSrv.loadAsync: Async operation in progress, skipping");
             return;
         }
-        System.out.println("DocumentSrvImpl.loadAsync: Read from: " + path.toString());
+        logger.debug("DocumentSrvImpl.loadAsync: Read from: " + path.toString());
         future = CompletableFuture.supplyAsync(() -> {
             UtilsHelper.makeDelaySec(1);    // TODO load from file
             Random rnd = new Random();
@@ -53,7 +57,7 @@ public class DocumentSrvImpl implements DocumentSrv {
         }, exec).thenAccept(docs ->
                 appState.put(AppStateType.DOCUMENTS, AppStateData.<List<DocumentFX>>builder().value(docs).build())
         ).exceptionally((ex) -> {
-            System.out.println("Unable: " + ex.getLocalizedMessage());
+            logger.debug("Unable: " + ex.getLocalizedMessage());
             return null;
         } );
     }

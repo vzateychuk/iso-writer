@@ -1,7 +1,8 @@
 package ru.vez.iso.desktop.settings;
 
 import javafx.collections.ObservableMap;
-import lombok.extern.java.Log;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.state.AppStateData;
 import ru.vez.iso.desktop.state.AppStateType;
 
@@ -11,9 +12,10 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
 
-@Log
 public class SettingsSrvImpl implements SettingsSrv {
 
+    private static Logger logger = LogManager.getLogger();
+    
     private final ObservableMap<AppStateType, AppStateData> appState;
     private final Executor exec;
     private Future<Void> future = CompletableFuture.allOf();
@@ -28,17 +30,17 @@ public class SettingsSrvImpl implements SettingsSrv {
 
         // Avoid multiply pressing
         if (!future.isDone()) {
-            log.info("Async operation in progress, skipping");
+            logger.debug("Async operation in progress, skipping");
             return;
         }
 
-        log.info(String.format("saveAsync to file: '%s'", filePath));
+        logger.debug(String.format("saveAsync to file: '%s'", filePath));
         CompletableFuture.supplyAsync( () -> {
             Properties p = props;
             try(OutputStream outputStream = new FileOutputStream(filePath)){
                 p.store(outputStream, "ISO Writer");
             } catch (IOException e) {
-                log.warning(String.format("Unable to save file: '%s'\n%s", filePath, e));
+                logger.warn(String.format("Unable to save file: '%s'\n%s", filePath, e));
                 p = getDefaultPropsConfig();
             }
             return p;
@@ -54,13 +56,13 @@ public class SettingsSrvImpl implements SettingsSrv {
     @Override
     public void loadAsync(String filePath) {
 
-        log.info(String.format("loadAsync from file: '%s'", filePath));
+        logger.debug(String.format("loadAsync from file: '%s'", filePath));
         CompletableFuture.supplyAsync( () -> {
             Properties props = new Properties();
             try(InputStream inputStream = new FileInputStream(filePath)) {
                 props.load(inputStream);
             } catch (IOException e) {
-                log.warning(String.format("Unable to read settings, default settings applied: %s", e));
+                logger.warn(String.format("Unable to read settings, default applied: %s", e));
                 props = getDefaultPropsConfig();
             }
             return props;

@@ -11,8 +11,9 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import lombok.extern.java.Log;
 import org.apache.commons.cli.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.abdd.MainCtl;
 import ru.vez.iso.desktop.abdd.MainSrvImpl;
 import ru.vez.iso.desktop.disks.DiskCtl;
@@ -50,9 +51,9 @@ import java.util.concurrent.Executors;
  * - Services
  * - ApplicationState
  * */
-@Log
 public class DesktopApp extends Application {
 
+    private static Logger logger = LogManager.getLogger();
     private static boolean isProdMode = false;
 
     @Override
@@ -89,6 +90,7 @@ public class DesktopApp extends Application {
                 ViewType.NAVIGATION, t->new NavigationCtl(appState, new NavigationSrvImpl(), viewCache)
         );
         stage.setScene(new Scene(navigation));
+        logger.info("Starting the application! -----------------------");
         stage.show();
     }
 
@@ -96,7 +98,7 @@ public class DesktopApp extends Application {
 
         // parse command argument to define application run-mode
         isProdMode = getAppIsProdMode(args);
-        System.out.println("DesktopApp.main. DEV mode? " + !isProdMode);
+        logger.debug("DesktopApp.main. DEV mode? " + !isProdMode);
         launch(args);
     }
 
@@ -119,7 +121,7 @@ public class DesktopApp extends Application {
             String mode = cmd.getOptionValue("mode", "prod");
             return !mode.isEmpty() && "prod".equals(mode.toLowerCase());
         } catch (ParseException e) {
-            System.out.println(e.getMessage());
+            logger.debug(e.getMessage());
             formatter.printHelp("jar-name", options);
             System.exit(1);
         }
@@ -172,7 +174,7 @@ public class DesktopApp extends Application {
 
     private Parent buildView(ViewType view, Callback<Class<?>, Object> controllerFactory) throws IOException {
 
-        log.info("BuildView from file: " + view.getFileName());
+        logger.debug("BuildView from: " + view.getFileName());
         FXMLLoader loader = new FXMLLoader(getClass().getResource(view.getFileName()));
         loader.setControllerFactory(controllerFactory);
         return loader.load();
@@ -188,7 +190,7 @@ public class DesktopApp extends Application {
             try {
                 Files.createDirectories(path);
             } catch (IOException ex) {
-                System.out.println("Unable to create directory: " + cachePath);
+                logger.debug("Unable to create directory: " + cachePath);
                 throw new RuntimeException(ex);
             }
         }

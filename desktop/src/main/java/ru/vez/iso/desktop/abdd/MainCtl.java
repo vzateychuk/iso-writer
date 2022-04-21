@@ -13,6 +13,8 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import lombok.extern.java.Log;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.model.UserDetails;
 import ru.vez.iso.desktop.state.AppStateData;
 import ru.vez.iso.desktop.state.AppStateType;
@@ -26,6 +28,8 @@ import java.util.ResourceBundle;
  * */
 @Log
 public class MainCtl implements Initializable {
+
+    private static Logger logger = LogManager.getLogger();
 
     // Таблица "Список операционных дней"
     @FXML private TableView<OperatingDayFX> tblOperatingDays;
@@ -131,7 +135,7 @@ public class MainCtl implements Initializable {
     }
 
     @FXML void onWrite(ActionEvent ev) {
-        log.info("MainCtl.onWrite");
+        logger.debug("MainCtl.onWrite");
     }
 
     //region Private

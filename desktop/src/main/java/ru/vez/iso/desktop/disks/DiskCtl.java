@@ -2,9 +2,13 @@ package ru.vez.iso.desktop.disks;
 
 import javafx.event.ActionEvent;
 import lombok.extern.java.Log;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @Log
 public class DiskCtl {
+
+    private static Logger logger = LogManager.getLogger();
 
     private final DisksSrv service;
 
@@ -13,14 +17,14 @@ public class DiskCtl {
     }
 
     public void onWrite() {
-        log.info("DiskCtl.onWrite");
+        logger.debug("DiskCtl.onWrite");
     }
 
     public void onCheck() {
-        log.info("DiskCtl.onCheck");
+        logger.debug("DiskCtl.onCheck");
     }
 
     public void onWriteCopy(ActionEvent ev) {
-        System.out.println("DiskCtl.onWriteCopy");
+        logger.debug("DiskCtl.onWriteCopy");
     }
 }

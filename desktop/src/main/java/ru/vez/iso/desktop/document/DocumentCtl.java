@@ -15,6 +15,8 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.stage.FileChooser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.state.AppStateData;
 import ru.vez.iso.desktop.state.AppStateType;
 
@@ -30,6 +32,8 @@ import java.util.ResourceBundle;
  * Controller for Document view
  * */
 public class DocumentCtl implements Initializable {
+
+    private static Logger logger = LogManager.getLogger();
 
     @FXML private TableView<DocumentFX> tblDocuments;
     @FXML private TableColumn<DocumentFX, String> branch;
@@ -80,7 +84,7 @@ public class DocumentCtl implements Initializable {
         this.appState.addListener(
             (MapChangeListener<AppStateType, AppStateData>)
                 change -> {
-                  System.out.println("DocumentCtl.initialize: AppState change: " + change.getKey());
+                  logger.debug("DocumentCtl.initialize: AppState change: " + change.getKey());
                   if (AppStateType.DOCUMENTS.equals(change.getKey())) {
                     List<DocumentFX> docs = (List<DocumentFX>) change.getValueAdded().getValue();
                     Platform.runLater(() -> displayData(docs));
@@ -91,7 +95,7 @@ public class DocumentCtl implements Initializable {
 
     // open ChooseFile dialog and fire service to load from file
     @FXML void onOpenFile(ActionEvent ev) {
-        System.out.println("DocumentCtl.onOpenFile");
+        logger.debug("DocumentCtl.onOpenFile");
         FileChooser chooseFile = new FileChooser();
         chooseFile.setInitialDirectory(Paths.get(System.getProperty("user.home")).toFile());
         // TODO extension filter doesn't work
@@ -99,31 +103,31 @@ public class DocumentCtl implements Initializable {
         File file = chooseFile.showOpenDialog(null);
         if (file != null) {
             Path path = file.toPath();
-            System.out.println("Choose: " + path);
+            logger.debug("Choose: " + path);
             // if opened, launch service to read data
             service.loadAsync(path);
         }
     }
 
     @FXML public void onSelectAll(ActionEvent ev) {
-        System.out.println( "DocumentCtl.onSelectAll: " + selectAll.isSelected() );
+        logger.debug( "DocumentCtl.onSelectAll: " + selectAll.isSelected() );
         this.checkBoxes.forEach( cbox -> cbox.setSelected(selectAll.isSelected()) );
     }
 
     @FXML void onDownload(ActionEvent ev) {
-        System.out.println("DocumentCtl.onDownload");
+        logger.debug("DocumentCtl.onDownload");
     }
     @FXML void onSearchDocs(ActionEvent ev) {
-        System.out.println("DocumentCtl.onSearchDocs");
+        logger.debug("DocumentCtl.onSearchDocs");
     }
     @FXML void onWriteCopy(ActionEvent ev) {
-        System.out.println("DocumentCtl.onWriteCopy");
+        logger.debug("DocumentCtl.onWriteCopy");
     }
     @FXML void onPrint(ActionEvent ev) {
-        System.out.println("DocumentCtl.onPrint");
+        logger.debug("DocumentCtl.onPrint");
     }
     @FXML void onCheckHash(ActionEvent ev) {
-        System.out.println("DocumentCtl.onCheckHash");
+        logger.debug("DocumentCtl.onCheckHash");
     }
 
     //region Private
@@ -141,7 +145,7 @@ public class DocumentCtl implements Initializable {
         CheckBox cbox = new CheckBox();
         cbox.selectedProperty().setValue(doc.isSelected());
         cbox.selectedProperty().addListener((ov, old, newVal) -> {
-            System.out.println( (newVal ? "check" : "uncheck") + " docNum: " + doc.getDocNumber() );
+            logger.debug( (newVal ? "check" : "uncheck") + " docNum: " + doc.getDocNumber() );
             doc.setSelected(newVal);
             this.unlockDocumentButtonsIfAnySelected();
         });

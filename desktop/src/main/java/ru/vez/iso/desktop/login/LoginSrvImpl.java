@@ -2,6 +2,8 @@ package ru.vez.iso.desktop.login;
 
 import javafx.collections.ObservableMap;
 import lombok.extern.java.Log;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.model.UserDetails;
 import ru.vez.iso.desktop.state.AppStateData;
 import ru.vez.iso.desktop.state.AppStateType;
@@ -13,6 +15,8 @@ import java.util.concurrent.Future;
 
 @Log
 public class LoginSrvImpl implements LoginSrv {
+
+    private static Logger logger = LogManager.getLogger();
 
     private final ObservableMap<AppStateType, AppStateData> appState;
     private final Executor exec;
@@ -28,11 +32,11 @@ public class LoginSrvImpl implements LoginSrv {
 
         // Avoid multiply pressing
         if (!future.isDone()) {
-            log.info("Async operation in progress, skipping");
+            logger.debug("Async operation in progress, skipping");
             return;
         }
 
-        log.info(String.format("loginAsync, supplyAsync() user: '%s'", username));
+        logger.debug(String.format("loginAsync, supplyAsync() user: '%s'", username));
         future = CompletableFuture.supplyAsync(() -> {
             UtilsHelper.makeDelaySec(1);    // TODO make LOGIN HTTP call
             return "admin".equals(username) && "admin".equals(password)
@@ -41,14 +45,14 @@ public class LoginSrvImpl implements LoginSrv {
         }, exec).thenAccept(userDetails ->
                 appState.put(AppStateType.USER_DETAILS, AppStateData.<UserDetails>builder().value(userDetails).build())
         ).exceptionally((ex) -> {
-            System.out.println("Unable: " + ex.getLocalizedMessage());
+            logger.debug("Unable: " + ex.getLocalizedMessage());
             return null;
         } );
     }
 
     @Override
     public void logout() {
-        log.info("logout");
+        logger.debug("logout");
         appState.put(AppStateType.USER_DETAILS, AppStateData.builder().value(UserDetails.NOT_SIGNED_USER).build());
     }
 }

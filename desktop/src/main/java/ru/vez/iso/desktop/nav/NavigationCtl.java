@@ -8,6 +8,8 @@ import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.ViewType;
 import ru.vez.iso.desktop.model.UserDetails;
 import ru.vez.iso.desktop.state.AppStateData;
@@ -19,6 +21,8 @@ import java.util.Map;
  * Navigation controller. Load all other views/and shows application status
  */
 public class NavigationCtl {
+
+    private static Logger logger = LogManager.getLogger();
 
     @FXML private BorderPane navigationView;
     @FXML private Button disks;
@@ -52,37 +56,37 @@ public class NavigationCtl {
 
     @FXML
     public void initialize() {
-        System.out.println("NavigationCtl.initialize");
+        logger.debug("NavigationCtl.initialize");
         // lock controls in prod mode
         boolean prodMode = (Boolean)appState.get(AppStateType.APP_PROD_MODE).getValue();
         this.lockControls(prodMode);
     }
 
     public void onShowLogin(ActionEvent ev) {
-        System.out.println("NavigationCtl.onShowLogin");
+        logger.debug("NavigationCtl.onShowLogin");
         showView(ViewType.LOGIN);
     }
     public void onShowMain(ActionEvent ev) {
-        System.out.println("NavigationCtl.onShowMain");
+        logger.debug("NavigationCtl.onShowMain");
         showView(ViewType.MAIN);
     }
     public void onShowSettings(ActionEvent ev) {
-        System.out.println("NavigationCtl.onShowSettings");
+        logger.debug("NavigationCtl.onShowSettings");
         showView(ViewType.SETTINGS);
     }
     public void onShowDisks(ActionEvent ev) {
-        System.out.println("NavigationCtl.onShowDisks");
+        logger.debug("NavigationCtl.onShowDisks");
         showView(ViewType.DISK);
     }
     public void onShowDocuments(ActionEvent ev) {
-        System.out.println("NavigationCtl.onShowDocuments");
+        logger.debug("NavigationCtl.onShowDocuments");
         showView(ViewType.DOCUMENTS);
     }
 
     //region Private
 
     private void lockControls(boolean lock) {
-        System.out.println("NavigationCtl.lockControls: " + lock);
+        logger.debug("NavigationCtl.lockControls: " + lock);
         disks.setDisable(lock);
         main.setDisable(lock);
         documents.setDisable(lock);

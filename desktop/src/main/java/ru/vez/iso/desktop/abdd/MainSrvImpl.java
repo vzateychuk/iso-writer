@@ -1,7 +1,8 @@
 package ru.vez.iso.desktop.abdd;
 
 import javafx.collections.ObservableMap;
-import lombok.extern.java.Log;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.state.AppStateData;
 import ru.vez.iso.desktop.state.AppStateType;
 import ru.vez.iso.desktop.utils.UtilsHelper;
@@ -14,8 +15,9 @@ import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-@Log
 public class MainSrvImpl implements MainSrv {
+
+    private static Logger logger = LogManager.getLogger();
 
     private final ObservableMap<AppStateType, AppStateData> appState;
     private final Executor exec;
@@ -31,11 +33,11 @@ public class MainSrvImpl implements MainSrv {
 
         // Avoid multiply invocation
         if (!future.isDone()) {
-            System.out.println("MainSrv.loadOperatingDaysAsync: Async operation in progress, skipping");
+            logger.debug("Async operation in progress, skipping");
             return;
         }
 
-        System.out.println("MainSrv.loadOperatingDaysAsync: getOperatingDaysAsync. period: " + period);
+        logger.debug("getOperatingDaysAsync. period: " + period);
         CompletableFuture<List<OperatingDayFX>> opsDaysFut = CompletableFuture.supplyAsync(() -> getOpsDaysWithDelay(period), exec);
         CompletableFuture<List<StorageUnitFX>> storeUnitsFut = CompletableFuture.supplyAsync(() -> getStorageUnitsWithDelay(period), exec);
 
@@ -50,21 +52,21 @@ public class MainSrvImpl implements MainSrv {
         }).thenAccept(opsDay -> appState.put(
                 AppStateType.OPERATION_DAYS, AppStateData.builder().value(opsDay).build()
         )).exceptionally((ex) -> {
-            System.out.println("Unable: " + ex.getLocalizedMessage());
+            logger.warn("Unable: " + ex.getLocalizedMessage());
             return null;
         } );
     }
 
     @Override
     public void loadISOAsync(String objectId) {
-        System.out.println("MainSrvImpl.loadISOAsync");
+        logger.debug("loadISOAsync");
     }
 
     //region PRIVATE
 
     private List<OperatingDayFX> getOpsDaysWithDelay(int period) {
 
-        log.info("getOpsDaysWithDelay: " + Thread.currentThread().getName());
+        logger.debug("getOpsDaysWithDelay: " + Thread.currentThread().getName());
         UtilsHelper.makeDelaySec(period);    // TODO load from file
         return IntStream.rangeClosed(0, period)
                 .mapToObj(i -> {
@@ -76,7 +78,7 @@ public class MainSrvImpl implements MainSrv {
 
     private List<StorageUnitFX> getStorageUnitsWithDelay(int period) {
 
-        log.info("getStorageUnitsWithDelay: " + Thread.currentThread().getName());
+        logger.debug("getStorageUnitsWithDelay: " + Thread.currentThread().getName());
         try {
             Thread.sleep(period * 1000);
         } catch (InterruptedException e) {
