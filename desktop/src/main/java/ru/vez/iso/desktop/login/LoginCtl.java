@@ -62,11 +62,11 @@ public class LoginCtl {
     //region Private
 
     private void displayLogin(UserDetails userDetails) {
-        String statusMessage = "Logged out";
+        String statusMessage = "Не выполнен вход";
         if (userDetails.isLogged()) {
             username.setText("");
             password.setText("");
-            statusMessage = String.format("Logged as '%s'", userDetails.getUsername());
+            statusMessage = String.format("Выполнен вход '%s'", userDetails.getUsername());
         }
         butLogin.setDisable(userDetails.isLogged());
         butLogout.setDisable(!userDetails.isLogged());
@@ -76,7 +76,7 @@ public class LoginCtl {
 
     private void showAlert(String msg) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Alert");
+        alert.setTitle("Внимание");
         alert.setHeaderText(null);
         alert.setContentText(msg);
         alert.showAndWait();

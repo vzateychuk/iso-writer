@@ -1,4 +1,4 @@
-package ru.vez.iso.desktop.main;
+package ru.vez.iso.desktop.abdd;
 
 import javafx.collections.ObservableMap;
 import lombok.extern.java.Log;
