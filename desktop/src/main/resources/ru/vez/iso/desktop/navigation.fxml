@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.*?>
-<BorderPane fx:id="navigationView" prefHeight="400.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.vez.iso.desktop.nav.NavigationCtl">
+<BorderPane fx:id="navigationView" prefHeight="400.0" prefWidth="800.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.vez.iso.desktop.nav.NavigationCtl">
     <left>
         <Pane prefHeight="371.0" prefWidth="130.0" style="-fx-background-color: #AAB2BD;" BorderPane.alignment="CENTER">
             <children>

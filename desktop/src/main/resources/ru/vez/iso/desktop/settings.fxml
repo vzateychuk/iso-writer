@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<BorderPane prefHeight="300.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.vez.iso.desktop.settings.SettingsCtl">
+<BorderPane prefHeight="300.0" prefWidth="400.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.vez.iso.desktop.settings.SettingsCtl">
     <top>
         <HBox prefHeight="47.0" prefWidth="400.0" BorderPane.alignment="CENTER">
             <children>

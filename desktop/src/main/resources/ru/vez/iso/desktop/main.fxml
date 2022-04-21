@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<SplitPane fx:id="mainView" dividerPositions="0.5066844919786095" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.vez.iso.desktop.main.MainCtl">
+<SplitPane fx:id="mainView" dividerPositions="0.5066844919786095" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.vez.iso.desktop.main.MainCtl">
   <items>
       <VBox prefWidth="400.0">
          <children>

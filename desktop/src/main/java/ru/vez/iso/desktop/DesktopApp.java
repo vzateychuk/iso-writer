@@ -32,6 +32,9 @@ import ru.vez.iso.desktop.state.AppStateData;
 import ru.vez.iso.desktop.state.AppStateType;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -66,9 +69,10 @@ public class DesktopApp extends Application {
         // Build ViewCache with all views
         Map<ViewType, Parent> viewCache = buildViewCache(appState, executorService);
 
-        // Build and show the navigation view
-        stage.setTitle("Writer App" + (isProdMode ? "" : " DEV Mode"));
-        stage.getIcons().add(new Image(DesktopApp.class.getResourceAsStream("image/iso.png")));
+        // create filecache directory
+        createFileCache(SettingType.DOWNLOAD_ISO_PATH.getDefaultValue());
+
+        // Set OnClose confirmation hook
         stage.setOnCloseRequest(e -> {
             e.consume();
             if (isProdMode && !getCloseConfirmation()) {
@@ -77,6 +81,10 @@ public class DesktopApp extends Application {
             executorService.shutdownNow();
             stage.close();
         });
+
+        // Build and show the navigation view
+        stage.setTitle("Writer App" + (isProdMode ? "" : " DEV Mode"));
+        stage.getIcons().add(new Image(DesktopApp.class.getResourceAsStream("image/iso.png")));
         Parent navigation = buildView(
                 ViewType.NAVIGATION, t->new NavigationCtl(appState, new NavigationSrvImpl(), viewCache)
         );
@@ -168,6 +176,22 @@ public class DesktopApp extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(view.getFileName()));
         loader.setControllerFactory(controllerFactory);
         return loader.load();
+    }
+
+
+    /**
+     * Creates the directory along with any of the following parent directories if they do not already exist
+     * */
+    private void createFileCache(String cachePath) {
+        Path path = Paths.get(cachePath);
+        if  (!Files.exists(path)) {
+            try {
+                Files.createDirectories(path);
+            } catch (IOException ex) {
+                System.out.println("Unable to create directory: " + cachePath);
+                throw new RuntimeException(ex);
+            }
+        }
     }
 
     //endregion

@@ -3,7 +3,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<GridPane fx:id="startView" alignment="CENTER" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+<GridPane fx:id="startView" alignment="CENTER" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1">
 
     <Label alignment="CENTER" layoutX="30.0" layoutY="159.0" maxHeight="1.7976931348623157E308" prefWidth="1000.0" text="Приложение ЕСМ АБДД (Desktop)" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="1">
         <font>

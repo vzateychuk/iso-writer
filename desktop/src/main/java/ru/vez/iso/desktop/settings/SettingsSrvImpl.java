@@ -60,7 +60,7 @@ public class SettingsSrvImpl implements SettingsSrv {
             try(InputStream inputStream = new FileInputStream(filePath)) {
                 props.load(inputStream);
             } catch (IOException e) {
-                log.warning(String.format("Unable to read file: '%s'\n%s", filePath, e));
+                log.warning(String.format("Unable to read settings, default settings applied: %s", e));
                 props = getDefaultPropsConfig();
             }
             return props;
