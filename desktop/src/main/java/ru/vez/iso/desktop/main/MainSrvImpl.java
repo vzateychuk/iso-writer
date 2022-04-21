@@ -49,11 +49,10 @@ public class MainSrvImpl implements MainSrv {
                     return opsDaysList;
         }).thenAccept(opsDay -> appState.put(
                 AppStateType.OPERATION_DAYS, AppStateData.builder().value(opsDay).build()
-        )).whenComplete((msg, ex) -> {
-            if (ex!=null) {
-                System.out.println("Unable to login: " + ex.getLocalizedMessage());
-            }
-        });
+        )).exceptionally((ex) -> {
+            System.out.println("Unable: " + ex.getLocalizedMessage());
+            return null;
+        } );
     }
 
     @Override

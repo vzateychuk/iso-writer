@@ -40,11 +40,10 @@ public class LoginSrvImpl implements LoginSrv {
                     : UserDetails.NOT_SIGNED_USER;
         }, exec).thenAccept(userDetails ->
                 appState.put(AppStateType.USER_DETAILS, AppStateData.<UserDetails>builder().value(userDetails).build())
-        ).whenComplete((msg, ex) -> {
-            if (ex!=null) {
-                System.out.println("Unable to login: " + ex.getLocalizedMessage());
-            }
-        });
+        ).exceptionally((ex) -> {
+            System.out.println("Unable: " + ex.getLocalizedMessage());
+            return null;
+        } );
     }
 
     @Override

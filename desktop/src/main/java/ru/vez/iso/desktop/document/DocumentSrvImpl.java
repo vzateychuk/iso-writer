@@ -52,10 +52,9 @@ public class DocumentSrvImpl implements DocumentSrv {
                     .collect(Collectors.toList());
         }, exec).thenAccept(docs ->
                 appState.put(AppStateType.DOCUMENTS, AppStateData.<List<DocumentFX>>builder().value(docs).build())
-        ).whenComplete((msg, ex) -> {
-            if (ex!=null) {
-                System.out.println("Unable to load: " + ex.getLocalizedMessage());
-            }
-        });
+        ).exceptionally((ex) -> {
+            System.out.println("Unable: " + ex.getLocalizedMessage());
+            return null;
+        } );
     }
 }
