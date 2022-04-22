@@ -9,6 +9,7 @@ public enum AppStateType {
     USER_DETAILS,
     OPERATION_DAYS,
     DOCUMENTS,
+    ISO_FILES,
     SETTINGS
 
 }

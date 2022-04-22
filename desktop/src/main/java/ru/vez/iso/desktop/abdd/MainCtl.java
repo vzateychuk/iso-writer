@@ -28,7 +28,7 @@ import java.util.ResourceBundle;
  * */
 @Log
 public class MainCtl implements Initializable {
-
+    //region Properties
     private static Logger logger = LogManager.getLogger();
 
     // Таблица "Список операционных дней"
@@ -58,6 +58,7 @@ public class MainCtl implements Initializable {
     private ObservableList<OperatingDayFX> operatingDays;
     private ObservableList<StorageUnitFX> storageUnits;
     private int period = 1;
+    //endregion
 
     public MainCtl(ObservableMap<AppStateType, AppStateData> appState, MainSrv service) {
         this.service = service;

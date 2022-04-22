@@ -98,7 +98,7 @@ public class DesktopApp extends Application {
 
         // parse command argument to define application run-mode
         isProdMode = getAppIsProdMode(args);
-        logger.debug("DesktopApp.main. DEV mode? " + !isProdMode);
+        logger.debug("Main. DEV mode? " + !isProdMode);
         launch(args);
     }
 
@@ -155,18 +155,18 @@ public class DesktopApp extends Application {
      * Create viewCache Map just to switch between views
      * Application state and services created and injected
      * */
-    private Map<ViewType, Parent> buildViewCache(ObservableMap<AppStateType, AppStateData> state, Executor exec) throws IOException {
+    private Map<ViewType, Parent> buildViewCache(ObservableMap<AppStateType, AppStateData> appState, Executor exec) throws IOException {
 
         Map<ViewType, Parent> viewCache = new HashMap<>();
 
-        viewCache.put(ViewType.LOGIN, buildView(ViewType.LOGIN,t->new LoginCtl(state, new LoginSrvImpl(state, exec))));
-        viewCache.put(ViewType.MAIN, buildView(ViewType.MAIN,t->new MainCtl(state, new MainSrvImpl(state, exec))));
-        viewCache.put(ViewType.DISK, buildView(ViewType.DISK,t->new DiskCtl(new DisksSrvImpl())));
-        viewCache.put(ViewType.DOCUMENTS, buildView(ViewType.DOCUMENTS,t->new DocumentCtl(state, new DocumentSrvImpl(state, exec))));
+        viewCache.put(ViewType.LOGIN, buildView(ViewType.LOGIN,t->new LoginCtl(appState, new LoginSrvImpl(appState, exec))));
+        viewCache.put(ViewType.MAIN, buildView(ViewType.MAIN,t->new MainCtl(appState, new MainSrvImpl(appState, exec))));
+        viewCache.put(ViewType.DISK, buildView(ViewType.DISK,t->new DiskCtl(appState, new DisksSrvImpl(appState, exec))));
+        viewCache.put(ViewType.DOCUMENTS, buildView(ViewType.DOCUMENTS,t->new DocumentCtl(appState, new DocumentSrvImpl(appState, exec))));
 
         // create SettingsView and read application settings async
-        SettingsSrv settingsSrv = new SettingsSrvImpl(state, exec);
-        viewCache.put(ViewType.SETTINGS, buildView( ViewType.SETTINGS, t -> new SettingsCtl(state, settingsSrv)));
+        SettingsSrv settingsSrv = new SettingsSrvImpl(appState, exec);
+        viewCache.put(ViewType.SETTINGS, buildView( ViewType.SETTINGS, t -> new SettingsCtl(appState, settingsSrv)));
         settingsSrv.loadAsync(SettingType.SETTING_FILE.getDefaultValue());
 
         return viewCache;
