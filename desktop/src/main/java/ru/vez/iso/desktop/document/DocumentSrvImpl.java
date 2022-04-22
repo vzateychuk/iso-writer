@@ -40,8 +40,8 @@ public class DocumentSrvImpl implements DocumentSrv {
             logger.debug("DocumentSrv.loadAsync: Async operation in progress, skipping");
             return;
         }
-        logger.debug("DocumentSrvImpl.loadAsync: Read from: " + path.toString());
         future = CompletableFuture.supplyAsync(() -> {
+            logger.debug("DocumentSrvImpl.loadAsync: Read from: " + path.toString());
             UtilsHelper.makeDelaySec(1);    // TODO load from file
             Random rnd = new Random();
             return IntStream.range(0, 10)

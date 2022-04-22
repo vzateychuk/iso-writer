@@ -34,8 +34,8 @@ public class SettingsSrvImpl implements SettingsSrv {
             return;
         }
 
-        logger.debug(String.format("saveAsync to file: '%s'", filePath));
-        CompletableFuture.supplyAsync( () -> {
+        future = CompletableFuture.supplyAsync( () -> {
+            logger.debug(String.format("saveAsync to file: '%s'", filePath));
             Properties p = props;
             try(OutputStream outputStream = new FileOutputStream(filePath)){
                 p.store(outputStream, "ISO Writer");
@@ -46,7 +46,10 @@ public class SettingsSrvImpl implements SettingsSrv {
             return p;
         }, exec).thenAccept(
                 p -> appState.put(AppStateType.SETTINGS, AppStateData.builder().value(p).build())
-        );
+        ).exceptionally((ex) -> {
+            logger.debug("Unable: " + ex.getLocalizedMessage());
+            return null;
+        } );
     }
 
     /**

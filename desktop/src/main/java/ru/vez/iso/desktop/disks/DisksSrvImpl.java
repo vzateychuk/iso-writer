@@ -38,10 +38,12 @@ public class DisksSrvImpl implements DisksSrv {
             return;
         }
 
-        logger.debug("readIsoFileNamesAsync. dir: " + dir);
         future = CompletableFuture.supplyAsync(() -> this.readIsoFileNames(dir), exec)
                 .thenAccept(fileNames ->
-                        appState.put(AppStateType.ISO_FILES, AppStateData.<List<String>>builder().value(fileNames).build())
+                        {
+                            logger.debug("readIsoFileNamesAsync. dir: " + dir);
+                            appState.put(AppStateType.ISO_FILES, AppStateData.<List<String>>builder().value(fileNames).build());
+                        }
                 ).exceptionally((ex) -> {
                     logger.debug("Unable: " + ex.getLocalizedMessage());
                     return null;

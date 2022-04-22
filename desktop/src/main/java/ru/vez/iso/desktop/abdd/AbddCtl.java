@@ -86,6 +86,7 @@ public class AbddCtl implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        logger.debug("initialize");
         // Setting UI
         operatingDays = FXCollections.emptyObservableList();
         tblOperatingDays.setItems(operatingDays);

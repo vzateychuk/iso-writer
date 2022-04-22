@@ -4,7 +4,9 @@ import javafx.application.Platform;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableMap;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.settings.SettingType;
@@ -18,6 +20,10 @@ import java.util.ResourceBundle;
 public class DiskCtl implements Initializable {
 
     private static Logger logger = LogManager.getLogger();
+
+    @FXML private Button butCheck;
+    @FXML private Button butReload;
+    @FXML private Button butWriteCopy;
 
     private final ObservableMap<AppStateType, AppStateData> appState;
     private final DisksSrv service;
@@ -38,17 +44,23 @@ public class DiskCtl implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        logger.debug("initialize: " + location);
+        logger.debug("initialize");
+        onReload(null);
+    }
+
+    @FXML public void onReload(ActionEvent ev) {
+        logger.debug("onReload");
         service.readIsoFileNamesAsync(SettingType.DOWNLOAD_ISO_PATH.getDefaultValue());
     }
 
-    public void onCheck() {
+    @FXML public void onCheck(ActionEvent ev) {
         logger.debug("onCheck");
     }
 
-    public void onWriteCopy(ActionEvent ev) {
+    @FXML public void onWriteCopy(ActionEvent ev) {
         logger.debug("onWriteCopy");
     }
+
 
     //region Private
 

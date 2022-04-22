@@ -36,8 +36,8 @@ public class LoginSrvImpl implements LoginSrv {
             return;
         }
 
-        logger.debug(String.format("loginAsync, supplyAsync() user: '%s'", username));
         future = CompletableFuture.supplyAsync(() -> {
+            logger.debug(String.format("loginAsync, supplyAsync() user: '%s'", username));
             UtilsHelper.makeDelaySec(1);    // TODO make LOGIN HTTP call
             return "admin".equals(username) && "admin".equals(password)
                     ? new UserDetails(username, password, username+"-"+password)

@@ -66,7 +66,7 @@ public class AbddSrvImpl implements AbddSrv {
 
     private List<OperatingDayFX> getOpsDaysWithDelay(int period) {
 
-        logger.debug("getOpsDaysWithDelay: " + Thread.currentThread().getName());
+        logger.debug("getOpsDaysWithDelay, period: " + period);
         UtilsHelper.makeDelaySec(period);    // TODO load from file
         return IntStream.rangeClosed(0, period)
                 .mapToObj(i -> {
@@ -78,7 +78,7 @@ public class AbddSrvImpl implements AbddSrv {
 
     private List<StorageUnitFX> getStorageUnitsWithDelay(int period) {
 
-        logger.debug("getStorageUnitsWithDelay: " + Thread.currentThread().getName());
+        logger.debug("getStorageUnitsWithDelay, period: " + period);
         try {
             Thread.sleep(period * 1000);
         } catch (InterruptedException e) {
