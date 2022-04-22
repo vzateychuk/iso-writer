@@ -19,7 +19,7 @@ import java.util.ResourceBundle;
 
 public class DiskCtl implements Initializable {
 
-    private static Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     @FXML private Button butCheck;
     @FXML private Button butReload;

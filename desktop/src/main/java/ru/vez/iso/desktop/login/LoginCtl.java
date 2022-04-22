@@ -12,6 +12,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import lombok.extern.java.Log;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.model.UserDetails;
 import ru.vez.iso.desktop.state.AppStateData;
 import ru.vez.iso.desktop.state.AppStateType;
@@ -23,6 +25,8 @@ import java.util.function.Predicate;
  * */
 @Log
 public class LoginCtl {
+
+    private static final Logger logger = LogManager.getLogger();
 
     @FXML private TextField username;
     @FXML private TextField password;
@@ -46,6 +50,7 @@ public class LoginCtl {
     }
 
     @FXML public void onLogin(ActionEvent ev) {
+        logger.debug("onLogin");
         service.loginAsync(username.getText(), password.getText());
     }
 
@@ -56,6 +61,7 @@ public class LoginCtl {
     }
 
     @FXML public void onLogout(ActionEvent ev) {
+        logger.debug("onLogout");
         service.logout();
     }
 

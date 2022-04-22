@@ -33,7 +33,7 @@ import java.util.ResourceBundle;
  * */
 public class DocumentCtl implements Initializable {
 
-    private static Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     @FXML private TableView<DocumentFX> tblDocuments;
     @FXML private TableColumn<DocumentFX, String> branch;

@@ -25,7 +25,7 @@ import java.util.ResourceBundle;
  */
 public class NavigationCtl implements Initializable {
 
-    private static Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     @FXML private BorderPane navigationView;
     @FXML private Button disks;

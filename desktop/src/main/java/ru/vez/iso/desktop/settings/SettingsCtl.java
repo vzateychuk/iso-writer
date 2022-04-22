@@ -8,7 +8,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
-import lombok.extern.java.Log;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.state.AppStateData;
 import ru.vez.iso.desktop.state.AppStateType;
 
@@ -17,8 +18,9 @@ import java.util.Properties;
 /**
  * Controller for View "Форма настроек"
  * */
-@Log
 public class SettingsCtl {
+
+    private static final Logger logger = LogManager.getLogger();
 
     @FXML private ToggleGroup opsPeriodGroup;
     @FXML private RadioButton quarterPeriod;
@@ -43,6 +45,7 @@ public class SettingsCtl {
     }
 
     @FXML public void onSave(ActionEvent ev) {
+        logger.debug("onSave");
         Properties props = ((AppStateData<Properties>)appState.get(AppStateType.SETTINGS)).getValue();
         int operDays = parseIntOrDefault(operationDays.getText(), SettingType.OPERATION_DAYS.getDefaultValue());
         props.setProperty(SettingType.OPERATION_DAYS.name(), String.valueOf(operDays));
@@ -115,22 +118,6 @@ public class SettingsCtl {
     }
 
     /**
-     * Read setting's values from controls and return properties
-     *
-     * @return Properties read from controls
-     * */
-/*
-    private Properties readControls() {
-        Properties props = new Properties();
-        int operDays = parseIntOrDefault(operationDays.getText(), SettingType.OPERATION_DAYS.getDefaultValue());
-        props.setProperty(SettingType.OPERATION_DAYS.name(), String.valueOf(operDays));
-        int refreshPrd = parseIntOrDefault(refreshPeriod.getText(), SettingType.REFRESH_PERIOD.getDefaultValue());
-        props.setProperty(SettingType.REFRESH_PERIOD.name(), String.valueOf(refreshPrd));
-        return props;
-    }
-*/
-
-    /**
      * Parse text value to int. Default value will be used if parse fails
      *
      * @param text - value will be parsed to Int
@@ -142,7 +129,7 @@ public class SettingsCtl {
         try{
             val = Integer.parseInt(text);
         } catch (NumberFormatException ex){
-            log.warning("unable to convert to int, value: " + text);
+            logger.warn("unable to convert to int, value: " + text);
         }
         return val;
     }
