@@ -15,7 +15,7 @@ import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class MainSrvImpl implements MainSrv {
+public class AbddSrvImpl implements AbddSrv {
 
     private static Logger logger = LogManager.getLogger();
 
@@ -23,7 +23,7 @@ public class MainSrvImpl implements MainSrv {
     private final Executor exec;
     private Future<Void> future = CompletableFuture.allOf();
 
-    public MainSrvImpl(ObservableMap<AppStateType, AppStateData> appState, Executor exec) {
+    public AbddSrvImpl(ObservableMap<AppStateType, AppStateData> appState, Executor exec) {
         this.appState = appState;
         this.exec = exec;
     }

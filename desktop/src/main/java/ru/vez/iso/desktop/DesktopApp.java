@@ -14,8 +14,8 @@ import javafx.util.Callback;
 import org.apache.commons.cli.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.vez.iso.desktop.abdd.MainCtl;
-import ru.vez.iso.desktop.abdd.MainSrvImpl;
+import ru.vez.iso.desktop.abdd.AbddCtl;
+import ru.vez.iso.desktop.abdd.AbddSrvImpl;
 import ru.vez.iso.desktop.disks.DiskCtl;
 import ru.vez.iso.desktop.disks.DisksSrvImpl;
 import ru.vez.iso.desktop.document.DocumentCtl;
@@ -160,7 +160,7 @@ public class DesktopApp extends Application {
         Map<ViewType, Parent> viewCache = new HashMap<>();
 
         viewCache.put(ViewType.LOGIN, buildView(ViewType.LOGIN,t->new LoginCtl(appState, new LoginSrvImpl(appState, exec))));
-        viewCache.put(ViewType.MAIN, buildView(ViewType.MAIN,t->new MainCtl(appState, new MainSrvImpl(appState, exec))));
+        viewCache.put(ViewType.ABDD_VIEW, buildView(ViewType.ABDD_VIEW, t->new AbddCtl(appState, new AbddSrvImpl(appState, exec))));
         viewCache.put(ViewType.DISK, buildView(ViewType.DISK,t->new DiskCtl(appState, new DisksSrvImpl(appState, exec))));
         viewCache.put(ViewType.DOCUMENTS, buildView(ViewType.DOCUMENTS,t->new DocumentCtl(appState, new DocumentSrvImpl(appState, exec))));
 

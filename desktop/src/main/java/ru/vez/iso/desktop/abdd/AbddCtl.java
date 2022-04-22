@@ -27,7 +27,8 @@ import java.util.ResourceBundle;
  * Controller for: "Выбор Единицы хранения для записи на диск"
  * */
 @Log
-public class MainCtl implements Initializable {
+public class AbddCtl implements Initializable {
+
     //region Properties
     private static Logger logger = LogManager.getLogger();
 
@@ -49,18 +50,18 @@ public class MainCtl implements Initializable {
     @FXML private TableColumn<StorageUnitFX, String> savingDate;
 
     // Кнопки
-    @FXML private Button butWrite;
+    @FXML private Button butIsoLoad;
     @FXML private Button butReload;
 
     private final ObservableMap<AppStateType, AppStateData> appState;
-    private final MainSrv service;
+    private final AbddSrv service;
 
     private ObservableList<OperatingDayFX> operatingDays;
     private ObservableList<StorageUnitFX> storageUnits;
     private int period = 1;
     //endregion
 
-    public MainCtl(ObservableMap<AppStateType, AppStateData> appState, MainSrv service) {
+    public AbddCtl(ObservableMap<AppStateType, AppStateData> appState, AbddSrv service) {
         this.service = service;
         this.appState = appState;
 
@@ -123,7 +124,7 @@ public class MainCtl implements Initializable {
                 });
 
         // disable the "Write" button if none selected
-        butWrite.disableProperty().bind(
+        butIsoLoad.disableProperty().bind(
                 tblStorageUnits.getSelectionModel().selectedItemProperty().isNull()
         );
 
@@ -135,8 +136,8 @@ public class MainCtl implements Initializable {
         service.loadOpsDayAsync(period++);
     }
 
-    @FXML void onWrite(ActionEvent ev) {
-        logger.debug("MainCtl.onWrite");
+    @FXML void onIsoLoad(ActionEvent ev) {
+        logger.debug("onIsoLoad");
     }
 
     //region Private

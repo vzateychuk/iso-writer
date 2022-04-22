@@ -68,7 +68,7 @@ public class NavigationCtl {
     }
     public void onShowMain(ActionEvent ev) {
         logger.debug("NavigationCtl.onShowMain");
-        showView(ViewType.MAIN);
+        showView(ViewType.ABDD_VIEW);
     }
     public void onShowSettings(ActionEvent ev) {
         logger.debug("NavigationCtl.onShowSettings");
