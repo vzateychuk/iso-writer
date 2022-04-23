@@ -1,7 +1,9 @@
 package ru.vez.iso.desktop.disks;
 
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.collections.MapChangeListener;
+import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -28,14 +30,12 @@ public class DiskCtl implements Initializable {
     @FXML private Button butWriteCopy;
 
     @FXML private TableView<IsoFileFX> tblIsoFiles;
-    @FXML private TableColumn<IsoFileFX, String> docNumber;
+    @FXML private TableColumn<IsoFileFX, String> numberSu;
     @FXML private TableColumn<IsoFileFX, String> fileName;
-    @FXML private TableColumn<IsoFileFX, String> dummy;
-
-
 
     private final ObservableMap<AppStateType, AppStateData> appState;
     private final DisksSrv service;
+    private ObservableList<IsoFileFX> isoFilesFX;
 
     public DiskCtl(ObservableMap<AppStateType, AppStateData> appState, DisksSrv service) {
         this.appState = appState;
@@ -45,8 +45,8 @@ public class DiskCtl implements Initializable {
         this.appState.addListener(
                 (MapChangeListener<AppStateType, AppStateData>) change -> {
                     if (AppStateType.ISO_FILES.equals(change.getKey())) {
-                        List<String> data = (List<String>) change.getValueAdded().getValue();
-                        Platform.runLater(()-> displayIsoFiles(data));
+                        List<IsoFileFX> data = (List<IsoFileFX>) change.getValueAdded().getValue();
+                        Platform.runLater(()-> displayData(data));
                     }
                 });
     }
@@ -54,6 +54,24 @@ public class DiskCtl implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         logger.debug("initialize");
+
+        // Setting UI
+        this.isoFilesFX = FXCollections.emptyObservableList();
+        this.tblIsoFiles.setItems(this.isoFilesFX);
+        this.tblIsoFiles.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+        // Column settings
+        numberSu.setCellValueFactory(cell -> cell.getValue().numberSuProperty());
+        fileName.setCellValueFactory(cell -> cell.getValue().fileNameProperty());
+
+        // disable buttons if none selected
+        butWriteCopy.disableProperty().bind(
+                tblIsoFiles.getSelectionModel().selectedItemProperty().isNull()
+        );
+        butCheck.disableProperty().bind(
+                tblIsoFiles.getSelectionModel().selectedItemProperty().isNull()
+        );
+
         onReload(null);
     }
 
@@ -73,9 +91,15 @@ public class DiskCtl implements Initializable {
 
     //region Private
 
-    private void displayIsoFiles(List<String> fileNames) {
-        logger.debug("displayIsoFiles: " + fileNames);
+    private void displayData(List<IsoFileFX> data) {
+        logger.debug("displayIsoFiles: " + data);
+
+        // Set items to the tableView
+        this.isoFilesFX = FXCollections.observableList(data);
+        tblIsoFiles.setItems(this.isoFilesFX);
     }
+
+
 
     //endregion
 

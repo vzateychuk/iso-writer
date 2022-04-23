@@ -4,22 +4,16 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 /**
- * DataModel for Disks View */
+ * DataModel for Disks View
+ * */
 public class IsoFileFX {
 
-    private final StringProperty docNumber;
     private final StringProperty fileName;
+    private final StringProperty numberSu;
 
-    public IsoFileFX(String docNumber, String fileName) {
-        this.docNumber = new SimpleStringProperty(docNumber);
+    public IsoFileFX(String fileName, String numberSu) {
         this.fileName = new SimpleStringProperty(fileName);
-    }
-
-    public String getDocNumber() {
-        return docNumber.get();
-    }
-    public StringProperty docNumberProperty() {
-        return docNumber;
+        this.numberSu = new SimpleStringProperty(numberSu);
     }
 
     public String getFileName() {
@@ -27,6 +21,13 @@ public class IsoFileFX {
     }
     public StringProperty fileNameProperty() {
         return fileName;
+    }
+
+    public String getNumberSu() {
+        return numberSu.get();
+    }
+    public StringProperty numberSuProperty() {
+        return numberSu;
     }
 
 }

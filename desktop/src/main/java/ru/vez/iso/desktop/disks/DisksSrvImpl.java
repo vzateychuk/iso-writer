@@ -42,7 +42,10 @@ public class DisksSrvImpl implements DisksSrv {
                 .thenAccept(fileNames ->
                         {
                             logger.debug("readIsoFileNamesAsync. dir: " + dir);
-                            appState.put(AppStateType.ISO_FILES, AppStateData.<List<String>>builder().value(fileNames).build());
+                            List<IsoFileFX> isoListFX = fileNames.stream()
+                                    .map(fname -> new IsoFileFX("docNumber", fname))
+                                    .collect(Collectors.toList());
+                            appState.put(AppStateType.ISO_FILES, AppStateData.<List<IsoFileFX>>builder().value(isoListFX).build());
                         }
                 ).exceptionally((ex) -> {
                     logger.debug("Unable: " + ex.getLocalizedMessage());
