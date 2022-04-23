@@ -7,6 +7,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.settings.SettingType;
@@ -24,6 +26,13 @@ public class DiskCtl implements Initializable {
     @FXML private Button butCheck;
     @FXML private Button butReload;
     @FXML private Button butWriteCopy;
+
+    @FXML private TableView<IsoFileFX> tblIsoFiles;
+    @FXML private TableColumn<IsoFileFX, String> docNumber;
+    @FXML private TableColumn<IsoFileFX, String> fileName;
+    @FXML private TableColumn<IsoFileFX, String> dummy;
+
+
 
     private final ObservableMap<AppStateType, AppStateData> appState;
     private final DisksSrv service;
