@@ -74,8 +74,8 @@ public class OperatingDayFX {
     public boolean isEdited() {
         return edited.get();
     }
-    public SimpleBooleanProperty editedProperty() {
-        return edited;
+    public SimpleStringProperty editedProperty() {
+        return new SimpleStringProperty(edited.get() ? "Да" : "");
     }
 
     public List<StorageUnitFX> getStorageUnits() {

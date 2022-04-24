@@ -1,6 +1,8 @@
 package ru.vez.iso.desktop.abdd;
 
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
@@ -12,6 +14,7 @@ import javafx.scene.control.*;
 import lombok.extern.java.Log;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.vez.iso.desktop.document.DocumentFX;
 import ru.vez.iso.desktop.model.UserDetails;
 import ru.vez.iso.desktop.settings.SettingType;
 import ru.vez.iso.desktop.state.AppStateData;
@@ -41,7 +44,7 @@ public class AbddCtl implements Initializable {
     @FXML private TableColumn<OperatingDayFX, TypeSu> typeSu;
     @FXML private TableColumn<OperatingDayFX, String> status;
     @FXML private TableColumn<OperatingDayFX, String> createdAt;
-    @FXML private TableColumn<OperatingDayFX, Boolean> edited;
+    @FXML private TableColumn<OperatingDayFX, String> edited;
 
     // Таблица "Список единиц хранения"
     @FXML private TableView<StorageUnitFX> tblStorageUnits;
@@ -120,8 +123,7 @@ public class AbddCtl implements Initializable {
         savingDate.setCellValueFactory(cell -> cell.getValue().savingDateProperty());
 
         // add listener to select master table should refresh slave table
-        tblOperatingDays.getSelectionModel().selectedItemProperty()
-            .addListener(
+        tblOperatingDays.getSelectionModel().selectedItemProperty().addListener(
                 (o, old, newValue) -> {
                     if (newValue != null) {
                         this.displayStorageUnits(newValue.getStorageUnits());
