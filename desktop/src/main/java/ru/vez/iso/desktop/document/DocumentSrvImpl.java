@@ -44,12 +44,16 @@ public class DocumentSrvImpl implements DocumentSrv {
             logger.debug("DocumentSrvImpl.loadAsync: Read from: " + path.toString());
             UtilsHelper.makeDelaySec(1);    // TODO load from file
             Random rnd = new Random();
-            return IntStream.range(0, 10)
+            List<DocType> types = Collections.unmodifiableList(Arrays.asList(DocType.values()));
+            List<BranchType> branches = Collections.unmodifiableList(Arrays.asList(BranchType.values()));
+            List<DocStatus> statuses = Collections.unmodifiableList(Arrays.asList(DocStatus.values()));
+            return IntStream.range(0, 20)
                     .mapToObj(i -> {
-                        List<DocType> types = Collections.unmodifiableList(Arrays.asList(DocType.values()));
-                        LocalDate date = LocalDate.of(1910+i, i+1, i+1);
-                        DocumentFX doc = new DocumentFX(path.toString() + "-"+i, "docNumber-"+i, i, date,
-                                types.get(rnd.nextInt(types.size())), date, BranchType.REGIONAL_BRANCH, DocStatus.UNKNOWN_STATE);
+                        LocalDate date = LocalDate.of(1910+i, i%12+1, i%12+1);
+                        DocumentFX doc = new DocumentFX(path + "-"+i, "docNumber-"+i, i, date,
+                                types.get(rnd.nextInt(types.size())), date,
+                                branches.get(rnd.nextInt(branches.size())),
+                                statuses.get(rnd.nextInt(statuses.size())) );
                         doc.setSelected(i%2==0);
                         return doc;
                     })

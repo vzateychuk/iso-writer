@@ -11,8 +11,8 @@ import java.util.Objects;
  * */
 public class DocumentFX {
 
-    private final String objectId;
-    private final StringProperty docNumber;
+    private final String objectId;              // Уникальный идентификатор из вебсервиса
+    private final StringProperty docNumber;     // Уникальный номер ЕХ
     private final ObjectProperty<Double> sumDoc;
     private final ObjectProperty<LocalDate> operDayDate;
     private final ObjectProperty<DocType> docType;

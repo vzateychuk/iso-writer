@@ -8,6 +8,7 @@ package ru.vez.iso.desktop.abdd;
 public enum StorageUnitStatus {
 
     DRAFT("Черновик"),				// Черновик
+    PREPARING_RECORDING("Готовятся для записи"),
     READY_TO_RECORDING("Готово для записи на внешний носитель"),
     RECORDED("Записано на внешний носитель");
 

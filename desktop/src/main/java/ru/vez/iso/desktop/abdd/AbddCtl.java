@@ -1,7 +1,8 @@
 package ru.vez.iso.desktop.abdd;
 
 import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableListValue;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.MapChangeListener;
@@ -14,7 +15,6 @@ import javafx.scene.control.*;
 import lombok.extern.java.Log;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.vez.iso.desktop.document.DocumentFX;
 import ru.vez.iso.desktop.model.UserDetails;
 import ru.vez.iso.desktop.settings.SettingType;
 import ru.vez.iso.desktop.state.AppStateData;
@@ -22,9 +22,7 @@ import ru.vez.iso.desktop.state.AppStateType;
 import ru.vez.iso.desktop.utils.UtilsHelper;
 
 import java.net.URL;
-import java.util.List;
-import java.util.Properties;
-import java.util.ResourceBundle;
+import java.util.*;
 
 /**
  * Controller for: "Выбор Единицы хранения для записи на диск"
@@ -59,12 +57,20 @@ public class AbddCtl implements Initializable {
     @FXML private Button butIsoLoad;
     @FXML private Button butReload;
 
+    // RadioButtons - filter StoreUnits
+    @FXML private ToggleGroup filterGroup;
+    @FXML private RadioButton exShowAll;
+    @FXML private RadioButton exShowAvail;
+    @FXML private RadioButton exShowPrep;
+
     private final ObservableMap<AppStateType, AppStateData> appState;
     private final AbddSrv service;
 
     private ObservableList<OperatingDayFX> operatingDays;
     private ObservableList<StorageUnitFX> storageUnits;
+    private List<StorageUnitStatus> exStatusesFilter;
     private int period = 1;
+
     //endregion
 
     public AbddCtl(ObservableMap<AppStateType, AppStateData> appState, AbddSrv service) {
@@ -122,15 +128,15 @@ public class AbddCtl implements Initializable {
         storageUnitStatus.setCellValueFactory(cell -> cell.getValue().storageUnitStatusProperty());
         savingDate.setCellValueFactory(cell -> cell.getValue().savingDateProperty());
 
-        // add listener to select master table should refresh slave table
+        // add listener to select OpDays table should refresh slave table
         tblOperatingDays.getSelectionModel().selectedItemProperty().addListener(
                 (o, old, newValue) -> {
                     if (newValue != null) {
-                        this.displayStorageUnits(newValue.getStorageUnits());
+                        this.filterAndDisplayStorageUnits(newValue.getStorageUnits(), exStatusesFilter);
                     }
                 });
 
-        // disable the "Write" button if none selected
+        // disable the "Write" button if no record selected
         butIsoLoad.disableProperty().bind(
                 tblStorageUnits.getSelectionModel().selectedItemProperty().isNull()
         );
@@ -150,6 +156,19 @@ public class AbddCtl implements Initializable {
                     }
                 });
 
+        // listen for StoreUnitsStatus filter change (RadioButtons)
+        filterGroup.selectedToggleProperty().addListener((o, old, newVal) -> {
+            logger.debug("storageUnits filter: " + ((RadioButton) newVal).getText());
+            if (exShowAvail == newVal) {
+                exStatusesFilter = Collections.unmodifiableList(Arrays.asList(StorageUnitStatus.READY_TO_RECORDING, StorageUnitStatus.RECORDED));
+            } else if (exShowPrep == newVal) {
+                exStatusesFilter = Collections.singletonList(StorageUnitStatus.PREPARING_RECORDING);
+            } else {
+                exStatusesFilter = null;
+            }
+            // re-filter storageUnits and display
+            filterAndDisplayStorageUnits(storageUnits, exStatusesFilter);
+        });
     }
 
 
@@ -175,6 +194,7 @@ public class AbddCtl implements Initializable {
 
     /**
      * Refresh master OperatingDays table
+     * Must be executed in Main Application Thread only!
      */
     private void displayOperatingDays(List<OperatingDayFX> operatingDays) {
         this.operatingDays = FXCollections.observableList(operatingDays);
@@ -183,10 +203,19 @@ public class AbddCtl implements Initializable {
 
     /**
      * Refresh slave storageUnits table
+     * Must be executed in Main Application Thread only!
      */
-    private void displayStorageUnits(List<StorageUnitFX> storageUnits) {
+    private void filterAndDisplayStorageUnits(List<StorageUnitFX> storageUnits, List<StorageUnitStatus> filter) {
         this.storageUnits = FXCollections.observableList(storageUnits);
-        tblStorageUnits.setItems(this.storageUnits);
+        // filter storageUnits if filter is not null
+        ObservableList<StorageUnitFX> filtered =
+                filter == null
+                        ? this.storageUnits
+                        : this.storageUnits.filtered(su -> filter.stream().anyMatch(f -> f.equals(su.getStorageUnitStatus())));
+        // disable the storageUnits filter (radio-buttons) if no data available
+        exShowAvail.setDisable(filtered.size() == 0);
+        exShowPrep.setDisable(filtered.size() == 0);
+        this.tblStorageUnits.setItems(filtered);
     }
 
     //endregion

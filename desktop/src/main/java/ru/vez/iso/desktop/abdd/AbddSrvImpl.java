@@ -8,7 +8,10 @@ import ru.vez.iso.desktop.state.AppStateType;
 import ru.vez.iso.desktop.utils.UtilsHelper;
 
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
@@ -59,6 +62,8 @@ public class AbddSrvImpl implements AbddSrv {
 
     @Override
     public void loadISOAsync(String objectId) {
+
+        // TODO load iso files to file-cache
         logger.debug("loadISOAsync");
     }
 
@@ -66,7 +71,7 @@ public class AbddSrvImpl implements AbddSrv {
 
     private List<OperatingDayFX> getOpsDaysWithDelay(int period) {
 
-        logger.debug("getOpsDaysWithDelay, period: " + period);
+        logger.debug("getOpsDaysWithDelay");
         UtilsHelper.makeDelaySec(1);    // TODO load from file
         return IntStream.rangeClosed(0, period)
                 .mapToObj(i -> {
@@ -78,19 +83,21 @@ public class AbddSrvImpl implements AbddSrv {
 
     private List<StorageUnitFX> getStorageUnitsWithDelay(int period) {
 
-        logger.debug("getStorageUnitsWithDelay, period: " + period);
+        logger.debug("getStorageUnitsWithDelay");
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return IntStream.rangeClosed(0, period * 4)
+        Random rnd = new Random();
+        List<StorageUnitStatus> statuses = Collections.unmodifiableList(Arrays.asList(StorageUnitStatus.values()));
+        return IntStream.rangeClosed(0, period * 10)
                 .mapToObj(i -> {
                     LocalDate date = LocalDate.of(1900+i, i%12+1, i%12+1);
-                    String opsDayId = String.valueOf(i/4);
+                    String opsDayId = String.valueOf(i%period);
                     return new StorageUnitFX(
                             String.valueOf(i), opsDayId, "numberSu-" + i,
-                            date, i, date, StorageUnitStatus.DRAFT, date
+                            date, i, date, statuses.get(rnd.nextInt(statuses.size())), date
                     );
                 })
                 .collect(Collectors.toList());

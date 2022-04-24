@@ -22,7 +22,7 @@
                   </ImageView>
                </graphic>
                <tooltip>
-                  <Tooltip text="Выбрать диск с документами" />
+                  <Tooltip text="Выбрать диск с документами (файл Dev.zip)" />
                </tooltip>
             </Button>
             <Button fx:id="butDownload" disable="true" layoutX="10.0" layoutY="12.0" mnemonicParsing="false" onAction="#onDownload">

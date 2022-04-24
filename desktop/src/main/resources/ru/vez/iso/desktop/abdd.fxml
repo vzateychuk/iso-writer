@@ -2,9 +2,9 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -66,11 +66,11 @@
             </GridPane>
             <TableView fx:id="tblOperatingDays" maxHeight="1.7976931348623157E308" VBox.vgrow="ALWAYS">
               <columns>
-                  <TableColumn fx:id="operatingDay" editable="false" minWidth="50.0" prefWidth="100.0" text="Дата опер.дня" />
-                  <TableColumn fx:id="typeSu" editable="false" text="Вид EX" />
-                  <TableColumn fx:id="edited" editable="false" text="Исправлен?" />
-                  <TableColumn fx:id="status" editable="false" text="Статус" />
-                  <TableColumn fx:id="createdAt" editable="false" minWidth="50.0" prefWidth="100.0" text="Создан" />
+                  <TableColumn fx:id="operatingDay" editable="false" maxWidth="160.0" minWidth="80.0" text="Дата опер.дня" />
+                  <TableColumn fx:id="typeSu" editable="false" maxWidth="80.0" minWidth="40.0" prefWidth="40.0" text="Вид EX" />
+                  <TableColumn fx:id="edited" editable="false" maxWidth="80.0" minWidth="40.0" prefWidth="40.0" text="Исправлен?" />
+                  <TableColumn fx:id="status" editable="false" minWidth="80.0" text="Статус" />
+                  <TableColumn fx:id="createdAt" editable="false" maxWidth="160.0" minWidth="80.0" text="Создан" />
               </columns>
             </TableView>
          </children>
@@ -93,7 +93,7 @@
                   </Label>
                   <HBox maxHeight="200.0" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
                      <children>
-                        <RadioButton mnemonicParsing="false" selected="true" text="Все">
+                        <RadioButton fx:id="exShowAll" mnemonicParsing="false" selected="true" text="Все">
                            <font>
                               <Font name="Arial Black" size="12.0" />
                            </font>
@@ -107,7 +107,7 @@
                               <Tooltip text="Показать все EX" />
                            </tooltip>
                         </RadioButton>
-                        <RadioButton mnemonicParsing="false" text="Доступные" toggleGroup="$filterGroup">
+                        <RadioButton fx:id="exShowAvail" disable="true" mnemonicParsing="false" text="Доступные" toggleGroup="$filterGroup">
                            <font>
                               <Font name="Arial Black" size="12.0" />
                            </font>
@@ -115,10 +115,10 @@
                               <Insets bottom="5.0" left="5.0" right="5.0" top="10.0" />
                            </padding>
                            <tooltip>
-                              <Tooltip text="Показать только доступные для записи" />
+                              <Tooltip text="Показать только со статусами: &quot;Готово для записи на внешний носитель&quot;, &quot;Записано на внешний носитель&quot;" />
                            </tooltip>
                         </RadioButton>
-                        <RadioButton mnemonicParsing="false" text="Готовятся" toggleGroup="$filterGroup">
+                        <RadioButton fx:id="exShowPrep" disable="true" mnemonicParsing="false" text="Готовятся" toggleGroup="$filterGroup">
                            <padding>
                               <Insets bottom="5.0" left="5.0" right="5.0" top="10.0" />
                            </padding>
@@ -126,32 +126,39 @@
                               <Font name="Arial Black" size="12.0" />
                            </font>
                            <tooltip>
-                              <Tooltip text="Показать только &quot;Готовятся для записи&quot;" />
+                              <Tooltip text="Показать только со статусом: &quot;Готовятся для записи&quot;" />
                            </tooltip>
                         </RadioButton>
+                        <Separator orientation="VERTICAL" prefHeight="32.0" prefWidth="40.0" />
+                        <Button fx:id="butIsoLoad" mnemonicParsing="false" onAction="#onIsoLoad">
+                           <tooltip>
+                              <Tooltip text="Загрузить ISO образ" />
+                           </tooltip>
+                           <font>
+                              <Font name="Arial Black" size="12.0" />
+                           </font>
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@image/download.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
                      </children>
                   </HBox>
                </children>
             </GridPane>
              <TableView fx:id="tblStorageUnits" maxHeight="1.7976931348623157E308" VBox.vgrow="ALWAYS">
               <columns>
-                  <TableColumn fx:id="numberSu" minWidth="50.0" prefWidth="75.0" text="Номер EX" />
-                  <TableColumn fx:id="creationDate" prefWidth="100.0" text="Создан" />
-                  <TableColumn fx:id="dataSize" editable="false" minWidth="50.0" prefWidth="100.0" text="Размер ISO" />
-                  <TableColumn fx:id="storageDate" prefWidth="75.0" text="Срок хранения" />
-                  <TableColumn fx:id="storageUnitStatus" prefWidth="75.0" text="Статус EX" />
-                  <TableColumn fx:id="savingDate" prefWidth="75.0" text="Дата записи" />
+                  <TableColumn fx:id="numberSu" maxWidth="200.0" minWidth="100.0" prefWidth="100.0" text="Номер EX" />
+                  <TableColumn fx:id="creationDate" maxWidth="160.0" minWidth="80.0" text="Создан" />
+                  <TableColumn fx:id="dataSize" editable="false" maxWidth="80.0" minWidth="40.0" text="Размер ISO" />
+                  <TableColumn fx:id="storageDate" maxWidth="160.0" minWidth="80.0" text="Срок хранения" />
+                  <TableColumn fx:id="storageUnitStatus" minWidth="80.0" text="Статус EX" />
+                  <TableColumn fx:id="savingDate" maxWidth="160.0" minWidth="80.0" text="Дата записи" />
               </columns>
             </TableView>
-            <ButtonBar buttonMinWidth="80.0" maxHeight="40.0" minHeight="40.0">
-               <buttons>
-                  <Button fx:id="butIsoLoad" onAction="#onIsoLoad" text="Загрузить ISO" ButtonBar.buttonData="LEFT">
-                     <font>
-                        <Font name="Arial Black" size="12.0" />
-                     </font>
-                  </Button>
-               </buttons>
-            </ButtonBar>
          </children>
       </VBox>
   </items>
