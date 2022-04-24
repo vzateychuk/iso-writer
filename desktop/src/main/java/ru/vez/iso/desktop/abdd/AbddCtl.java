@@ -141,16 +141,24 @@ public class AbddCtl implements Initializable {
                         int filterDays = UtilsHelper.parseIntOrDefault(
                                 props.getProperty(AppStateType.OPERATION_DAYS.name()), SettingType.OPERATION_DAYS.getDefaultValue()
                         );
-                        Platform.runLater( ()->operationDays.setText(String.valueOf(filterDays)) );
+                        Platform.runLater( ()-> {
+                            operationDays.setText(String.valueOf(filterDays));
+                            this.onReload(null);
+                        } );
                     }
                 });
 
-        this.onReload(null);
     }
 
 
     @FXML public void onReload(ActionEvent ev) {
-        service.loadOpsDayAsync(period++);
+        int days = period++;
+        try {
+            days = Integer.parseUnsignedInt(operationDays.getText());
+        } catch ( NumberFormatException ex) {
+            logger.warn("can't parse value to int: " + operationDays.getText());
+        }
+        service.loadOpsDayAsync(days);
     }
 
     @FXML void onIsoLoad(ActionEvent ev) {

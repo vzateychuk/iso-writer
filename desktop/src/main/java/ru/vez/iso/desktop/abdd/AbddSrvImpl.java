@@ -67,10 +67,10 @@ public class AbddSrvImpl implements AbddSrv {
     private List<OperatingDayFX> getOpsDaysWithDelay(int period) {
 
         logger.debug("getOpsDaysWithDelay, period: " + period);
-        UtilsHelper.makeDelaySec(period);    // TODO load from file
+        UtilsHelper.makeDelaySec(1);    // TODO load from file
         return IntStream.rangeClosed(0, period)
                 .mapToObj(i -> {
-                    LocalDate date = LocalDate.of(1900+i, i+1, i+1);
+                    LocalDate date = LocalDate.of(1900+i, i%12+1, i%12+1);
                     return new OperatingDayFX(String.valueOf(i), date, TypeSu.CD, OpsDayStatus.READY_TO_RECORDING, date, i%2==0);
                 })
                 .collect(Collectors.toList());
@@ -80,14 +80,14 @@ public class AbddSrvImpl implements AbddSrv {
 
         logger.debug("getStorageUnitsWithDelay, period: " + period);
         try {
-            Thread.sleep(period * 1000);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return IntStream.rangeClosed(0, period * 2)
+        return IntStream.rangeClosed(0, period * 4)
                 .mapToObj(i -> {
-                    LocalDate date = LocalDate.of(1900+i, i+1, i+1);
-                    String opsDayId = String.valueOf((int)(i/2));
+                    LocalDate date = LocalDate.of(1900+i, i%12+1, i%12+1);
+                    String opsDayId = String.valueOf(i/4);
                     return new StorageUnitFX(
                             String.valueOf(i), opsDayId, "numberSu-" + i,
                             date, i, date, StorageUnitStatus.DRAFT, date
