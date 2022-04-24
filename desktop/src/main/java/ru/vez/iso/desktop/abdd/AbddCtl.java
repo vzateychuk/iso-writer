@@ -8,19 +8,19 @@ import javafx.collections.ObservableMap;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.SelectionMode;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import lombok.extern.java.Log;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.model.UserDetails;
+import ru.vez.iso.desktop.settings.SettingType;
 import ru.vez.iso.desktop.state.AppStateData;
 import ru.vez.iso.desktop.state.AppStateType;
+import ru.vez.iso.desktop.utils.UtilsHelper;
 
 import java.net.URL;
 import java.util.List;
+import java.util.Properties;
 import java.util.ResourceBundle;
 
 /**
@@ -31,6 +31,9 @@ public class AbddCtl implements Initializable {
 
     //region Properties
     private static Logger logger = LogManager.getLogger();
+
+    // Фильтр "Список операционных дней"
+    @FXML private TextField operationDays;
 
     // Таблица "Список операционных дней"
     @FXML private TableView<OperatingDayFX> tblOperatingDays;
@@ -87,7 +90,8 @@ public class AbddCtl implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         logger.debug("initialize");
-        // Setting UI
+
+        // Setting table Operation Days
         operatingDays = FXCollections.emptyObservableList();
         tblOperatingDays.setItems(operatingDays);
         tblOperatingDays.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -128,6 +132,18 @@ public class AbddCtl implements Initializable {
         butIsoLoad.disableProperty().bind(
                 tblStorageUnits.getSelectionModel().selectedItemProperty().isNull()
         );
+
+        // load default filter: operation's days period
+        this.appState.addListener(
+                (MapChangeListener<AppStateType, AppStateData>) change -> {
+                    if (AppStateType.SETTINGS.equals(change.getKey())) {
+                        Properties props = ((AppStateData<Properties>)appState.get(AppStateType.SETTINGS)).getValue();
+                        int filterDays = UtilsHelper.parseIntOrDefault(
+                                props.getProperty(AppStateType.OPERATION_DAYS.name()), SettingType.OPERATION_DAYS.getDefaultValue()
+                        );
+                        Platform.runLater( ()->operationDays.setText(String.valueOf(filterDays)) );
+                    }
+                });
 
         this.onReload(null);
     }

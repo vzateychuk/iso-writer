@@ -99,8 +99,9 @@ public class DocumentCtl implements Initializable {
         logger.debug("DocumentCtl.onOpenFile");
         FileChooser chooseFile = new FileChooser();
         chooseFile.setInitialDirectory(Paths.get(System.getProperty("user.home")).toFile());
-        // TODO extension filter doesn't work
-        chooseFile.setSelectedExtensionFilter(new FileChooser.ExtensionFilter("DEV.ZIP", "*.zip"));
+        chooseFile.getExtensionFilters().clear();
+        chooseFile.getExtensionFilters().add(new FileChooser.ExtensionFilter("DEV.ZIP", "*.zip"));
+
         File file = chooseFile.showOpenDialog(null);
         if (file != null) {
             Path path = file.toPath();

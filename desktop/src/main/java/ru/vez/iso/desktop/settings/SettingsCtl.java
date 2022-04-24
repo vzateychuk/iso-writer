@@ -12,6 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.state.AppStateData;
 import ru.vez.iso.desktop.state.AppStateType;
+import ru.vez.iso.desktop.utils.UtilsHelper;
 
 import java.util.Properties;
 
@@ -46,10 +47,10 @@ public class SettingsCtl {
 
     @FXML public void onSave(ActionEvent ev) {
         logger.debug("onSave");
-        Properties props = ((AppStateData<Properties>)appState.get(AppStateType.SETTINGS)).getValue();
-        int operDays = parseIntOrDefault(operationDays.getText(), SettingType.OPERATION_DAYS.getDefaultValue());
+        Properties props = new Properties(((AppStateData<Properties>)appState.get(AppStateType.SETTINGS)).getValue());
+        int operDays = UtilsHelper.parseIntOrDefault(operationDays.getText(), SettingType.OPERATION_DAYS.getDefaultValue());
         props.setProperty(SettingType.OPERATION_DAYS.name(), String.valueOf(operDays));
-        int refreshPrd = parseIntOrDefault(refreshPeriod.getText(), SettingType.REFRESH_PERIOD.getDefaultValue());
+        int refreshPrd = UtilsHelper.parseIntOrDefault(refreshPeriod.getText(), SettingType.REFRESH_PERIOD.getDefaultValue());
         props.setProperty(SettingType.REFRESH_PERIOD.name(), String.valueOf(refreshPrd));
         service.saveAsync(props, SettingType.SETTING_FILE.getDefaultValue());
     }
@@ -106,7 +107,7 @@ public class SettingsCtl {
             default:
                 onCustomChoice(null);
                 customPeriod.setSelected(true);
-                operDays = parseIntOrDefault(sday, SettingType.OPERATION_DAYS.getDefaultValue());
+                operDays = UtilsHelper.parseIntOrDefault(sday, SettingType.OPERATION_DAYS.getDefaultValue());
         }
         operationDays.setText( String.valueOf(operDays) );
         refreshPeriod.setText(
@@ -115,23 +116,6 @@ public class SettingsCtl {
                         SettingType.REFRESH_PERIOD.getDefaultValue()
                 )
         );
-    }
-
-    /**
-     * Parse text value to int. Default value will be used if parse fails
-     *
-     * @param text - value will be parsed to Int
-     * @param defaultValue - value will be parsed if the text fails to parse
-     * @return parsed value
-     * */
-    private int parseIntOrDefault(String text, String defaultValue) {
-        int val = Integer.parseInt(defaultValue);
-        try{
-            val = Integer.parseInt(text);
-        } catch (NumberFormatException ex){
-            logger.warn("unable to convert to int, value: " + text);
-        }
-        return val;
     }
 
     //endregion
