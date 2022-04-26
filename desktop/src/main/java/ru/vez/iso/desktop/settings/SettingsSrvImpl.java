@@ -3,8 +3,8 @@ package ru.vez.iso.desktop.settings;
 import javafx.collections.ObservableMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.vez.iso.desktop.state.AppStateData;
-import ru.vez.iso.desktop.state.AppStateType;
+import ru.vez.iso.desktop.shared.AppStateData;
+import ru.vez.iso.desktop.shared.AppStateType;
 
 import java.io.*;
 import java.util.Properties;
@@ -15,7 +15,7 @@ import java.util.concurrent.Future;
 public class SettingsSrvImpl implements SettingsSrv {
 
     private static Logger logger = LogManager.getLogger();
-    
+
     private final ObservableMap<AppStateType, AppStateData> appState;
     private final Executor exec;
     private Future<Void> future = CompletableFuture.allOf();

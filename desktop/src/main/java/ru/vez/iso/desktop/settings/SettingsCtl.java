@@ -10,8 +10,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.vez.iso.desktop.state.AppStateData;
-import ru.vez.iso.desktop.state.AppStateType;
+import ru.vez.iso.desktop.shared.AppStateData;
+import ru.vez.iso.desktop.shared.AppStateType;
+import ru.vez.iso.desktop.shared.SettingType;
 import ru.vez.iso.desktop.utils.UtilsHelper;
 
 import java.util.Properties;

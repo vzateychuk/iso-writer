@@ -130,7 +130,7 @@
                            </tooltip>
                         </RadioButton>
                         <Separator orientation="VERTICAL" prefHeight="32.0" prefWidth="40.0" />
-                        <Button fx:id="butIsoLoad" mnemonicParsing="false" onAction="#onIsoLoad">
+                        <Button fx:id="butIsoLoad" mnemonicParsing="false" onAction="#onStartIsoLoad">
                            <tooltip>
                               <Tooltip text="Загрузить ISO образ" />
                            </tooltip>

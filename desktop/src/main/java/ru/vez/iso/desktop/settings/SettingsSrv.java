@@ -1,5 +1,7 @@
 package ru.vez.iso.desktop.settings;
 
+import ru.vez.iso.desktop.shared.SettingType;
+
 import java.util.Arrays;
 import java.util.Properties;
 

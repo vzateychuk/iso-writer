@@ -17,8 +17,8 @@ import javafx.scene.control.TableView;
 import javafx.stage.FileChooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.vez.iso.desktop.state.AppStateData;
-import ru.vez.iso.desktop.state.AppStateType;
+import ru.vez.iso.desktop.shared.AppStateData;
+import ru.vez.iso.desktop.shared.AppStateType;
 
 import java.io.File;
 import java.net.URL;
@@ -85,7 +85,6 @@ public class DocumentCtl implements Initializable {
         this.appState.addListener(
             (MapChangeListener<AppStateType, AppStateData>)
                 change -> {
-                  logger.debug("DocumentCtl.initialize: AppState change: " + change.getKey());
                   if (AppStateType.DOCUMENTS.equals(change.getKey())) {
                     List<DocumentFX> docs = (List<DocumentFX>) change.getValueAdded().getValue();
                     Platform.runLater(() -> displayData(docs));

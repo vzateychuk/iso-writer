@@ -5,7 +5,7 @@ public interface AbddSrv {
      /**
       * Загрузить список операционных дней и StorageUnits
       * */
-     void loadOpsDayAsync(int period);
+     void readOpsDayAsync(int period);
 
      /**
       * Загрузить ISO файл в локальный файловый кэш

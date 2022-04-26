@@ -1,9 +1,6 @@
 package ru.vez.iso.desktop.abdd;
 
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableListValue;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
@@ -16,9 +13,9 @@ import lombok.extern.java.Log;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.model.UserDetails;
-import ru.vez.iso.desktop.settings.SettingType;
-import ru.vez.iso.desktop.state.AppStateData;
-import ru.vez.iso.desktop.state.AppStateType;
+import ru.vez.iso.desktop.shared.SettingType;
+import ru.vez.iso.desktop.shared.AppStateData;
+import ru.vez.iso.desktop.shared.AppStateType;
 import ru.vez.iso.desktop.utils.UtilsHelper;
 
 import java.net.URL;
@@ -179,11 +176,13 @@ public class AbddCtl implements Initializable {
         } catch ( NumberFormatException ex) {
             logger.warn("can't parse value to int: " + operationDays.getText());
         }
-        service.loadOpsDayAsync(days);
+        service.readOpsDayAsync(days);
     }
 
-    @FXML void onIsoLoad(ActionEvent ev) {
-        logger.debug("onIsoLoad");
+    @FXML void onStartIsoLoad(ActionEvent ev) {
+        logger.debug("onStartIsoLoad");
+        StorageUnitFX selected = tblStorageUnits.getSelectionModel().getSelectedItem();
+        service.loadISOAsync(selected.getObjectId());
     }
 
     //region Private

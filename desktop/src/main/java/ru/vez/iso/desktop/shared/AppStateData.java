@@ -1,4 +1,4 @@
-package ru.vez.iso.desktop.state;
+package ru.vez.iso.desktop.shared;
 
 import lombok.Builder;
 import lombok.Data;

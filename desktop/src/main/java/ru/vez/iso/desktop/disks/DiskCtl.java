@@ -13,9 +13,9 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.vez.iso.desktop.settings.SettingType;
-import ru.vez.iso.desktop.state.AppStateData;
-import ru.vez.iso.desktop.state.AppStateType;
+import ru.vez.iso.desktop.shared.SettingType;
+import ru.vez.iso.desktop.shared.AppStateData;
+import ru.vez.iso.desktop.shared.AppStateType;
 
 import java.net.URL;
 import java.util.List;
@@ -40,15 +40,6 @@ public class DiskCtl implements Initializable {
     public DiskCtl(ObservableMap<AppStateType, AppStateData> appState, DisksSrv service) {
         this.appState = appState;
         this.service = service;
-
-        // Add Data listener for ISO_FILES populated
-        this.appState.addListener(
-                (MapChangeListener<AppStateType, AppStateData>) change -> {
-                    if (AppStateType.ISO_FILES.equals(change.getKey())) {
-                        List<IsoFileFX> data = (List<IsoFileFX>) change.getValueAdded().getValue();
-                        Platform.runLater(()-> displayData(data));
-                    }
-                });
     }
 
     @Override
@@ -72,6 +63,23 @@ public class DiskCtl implements Initializable {
                 tblIsoFiles.getSelectionModel().selectedItemProperty().isNull()
         );
 
+        // Add Data listener for ISO_FILES populated
+        this.appState.addListener(
+                (MapChangeListener<AppStateType, AppStateData>) change -> {
+                    if (AppStateType.ISO_FILES_NAMES.equals(change.getKey())) {
+                        List<IsoFileFX> data = (List<IsoFileFX>) change.getValueAdded().getValue();
+                        Platform.runLater(()-> displayData(data));
+                    }
+                });
+
+        // Reload file list when change in LOAD_ISO_STATUS
+        this.appState.addListener(
+                (MapChangeListener<AppStateType, AppStateData>) change -> {
+                    if (AppStateType.LOAD_ISO_STATUS.equals(change.getKey())) {
+                        onReload(null);
+                    }
+                });
+
         onReload(null);
     }
 
@@ -92,8 +100,6 @@ public class DiskCtl implements Initializable {
     //region Private
 
     private void displayData(List<IsoFileFX> data) {
-        logger.debug("displayIsoFiles: " + data);
-
         // Set items to the tableView
         this.isoFilesFX = FXCollections.observableList(data);
         tblIsoFiles.setItems(this.isoFilesFX);

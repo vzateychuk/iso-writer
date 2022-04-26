@@ -3,8 +3,8 @@ package ru.vez.iso.desktop.disks;
 import javafx.collections.ObservableMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.vez.iso.desktop.state.AppStateData;
-import ru.vez.iso.desktop.state.AppStateType;
+import ru.vez.iso.desktop.shared.AppStateData;
+import ru.vez.iso.desktop.shared.AppStateType;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -32,6 +32,7 @@ public class DisksSrvImpl implements DisksSrv {
 
     @Override
     public void readIsoFileNamesAsync(String dir) {
+
         // Avoid multiply invocation
         if (!future.isDone()) {
             logger.debug("Async operation in progress, skipping");
@@ -43,9 +44,9 @@ public class DisksSrvImpl implements DisksSrv {
                         {
                             logger.debug("readIsoFileNamesAsync. dir: " + dir);
                             List<IsoFileFX> isoListFX = fileNames.stream()
-                                    .map(fname -> new IsoFileFX("docNumber", fname))
+                                    .map(fname -> new IsoFileFX(fname, "docNum-"+fname))
                                     .collect(Collectors.toList());
-                            appState.put(AppStateType.ISO_FILES, AppStateData.<List<IsoFileFX>>builder().value(isoListFX).build());
+                            appState.put(AppStateType.ISO_FILES_NAMES, AppStateData.<List<IsoFileFX>>builder().value(isoListFX).build());
                         }
                 ).exceptionally((ex) -> {
                     logger.debug("Unable: " + ex.getLocalizedMessage());

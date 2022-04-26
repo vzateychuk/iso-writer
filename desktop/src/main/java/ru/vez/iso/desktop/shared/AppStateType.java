@@ -1,4 +1,4 @@
-package ru.vez.iso.desktop.state;
+package ru.vez.iso.desktop.shared;
 
 /**
  * There are types of ApplicationState data
@@ -9,7 +9,8 @@ public enum AppStateType {
     USER_DETAILS,
     OPERATION_DAYS,
     DOCUMENTS,
-    ISO_FILES,
+    ISO_FILES_NAMES,
+    LOAD_ISO_STATUS,
     SETTINGS
 
 }

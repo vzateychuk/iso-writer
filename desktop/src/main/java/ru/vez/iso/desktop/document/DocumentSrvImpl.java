@@ -3,8 +3,8 @@ package ru.vez.iso.desktop.document;
 import javafx.collections.ObservableMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.vez.iso.desktop.state.AppStateData;
-import ru.vez.iso.desktop.state.AppStateType;
+import ru.vez.iso.desktop.shared.AppStateData;
+import ru.vez.iso.desktop.shared.AppStateType;
 import ru.vez.iso.desktop.utils.UtilsHelper;
 
 import java.nio.file.Path;

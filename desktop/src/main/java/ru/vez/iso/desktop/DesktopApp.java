@@ -25,12 +25,12 @@ import ru.vez.iso.desktop.login.LoginSrvImpl;
 import ru.vez.iso.desktop.model.UserDetails;
 import ru.vez.iso.desktop.nav.NavigationCtl;
 import ru.vez.iso.desktop.nav.NavigationSrvImpl;
-import ru.vez.iso.desktop.settings.SettingType;
+import ru.vez.iso.desktop.shared.SettingType;
 import ru.vez.iso.desktop.settings.SettingsCtl;
 import ru.vez.iso.desktop.settings.SettingsSrv;
 import ru.vez.iso.desktop.settings.SettingsSrvImpl;
-import ru.vez.iso.desktop.state.AppStateData;
-import ru.vez.iso.desktop.state.AppStateType;
+import ru.vez.iso.desktop.shared.AppStateData;
+import ru.vez.iso.desktop.shared.AppStateType;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -133,9 +133,9 @@ public class DesktopApp extends Application {
      * */
     private boolean getCloseConfirmation() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Warning!");
+        alert.setTitle("Внимание!");
         alert.setHeaderText(null);
-        alert.setContentText("Are you sure? Some process might be running.");
+        alert.setContentText("Вы уверены? Может быть запущена запись на диск.");
         Optional<ButtonType> option = alert.showAndWait();
         return option.isPresent() && option.get() == ButtonType.OK;
     }
