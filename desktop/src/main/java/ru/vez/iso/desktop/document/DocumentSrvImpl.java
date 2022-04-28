@@ -86,10 +86,8 @@ public class DocumentSrvImpl implements DocumentSrv {
         Reestr reestr = null;
         while (entries.hasMoreElements()) {
             ZipEntry entry = entries.nextElement();
-                logger.debug(entry);
                 if ( "REESTR".equalsIgnoreCase(entry.getName()) ) {
                     String json = readZipEntry(zipFile, entry);
-                    logger.debug(json);
                     reestr = new Gson().fromJson(json, Reestr.class);
                 }
             }
