@@ -27,14 +27,14 @@ public class DocumentMapperImpl implements DocumentMapper {
         LocalDate docDate = LocalDate.parse(rd.getDocDate());
 
         return new DocumentFX(
-                rd.getObjectId(),
-                rd.getDocNumber(),
-                rd.getDocSum(),
-                operDayDate,
-                docType,
-                docDate,
-                branch,
-                docStatus);
+                            rd.getObjectId(),
+                            rd.getDocNumber(),
+                            rd.getDocSum(),
+                            operDayDate,
+                            docType,
+                            docDate,
+                            branch,
+                            docStatus);
     }
 
     //region PRIVATE
