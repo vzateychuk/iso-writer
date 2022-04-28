@@ -1,23 +1,27 @@
 package ru.vez.iso.desktop.document;
 
+import com.google.gson.Gson;
 import javafx.collections.ObservableMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.vez.iso.desktop.document.reestr.Reestr;
 import ru.vez.iso.desktop.shared.AppStateData;
 import ru.vez.iso.desktop.shared.AppStateType;
-import ru.vez.iso.desktop.utils.UtilsHelper;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.Enumeration;
 import java.util.List;
-import java.util.Random;
+import java.util.Scanner;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 public class DocumentSrvImpl implements DocumentSrv {
 
@@ -25,11 +29,14 @@ public class DocumentSrvImpl implements DocumentSrv {
 
     private final ObservableMap<AppStateType, AppStateData> appState;
     private final Executor exec;
+    private final DocumentMapper mapper;
+
     private Future<Void> future = CompletableFuture.allOf();
 
-    public DocumentSrvImpl(ObservableMap<AppStateType, AppStateData> appState, Executor exec) {
+    public DocumentSrvImpl(ObservableMap<AppStateType, AppStateData> appState, Executor exec, DocumentMapper mapper) {
         this.appState = appState;
         this.exec = exec;
+        this.mapper = mapper;
     }
 
     @Override
@@ -40,24 +47,17 @@ public class DocumentSrvImpl implements DocumentSrv {
             logger.debug("DocumentSrv.loadAsync: Async operation in progress, skipping");
             return;
         }
+
         future = CompletableFuture.supplyAsync(() -> {
             logger.debug("DocumentSrvImpl.loadAsync: Read from: " + path.toString());
-            UtilsHelper.makeDelaySec(1);    // TODO load from file
-            Random rnd = new Random();
-            List<DocType> types = Collections.unmodifiableList(Arrays.asList(DocType.values()));
-            List<BranchType> branches = Collections.unmodifiableList(Arrays.asList(BranchType.values()));
-            List<DocStatus> statuses = Collections.unmodifiableList(Arrays.asList(DocStatus.values()));
-            return IntStream.range(0, 20)
-                    .mapToObj(i -> {
-                        LocalDate date = LocalDate.of(1910+i, i%12+1, i%12+1);
-                        DocumentFX doc = new DocumentFX(path + "-"+i, "docNumber-"+i, i, date,
-                                types.get(rnd.nextInt(types.size())), date,
-                                branches.get(rnd.nextInt(branches.size())),
-                                statuses.get(rnd.nextInt(statuses.size())) );
-                        doc.setSelected(i%2==0);
-                        return doc;
-                    })
-                    .collect(Collectors.toList());
+
+            // Read REESTR and save application state
+            Reestr reestr = readReestrFromZipFile(path);
+            appState.put(AppStateType.REESTR, AppStateData.<Reestr>builder().value(reestr).build());
+
+            // Map REESTR to list of DocFX and return
+            return reestr.getDocs().stream().map(mapper::mapToDocFX).collect(Collectors.toList());
+
         }, exec).thenAccept(docs ->
                 appState.put(AppStateType.DOCUMENTS, AppStateData.<List<DocumentFX>>builder().value(docs).build())
         ).exceptionally((ex) -> {
@@ -65,4 +65,54 @@ public class DocumentSrvImpl implements DocumentSrv {
             return null;
         } );
     }
+
+    //region PRIVATE
+
+    /**
+     * iterate through each ZipEntry and read a REESTR file
+     * */
+    private Reestr readReestrFromZipFile(Path path) {
+
+        ZipFile zipFile;
+        try {
+            zipFile = new ZipFile(path.toFile());
+        } catch (IOException e) {
+            logger.warn("unable to open zip: {}", path );
+            throw new RuntimeException(e);
+        }
+
+        Enumeration<? extends ZipEntry> entries = zipFile.entries();
+
+        Reestr reestr = null;
+        while (entries.hasMoreElements()) {
+            ZipEntry entry = entries.nextElement();
+                logger.debug(entry);
+                if ( "REESTR".equalsIgnoreCase(entry.getName()) ) {
+                    String json = readZipEntry(zipFile, entry);
+                    logger.debug(json);
+                    reestr = new Gson().fromJson(json, Reestr.class);
+                }
+            }
+        return reestr;
+    }
+
+    private String readZipEntry(ZipFile zipFile, ZipEntry entry) {
+
+        logger.warn("READ " + entry.getName());
+        String reestr = "";
+        try (InputStream stream = zipFile.getInputStream(entry);
+             InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
+             Scanner inputStream = new Scanner(reader);
+        ) {
+            while (inputStream.hasNext()) {
+                reestr = inputStream.nextLine(); // Gets a whole line
+            }
+        } catch (IOException ex) {
+            logger.warn("unable to read REESTR file", ex);
+        }
+        return reestr;
+    }
+
+    //endregion
+
 }

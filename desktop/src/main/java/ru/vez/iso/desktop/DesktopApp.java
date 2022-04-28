@@ -19,6 +19,8 @@ import ru.vez.iso.desktop.abdd.AbddSrvImpl;
 import ru.vez.iso.desktop.disks.DiskCtl;
 import ru.vez.iso.desktop.disks.DisksSrvImpl;
 import ru.vez.iso.desktop.document.DocumentCtl;
+import ru.vez.iso.desktop.document.DocumentMapper;
+import ru.vez.iso.desktop.document.DocumentMapperImpl;
 import ru.vez.iso.desktop.document.DocumentSrvImpl;
 import ru.vez.iso.desktop.login.LoginCtl;
 import ru.vez.iso.desktop.login.LoginSrvImpl;
@@ -162,7 +164,9 @@ public class DesktopApp extends Application {
         viewCache.put(ViewType.LOGIN, buildView(ViewType.LOGIN,t->new LoginCtl(appState, new LoginSrvImpl(appState, exec))));
         viewCache.put(ViewType.ABDD_VIEW, buildView(ViewType.ABDD_VIEW, t->new AbddCtl(appState, new AbddSrvImpl(appState, exec))));
         viewCache.put(ViewType.DISK, buildView(ViewType.DISK,t->new DiskCtl(appState, new DisksSrvImpl(appState, exec))));
-        viewCache.put(ViewType.DOCUMENTS, buildView(ViewType.DOCUMENTS,t->new DocumentCtl(appState, new DocumentSrvImpl(appState, exec))));
+
+        DocumentMapper mapper = new DocumentMapperImpl();
+        viewCache.put(ViewType.DOCUMENTS, buildView(ViewType.DOCUMENTS,t->new DocumentCtl(appState, new DocumentSrvImpl(appState, exec, mapper))));
 
         // create SettingsView and read application settings async
         SettingsSrv settingsSrv = new SettingsSrvImpl(appState, exec);

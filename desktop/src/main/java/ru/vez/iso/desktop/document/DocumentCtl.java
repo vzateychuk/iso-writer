@@ -99,7 +99,7 @@ public class DocumentCtl implements Initializable {
         FileChooser chooseFile = new FileChooser();
         chooseFile.setInitialDirectory(Paths.get(System.getProperty("user.home")).toFile());
         chooseFile.getExtensionFilters().clear();
-        chooseFile.getExtensionFilters().add(new FileChooser.ExtensionFilter("DEV.ZIP", "*.zip"));
+        chooseFile.getExtensionFilters().add(new FileChooser.ExtensionFilter("DIR.ZIP", "*.zip"));
 
         File file = chooseFile.showOpenDialog(null);
         if (file != null) {

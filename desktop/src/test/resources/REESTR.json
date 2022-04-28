@@ -1,0 +1,403 @@
+{
+  "storageUnitId":"b0160e2e-f44b-4668-a116-b6ec20386dde",
+  "docs":[
+    {
+      "id":"1650257167",
+      "basePath":"/5ea709b2-f4c7-48ee-8ece-2dfcd90079ac/",
+      "files":[
+        {
+          "type":"PF",
+          "hash":"93b96af0858c82ed390833b9f83bf2a321d6f64744aa5cc35e66ebaa5cfb9349",
+          "path":"4c00eb87-bd90-4bfe-b71d-f8eead2e5b19.pdf"
+        },
+        {
+          "type":"JSON",
+          "hash":"b20bdad173b1b1e0c5dfd3259440ad2947cbb82cb18e357fc217cb734dc6bb6d",
+          "path":"37551e7e-11b3-4b66-8a22-cd17aace8144.json"
+        }
+      ],
+      "data":{
+        "objectId":"5ea709b2-f4c7-48ee-8ece-2dfcd90079ac",
+        "objectName":"Документы операционного дня АБДД",
+        "creator":"admin",
+        "modifier":"admin",
+        "creationDate":"2022-04-18T11:46:07.925891",
+        "modifyDate":"2022-04-18T12:03:23.082151",
+        "deleted":false,
+        "typeName":"DocPaymentAbdd",
+        "hasFile":false,
+        "author":"ФИО автора",
+        "docNumber":"974838",
+        "docDate":"2021-06-22",
+        "controllerName":"ФИО контролера",
+        "controllerDate":"2021-06-22T15:59:59+07:00",
+        "packet":"Номер пачки",
+        "arm":"123",
+        "branchId":"209acf66-fed0-466f-8cf2-067609011e16",
+        "jsonId":{
+          "contentId":"625ced0f8e7881495681db9f",
+          "storageId":"ece8b5e9-92d8-4843-b666-3ed1b95a0f79"
+        },
+        "kindId":"4dd31a13-7428-4135-b5a0-43eda447ce42",
+        "externalObjectId":"1650257167",
+        "docStatus":"CREATED",
+        "correctionMark":false,
+        "executor":"Павлов Павел Павлович",
+        "docSum":23171.56,
+        "deleteMark":false,
+        "operationImportId":"e76de71c-1291-477f-ba5c-1db260fc9a39",
+        "docPaymentLine":[
+          {
+            "creator":"admin",
+            "modifier":"admin",
+            "creationDate":"2022-04-18T11:46:08.033403",
+            "modifyDate":"2022-04-18T11:46:08.033429",
+            "objectId":"d97652c0-e68f-4e27-b89e-19cf935ed998",
+            "accountNumber":"40817810452000036054",
+            "accountName":"ЮГО-ЗАПАДНЫЙ БАНК ПАО СБЕРБАНК, г Ростов-на-Дону",
+            "bankBic":"046015602",
+            "accountHolder":"МАТАЕВА СВЕТЛАНА АЛЕКСЕЕВНА//344019, РОССИЯ, РОСТОВСКАЯ, РОСТОВ-НА-ДОНУ, СОВЕТСКАЯ, Д 47/1, КВ 76//40817810452000036054",
+            "accountSum":23171.56,
+            "accountType":"PAYER"
+          },
+          {
+            "creator":"admin",
+            "modifier":"admin",
+            "creationDate":"2022-04-18T11:46:08.086698",
+            "modifyDate":"2022-04-18T11:46:08.086724",
+            "objectId":"13dc35e4-bd8d-4dc9-bb15-ce4bdac29fdf",
+            "accountNumber":"40702810900660010682",
+            "accountName":"АО Банк ДОМ.РФ, г. Москва",
+            "bankBic":"044525266",
+            "accountHolder":"АО ТЕПЛОКОММУНЭНЕРГО",
+            "accountSum":23171.56,
+            "accountType":"RECIPIENT"
+          }
+        ]
+      }
+    },
+    {
+      "id":"1650257174",
+      "basePath":"/b26e85e5-ca42-4a08-bba2-fda680cee9fe/",
+      "files":[
+        {
+          "type":"JSON",
+          "hash":"234c9859bfc1453aaf7a57e213690748872f69d3da774ef7f277f7c1d218e7a6",
+          "path":"68dec1f1-24a1-4294-8da9-a571bf430d2a.json"
+        },
+        {
+          "type":"PF",
+          "hash":"cadecda0cf25d6fd1266181aba27c5f734bf39a2558233cba140660cc57d0cdf",
+          "path":"6e006ac7-dab9-4c12-b843-d61241058999.pdf"
+        }
+      ],
+      "data":{
+        "objectId":"b26e85e5-ca42-4a08-bba2-fda680cee9fe",
+        "objectName":"Документы операционного дня АБДД",
+        "creator":"admin",
+        "modifier":"admin",
+        "creationDate":"2022-04-18T11:46:14.510898",
+        "modifyDate":"2022-04-18T12:03:21.795744",
+        "deleted":false,
+        "typeName":"DocPaymentAbdd",
+        "hasFile":false,
+        "author":"Иванов Иван Иванович",
+        "docNumber":"29107",
+        "docDate":"2021-06-28",
+        "controllerName":"Петров Петр Петрович",
+        "controllerDate":"2011-12-04T11:15:30+07:00",
+        "packet":"номер пакета",
+        "arm":"123",
+        "branchId":"aec7e48b-b1e8-4720-8e46-db3d3c1a6398",
+        "jsonId":{
+          "contentId":"625ced168e7881495681dba9",
+          "storageId":"ece8b5e9-92d8-4843-b666-3ed1b95a0f79"
+        },
+        "kindId":"8b3fc6da-6ec1-439b-aba8-34992bc15fcb",
+        "externalObjectId":"1650257174",
+        "docStatus":"CREATED",
+        "correctionMark":true,
+        "executor":"Павлов Павел Павлович",
+        "docSum":5827.30,
+        "deleteMark":false,
+        "operationImportId":"e76de71c-1291-477f-ba5c-1db260fc9a39",
+        "docPaymentLine":[
+          {
+            "creator":"admin",
+            "modifier":"admin",
+            "creationDate":"2022-04-18T11:46:14.563991",
+            "modifyDate":"2022-04-18T11:46:14.564016",
+            "objectId":"fb6f4077-652b-47e8-af2a-0534e153d0e5",
+            "accountNumber":"42307810701300034158",
+            "accountSum":123.45,
+            "accountType":"DEBIT"
+          },
+          {
+            "creator":"admin",
+            "modifier":"admin",
+            "creationDate":"2022-04-18T11:46:14.616381",
+            "modifyDate":"2022-04-18T11:46:14.616416",
+            "objectId":"0bd276ae-cf69-49d4-927f-27263fdc6d26",
+            "accountNumber":"4230781070130003999",
+            "accountSum":678.90,
+            "accountType":"DEBIT"
+          },
+          {
+            "creator":"admin",
+            "modifier":"admin",
+            "creationDate":"2022-04-18T11:46:14.668626",
+            "modifyDate":"2022-04-18T11:46:14.668656",
+            "objectId":"0e35c403-3e16-4e29-b6d2-fc42e0b763e0",
+            "accountNumber":"20202810501300000001",
+            "accountSum":987.65,
+            "accountType":"CREDIT"
+          }
+        ]
+      }
+    },
+    {
+      "id":"1650258164",
+      "basePath":"/41d24533-57a8-414f-b0ae-bccb6668d6aa/",
+      "files":[
+        {
+          "type":"JSON",
+          "hash":"b20bdad173b1b1e0c5dfd3259440ad2947cbb82cb18e357fc217cb734dc6bb6d",
+          "path":"0c1cbfd4-3574-4618-a1d1-af9f8007c3fb.json"
+        },
+        {
+          "type":"PF",
+          "hash":"7f9dfeefbb27554a2c7d12a2257e7adf306d5fd641394ee05962c1ac57bd9a9f",
+          "path":"4524c21e-7b72-4cb0-8848-0e4b4d8e17bf.pdf"
+        }
+      ],
+      "data":{
+        "objectId":"41d24533-57a8-414f-b0ae-bccb6668d6aa",
+        "objectName":"Документы операционного дня АБДД",
+        "creator":"admin",
+        "modifier":"admin",
+        "creationDate":"2022-04-18T12:02:45.277486",
+        "modifyDate":"2022-04-18T12:03:23.135428",
+        "deleted":false,
+        "typeName":"DocPaymentAbdd",
+        "hasFile":false,
+        "author":"ФИО автора",
+        "docNumber":"974838",
+        "docDate":"2021-06-22",
+        "controllerName":"ФИО контролера",
+        "controllerDate":"2021-06-22T15:59:59+07:00",
+        "packet":"Номер пачки",
+        "arm":"123",
+        "branchId":"209acf66-fed0-466f-8cf2-067609011e16",
+        "jsonId":{
+          "contentId":"625cf0f56fe8d5580f08fac7",
+          "storageId":"ece8b5e9-92d8-4843-b666-3ed1b95a0f79"
+        },
+        "kindId":"4dd31a13-7428-4135-b5a0-43eda447ce42",
+        "externalObjectId":"1650258164",
+        "docStatus":"CREATED",
+        "correctionMark":false,
+        "executor":"Павлов Павел Павлович",
+        "docSum":23171.56,
+        "deleteMark":false,
+        "operationImportId":"e76de71c-1291-477f-ba5c-1db260fc9a39",
+        "docPaymentLine":[
+          {
+            "creator":"admin",
+            "modifier":"admin",
+            "creationDate":"2022-04-18T12:02:45.384005",
+            "modifyDate":"2022-04-18T12:02:45.384029",
+            "objectId":"db878452-4d6c-42da-bf67-107ed3197332",
+            "accountNumber":"40817810452000036054",
+            "accountName":"ЮГО-ЗАПАДНЫЙ БАНК ПАО СБЕРБАНК, г Ростов-на-Дону",
+            "bankBic":"046015602",
+            "accountHolder":"МАТАЕВА СВЕТЛАНА АЛЕКСЕЕВНА//344019, РОССИЯ, РОСТОВСКАЯ, РОСТОВ-НА-ДОНУ, СОВЕТСКАЯ, Д 47/1, КВ 76//40817810452000036054",
+            "accountSum":23171.56,
+            "accountType":"PAYER"
+          },
+          {
+            "creator":"admin",
+            "modifier":"admin",
+            "creationDate":"2022-04-18T12:02:45.436823",
+            "modifyDate":"2022-04-18T12:02:45.436845",
+            "objectId":"325fa5f7-5c78-4289-b8ce-aaf9d1a61f61",
+            "accountNumber":"40702810900660010682",
+            "accountName":"АО Банк ДОМ.РФ, г. Москва",
+            "bankBic":"044525266",
+            "accountHolder":"АО ТЕПЛОКОММУНЭНЕРГО",
+            "accountSum":23171.56,
+            "accountType":"RECIPIENT"
+          }
+        ]
+      }
+    },
+    {
+      "id":"1650258169",
+      "basePath":"/8b2ad3c2-3294-4f3a-bcba-db4ae772dad0/",
+      "files":[
+        {
+          "type":"JSON",
+          "hash":"b20bdad173b1b1e0c5dfd3259440ad2947cbb82cb18e357fc217cb734dc6bb6d",
+          "path":"c1e07d57-fd72-4e88-a7ef-1befd3c66fcf.json"
+        },
+        {
+          "type":"PF",
+          "hash":"dfd4b3243b75dfd85afe7ce8159ed165b83e99cb66f5a149417393d01c35b258",
+          "path":"19e975fc-b956-47a9-aa56-aba36cad4cca.pdf"
+        }
+      ],
+      "data":{
+        "objectId":"8b2ad3c2-3294-4f3a-bcba-db4ae772dad0",
+        "objectName":"Документы операционного дня АБДД",
+        "creator":"admin",
+        "modifier":"admin",
+        "creationDate":"2022-04-18T12:02:49.799987",
+        "modifyDate":"2022-04-18T12:03:25.050104",
+        "deleted":false,
+        "typeName":"DocPaymentAbdd",
+        "hasFile":false,
+        "author":"ФИО автора",
+        "docNumber":"974838",
+        "docDate":"2021-06-22",
+        "controllerName":"ФИО контролера",
+        "controllerDate":"2021-06-22T15:59:59+07:00",
+        "packet":"Номер пачки",
+        "arm":"123",
+        "branchId":"209acf66-fed0-466f-8cf2-067609011e16",
+        "jsonId":{
+          "contentId":"625cf0f96fe8d5580f08facd",
+          "storageId":"ece8b5e9-92d8-4843-b666-3ed1b95a0f79"
+        },
+        "kindId":"4dd31a13-7428-4135-b5a0-43eda447ce42",
+        "externalObjectId":"1650258169",
+        "docStatus":"CREATED",
+        "correctionMark":false,
+        "executor":"Павлов Павел Павлович",
+        "docSum":23171.56,
+        "deleteMark":false,
+        "operationImportId":"e76de71c-1291-477f-ba5c-1db260fc9a39",
+        "docPaymentLine":[
+          {
+            "creator":"admin",
+            "modifier":"admin",
+            "creationDate":"2022-04-18T12:02:49.852357",
+            "modifyDate":"2022-04-18T12:02:49.85238",
+            "objectId":"63cc844c-3e69-4595-926a-0f5fcfdf3e37",
+            "accountNumber":"40817810452000036054",
+            "accountName":"ЮГО-ЗАПАДНЫЙ БАНК ПАО СБЕРБАНК, г Ростов-на-Дону",
+            "bankBic":"046015602",
+            "accountHolder":"МАТАЕВА СВЕТЛАНА АЛЕКСЕЕВНА//344019, РОССИЯ, РОСТОВСКАЯ, РОСТОВ-НА-ДОНУ, СОВЕТСКАЯ, Д 47/1, КВ 76//40817810452000036054",
+            "accountSum":23171.56,
+            "accountType":"PAYER"
+          },
+          {
+            "creator":"admin",
+            "modifier":"admin",
+            "creationDate":"2022-04-18T12:02:49.904739",
+            "modifyDate":"2022-04-18T12:02:49.904762",
+            "objectId":"adcc7494-814a-4aa7-97b0-76c5fcd0ac29",
+            "accountNumber":"40702810900660010682",
+            "accountName":"АО Банк ДОМ.РФ, г. Москва",
+            "bankBic":"044525266",
+            "accountHolder":"АО ТЕПЛОКОММУНЭНЕРГО",
+            "accountSum":23171.56,
+            "accountType":"RECIPIENT"
+          }
+        ]
+      }
+    },
+    {
+      "id":"1650257177",
+      "basePath":"/6d29541b-9be1-49c0-93cb-ef43573eb050/",
+      "files":[
+        {
+          "type":"JSON",
+          "hash":"e7f3f8136bead1f4a10bca38f41e0e7519f471fd09a408e6a6eec877c804bb9b",
+          "path":"e97def76-6030-4ddb-9299-c6e344550a3c.json"
+        },
+        {
+          "type":"PF",
+          "hash":"d8154c6ce9adee2bcf064d6cb1d4a3102b6d6d0002947571efae715a04659138",
+          "path":"751b32c9-aba2-44e3-9c63-6c4c18547a66.pdf"
+        }
+      ],
+      "data":{
+        "objectId":"6d29541b-9be1-49c0-93cb-ef43573eb050",
+        "objectName":"Документы операционного дня АБДД",
+        "creator":"admin",
+        "modifier":"admin",
+        "creationDate":"2022-04-18T11:46:18.084927",
+        "modifyDate":"2022-04-18T12:03:26.961608",
+        "deleted":false,
+        "typeName":"DocReportAbdd",
+        "hasFile":false,
+        "author":"Авторов Никита Петрович",
+        "docDate":"2021-06-28",
+        "controllerName":"Иванова Ольга Сергеевна",
+        "controllerDate":"2021-05-27T15:59:59+07:00",
+        "packet":"Пакет",
+        "arm":"123",
+        "branchId":"aec7e48b-b1e8-4720-8e46-db3d3c1a6398",
+        "jsonId":{
+          "contentId":"625ced198e7881495681dbad",
+          "storageId":"ece8b5e9-92d8-4843-b666-3ed1b95a0f79"
+        },
+        "kindId":"decb0b13-9eb2-4e95-ae4c-356d60e976bd",
+        "externalObjectId":"1650257177",
+        "docStatus":"CREATED",
+        "correctionMark":true,
+        "executor":"Исполнительный Иван Сергеевич",
+        "deleteMark":false,
+        "operationImportId":"e76de71c-1291-477f-ba5c-1db260fc9a39",
+        "reportStartDate":"за  25 июня 2021",
+        "reportEndDate":"2022-12-26"
+      }
+    },
+    {
+      "id":"1650257179",
+      "basePath":"/b2aba2e0-b74b-4ea5-bf86-0ff072a56f64/",
+      "files":[
+        {
+          "type":"JSON",
+          "hash":"1",
+          "path":"f29134a4-0b25-4659-9a4c-99b16d25d0d0.json"
+        },
+        {
+          "type":"PF",
+          "hash":"07027dbb612ae13f9bb64f0334e7633495386e3d2342205e863201ad619b8a0e",
+          "path":"e087cc53-bedd-40a3-ba74-a474d43c2a87.pdf"
+        }
+      ],
+      "data":{
+        "objectId":"b2aba2e0-b74b-4ea5-bf86-0ff072a56f64",
+        "objectName":"Документы операционного дня АБДД",
+        "creator":"admin",
+        "modifier":"admin",
+        "creationDate":"2022-04-18T11:46:31.010244",
+        "modifyDate":"2022-04-18T12:03:27.016436",
+        "deleted":false,
+        "typeName":"DocReportAbdd",
+        "hasFile":false,
+        "author":"Авторов Никита Петрович",
+        "docDate":"2021-06-28",
+        "controllerName":"Иванова Ольга Сергеевна",
+        "controllerDate":"2021-05-27T15:59:59+07:00",
+        "packet":"Пакет",
+        "arm":"123",
+        "branchId":"aec7e48b-b1e8-4720-8e46-db3d3c1a6398",
+        "jsonId":{
+          "contentId":"625ced1c8e7881495681dbaf",
+          "storageId":"ece8b5e9-92d8-4843-b666-3ed1b95a0f79"
+        },
+        "kindId":"decb0b13-9eb2-4e95-ae4c-356d60e976bd",
+        "externalObjectId":"1650257179",
+        "docStatus":"CREATED",
+        "correctionMark":true,
+        "executor":"Исполнительный Иван Сергеевич",
+        "deleteMark":false,
+        "operationImportId":"e76de71c-1291-477f-ba5c-1db260fc9a39",
+        "reportStartDate":"за  25 июня 2021",
+        "reportEndDate":"2022-12-26"
+      }
+    }
+  ]
+}

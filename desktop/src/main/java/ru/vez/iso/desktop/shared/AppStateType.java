@@ -5,12 +5,13 @@ package ru.vez.iso.desktop.shared;
  * */
 public enum AppStateType {
 
-    APP_PROD_MODE,
-    USER_DETAILS,
-    OPERATION_DAYS,
-    DOCUMENTS,
-    ISO_FILES_NAMES,
-    LOAD_ISO_STATUS,
-    SETTINGS
+    APP_PROD_MODE,      // Режим приложения: PROD / DEV
+    USER_DETAILS,       // Информация о текущем загруженном пользователе
+    OPERATION_DAYS,     // Операционные дни и StorageUnits (FX)
+    DOCUMENTS,          // Список документов загруженных из REESTR файла
+    ISO_FILES_NAMES,    // Список загруженных ISO файлов
+    LOAD_ISO_STATUS,    // Статус загрузки ISO файлов
+    REESTR,             // Данные реестра документов, загруженные из файла DIR.zip форма Документы
+    SETTINGS            // Настройки приложения
 
 }
