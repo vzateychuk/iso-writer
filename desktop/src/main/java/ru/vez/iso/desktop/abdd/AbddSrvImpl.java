@@ -3,9 +3,9 @@ package ru.vez.iso.desktop.abdd;
 import javafx.collections.ObservableMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.vez.iso.desktop.shared.AppSettings;
 import ru.vez.iso.desktop.shared.AppStateData;
 import ru.vez.iso.desktop.shared.AppStateType;
-import ru.vez.iso.desktop.shared.SettingType;
 import ru.vez.iso.desktop.utils.UtilsHelper;
 
 import java.io.IOException;
@@ -78,8 +78,8 @@ public class AbddSrvImpl implements AbddSrv {
         }
         logger.debug("loadISOAsync started: " + objectId);
 
-        Properties props = ((AppStateData<Properties>)appState.get(AppStateType.SETTINGS)).getValue();
-        String dir = props.getProperty(SettingType.DOWNLOAD_ISO_PATH.name());
+        AppSettings sets = ((AppStateData<AppSettings>)appState.get(AppStateType.SETTINGS)).getValue();
+        String dir = sets.getIsoCachePath();
 
         CompletableFuture.supplyAsync( () -> {
             UtilsHelper.makeDelaySec(3);    // TODO load from service

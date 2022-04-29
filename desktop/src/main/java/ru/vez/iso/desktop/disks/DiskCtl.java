@@ -85,7 +85,7 @@ public class DiskCtl implements Initializable {
 
     @FXML public void onReload(ActionEvent ev) {
         logger.debug("onReload");
-        service.readIsoFileNamesAsync(SettingType.DOWNLOAD_ISO_PATH.getDefaultValue());
+        service.readIsoFileNamesAsync(SettingType.ISO_CACHE_PATH.getDefaultValue());
     }
 
     @FXML public void onCheck(ActionEvent ev) {

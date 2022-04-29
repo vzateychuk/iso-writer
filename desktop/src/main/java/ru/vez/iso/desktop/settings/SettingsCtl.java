@@ -10,12 +10,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.vez.iso.desktop.shared.AppSettings;
 import ru.vez.iso.desktop.shared.AppStateData;
 import ru.vez.iso.desktop.shared.AppStateType;
-import ru.vez.iso.desktop.shared.SettingType;
 import ru.vez.iso.desktop.utils.UtilsHelper;
-
-import java.util.Properties;
 
 /**
  * Controller for View "Форма настроек"
@@ -41,19 +39,25 @@ public class SettingsCtl {
         this.appState.addListener(
                 (MapChangeListener<AppStateType, AppStateData>) change -> {
                     if (AppStateType.SETTINGS.equals(change.getKey())) {
-                        Platform.runLater(()->displaySettings((Properties)change.getValueAdded().getValue()));
+                        AppSettings sets = ((AppStateData<AppSettings>)appState.get(AppStateType.SETTINGS)).getValue();
+                        Platform.runLater(()->displaySettings(sets));
                     }
                 });
     }
 
     @FXML public void onSave(ActionEvent ev) {
         logger.debug("onSave");
-        Properties props = new Properties(((AppStateData<Properties>)appState.get(AppStateType.SETTINGS)).getValue());
-        int operDays = UtilsHelper.parseIntOrDefault(operationDays.getText(), SettingType.OPERATION_DAYS.getDefaultValue());
-        props.setProperty(SettingType.OPERATION_DAYS.name(), String.valueOf(operDays));
-        int refreshPrd = UtilsHelper.parseIntOrDefault(refreshPeriod.getText(), SettingType.REFRESH_PERIOD.getDefaultValue());
-        props.setProperty(SettingType.REFRESH_PERIOD.name(), String.valueOf(refreshPrd));
-        service.saveAsync(props, SettingType.SETTING_FILE.getDefaultValue());
+        AppSettings curr = ((AppStateData<AppSettings>)appState.get(AppStateType.SETTINGS)).getValue();
+        int operDays = UtilsHelper.parseIntOrDefault(operationDays.getText(), curr.getFilterOpsDays());
+        int refreshSec = UtilsHelper.parseIntOrDefault(refreshPeriod.getText(), curr.getRefreshOpsDaySec());
+        AppSettings newSetting = AppSettings.builder()
+                .abddAPI(curr.getAbddAPI())
+                .filterOpsDays(operDays)
+                .settingFile(curr.getSettingFile())
+                .isoCachePath(curr.getIsoCachePath())
+                .refreshOpsDaySec(refreshSec)
+                .build();
+        service.saveAsync(newSetting);
     }
 
     @FXML void onQuarterChoice(ActionEvent ev) {
@@ -75,48 +79,34 @@ public class SettingsCtl {
         operationDays.setDisable(false);
     }
 
-    //region Private
+    //region PRIVATE
 
     /**
      * Read settings from props and set control's values
      * Supposed to run in AppUI thread
-     *
-     * @param props - settings values
+     *  @param sets - settings values
      * */
-    private void displaySettings(Properties props) {
-        int operDays;
-        String sday = (String)props.getOrDefault(
-                SettingType.OPERATION_DAYS.name(),
-                SettingType.OPERATION_DAYS.getDefaultValue()
-        );
-        switch (sday) {
-            case "90":
+    private void displaySettings(AppSettings sets) {
+        int operDays = sets.getFilterOpsDays();
+        switch (operDays) {
+            case 90:
                 onQuarterChoice(null);
                 quarterPeriod.setSelected(true);
-                operDays = 90;
                 break;
-            case "30":
+            case 30:
                 onMonthChoice(null);
                 monthPeriod.setSelected(true);
-                operDays = 30;
                 break;
-            case "7":
+            case 7:
                 onWeekChoice(null);
                 weekPeriod.setSelected(true);
-                operDays = 7;
                 break;
             default:
                 onCustomChoice(null);
                 customPeriod.setSelected(true);
-                operDays = UtilsHelper.parseIntOrDefault(sday, SettingType.OPERATION_DAYS.getDefaultValue());
         }
         operationDays.setText( String.valueOf(operDays) );
-        refreshPeriod.setText(
-                (String)props.getOrDefault(
-                        SettingType.REFRESH_PERIOD.name(),
-                        SettingType.REFRESH_PERIOD.getDefaultValue()
-                )
-        );
+        refreshPeriod.setText( String.valueOf(sets.getRefreshOpsDaySec()) );
     }
 
     //endregion

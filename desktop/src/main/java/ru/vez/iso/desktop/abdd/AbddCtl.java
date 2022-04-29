@@ -13,13 +13,15 @@ import lombok.extern.java.Log;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.model.UserDetails;
-import ru.vez.iso.desktop.shared.SettingType;
+import ru.vez.iso.desktop.shared.AppSettings;
 import ru.vez.iso.desktop.shared.AppStateData;
 import ru.vez.iso.desktop.shared.AppStateType;
-import ru.vez.iso.desktop.utils.UtilsHelper;
 
 import java.net.URL;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * Controller for: "Выбор Единицы хранения для записи на диск"
@@ -142,10 +144,8 @@ public class AbddCtl implements Initializable {
         this.appState.addListener(
                 (MapChangeListener<AppStateType, AppStateData>) change -> {
                     if (AppStateType.SETTINGS.equals(change.getKey())) {
-                        Properties props = ((AppStateData<Properties>)appState.get(AppStateType.SETTINGS)).getValue();
-                        int filterDays = UtilsHelper.parseIntOrDefault(
-                                props.getProperty(AppStateType.OPERATION_DAYS.name()), SettingType.OPERATION_DAYS.getDefaultValue()
-                        );
+                        AppSettings sets = ((AppStateData<AppSettings>)appState.get(AppStateType.SETTINGS)).getValue();
+                        int filterDays = sets.getFilterOpsDays();
                         Platform.runLater( ()-> {
                             operationDays.setText(String.valueOf(filterDays));
                             this.onReload(null);

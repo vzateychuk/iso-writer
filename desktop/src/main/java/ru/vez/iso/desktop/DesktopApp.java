@@ -73,7 +73,7 @@ public class DesktopApp extends Application {
         Map<ViewType, Parent> viewCache = buildViewCache(appState, executorService);
 
         // create filecache directory
-        createFileCache(SettingType.DOWNLOAD_ISO_PATH.getDefaultValue());
+        createFileCache(SettingType.ISO_CACHE_PATH.getDefaultValue());
 
         // Set OnClose confirmation hook
         stage.setOnCloseRequest(e -> {
