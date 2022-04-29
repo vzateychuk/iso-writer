@@ -29,6 +29,8 @@ public class SettingsCtl {
     @FXML private RadioButton customPeriod;
     @FXML private TextField operationDays;
     @FXML private TextField refreshPeriod;
+    @FXML private TextField abddAPI;
+    @FXML private TextField fileCache;
 
     private final ObservableMap<AppStateType, AppStateData> appState;
     private final SettingsSrv service;
@@ -51,10 +53,10 @@ public class SettingsCtl {
         int operDays = UtilsHelper.parseIntOrDefault(operationDays.getText(), curr.getFilterOpsDays());
         int refreshSec = UtilsHelper.parseIntOrDefault(refreshPeriod.getText(), curr.getRefreshOpsDaySec());
         AppSettings newSetting = AppSettings.builder()
-                .abddAPI(curr.getAbddAPI())
+                .abddAPI(abddAPI.getText())
                 .filterOpsDays(operDays)
                 .settingFile(curr.getSettingFile())
-                .isoCachePath(curr.getIsoCachePath())
+                .isoCachePath(fileCache.getText())
                 .refreshOpsDaySec(refreshSec)
                 .build();
         service.saveAsync(newSetting);
@@ -107,6 +109,8 @@ public class SettingsCtl {
         }
         operationDays.setText( String.valueOf(operDays) );
         refreshPeriod.setText( String.valueOf(sets.getRefreshOpsDaySec()) );
+        fileCache.setText( sets.getIsoCachePath() );
+        abddAPI.setText( sets.getAbddAPI() );
     }
 
     //endregion
