@@ -27,12 +27,13 @@ import ru.vez.iso.desktop.login.LoginSrvImpl;
 import ru.vez.iso.desktop.model.UserDetails;
 import ru.vez.iso.desktop.nav.NavigationCtl;
 import ru.vez.iso.desktop.nav.NavigationSrvImpl;
-import ru.vez.iso.desktop.shared.SettingType;
 import ru.vez.iso.desktop.settings.SettingsCtl;
 import ru.vez.iso.desktop.settings.SettingsSrv;
 import ru.vez.iso.desktop.settings.SettingsSrvImpl;
 import ru.vez.iso.desktop.shared.AppStateData;
 import ru.vez.iso.desktop.shared.AppStateType;
+import ru.vez.iso.desktop.shared.LoadStatus;
+import ru.vez.iso.desktop.shared.SettingType;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -62,8 +63,7 @@ public class DesktopApp extends Application {
     public void start(Stage stage) throws IOException {
 
         // Create application state
-        ObservableMap<AppStateType, AppStateData> appState = createDefaultAppState();
-        appState.put(AppStateType.APP_PROD_MODE, AppStateData.builder().value(isProdMode).build());
+        ObservableMap<AppStateType, AppStateData> appState = createAppStateMap();
 
         // Create executor where all background tasks will be executed
         int numOfCores = Runtime.getRuntime().availableProcessors();
@@ -105,6 +105,19 @@ public class DesktopApp extends Application {
     }
 
     //region Private
+
+
+    /**
+     * Created ApplicationState Map with initial values
+     * */
+    private ObservableMap<AppStateType, AppStateData> createAppStateMap() {
+
+        ObservableMap<AppStateType, AppStateData> appState = createDefaultAppState();
+        appState.put(AppStateType.APP_PROD_MODE, AppStateData.builder().value(isProdMode).build());
+        Map<String, LoadStatus> loadStatusMap = new ConcurrentHashMap<>();
+        appState.put(AppStateType.LOAD_ISO_STATUS, AppStateData.builder().value(loadStatusMap).build());
+        return appState;
+    }
 
     private static boolean getAppIsProdMode(String[] args) {
 

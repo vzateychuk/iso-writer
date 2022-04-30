@@ -155,9 +155,9 @@
                   <TableColumn fx:id="creationDate" maxWidth="100.0" minWidth="80.0" text="Создан" />
                   <TableColumn fx:id="dataSize" editable="false" maxWidth="80.0" minWidth="40.0" text="Размер ISO" />
                   <TableColumn fx:id="storageDate" maxWidth="100.0" minWidth="80.0" text="Срок хранения" />
-                  <TableColumn fx:id="storageUnitStatus" minWidth="80.0" maxWidth="160.0" text="Статус EX" />
+                  <TableColumn fx:id="storageUnitStatus" minWidth="80.0" text="Статус EX" />
                   <TableColumn fx:id="savingDate" maxWidth="100.0" minWidth="80.0" text="Дата записи" />
-                  <TableColumn fx:id="fileName" minWidth="80.0" text="Имя файла (локально)" />
+                  <TableColumn fx:id="fileName" maxWidth="200.0" minWidth="80.0" text="Имя ISO файла (если загружен)" />
               </columns>
             </TableView>
          </children>

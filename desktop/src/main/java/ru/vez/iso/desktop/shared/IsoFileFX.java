@@ -1,4 +1,4 @@
-package ru.vez.iso.desktop.disks;
+package ru.vez.iso.desktop.shared;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -30,4 +30,11 @@ public class IsoFileFX {
         return numberSu;
     }
 
+    @Override
+    public String toString() {
+        return "IsoFileFX{" +
+                "fileName=" + fileName +
+                ", numberSu=" + numberSu +
+                '}';
+    }
 }

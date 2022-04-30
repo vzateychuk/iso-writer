@@ -10,5 +10,5 @@ public interface AbddSrv {
      /**
       * Загрузить ISO файл в локальный файловый кэш
       * */
-     void loadISOAsync(String objectId);
+     void loadISOAsync(String name);
 }

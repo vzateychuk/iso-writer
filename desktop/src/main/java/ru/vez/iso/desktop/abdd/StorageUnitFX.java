@@ -1,9 +1,7 @@
 package ru.vez.iso.desktop.abdd;
 
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
+import javafx.beans.value.ObservableValue;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -18,13 +16,14 @@ public class StorageUnitFX {
     private final DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     private final String objectId;
-    private final String operatingDayId;
-    private final SimpleStringProperty numberSu = new SimpleStringProperty();
-    private final ObjectProperty<LocalDate> creationDate = new SimpleObjectProperty<>();
-    private final ObjectProperty<Integer> dataSize = new SimpleObjectProperty<>();
-    private final ObjectProperty<LocalDate> storageDate = new SimpleObjectProperty<>();
-    private final ObjectProperty<StorageUnitStatus> storageUnitStatus = new SimpleObjectProperty<>();
-    private final ObjectProperty<LocalDate> savingDate = new SimpleObjectProperty<>();
+    private final String operatingDayId;     // ID операционного дня
+    private final StringProperty numberSu;   // Отображаемый бизнес-идентификатор
+    private final ObjectProperty<LocalDate> creationDate;
+    private final IntegerProperty dataSize;
+    private final ObjectProperty<LocalDate> storageDate;
+    private final ObjectProperty<StorageUnitStatus> storageUnitStatus;
+    private final ObjectProperty<LocalDate> savingDate;
+    private final StringProperty isoFileName;
 
     public StorageUnitFX(
             String objectId,
@@ -34,16 +33,18 @@ public class StorageUnitFX {
             Integer dataSize,
             LocalDate storageDate,
             StorageUnitStatus storageUnitStatus,
-            LocalDate savingDate
+            LocalDate savingDate,
+            String isoFileName
     ) {
         this.objectId = objectId;
         this.operatingDayId = operatingDayId;
-        this.numberSu.set(numberSu);
-        this.creationDate.set(creationDate);
-        this.dataSize.set(dataSize);
-        this.storageDate.set(storageDate);
-        this.storageUnitStatus.set(storageUnitStatus);
-        this.savingDate.set(savingDate);
+        this.numberSu = new SimpleStringProperty(numberSu);
+        this.creationDate = new SimpleObjectProperty<>(creationDate);
+        this.dataSize = new SimpleIntegerProperty(dataSize);
+        this.storageDate = new SimpleObjectProperty<>(storageDate);
+        this.storageUnitStatus = new SimpleObjectProperty<>(storageUnitStatus);
+        this.savingDate = new SimpleObjectProperty<>(savingDate);
+        this.isoFileName = new SimpleStringProperty(isoFileName);
     }
 
     public String getObjectId() {
@@ -57,7 +58,7 @@ public class StorageUnitFX {
     public String getNumberSu() {
         return numberSu.get();
     }
-    public SimpleStringProperty numberSuProperty() {
+    public StringProperty numberSuProperty() {
         return numberSu;
     }
 
@@ -71,8 +72,8 @@ public class StorageUnitFX {
     public Integer getDataSize() {
         return dataSize.get();
     }
-    public ObjectProperty<Integer> dataSizeProperty() {
-        return dataSize;
+    public ObservableValue<Integer> dataSizeProperty() {
+        return dataSize.asObject();
     }
 
     public LocalDate getStorageDate() {
@@ -96,6 +97,13 @@ public class StorageUnitFX {
         return new SimpleStringProperty(savingDate.get().format(fmt));
     }
 
+    public String getIsoFileName() {
+        return isoFileName.get();
+    }
+    public StringProperty isoFileNameProperty() {
+        return isoFileName;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -108,12 +116,13 @@ public class StorageUnitFX {
                 Objects.equals(getDataSize(), that.getDataSize()) &&
                 Objects.equals(getStorageDate(), that.getStorageDate()) &&
                 Objects.equals(getStorageUnitStatus(), that.getStorageUnitStatus()) &&
-                Objects.equals(getSavingDate(), that.getSavingDate());
+                Objects.equals(getSavingDate(), that.getSavingDate()) &&
+                Objects.equals(isoFileNameProperty(), that.isoFileNameProperty());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(objectId, numberSu, creationDate, dataSize, storageDate, storageUnitStatus, savingDate);
+        return Objects.hash(objectId, numberSu, creationDate, dataSize, storageDate, storageUnitStatus, savingDate, isoFileName);
     }
 
     @Override

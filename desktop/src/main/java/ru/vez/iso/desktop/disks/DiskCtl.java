@@ -13,6 +13,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.vez.iso.desktop.shared.IsoFileFX;
 import ru.vez.iso.desktop.shared.SettingType;
 import ru.vez.iso.desktop.shared.AppStateData;
 import ru.vez.iso.desktop.shared.AppStateType;
@@ -61,7 +62,7 @@ public class DiskCtl implements Initializable {
         butCheck.disableProperty().bind( tblIsoFiles.getSelectionModel().selectedItemProperty().isNull() );
         butDelete.disableProperty().bind( tblIsoFiles.getSelectionModel().selectedItemProperty().isNull() );
 
-        // Add Data listener for ISO_FILES populated
+        // Add Data listener for ISO_FILES populated/changed
         this.appState.addListener(
                 (MapChangeListener<AppStateType, AppStateData>) change -> {
                     if (AppStateType.ISO_FILES_NAMES.equals(change.getKey())) {

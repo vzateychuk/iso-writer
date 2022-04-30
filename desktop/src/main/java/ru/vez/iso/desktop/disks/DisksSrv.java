@@ -1,5 +1,7 @@
 package ru.vez.iso.desktop.disks;
 
+import ru.vez.iso.desktop.shared.IsoFileFX;
+
 import java.util.List;
 
 public interface DisksSrv {

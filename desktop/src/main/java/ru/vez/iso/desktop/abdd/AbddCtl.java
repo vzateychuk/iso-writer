@@ -12,16 +12,12 @@ import javafx.scene.control.*;
 import lombok.extern.java.Log;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.vez.iso.desktop.model.UserDetails;
-import ru.vez.iso.desktop.shared.AppSettings;
-import ru.vez.iso.desktop.shared.AppStateData;
-import ru.vez.iso.desktop.shared.AppStateType;
+import org.apache.logging.log4j.util.Strings;
+import ru.vez.iso.desktop.shared.*;
 
 import java.net.URL;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Controller for: "Выбор Единицы хранения для записи на диск"
@@ -68,7 +64,7 @@ public class AbddCtl implements Initializable {
 
     private ObservableList<OperatingDayFX> operatingDays;
     private ObservableList<StorageUnitFX> storageUnits;
-    private List<StorageUnitStatus> exStatusesFilter;
+    private List<StorageUnitStatus> statusesFilter;
     private int period = 1;
 
     //endregion
@@ -76,24 +72,6 @@ public class AbddCtl implements Initializable {
     public AbddCtl(ObservableMap<AppStateType, AppStateData> appState, AbddSrv service) {
         this.service = service;
         this.appState = appState;
-
-        // Add login listener
-        this.appState.addListener(
-                (MapChangeListener<AppStateType, AppStateData>) change -> {
-                    if (AppStateType.USER_DETAILS.equals(change.getKey())) {
-                        UserDetails userDetails = (UserDetails) change.getValueAdded().getValue();
-                        Platform.runLater(()-> unlockControls(userDetails != UserDetails.NOT_SIGNED_USER));
-                    }
-                });
-
-        // Data listener
-        this.appState.addListener(
-                (MapChangeListener<AppStateType, AppStateData>) change -> {
-                    if (AppStateType.OPERATION_DAYS.equals(change.getKey())) {
-                        List<OperatingDayFX> data = (List<OperatingDayFX>) change.getValueAdded().getValue();
-                        Platform.runLater(()-> displayOperatingDays(data));
-                    }
-                });
     }
 
     @Override
@@ -127,12 +105,26 @@ public class AbddCtl implements Initializable {
         storageDate.setCellValueFactory(cell -> cell.getValue().storageDateProperty());
         storageUnitStatus.setCellValueFactory(cell -> cell.getValue().storageUnitStatusProperty());
         savingDate.setCellValueFactory(cell -> cell.getValue().savingDateProperty());
+        fileName.setCellValueFactory(cell -> cell.getValue().isoFileNameProperty());
 
-        // add listener to select OpDays table should refresh slave table
+        // Operation Days table listener
+        this.appState.addListener(
+                (MapChangeListener<AppStateType, AppStateData>) change -> {
+                    if (AppStateType.OPERATION_DAYS.equals(change.getKey())) {
+                        List<OperatingDayFX> data = (List<OperatingDayFX>) change.getValueAdded().getValue();
+                        Platform.runLater(()-> displayOperatingDays(data));
+                    }
+                });
+
+        // OperationDays: when select row should refresh StorageUnits table
         tblOperatingDays.getSelectionModel().selectedItemProperty().addListener(
                 (o, old, newValue) -> {
                     if (newValue != null) {
-                        this.filterAndDisplayStorageUnits(newValue.getStorageUnits(), exStatusesFilter);
+                        // need to update storage units with isoFileName, stored in local file-cache
+                        final List<IsoFileFX> fileCache = ((AppStateData<List<IsoFileFX>>)appState.get(AppStateType.ISO_FILES_NAMES)).getValue();
+                        List<StorageUnitFX> withFileNames = this.getWithFileName(newValue.getStorageUnits(), fileCache);
+                        // filter and display a storage Units
+                        Platform.runLater(()-> this.filterAndDisplayStorageUnits(withFileNames, statusesFilter));
                     }
                 });
 
@@ -141,7 +133,7 @@ public class AbddCtl implements Initializable {
                 tblStorageUnits.getSelectionModel().selectedItemProperty().isNull()
         );
 
-        // load default filter: operation's days period
+        // Operation Days period's filter (when settings changes)
         this.appState.addListener(
                 (MapChangeListener<AppStateType, AppStateData>) change -> {
                     if (AppStateType.SETTINGS.equals(change.getKey())) {
@@ -154,21 +146,32 @@ public class AbddCtl implements Initializable {
                     }
                 });
 
-        // listen for StoreUnitsStatus filter change (RadioButtons)
+        // StoreUnitsStatus status filter (RadioButtons)
         filterGroup.selectedToggleProperty().addListener((o, old, newVal) -> {
             logger.debug("storageUnits filter: " + ((RadioButton) newVal).getText());
             if (exShowAvail == newVal) {
-                exStatusesFilter = Collections.unmodifiableList(Arrays.asList(StorageUnitStatus.READY_TO_RECORDING, StorageUnitStatus.RECORDED));
+                statusesFilter = Collections.unmodifiableList(Arrays.asList(StorageUnitStatus.READY_TO_RECORDING, StorageUnitStatus.RECORDED));
             } else if (exShowPrep == newVal) {
-                exStatusesFilter = Collections.singletonList(StorageUnitStatus.PREPARING_RECORDING);
+                statusesFilter = Collections.singletonList(StorageUnitStatus.PREPARING_RECORDING);
             } else {
-                exStatusesFilter = null;
+                statusesFilter = null;
             }
             // re-filter storageUnits and display
-            filterAndDisplayStorageUnits(storageUnits, exStatusesFilter);
+            this.filterAndDisplayStorageUnits(storageUnits, statusesFilter);
         });
-    }
 
+        // ISO_FILES in cache changed
+        this.appState.addListener(
+                (MapChangeListener<AppStateType, AppStateData>) change -> {
+                    if (AppStateType.ISO_FILES_NAMES.equals(change.getKey())) {
+                        List<IsoFileFX> fileCache = (List<IsoFileFX>) change.getValueAdded().getValue();
+                        List<StorageUnitFX> withFileNames = this.getWithFileName(this.storageUnits, fileCache);
+                        // filter and display a storage Units with fileNames
+                        Platform.runLater( ()-> this.filterAndDisplayStorageUnits(withFileNames, statusesFilter) );
+                    }
+                });
+
+    }
 
     @FXML public void onReload(ActionEvent ev) {
         int days = period++;
@@ -183,14 +186,39 @@ public class AbddCtl implements Initializable {
     @FXML void onStartIsoLoad(ActionEvent ev) {
         logger.debug("onStartIsoLoad");
         StorageUnitFX selected = tblStorageUnits.getSelectionModel().getSelectedItem();
-        service.loadISOAsync(selected.getObjectId());
+        service.loadISOAsync(selected.getNumberSu());
     }
 
-    //region Private
+    //region PRIVATE
 
-    private void unlockControls(boolean unlock) {
-        butReload.setDisable(!unlock);
+    /**
+     * Update storeUnit fileName property if there is a filename in fileCache found
+     * */
+    private List<StorageUnitFX> getWithFileName(List<StorageUnitFX> storageUnits, List<IsoFileFX> fileCache) {
+
+        return storageUnits.stream()
+                .map(su -> {
+                    StorageUnitFX updated = su;
+                    if ( !Strings.isBlank(su.getNumberSu()) ) {
+                        String fullName = su.getNumberSu() + ".iso";
+                        final String fileName = fileCache.stream().anyMatch(f -> f.getFileName().equals(fullName)) ? fullName : "";
+                        updated = new StorageUnitFX(
+                                    su.getObjectId(),
+                                    su.getOperatingDayId(),
+                                    su.getNumberSu(),
+                                    su.getCreationDate(),
+                                    su.getDataSize(),
+                                    su.getStorageDate(),
+                                    su.getStorageUnitStatus(),
+                                    su.getSavingDate(),
+                                    fileName
+                            );
+                    };
+                    return updated;
+                })
+                .collect(Collectors.toList());
     }
+
 
     /**
      * Refresh master OperatingDays table
@@ -206,6 +234,7 @@ public class AbddCtl implements Initializable {
      * Must be executed in Main Application Thread only!
      */
     private void filterAndDisplayStorageUnits(List<StorageUnitFX> storageUnits, List<StorageUnitStatus> filter) {
+
         this.storageUnits = FXCollections.observableList(storageUnits);
         // filter storageUnits if filter is not null
         ObservableList<StorageUnitFX> filtered =

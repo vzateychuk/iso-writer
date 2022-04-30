@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.shared.AppSettings;
 import ru.vez.iso.desktop.shared.AppStateData;
 import ru.vez.iso.desktop.shared.AppStateType;
+import ru.vez.iso.desktop.shared.LoadStatus;
 import ru.vez.iso.desktop.utils.UtilsHelper;
 
 import java.io.IOException;
@@ -68,15 +69,18 @@ public class AbddSrvImpl implements AbddSrv {
         } );
     }
 
+    /**
+     * Загрузка ISO файла в локальный файловый cache
+     * */
     @Override
-    public void loadISOAsync(String objectId) {
+    public void loadISOAsync(String name) {
 
         // check if load ISO file is not completed yet
-        if (this.loadStatus.get(objectId) == LoadStatus.STARTED) {
-            logger.debug("load not completed, skipping. objectId: " + objectId);
+        if (this.loadStatus.get(name) == LoadStatus.STARTED) {
+            logger.debug("load not completed, skipping. name: " + name);
             return;
         }
-        logger.debug("loadISOAsync started: " + objectId);
+        logger.debug("loadISOAsync started: " + name);
 
         AppSettings sets = ((AppStateData<AppSettings>)appState.get(AppStateType.SETTINGS)).getValue();
         String dir = sets.getIsoCachePath();
@@ -88,7 +92,8 @@ public class AbddSrvImpl implements AbddSrv {
             for (int i = 0; i < 2000_000; i++) {
                 sb.append("something");
             }
-            Path path = Paths.get(dir, objectId + ".iso");
+            String fileName = name + ".iso";
+            Path path = Paths.get(dir, fileName);
             try {
                 Files.write(path, sb.toString().getBytes(StandardCharsets.UTF_8));
             } catch (IOException e) {
@@ -98,8 +103,8 @@ public class AbddSrvImpl implements AbddSrv {
             return LoadStatus.STARTED;
         }, exec).whenComplete( (st, ex) -> {
             LoadStatus loadStatus = ex != null ? LoadStatus.FAILED : LoadStatus.COMPLETED;
-            logger.debug("load {} for objectId: {}", loadStatus.name(), objectId);
-            this.loadStatus.put(objectId, loadStatus);
+            logger.debug("load {} for objectId: {}", loadStatus.name(), name);
+            this.loadStatus.put(name, loadStatus);
             Map<String, LoadStatus> map = new HashMap<>(this.loadStatus);
             appState.put(AppStateType.LOAD_ISO_STATUS, AppStateData.builder().value(map).build());
         } );
@@ -134,10 +139,8 @@ public class AbddSrvImpl implements AbddSrv {
                 .mapToObj(i -> {
                     LocalDate date = LocalDate.of(1900+i, i%12+1, i%12+1);
                     String opsDayId = String.valueOf(i%period);
-                    return new StorageUnitFX(
-                            String.valueOf(i), opsDayId, "numberSu-" + i,
-                            date, i, date, statuses.get(rnd.nextInt(statuses.size())), date
-                    );
+                    return new StorageUnitFX( String.valueOf(i), opsDayId, "numberSu-" + i,
+                            date, i, date, statuses.get(rnd.nextInt(statuses.size())), date, "" );
                 })
                 .collect(Collectors.toList());
     }

@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.shared.AppSettings;
 import ru.vez.iso.desktop.shared.AppStateData;
 import ru.vez.iso.desktop.shared.AppStateType;
+import ru.vez.iso.desktop.shared.IsoFileFX;
 
 import java.io.IOException;
 import java.nio.file.Files;
