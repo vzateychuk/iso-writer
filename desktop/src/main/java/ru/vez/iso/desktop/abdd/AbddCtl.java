@@ -51,6 +51,7 @@ public class AbddCtl implements Initializable {
     @FXML private TableColumn<StorageUnitFX, String> storageDate;
     @FXML private TableColumn<StorageUnitFX, String> storageUnitStatus;
     @FXML private TableColumn<StorageUnitFX, String> savingDate;
+    @FXML private TableColumn<StorageUnitFX, String> fileName;
 
     // Кнопки
     @FXML private Button butIsoLoad;

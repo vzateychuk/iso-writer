@@ -20,10 +20,10 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<SplitPane fx:id="abddView" dividerPositions="0.5066844919786095" xmlns="http://javafx.com/javafx"
+<SplitPane fx:id="abddView" dividerPositions="0.4" xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.vez.iso.desktop.abdd.AbddCtl">
   <items>
-      <VBox prefWidth="400.0">
+      <VBox prefWidth="300.0">
          <children>
             <GridPane>
               <columnConstraints>
@@ -66,16 +66,16 @@
             </GridPane>
             <TableView fx:id="tblOperatingDays" maxHeight="1.7976931348623157E308" VBox.vgrow="ALWAYS">
               <columns>
-                  <TableColumn fx:id="operatingDay" editable="false" maxWidth="160.0" minWidth="80.0" text="Дата опер.дня" />
+                  <TableColumn fx:id="operatingDay" editable="false" maxWidth="100.0" minWidth="80.0" text="Дата опер.дня" />
                   <TableColumn fx:id="typeSu" editable="false" maxWidth="80.0" minWidth="40.0" prefWidth="40.0" text="Вид EX" />
                   <TableColumn fx:id="edited" editable="false" maxWidth="80.0" minWidth="40.0" prefWidth="40.0" text="Исправлен?" />
                   <TableColumn fx:id="status" editable="false" minWidth="80.0" text="Статус" />
-                  <TableColumn fx:id="createdAt" editable="false" maxWidth="160.0" minWidth="80.0" text="Создан" />
+                  <TableColumn fx:id="createdAt" editable="false" maxWidth="100.0" minWidth="80.0" text="Создан" />
               </columns>
             </TableView>
          </children>
       </VBox>
-      <VBox prefWidth="400.0">
+      <VBox prefWidth="500.0">
          <children>
             <GridPane gridLinesVisible="true">
                <columnConstraints>
@@ -152,11 +152,12 @@
              <TableView fx:id="tblStorageUnits" maxHeight="1.7976931348623157E308" VBox.vgrow="ALWAYS">
               <columns>
                   <TableColumn fx:id="numberSu" maxWidth="200.0" minWidth="100.0" prefWidth="100.0" text="Номер EX" />
-                  <TableColumn fx:id="creationDate" maxWidth="160.0" minWidth="80.0" text="Создан" />
+                  <TableColumn fx:id="creationDate" maxWidth="100.0" minWidth="80.0" text="Создан" />
                   <TableColumn fx:id="dataSize" editable="false" maxWidth="80.0" minWidth="40.0" text="Размер ISO" />
-                  <TableColumn fx:id="storageDate" maxWidth="160.0" minWidth="80.0" text="Срок хранения" />
-                  <TableColumn fx:id="storageUnitStatus" minWidth="80.0" text="Статус EX" />
-                  <TableColumn fx:id="savingDate" maxWidth="160.0" minWidth="80.0" text="Дата записи" />
+                  <TableColumn fx:id="storageDate" maxWidth="100.0" minWidth="80.0" text="Срок хранения" />
+                  <TableColumn fx:id="storageUnitStatus" minWidth="80.0" maxWidth="160.0" text="Статус EX" />
+                  <TableColumn fx:id="savingDate" maxWidth="100.0" minWidth="80.0" text="Дата записи" />
+                  <TableColumn fx:id="fileName" minWidth="80.0" text="Имя файла (локально)" />
               </columns>
             </TableView>
          </children>
