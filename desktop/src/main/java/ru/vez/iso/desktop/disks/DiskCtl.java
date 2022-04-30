@@ -28,6 +28,7 @@ public class DiskCtl implements Initializable {
     @FXML private Button butCheck;
     @FXML private Button butReload;
     @FXML private Button butWriteCopy;
+    @FXML private Button butDelete;
 
     @FXML private TableView<IsoFileFX> tblIsoFiles;
     @FXML private TableColumn<IsoFileFX, String> numberSu;
@@ -44,7 +45,7 @@ public class DiskCtl implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        logger.debug("initialize");
+        logger.debug("");
 
         // Setting UI
         this.isoFilesFX = FXCollections.emptyObservableList();
@@ -56,12 +57,9 @@ public class DiskCtl implements Initializable {
         fileName.setCellValueFactory(cell -> cell.getValue().fileNameProperty());
 
         // disable buttons if none selected
-        butWriteCopy.disableProperty().bind(
-                tblIsoFiles.getSelectionModel().selectedItemProperty().isNull()
-        );
-        butCheck.disableProperty().bind(
-                tblIsoFiles.getSelectionModel().selectedItemProperty().isNull()
-        );
+        butWriteCopy.disableProperty().bind( tblIsoFiles.getSelectionModel().selectedItemProperty().isNull() );
+        butCheck.disableProperty().bind( tblIsoFiles.getSelectionModel().selectedItemProperty().isNull() );
+        butDelete.disableProperty().bind( tblIsoFiles.getSelectionModel().selectedItemProperty().isNull() );
 
         // Add Data listener for ISO_FILES populated
         this.appState.addListener(
@@ -84,18 +82,23 @@ public class DiskCtl implements Initializable {
     }
 
     @FXML public void onReload(ActionEvent ev) {
-        logger.debug("onReload");
+        logger.debug("");
         service.readIsoFileNamesAsync(SettingType.ISO_CACHE_PATH.getDefaultValue());
     }
 
     @FXML public void onCheck(ActionEvent ev) {
-        logger.debug("onCheck");
+        logger.debug("");
     }
 
     @FXML public void onWriteCopy(ActionEvent ev) {
-        logger.debug("onWriteCopy");
+        logger.debug("");
     }
 
+    @FXML public void onDelete(ActionEvent ev) {
+        logger.debug("");
+        IsoFileFX fileFX = tblIsoFiles.getSelectionModel().selectedItemProperty().getValue();
+        service.deleteFileAndReload(fileFX.getFileName());
+    }
 
     //region Private
 
@@ -104,8 +107,6 @@ public class DiskCtl implements Initializable {
         this.isoFilesFX = FXCollections.observableList(data);
         tblIsoFiles.setItems(this.isoFilesFX);
     }
-
-
 
     //endregion
 

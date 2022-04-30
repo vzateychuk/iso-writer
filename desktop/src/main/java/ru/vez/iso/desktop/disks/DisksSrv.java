@@ -12,5 +12,10 @@ public interface DisksSrv {
     /**
      * iterates over a directory and outputs all of the fi les that end with a *.iso extension
      * */
-    List<String> readIsoFileNames(String dir);
+    List<IsoFileFX> readIsoFileNames(String dir);
+
+    /**
+     * Delete the file and invoke reload
+     * */
+    void deleteFileAndReload(String fileName);
 }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -19,7 +20,7 @@
          <top>
             <HBox alignment="CENTER_LEFT" prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                <children>
-                  <Button fx:id="butReload" mnemonicParsing="false" onAction="#onReload">
+                  <Button fx:id="butReload" defaultButton="true" mnemonicParsing="false" onAction="#onReload">
                      <tooltip>
                         <Tooltip text="Перечитать список" />
                      </tooltip>
@@ -58,6 +59,19 @@
                      <tooltip>
                         <Tooltip text="Проверить" />
                      </tooltip></Button>
+                  <Separator orientation="VERTICAL" prefHeight="40.0" prefWidth="11.0" />
+                  <Button fx:id="butDelete" onAction="#onDelete">
+                     <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@image/delete.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <tooltip>
+                        <Tooltip text="Удалить загруженный файл" />
+                     </tooltip>
+                  </Button>
                </children>
             </HBox>
          </top>

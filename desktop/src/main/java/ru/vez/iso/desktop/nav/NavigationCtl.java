@@ -60,37 +60,37 @@ public class NavigationCtl implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        logger.debug("initialize");
+        logger.debug("");
         // lock controls in prod mode
         boolean prodMode = (Boolean)appState.get(AppStateType.APP_PROD_MODE).getValue();
         this.lockControls(prodMode);
     }
 
     public void onShowLogin(ActionEvent ev) {
-        logger.debug(".onShowLogin");
+        logger.debug("");
         showView(ViewType.LOGIN);
     }
     public void onShowAbdd(ActionEvent ev) {
-        logger.debug("onShowAbdd");
+        logger.debug("");
         showView(ViewType.ABDD_VIEW);
     }
     public void onShowSettings(ActionEvent ev) {
-        logger.debug("onShowSettings");
+        logger.debug("");
         showView(ViewType.SETTINGS);
     }
     public void onShowDisks(ActionEvent ev) {
-        logger.debug("onShowDisks");
+        logger.debug("");
         showView(ViewType.DISK);
     }
     public void onShowDocuments(ActionEvent ev) {
-        logger.debug("onShowDocuments");
+        logger.debug("");
         showView(ViewType.DOCUMENTS);
     }
 
     //region Private
 
     private void lockControls(boolean lock) {
-        logger.debug("lockControls: " + lock);
+        logger.debug("lock: " + lock);
         disks.setDisable(lock);
         main.setDisable(lock);
         documents.setDisable(lock);
