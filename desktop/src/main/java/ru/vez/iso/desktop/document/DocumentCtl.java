@@ -10,13 +10,13 @@ import javafx.collections.ObservableMap;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.FileChooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.util.Strings;
 import ru.vez.iso.desktop.shared.AppStateData;
 import ru.vez.iso.desktop.shared.AppStateType;
 
@@ -27,6 +27,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * Controller for Document view
@@ -48,9 +50,10 @@ public class DocumentCtl implements Initializable {
     @FXML private CheckBox selectAll;
     @FXML private Button butOpenFile;
     @FXML private Button butCheckHash;
-    @FXML private Button butSearchDocs;
+    @FXML private Button butFilter;
     @FXML private Button butPrint;
     @FXML private Button butDownload;
+    @FXML private TextField txtFilter;
 
     private final ObservableMap<AppStateType, AppStateData> appState;
     private ObservableList<DocumentFX> documents;
@@ -64,7 +67,7 @@ public class DocumentCtl implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        logger.debug("initialize");
+        logger.debug("");
         // Setting UI
         documents = FXCollections.emptyObservableList();
         tblDocuments.setItems(documents);
@@ -87,7 +90,7 @@ public class DocumentCtl implements Initializable {
                 change -> {
                   if (AppStateType.DOCUMENTS.equals(change.getKey())) {
                     List<DocumentFX> docs = (List<DocumentFX>) change.getValueAdded().getValue();
-                    Platform.runLater(() -> displayData(docs));
+                    Platform.runLater(() -> filterAndDisplay(docs, txtFilter.getText()));
                   }
                 });
 
@@ -95,7 +98,7 @@ public class DocumentCtl implements Initializable {
 
     // open ChooseFile dialog and fire service to load from file
     @FXML void onOpenFile(ActionEvent ev) {
-        logger.debug("DocumentCtl.onOpenFile");
+        logger.debug("");
         FileChooser chooseFile = new FileChooser();
         chooseFile.setInitialDirectory(Paths.get(System.getProperty("user.home")).toFile());
         chooseFile.getExtensionFilters().clear();
@@ -111,24 +114,31 @@ public class DocumentCtl implements Initializable {
     }
 
     @FXML public void onSelectAll(ActionEvent ev) {
-        logger.debug( "DocumentCtl.onSelectAll: " + selectAll.isSelected() );
+        logger.debug( selectAll.isSelected() );
         this.checkBoxes.forEach( cbox -> cbox.setSelected(selectAll.isSelected()) );
     }
 
     @FXML void onDownload(ActionEvent ev) {
-        logger.debug("DocumentCtl.onDownload");
+        logger.debug("");
     }
-    @FXML void onSearchDocs(ActionEvent ev) {
-        logger.debug("DocumentCtl.onSearchDocs");
+    @FXML void onFilter(ActionEvent ev) {
+        logger.debug("");
+        AppStateData<List<DocumentFX>> data = (AppStateData<List<DocumentFX>>) appState.get(AppStateType.DOCUMENTS);
+        filterAndDisplay(data.getValue(), txtFilter.getText());
+    }
+    @FXML public void onFilterEnter(KeyEvent ke) {
+        if( ke.getCode() == KeyCode.ENTER ) {
+            onFilter(null);
+        }
     }
     @FXML void onWriteCopy(ActionEvent ev) {
-        logger.debug("DocumentCtl.onWriteCopy");
+        logger.debug("");
     }
     @FXML void onPrint(ActionEvent ev) {
-        logger.debug("DocumentCtl.onPrint");
+        logger.debug("");
     }
     @FXML void onCheckHash(ActionEvent ev) {
-        logger.debug("DocumentCtl.onCheckHash");
+        logger.debug("");
     }
 
     //region Private
@@ -140,8 +150,8 @@ public class DocumentCtl implements Initializable {
      * @param cell - support class used in TableColumn as a wrapper class * to provide all necessary information for a particular Cell
      * @return ObservableValue<CheckBox>
      */
-    private ObservableValue<CheckBox> createObservableDocCheckbox(
-            TableColumn.CellDataFeatures<DocumentFX, CheckBox> cell) {
+    private ObservableValue<CheckBox> createObservableDocCheckbox(TableColumn.CellDataFeatures<DocumentFX, CheckBox> cell) {
+
         DocumentFX doc = cell.getValue();
         CheckBox cbox = new CheckBox();
         cbox.selectedProperty().setValue(doc.isSelected());
@@ -156,26 +166,38 @@ public class DocumentCtl implements Initializable {
     }
 
     /**
-     * Map list of documents to FXCollection and set to the TableView
+     * Filter list of documents and display
+     * (set to the TableView)
      *
      * @param docs - list of documents
+     * @param filter
      * */
-    private void displayData(List<DocumentFX> docs) {
+    private void filterAndDisplay(List<DocumentFX> docs, String filter) {
         // remove all previously saved references to checkboxes
         this.checkBoxes.clear();
+
+        Predicate<DocumentFX> filterDoc = d ->
+                !Strings.isBlank(d.getDocNumber()) && d.getDocNumber().toLowerCase().contains(filter.toLowerCase())
+                  || d.getDocType().getTitle().toLowerCase().contains(filter.toLowerCase())
+                  || d.getBranch().getTitle().toLowerCase().contains(filter.toLowerCase())
+                  || d.getDocStatusName().getTitle().toLowerCase().contains(filter.toLowerCase());
         // Set items to the tableView
-        this.documents = FXCollections.observableList(docs);
+        List<DocumentFX> filtered = Strings.isBlank(filter) ? docs : docs.stream().filter(filterDoc).collect(Collectors.toList());
+
+        this.documents = FXCollections.observableList(filtered);
         tblDocuments.setItems(this.documents);
         // Enable/disable disk-related buttons
-        this.unlockDiskOpsButtons( docs.size()>0 );
+        this.unlockDiskOpsButtons( filtered.size()>0 );
         this.unlockDocumentButtonsIfAnySelected();
     }
 
     // Lock/Unlock all disk-related operations
     private void unlockDiskOpsButtons(boolean unlock) {
         selectAll.setDisable(!unlock);
-        butSearchDocs.setDisable(!unlock);
+        butFilter.setDisable(!unlock);
         butCheckHash.setDisable(!unlock);
+        txtFilter.setDisable(!unlock);
+        butFilter.setDisable(!unlock);
     }
 
     // lock/unlock document related operations

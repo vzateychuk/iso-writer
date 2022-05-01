@@ -9,14 +9,22 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import lombok.extern.java.Log;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
-import ru.vez.iso.desktop.shared.*;
+import ru.vez.iso.desktop.shared.AppSettings;
+import ru.vez.iso.desktop.shared.AppStateData;
+import ru.vez.iso.desktop.shared.AppStateType;
+import ru.vez.iso.desktop.shared.IsoFileFX;
 
 import java.net.URL;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 /**
@@ -181,6 +189,11 @@ public class AbddCtl implements Initializable {
             logger.warn("can't parse value to int: " + operationDays.getText());
         }
         service.readOpsDayAsync(days);
+    }
+    @FXML public void onFilterEnter(KeyEvent ke) {
+        if( ke.getCode() == KeyCode.ENTER ) {
+            onReload(null);
+        }
     }
 
     @FXML void onStartIsoLoad(ActionEvent ev) {

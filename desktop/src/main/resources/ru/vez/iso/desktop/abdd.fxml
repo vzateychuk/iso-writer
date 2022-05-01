@@ -47,7 +47,7 @@
                      </font>
                   </Label>
                   <TextField fx:id="operationDays" promptText="30" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                  <Button fx:id="butReload" mnemonicParsing="false" onAction="#onReload" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                  <Button fx:id="butReload" mnemonicParsing="false" onAction="#onReload" onKeyPressed="#onFilterEnter" GridPane.columnIndex="2" GridPane.rowIndex="1">
                      <tooltip>
                         <Tooltip text="Перечитать список" />
                      </tooltip>
