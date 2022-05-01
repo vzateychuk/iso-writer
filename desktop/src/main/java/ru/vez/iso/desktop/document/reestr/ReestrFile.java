@@ -13,7 +13,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReestrFile implements Serializable {
-    private ReestrFileType type;
+    private RFileType type;
     private String hash;
     private String path;
 }

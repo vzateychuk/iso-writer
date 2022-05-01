@@ -20,7 +20,6 @@ public class DocumentFX {
     private final ObjectProperty<BranchType> branch;
     private final ObjectProperty<DocStatus> docStatusName;
     // uses in View when selecting the current row
-    private final BooleanProperty selected;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
   public DocumentFX(String objectId, String docNumber, double sumDoc, LocalDate operDayDate,
@@ -34,18 +33,10 @@ public class DocumentFX {
         this.docDate = new SimpleObjectProperty<>(docDate);
         this.branch = new SimpleObjectProperty<>(branch);
         this.docStatusName = new SimpleObjectProperty<>(docStatusName);
-        this.selected = new SimpleBooleanProperty(false);
     }
 
     public String getObjectId() {
         return objectId;
-    }
-
-    public void setSelected(boolean selected) {
-        this.selected.set(selected);
-    }
-    public Boolean isSelected() {
-        return selected.get();
     }
 
     public double getSumDoc() {

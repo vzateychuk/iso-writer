@@ -1,8 +1,6 @@
 package ru.vez.iso.desktop.document;
 
 import javafx.application.Platform;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
@@ -10,21 +8,31 @@ import javafx.collections.ObservableMap;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.FileChooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
+import ru.vez.iso.desktop.document.reestr.RFileType;
+import ru.vez.iso.desktop.document.reestr.Reestr;
+import ru.vez.iso.desktop.document.reestr.ReestrDoc;
+import ru.vez.iso.desktop.document.reestr.ReestrFile;
+import ru.vez.iso.desktop.shared.AppSettings;
 import ru.vez.iso.desktop.shared.AppStateData;
 import ru.vez.iso.desktop.shared.AppStateType;
+import ru.vez.iso.desktop.shared.MyContants;
 
+import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.function.Predicate;
@@ -45,19 +53,15 @@ public class DocumentCtl implements Initializable {
     @FXML private TableColumn<DocumentFX, String> kindIdName;
     @FXML private TableColumn<DocumentFX, String> operDayDate;
     @FXML private TableColumn<DocumentFX, Double> sumDoc;
-    @FXML private TableColumn<DocumentFX, CheckBox> selection;
 
-    @FXML private CheckBox selectAll;
-    @FXML private Button butOpenFile;
+    @FXML private Button butOpenZip;
     @FXML private Button butCheckHash;
     @FXML private Button butFilter;
-    @FXML private Button butPrint;
-    @FXML private Button butDownload;
+    @FXML private Button butOpen;
     @FXML private TextField txtFilter;
 
     private final ObservableMap<AppStateType, AppStateData> appState;
     private ObservableList<DocumentFX> documents;
-    private final List<CheckBox> checkBoxes = new ArrayList<>();
     private final DocumentSrv service;
 
     public DocumentCtl(ObservableMap<AppStateType, AppStateData> appState, DocumentSrv srv) {
@@ -67,6 +71,7 @@ public class DocumentCtl implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
         logger.debug("");
         // Setting UI
         documents = FXCollections.emptyObservableList();
@@ -82,8 +87,6 @@ public class DocumentCtl implements Initializable {
         operDayDate.setCellValueFactory(cell -> cell.getValue().operDayDateProperty());
         sumDoc.setCellValueFactory(cell -> cell.getValue().sumDocProperty());
 
-        selection.setCellValueFactory(this::createObservableDocCheckbox);
-
         // Add load data listener
         this.appState.addListener(
             (MapChangeListener<AppStateType, AppStateData>)
@@ -94,76 +97,79 @@ public class DocumentCtl implements Initializable {
                   }
                 });
 
+        // disable the "Write" button if no record selected
+        butOpen.disableProperty().bind(
+                tblDocuments.getSelectionModel().selectedItemProperty().isNull()
+        );
+
     }
 
-    // open ChooseFile dialog and fire service to load from file
-    @FXML void onOpenFile(ActionEvent ev) {
-        logger.debug("");
+    // open ChooseFile dialog and fire service to load documents from ZIP
+    @FXML void onOpenZip(ActionEvent ev) {
+
         FileChooser chooseFile = new FileChooser();
         chooseFile.setInitialDirectory(Paths.get(System.getProperty("user.home")).toFile());
         chooseFile.getExtensionFilters().clear();
         chooseFile.getExtensionFilters().add(new FileChooser.ExtensionFilter("DIR.ZIP", "*.zip"));
 
-        File file = chooseFile.showOpenDialog(null);
-        if (file != null) {
-            Path path = file.toPath();
-            logger.debug("Choose: " + path);
+        File chosen = chooseFile.showOpenDialog(null);
+        if (chosen != null) {
+            txtFilter.setText("");
             // if opened, launch service to read data
+            Path path = chosen.toPath();
+            logger.debug("ZIP path: " + path);
             service.loadAsync(path);
         }
     }
 
-    @FXML public void onSelectAll(ActionEvent ev) {
-        logger.debug( selectAll.isSelected() );
-        this.checkBoxes.forEach( cbox -> cbox.setSelected(selectAll.isSelected()) );
+    // open a document's file natively
+    @FXML void onOpen(ActionEvent ev) {
+
+        logger.debug("");
+        final Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
+        if (desktop == null || !desktop.isSupported(Desktop.Action.OPEN)) {
+            logger.warn("Open action not supported");
+            return;
+        }
+
+        AppSettings sets = ((AppStateData<AppSettings>) appState.get(AppStateType.SETTINGS)).getValue();
+        DocumentFX doc = tblDocuments.getSelectionModel().getSelectedItem();
+
+        Reestr reestr = ((AppStateData<Reestr>) appState.get(AppStateType.REESTR)).getValue();
+        ReestrDoc reestrDoc = reestr.getDocs().stream().filter(d -> d.getData().getObjectId().equals(doc.getObjectId())).findAny()
+                    .orElseThrow(() -> new RuntimeException("not found in REESTR, exit: " + doc.getObjectId()));
+        ReestrFile file = reestrDoc.getFiles().stream()
+                    .filter(f -> f.getType().equals(RFileType.PF) || f.getType().equals(RFileType.ED)).findAny()
+                    .orElseThrow(() -> new RuntimeException("not found in REESTR, exit: " + doc.getObjectId()));
+        Path unzippedPath = Paths.get(sets.getIsoCachePath(), MyContants.UNZIP_FOLDER, doc.getObjectId(), file.getPath());
+
+        logger.debug("open: {}", unzippedPath);
+        try {
+            desktop.open(unzippedPath.toFile());
+        } catch (IOException ex) {
+            logger.warn("unable to open {}", unzippedPath, ex);
+        }
     }
 
-    @FXML void onDownload(ActionEvent ev) {
-        logger.debug("");
-    }
     @FXML void onFilter(ActionEvent ev) {
+
         logger.debug("");
+
         AppStateData<List<DocumentFX>> data = (AppStateData<List<DocumentFX>>) appState.get(AppStateType.DOCUMENTS);
-        filterAndDisplay(data.getValue(), txtFilter.getText());
+        if (data != null) {
+            this.filterAndDisplay(data.getValue(), txtFilter.getText());
+        }
     }
     @FXML public void onFilterEnter(KeyEvent ke) {
         if( ke.getCode() == KeyCode.ENTER ) {
             onFilter(null);
         }
     }
-    @FXML void onWriteCopy(ActionEvent ev) {
-        logger.debug("");
-    }
-    @FXML void onPrint(ActionEvent ev) {
-        logger.debug("");
-    }
     @FXML void onCheckHash(ActionEvent ev) {
         logger.debug("");
     }
 
     //region Private
-
-    /**
-     * Связывает DocumentFX and CheckBox чтобы при изменении значения
-     * checkBox, изменялось также значение DocFX
-     *
-     * @param cell - support class used in TableColumn as a wrapper class * to provide all necessary information for a particular Cell
-     * @return ObservableValue<CheckBox>
-     */
-    private ObservableValue<CheckBox> createObservableDocCheckbox(TableColumn.CellDataFeatures<DocumentFX, CheckBox> cell) {
-
-        DocumentFX doc = cell.getValue();
-        CheckBox cbox = new CheckBox();
-        cbox.selectedProperty().setValue(doc.isSelected());
-        cbox.selectedProperty().addListener((ov, old, newVal) -> {
-            logger.debug( (newVal ? "check" : "uncheck") + " docNum: " + doc.getDocNumber() );
-            doc.setSelected(newVal);
-            this.unlockDocumentButtonsIfAnySelected();
-        });
-        // save reference to the newly created checkbox for bulk operations
-        checkBoxes.add(cbox);
-        return new SimpleObjectProperty<>(cbox);
-    }
 
     /**
      * Filter list of documents and display
@@ -173,8 +179,11 @@ public class DocumentCtl implements Initializable {
      * @param filter
      * */
     private void filterAndDisplay(List<DocumentFX> docs, String filter) {
-        // remove all previously saved references to checkboxes
-        this.checkBoxes.clear();
+
+        if (docs.size()==0) {
+            logger.debug("no records, return");
+            return;
+        }
 
         Predicate<DocumentFX> filterDoc = d ->
                 !Strings.isBlank(d.getDocNumber()) && d.getDocNumber().toLowerCase().contains(filter.toLowerCase())
@@ -187,24 +196,7 @@ public class DocumentCtl implements Initializable {
         this.documents = FXCollections.observableList(filtered);
         tblDocuments.setItems(this.documents);
         // Enable/disable disk-related buttons
-        this.unlockDiskOpsButtons( filtered.size()>0 );
-        this.unlockDocumentButtonsIfAnySelected();
-    }
-
-    // Lock/Unlock all disk-related operations
-    private void unlockDiskOpsButtons(boolean unlock) {
-        selectAll.setDisable(!unlock);
-        butFilter.setDisable(!unlock);
-        butCheckHash.setDisable(!unlock);
-        txtFilter.setDisable(!unlock);
-        butFilter.setDisable(!unlock);
-    }
-
-    // lock/unlock document related operations
-    private void unlockDocumentButtonsIfAnySelected() {
-        boolean anySelected = documents.stream().anyMatch(DocumentFX::isSelected);
-        butPrint.setDisable(!anySelected);
-        butDownload.setDisable(!anySelected);
+        butCheckHash.setDisable(filtered.size()==0);
     }
 
     //endregion
