@@ -16,7 +16,7 @@ import java.util.concurrent.Future;
 @Log
 public class LoginSrvImpl implements LoginSrv {
 
-    private static Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     private final ObservableMap<AppStateType, AppStateData> appState;
     private final Executor exec;

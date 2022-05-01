@@ -1,3 +1,6 @@
+# APP DIRS
+.temp/
+
 # IDEA
 .idea/
 *.iml

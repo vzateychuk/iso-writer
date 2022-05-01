@@ -56,7 +56,7 @@ import java.util.concurrent.Executors;
  * */
 public class DesktopApp extends Application {
 
-    private static Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
     private static boolean isProdMode = false;
 
     @Override

@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 public class AbddCtl implements Initializable {
 
     //region Properties
-    private static Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     // Фильтр "Список операционных дней"
     @FXML private TextField operationDays;

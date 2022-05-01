@@ -12,7 +12,7 @@ import java.time.LocalDate;
  * */
 public class DocumentMapperImpl implements DocumentMapper {
 
-    private static Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     @Override
     public DocumentFX mapToDocFX(ReestrDoc d) {

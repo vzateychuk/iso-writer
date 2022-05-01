@@ -16,7 +16,7 @@ import java.util.concurrent.Future;
 
 public class SettingsSrvImpl implements SettingsSrv {
 
-    private static Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     private final ObservableMap<AppStateType, AppStateData> appState;
     private final Executor exec;

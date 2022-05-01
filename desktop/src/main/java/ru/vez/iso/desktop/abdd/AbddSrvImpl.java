@@ -25,7 +25,7 @@ import java.util.stream.IntStream;
 
 public class AbddSrvImpl implements AbddSrv {
 
-    private static Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     private final ObservableMap<AppStateType, AppStateData> appState;
     private final Executor exec;
