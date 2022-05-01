@@ -77,10 +77,11 @@ public class AbddSrvImpl implements AbddSrv {
 
         // check if load ISO file is not completed yet
         if (this.loadStatus.get(name) == LoadStatus.STARTED) {
-            logger.debug("load not completed, skipping. name: " + name);
+            logger.debug("load not completed, skipping {}", name);
             return;
         }
-        logger.debug("loadISOAsync started: " + name);
+        logger.debug("started: {}", name);
+        this.loadStatus.put(name, LoadStatus.STARTED);
 
         AppSettings sets = ((AppStateData<AppSettings>)appState.get(AppStateType.SETTINGS)).getValue();
         String dir = sets.getIsoCachePath();
@@ -100,7 +101,7 @@ public class AbddSrvImpl implements AbddSrv {
                 logger.warn("unable to write to: " + path);
                 throw new RuntimeException("unable to write to: " + path);
             }
-            return LoadStatus.STARTED;
+            return LoadStatus.COMPLETED;
         }, exec).whenComplete( (st, ex) -> {
             LoadStatus loadStatus = ex != null ? LoadStatus.FAILED : LoadStatus.COMPLETED;
             logger.debug("load {} for objectId: {}", loadStatus.name(), name);

@@ -184,8 +184,8 @@ public class AbddCtl implements Initializable {
     }
 
     @FXML void onStartIsoLoad(ActionEvent ev) {
-        logger.debug("onStartIsoLoad");
         StorageUnitFX selected = tblStorageUnits.getSelectionModel().getSelectedItem();
+        logger.debug("{}", selected.getNumberSu());
         service.loadISOAsync(selected.getNumberSu());
     }
 
