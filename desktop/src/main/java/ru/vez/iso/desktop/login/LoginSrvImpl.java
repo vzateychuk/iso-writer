@@ -4,7 +4,7 @@ import javafx.collections.ObservableMap;
 import lombok.extern.java.Log;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.vez.iso.desktop.model.UserDetails;
+import ru.vez.iso.desktop.shared.UserDetails;
 import ru.vez.iso.desktop.shared.AppStateData;
 import ru.vez.iso.desktop.shared.AppStateType;
 import ru.vez.iso.desktop.utils.UtilsHelper;

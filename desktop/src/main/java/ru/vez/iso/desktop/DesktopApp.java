@@ -24,7 +24,7 @@ import ru.vez.iso.desktop.document.DocumentMapperImpl;
 import ru.vez.iso.desktop.document.DocumentSrvImpl;
 import ru.vez.iso.desktop.login.LoginCtl;
 import ru.vez.iso.desktop.login.LoginSrvImpl;
-import ru.vez.iso.desktop.model.UserDetails;
+import ru.vez.iso.desktop.shared.UserDetails;
 import ru.vez.iso.desktop.nav.NavigationCtl;
 import ru.vez.iso.desktop.nav.NavigationSrvImpl;
 import ru.vez.iso.desktop.settings.SettingsCtl;
