@@ -9,11 +9,9 @@ import javafx.beans.property.StringProperty;
 public class IsoFileFX {
 
     private final StringProperty fileName;
-    private final StringProperty numberSu;
 
-    public IsoFileFX(String fileName, String numberSu) {
+    public IsoFileFX(String fileName) {
         this.fileName = new SimpleStringProperty(fileName);
-        this.numberSu = new SimpleStringProperty(numberSu);
     }
 
     public String getFileName() {
@@ -23,18 +21,10 @@ public class IsoFileFX {
         return fileName;
     }
 
-    public String getNumberSu() {
-        return numberSu.get();
-    }
-    public StringProperty numberSuProperty() {
-        return numberSu;
-    }
-
     @Override
     public String toString() {
         return "IsoFileFX{" +
                 "fileName=" + fileName +
-                ", numberSu=" + numberSu +
                 '}';
     }
 }

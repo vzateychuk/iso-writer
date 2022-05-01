@@ -32,7 +32,6 @@ public class DiskCtl implements Initializable {
     @FXML private Button butDelete;
 
     @FXML private TableView<IsoFileFX> tblIsoFiles;
-    @FXML private TableColumn<IsoFileFX, String> numberSu;
     @FXML private TableColumn<IsoFileFX, String> fileName;
 
     private final ObservableMap<AppStateType, AppStateData> appState;
@@ -54,7 +53,6 @@ public class DiskCtl implements Initializable {
         this.tblIsoFiles.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         // Column settings
-        numberSu.setCellValueFactory(cell -> cell.getValue().numberSuProperty());
         fileName.setCellValueFactory(cell -> cell.getValue().fileNameProperty());
 
         // disable buttons if none selected

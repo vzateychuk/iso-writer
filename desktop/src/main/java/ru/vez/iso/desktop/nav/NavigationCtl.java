@@ -91,7 +91,6 @@ public class NavigationCtl implements Initializable {
 
     private void lockControls(boolean lock) {
         logger.debug("lock: " + lock);
-        disks.setDisable(lock);
         main.setDisable(lock);
         documents.setDisable(lock);
         login.setText(lock ? "Вход" : "Выход");

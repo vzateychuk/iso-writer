@@ -59,7 +59,7 @@ public class DisksSrvImpl implements DisksSrv {
                         .stream().map(p -> p.getFileName().toString()).collect(Collectors.toList());
         return fileNames.stream()
                 .sorted(String::compareTo)
-                .map(name -> new IsoFileFX(name, "docNum-"+name))
+                .map(IsoFileFX::new)
                 .collect(Collectors.toList());
     }
 

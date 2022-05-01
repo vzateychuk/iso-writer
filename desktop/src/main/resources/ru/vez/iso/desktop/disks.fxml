@@ -81,8 +81,7 @@
          <left>
             <TableView fx:id="tblIsoFiles" maxHeight="1.7976931348623157E308" prefWidth="600.0">
                <columns>
-                  <TableColumn fx:id="fileName" prefWidth="250.0" text="Имя ISO файла" />
-                  <TableColumn fx:id="numberSu" minWidth="50.0" prefWidth="250.0" text="Номер EX" />
+                  <TableColumn fx:id="fileName" maxWidth="1.7976931348623157E308" prefWidth="400.0" text="Имя ISO файла" />
                </columns>
             </TableView>
 
