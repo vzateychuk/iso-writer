@@ -11,6 +11,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.shared.IsoFileFX;
@@ -20,7 +21,9 @@ import ru.vez.iso.desktop.shared.AppStateType;
 
 import java.net.URL;
 import java.util.List;
+import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 public class DiskCtl implements Initializable {
 
@@ -30,6 +33,7 @@ public class DiskCtl implements Initializable {
     @FXML private Button butReload;
     @FXML private Button butWriteCopy;
     @FXML private Button butDelete;
+    @FXML private TextField txtFilter;
 
     @FXML private TableView<IsoFileFX> tblIsoFiles;
     @FXML private TableColumn<IsoFileFX, String> fileName;
@@ -65,7 +69,7 @@ public class DiskCtl implements Initializable {
                 (MapChangeListener<AppStateType, AppStateData>) change -> {
                     if (AppStateType.ISO_FILES_NAMES.equals(change.getKey())) {
                         List<IsoFileFX> data = (List<IsoFileFX>) change.getValueAdded().getValue();
-                        Platform.runLater(()-> displayData(data));
+                        Platform.runLater(()-> filterAndDisplay(data, txtFilter.getText()));
                     }
                 });
 
@@ -85,6 +89,12 @@ public class DiskCtl implements Initializable {
         service.readIsoFileNamesAsync(SettingType.ISO_CACHE_PATH.getDefaultValue());
     }
 
+    @FXML public void onFilter(ActionEvent ev) {
+        logger.debug("");
+        AppStateData<List<IsoFileFX>> data = (AppStateData<List<IsoFileFX>>) appState.get(AppStateType.ISO_FILES_NAMES);
+        filterAndDisplay(data.getValue(), txtFilter.getText());
+    }
+
     @FXML public void onCheck(ActionEvent ev) {
         logger.debug("");
     }
@@ -101,9 +111,15 @@ public class DiskCtl implements Initializable {
 
     //region Private
 
-    private void displayData(List<IsoFileFX> data) {
+    /**
+     * Filter fileList and display
+     * */
+    private void filterAndDisplay(List<IsoFileFX> fileList, String filter) {
         // Set items to the tableView
-        this.isoFilesFX = FXCollections.observableList(data);
+        List<IsoFileFX> filtered = fileList.stream()
+                .filter(f -> f.getFileName().toLowerCase(Locale.ROOT).contains(filter.toLowerCase()))
+                .collect(Collectors.toList());
+        this.isoFilesFX = FXCollections.observableList(filtered);
         tblIsoFiles.setItems(this.isoFilesFX);
     }
 

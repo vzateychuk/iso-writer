@@ -13,7 +13,7 @@
         <Pane prefHeight="371.0" prefWidth="130.0" style="-fx-background-color: #AAB2BD;" BorderPane.alignment="CENTER">
             <children>
                 <VBox alignment="CENTER" layoutY="34.0" prefHeight="161.0" prefWidth="130.0" spacing="5">
-                    <Button fx:id="login" defaultButton="true" onAction="#onShowLogin" prefWidth="120.0" text="Вход">
+                    <Button fx:id="login" onAction="#onShowLogin" prefWidth="120.0" text="Вход">
                         <font>
                             <Font name="Arial Black" size="12.0" />
                         </font>
