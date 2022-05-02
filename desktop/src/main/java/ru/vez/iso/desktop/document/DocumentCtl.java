@@ -58,6 +58,7 @@ public class DocumentCtl implements Initializable {
     @FXML private Button butCheckHash;
     @FXML private Button butFilter;
     @FXML private Button butOpen;
+    @FXML public Button butExplore;
     @FXML private TextField txtFilter;
 
     private final ObservableMap<AppStateType, AppStateData> appState;
@@ -97,11 +98,9 @@ public class DocumentCtl implements Initializable {
                   }
                 });
 
-        // disable the "Write" button if no record selected
-        butOpen.disableProperty().bind(
-                tblDocuments.getSelectionModel().selectedItemProperty().isNull()
-        );
-
+        // disable buttons if no record selected
+        butOpen.disableProperty().bind( tblDocuments.getSelectionModel().selectedItemProperty().isNull() );
+        butExplore.disableProperty().bind( tblDocuments.getSelectionModel().selectedItemProperty().isNull() );
     }
 
     // open ChooseFile dialog and fire service to load documents from ZIP
@@ -128,20 +127,40 @@ public class DocumentCtl implements Initializable {
         logger.debug("");
         final Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
         if (desktop == null || !desktop.isSupported(Desktop.Action.OPEN)) {
-            logger.warn("Open action not supported");
+            logger.warn("action not supported");
             return;
         }
 
-        AppSettings sets = ((AppStateData<AppSettings>) appState.get(AppStateType.SETTINGS)).getValue();
         DocumentFX doc = tblDocuments.getSelectionModel().getSelectedItem();
-
         Reestr reestr = ((AppStateData<Reestr>) appState.get(AppStateType.REESTR)).getValue();
         ReestrDoc reestrDoc = reestr.getDocs().stream().filter(d -> d.getData().getObjectId().equals(doc.getObjectId())).findAny()
                     .orElseThrow(() -> new RuntimeException("not found in REESTR, exit: " + doc.getObjectId()));
         ReestrFile file = reestrDoc.getFiles().stream()
-                    .filter(f -> f.getType().equals(RFileType.PF) || f.getType().equals(RFileType.ED)).findAny()
-                    .orElseThrow(() -> new RuntimeException("not found in REESTR, exit: " + doc.getObjectId()));
+                    .filter(f -> f.getType().equals(RFileType.PF)).findAny()
+                    .orElseThrow(() -> new RuntimeException(RFileType.PF.getTitle() + " not found in REESTR, exit"));
+        AppSettings sets = ((AppStateData<AppSettings>) appState.get(AppStateType.SETTINGS)).getValue();
         Path unzippedPath = Paths.get(sets.getIsoCachePath(), MyContants.UNZIP_FOLDER, doc.getObjectId(), file.getPath());
+
+        logger.debug("open: {}", unzippedPath);
+        try {
+            desktop.open(unzippedPath.toFile());
+        } catch (IOException ex) {
+            logger.warn("unable to open {}", unzippedPath, ex);
+        }
+    }
+
+    // open a folder with document natively
+    @FXML public void onExplore(ActionEvent ev) {
+        logger.debug("");
+        final Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
+        if (desktop == null || !desktop.isSupported(Desktop.Action.OPEN)) {
+            logger.warn("action not supported");
+            return;
+        }
+
+        DocumentFX doc = tblDocuments.getSelectionModel().getSelectedItem();
+        AppSettings sets = ((AppStateData<AppSettings>) appState.get(AppStateType.SETTINGS)).getValue();
+        Path unzippedPath = Paths.get(sets.getIsoCachePath(), MyContants.UNZIP_FOLDER, doc.getObjectId());
 
         logger.debug("open: {}", unzippedPath);
         try {

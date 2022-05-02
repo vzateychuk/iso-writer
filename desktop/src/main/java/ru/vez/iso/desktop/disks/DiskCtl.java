@@ -33,6 +33,8 @@ public class DiskCtl implements Initializable {
 
     @FXML private Button butCheck;
     @FXML private Button butReload;
+    @FXML public Button butFilter;
+    @FXML public Button butWrite;
     @FXML private Button butWriteCopy;
     @FXML private Button butDelete;
     @FXML private TextField txtFilter;
@@ -62,6 +64,7 @@ public class DiskCtl implements Initializable {
         fileName.setCellValueFactory(cell -> cell.getValue().fileNameProperty());
 
         // disable buttons if none selected
+        butWrite.disableProperty().bind( tblIsoFiles.getSelectionModel().selectedItemProperty().isNull() );
         butWriteCopy.disableProperty().bind( tblIsoFiles.getSelectionModel().selectedItemProperty().isNull() );
         butCheck.disableProperty().bind( tblIsoFiles.getSelectionModel().selectedItemProperty().isNull() );
         butDelete.disableProperty().bind( tblIsoFiles.getSelectionModel().selectedItemProperty().isNull() );
@@ -106,8 +109,11 @@ public class DiskCtl implements Initializable {
         logger.debug("");
     }
 
+    @FXML public void onWrite(ActionEvent ev) {
+        logger.debug("Основная копия");
+    }
     @FXML public void onWriteCopy(ActionEvent ev) {
-        logger.debug("");
+        logger.debug("Резервная копия");
     }
 
     @FXML public void onDelete(ActionEvent ev) {

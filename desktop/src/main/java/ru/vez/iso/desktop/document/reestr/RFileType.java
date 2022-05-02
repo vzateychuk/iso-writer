@@ -7,13 +7,13 @@ public enum RFileType {
     JSON("Исходный JSON-файл"),
     ISO("ISO образ");
 
-    private String ext;
+    private String title;
 
-    RFileType(String ext) {
-        this.ext = ext;
+    RFileType(String title) {
+        this.title = title;
     }
 
-    public String getExt() {
-        return ext;
+    public String getTitle() {
+        return title;
     }
 }
