@@ -112,12 +112,32 @@ public class AbddSrvImpl implements AbddSrv {
 
     }
 
+    @Override
+    public void changeStatusAsync(StorageUnitFX su, StorageUnitStatus status) {
+
+        CompletableFuture.supplyAsync( () -> {
+            logger.debug("id: {}:{}", su.getObjectId(), su.getNumberSu());
+            UtilsHelper.makeDelaySec(1);    // TODO send request for change EX status
+            return status;
+        }, exec).thenAccept(st -> readOpsDayAsync(20));
+    }
+
+    @Override
+    public void isoCreateAsync(StorageUnitFX su) {
+        CompletableFuture.supplyAsync( () -> {
+            logger.debug("id: {}:{}", su.getObjectId(), su.getNumberSu());
+            UtilsHelper.makeDelaySec(1);    // TODO send request for Create ISO
+            return su;
+        }, exec).thenAccept(st -> readOpsDayAsync(20));
+
+    }
+
     //region PRIVATE
 
     private List<OperatingDayFX> getOpsDaysWithDelay(int period) {
 
         logger.debug("getOpsDaysWithDelay");
-        UtilsHelper.makeDelaySec(1);    // TODO load from file
+        UtilsHelper.makeDelaySec(1);    // TODO send request for Operation Days
         return IntStream.rangeClosed(0, period)
                 .mapToObj(i -> {
                     LocalDate date = LocalDate.of(1900+i, i%12+1, i%12+1);
@@ -129,11 +149,7 @@ public class AbddSrvImpl implements AbddSrv {
     private List<StorageUnitFX> getStorageUnitsWithDelay(int period) {
 
         logger.debug("getStorageUnitsWithDelay");
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        UtilsHelper.makeDelaySec(1);    // TODO send request for StorageUnits
         Random rnd = new Random();
         List<StorageUnitStatus> statuses = Collections.unmodifiableList(Arrays.asList(StorageUnitStatus.values()));
         return IntStream.rangeClosed(0, period * 10)

@@ -1,5 +1,7 @@
 package ru.vez.iso.desktop.utils;
 
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -10,6 +12,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
+import java.util.Optional;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -98,6 +101,19 @@ public class UtilsHelper {
         } catch (IOException ex) {
             throw new RuntimeException("unable to unzip: " + zipPath, ex);
         }
+    }
+
+    /**
+     * @See https://betacode.net/11529/javafx-alert-dialog
+     * */
+    public static boolean getConfirmation(String question) {
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Внимание!");
+        alert.setHeaderText(null);
+        alert.setContentText(question);
+        Optional<ButtonType> option = alert.showAndWait();
+        return option.isPresent() && option.get() == ButtonType.OK;
     }
 
     //region PRIVATE

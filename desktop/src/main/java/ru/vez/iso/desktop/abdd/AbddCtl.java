@@ -19,6 +19,7 @@ import ru.vez.iso.desktop.shared.AppSettings;
 import ru.vez.iso.desktop.shared.AppStateData;
 import ru.vez.iso.desktop.shared.AppStateType;
 import ru.vez.iso.desktop.shared.IsoFileFX;
+import ru.vez.iso.desktop.utils.UtilsHelper;
 
 import java.net.URL;
 import java.util.Arrays;
@@ -60,6 +61,8 @@ public class AbddCtl implements Initializable {
     // Кнопки
     @FXML private Button butIsoLoad;
     @FXML private Button butReload;
+    @FXML private Button butMarkWritten;
+    @FXML public Button butIsoCreate;
 
     // RadioButtons - filter StoreUnits
     @FXML private ToggleGroup filterGroup;
@@ -137,9 +140,9 @@ public class AbddCtl implements Initializable {
                 });
 
         // disable the "Write" button if no record selected
-        butIsoLoad.disableProperty().bind(
-                tblStorageUnits.getSelectionModel().selectedItemProperty().isNull()
-        );
+        butIsoLoad.disableProperty().bind(tblStorageUnits.getSelectionModel().selectedItemProperty().isNull());
+        butMarkWritten.disableProperty().bind(tblStorageUnits.getSelectionModel().selectedItemProperty().isNull());
+        butIsoCreate.disableProperty().bind(tblStorageUnits.getSelectionModel().selectedItemProperty().isNull());
 
         // Operation Days period's filter (when settings changes)
         this.appState.addListener(
@@ -178,10 +181,13 @@ public class AbddCtl implements Initializable {
                         Platform.runLater( ()-> this.filterAndDisplayStorageUnits(withFileNames, statusesFilter) );
                     }
                 });
-
     }
 
+    /**
+     * Reload starts OperationDay's and StorageUnit's refresh
+     * */
     @FXML public void onReload(ActionEvent ev) {
+        logger.debug("");
         int days = period++;
         try {
             days = Integer.parseUnsignedInt(operationDays.getText());
@@ -190,16 +196,38 @@ public class AbddCtl implements Initializable {
         }
         service.readOpsDayAsync(days);
     }
+    /**
+     * Fire Reload when user ENTER key on Filter button
+     * */
     @FXML public void onFilterEnter(KeyEvent ke) {
         if( ke.getCode() == KeyCode.ENTER ) {
             onReload(null);
         }
     }
 
+    /** Request backend for */
+    @FXML public void onIsoCreate(ActionEvent ev) {
+        StorageUnitFX selected = tblStorageUnits.getSelectionModel().getSelectedItem();
+        logger.debug("{}", selected.getNumberSu());
+        service.isoCreateAsync(selected);
+    }
+
+    /**
+     * Load ISO file from ABDD server
+     * */
     @FXML void onStartIsoLoad(ActionEvent ev) {
         StorageUnitFX selected = tblStorageUnits.getSelectionModel().getSelectedItem();
         logger.debug("{}", selected.getNumberSu());
         service.loadISOAsync(selected.getNumberSu());
+    }
+
+
+    @FXML public void onMarkWritten(ActionEvent ev) {
+        StorageUnitFX selected = tblStorageUnits.getSelectionModel().getSelectedItem();
+        logger.debug("{}", selected.getNumberSu());
+        if (UtilsHelper.getConfirmation("Изменить статус на '" + StorageUnitStatus.RECORDED.getTitle() + "'")) {
+            service.changeStatusAsync(selected, StorageUnitStatus.RECORDED);
+        }
     }
 
     //region PRIVATE

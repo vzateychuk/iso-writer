@@ -144,7 +144,52 @@
                                  </image>
                               </ImageView>
                            </graphic>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                           <HBox.margin>
+                              <Insets right="2.0" />
+                           </HBox.margin>
                         </Button>
+                        <Button fx:id="butMarkWritten" mnemonicParsing="false" onAction="#onMarkWritten">
+                             <tooltip>
+                                 <Tooltip text="Изменить статус на 'Записано на внешний носитель'" />
+                             </tooltip>
+                             <font>
+                                 <Font name="Arial Black" size="12.0" />
+                             </font>
+                             <graphic>
+                                 <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                     <image>
+                                         <Image url="@image/arrow.png" />
+                                     </image>
+                                 </ImageView>
+                             </graphic>
+                           <HBox.margin>
+                              <Insets right="2.0" />
+                           </HBox.margin>
+                         </Button>
+                        <Button fx:id="butIsoCreate" mnemonicParsing="false" onAction="#onIsoCreate">
+                             <tooltip>
+                                 <Tooltip text="Создать ISO образ (если удален)" />
+                             </tooltip>
+                             <font>
+                                 <Font name="Arial Black" size="12.0" />
+                             </font>
+                             <graphic>
+                                 <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                     <image>
+                                         <Image url="@image/plus.png" />
+                                     </image>
+                                 </ImageView>
+                             </graphic>
+                             <opaqueInsets>
+                                 <Insets />
+                             </opaqueInsets>
+                             <HBox.margin>
+                                 <Insets right="2.0" />
+                             </HBox.margin>
+                         </Button>
                      </children>
                   </HBox>
                </children>

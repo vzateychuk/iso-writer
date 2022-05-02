@@ -6,8 +6,6 @@ import javafx.collections.ObservableMap;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -24,16 +22,13 @@ import ru.vez.iso.desktop.document.DocumentMapperImpl;
 import ru.vez.iso.desktop.document.DocumentSrvImpl;
 import ru.vez.iso.desktop.login.LoginCtl;
 import ru.vez.iso.desktop.login.LoginSrvImpl;
-import ru.vez.iso.desktop.shared.UserDetails;
 import ru.vez.iso.desktop.nav.NavigationCtl;
 import ru.vez.iso.desktop.nav.NavigationSrvImpl;
 import ru.vez.iso.desktop.settings.SettingsCtl;
 import ru.vez.iso.desktop.settings.SettingsSrv;
 import ru.vez.iso.desktop.settings.SettingsSrvImpl;
-import ru.vez.iso.desktop.shared.AppStateData;
-import ru.vez.iso.desktop.shared.AppStateType;
-import ru.vez.iso.desktop.shared.LoadStatus;
-import ru.vez.iso.desktop.shared.SettingType;
+import ru.vez.iso.desktop.shared.*;
+import ru.vez.iso.desktop.utils.UtilsHelper;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -41,7 +36,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
@@ -78,7 +72,7 @@ public class DesktopApp extends Application {
         // Set OnClose confirmation hook
         stage.setOnCloseRequest(e -> {
             e.consume();
-            if (isProdMode && !getCloseConfirmation()) {
+            if (isProdMode && !UtilsHelper.getConfirmation("Вы уверены? Может быть запущена запись на диск.")) {
                 return;
             }
             executorService.shutdownNow();
@@ -141,18 +135,6 @@ public class DesktopApp extends Application {
             System.exit(1);
         }
         return false;
-    }
-
-    /**
-     * @See https://betacode.net/11529/javafx-alert-dialog
-     * */
-    private boolean getCloseConfirmation() {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Внимание!");
-        alert.setHeaderText(null);
-        alert.setContentText("Вы уверены? Может быть запущена запись на диск.");
-        Optional<ButtonType> option = alert.showAndWait();
-        return option.isPresent() && option.get() == ButtonType.OK;
     }
 
     /**
