@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
@@ -10,7 +12,7 @@
 <BorderPane fx:id="navigationView" prefHeight="400.0" prefWidth="800.0" xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.vez.iso.desktop.nav.NavigationCtl">
     <left>
-        <Pane prefHeight="371.0" prefWidth="130.0" style="-fx-background-color: #AAB2BD;" BorderPane.alignment="CENTER">
+        <Pane prefHeight="400.0" prefWidth="130.0" style="-fx-background-color: #AAB2BD;" BorderPane.alignment="CENTER">
             <children>
                 <VBox alignment="CENTER" layoutY="34.0" prefHeight="161.0" prefWidth="130.0" spacing="5">
                     <Button fx:id="login" onAction="#onShowLogin" prefWidth="120.0" text="Вход">
@@ -60,4 +62,16 @@
     <center>
         <fx:include source="welcome.fxml" />
     </center>
+   <bottom>
+      <HBox maxHeight="20.0" maxWidth="1.7976931348623157E308" minHeight="20.0" prefHeight="21.0" prefWidth="800.0" BorderPane.alignment="CENTER_LEFT">
+         <children>
+            <Pane prefHeight="20.0" prefWidth="130.0" style="-fx-background-color: #AAB2BD;">
+               <children>
+                  <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="9.0" layoutY="2.0" prefHeight="17.0" prefWidth="117.0" text="Сообщения: " textAlignment="RIGHT" />
+               </children>
+            </Pane>
+            <Label fx:id="logMessages" maxWidth="1.7976931348623157E308" prefHeight="17.0" text="..." />
+         </children>
+      </HBox>
+   </bottom>
 </BorderPane>

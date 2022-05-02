@@ -8,13 +8,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.ViewType;
-import ru.vez.iso.desktop.shared.UserDetails;
 import ru.vez.iso.desktop.shared.AppStateData;
 import ru.vez.iso.desktop.shared.AppStateType;
+import ru.vez.iso.desktop.shared.UserDetails;
 
 import java.net.URL;
 import java.util.Map;
@@ -33,6 +34,8 @@ public class NavigationCtl implements Initializable {
     @FXML private Button main;
     @FXML private Button settings;
     @FXML private Button documents;
+    // Show log messages
+    @FXML public Label logMessages;
 
     private final NavigationSrv service;
     private final Map<ViewType, Parent> viewCache;
@@ -87,7 +90,7 @@ public class NavigationCtl implements Initializable {
         showView(ViewType.DOCUMENTS);
     }
 
-    //region Private
+    //region PRIVATE
 
     private void lockControls(boolean lock) {
         logger.debug("lock: " + lock);
