@@ -70,7 +70,11 @@
                   <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="9.0" layoutY="2.0" prefHeight="17.0" prefWidth="117.0" text="Сообщения: " textAlignment="RIGHT" />
                </children>
             </Pane>
-            <Label fx:id="logMessages" maxWidth="1.7976931348623157E308" prefHeight="17.0" text="..." />
+            <Label fx:id="logMessages" maxWidth="1.7976931348623157E308" prefHeight="17.0" text="...">
+               <tooltip>
+                  <Tooltip fx:id="statusMessage" style="-fx-show-delay: 250ms;" text="Сообщения" autoHide="true"/>
+               </tooltip>
+            </Label>
          </children>
       </HBox>
    </bottom>

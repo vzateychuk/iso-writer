@@ -9,6 +9,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.BorderPane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,6 +37,7 @@ public class NavigationCtl implements Initializable {
     @FXML private Button documents;
     // Show log messages
     @FXML public Label logMessages;
+    @FXML public Tooltip statusMessage;
 
     private final NavigationSrv service;
     private final Map<ViewType, Parent> viewCache;
@@ -56,6 +58,14 @@ public class NavigationCtl implements Initializable {
                     if (AppStateType.USER_DETAILS.equals(change.getKey())) {
                         UserDetails userDetails = (UserDetails) change.getValueAdded().getValue();
                         Platform.runLater(()->lockControls(userDetails == UserDetails.NOT_SIGNED_USER));
+                    }
+                });
+
+        this.appState.addListener(
+                (MapChangeListener<AppStateType, AppStateData>) change -> {
+                    if (AppStateType.NOTIFICATION.equals(change.getKey())) {
+                        String message = (String) change.getValueAdded().getValue();
+                        Platform.runLater(()->showMessage(message));
                     }
                 });
     }
@@ -91,6 +101,13 @@ public class NavigationCtl implements Initializable {
     }
 
     //region PRIVATE
+
+
+    private void showMessage(String message) {
+        statusMessage.hide();
+        statusMessage.setText(message);
+        statusMessage.show(logMessages.getScene().getWindow());
+    }
 
     private void lockControls(boolean lock) {
         logger.debug("lock: " + lock);

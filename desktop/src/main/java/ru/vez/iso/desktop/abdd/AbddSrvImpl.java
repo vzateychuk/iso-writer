@@ -101,6 +101,7 @@ public class AbddSrvImpl implements AbddSrv {
                 logger.warn("unable to write to: " + path);
                 throw new RuntimeException("unable to write to: " + path);
             }
+            appState.put(AppStateType.NOTIFICATION, AppStateData.builder().value("ISO LOADED : " + fileName).build());
             return LoadStatus.COMPLETED;
         }, exec).whenComplete( (st, ex) -> {
             LoadStatus loadStatus = ex != null ? LoadStatus.FAILED : LoadStatus.COMPLETED;
@@ -118,6 +119,7 @@ public class AbddSrvImpl implements AbddSrv {
         CompletableFuture.supplyAsync( () -> {
             logger.debug("id: {}:{}", su.getObjectId(), su.getNumberSu());
             UtilsHelper.makeDelaySec(1);    // TODO send request for change EX status
+            appState.put(AppStateType.NOTIFICATION, AppStateData.builder().value("STATUS CHANGED : " + su.getNumberSu()).build());
             return status;
         }, exec).thenAccept(st -> readOpsDayAsync(20));
     }
@@ -127,6 +129,7 @@ public class AbddSrvImpl implements AbddSrv {
         CompletableFuture.supplyAsync( () -> {
             logger.debug("id: {}:{}", su.getObjectId(), su.getNumberSu());
             UtilsHelper.makeDelaySec(1);    // TODO send request for Create ISO
+            appState.put(AppStateType.NOTIFICATION, AppStateData.builder().value("ISO CREATED: " + su.getNumberSu()).build());
             return su;
         }, exec).thenAccept(st -> readOpsDayAsync(20));
 
