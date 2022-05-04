@@ -66,11 +66,6 @@
     </center>
 
     <bottom>
-        <Label fx:id="lbStatus" alignment="CENTER" layoutX="171.0" layoutY="329.0" maxWidth="1.7976931348623157E308" prefHeight="22.0" prefWidth="475.0" text="Не подключен к АБДД">
-            <font>
-                <Font name="Arial Black" size="14.0" />
-            </font>
-        </Label>
     </bottom>
 
 </BorderPane>

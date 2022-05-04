@@ -17,62 +17,57 @@
                 <VBox alignment="CENTER" layoutY="34.0" prefHeight="161.0" prefWidth="130.0" spacing="5">
                     <Button fx:id="butLogin" onAction="#onShowLogin" prefWidth="120.0" text="Вход">
                         <font>
-                            <Font name="Arial Black" size="12.0" />
+                            <Font name="Arial Black" size="12.0"/>
                         </font>
-                  <tooltip>
-                     <Tooltip text="Подключение к удаленному серверу ABDD" />
-                  </tooltip>
+                        <tooltip>
+                            <Tooltip text="Подключение к удаленному серверу ABDD"/>
+                        </tooltip>
                     </Button>
                     <Button fx:id="butMain" disable="true" onAction="#onShowMain" prefWidth="120.0" text="Загрузка EX">
                         <font>
-                            <Font name="Arial Black" size="12.0" />
+                            <Font name="Arial Black" size="12.0"/>
                         </font>
-                  <tooltip>
-                     <Tooltip text="Загрузка ISO образов" />
-                  </tooltip>
+                        <tooltip>
+                            <Tooltip text="Загрузка ISO образов"/>
+                        </tooltip>
                     </Button>
-               <Button fx:id="butDocuments" layoutX="15.0" layoutY="93.0" onAction="#onShowDocuments" prefWidth="120.0" text="Документы">
-                  <font>
-                     <Font name="Arial Black" size="12.0" />
-                  </font>
-                  <tooltip>
-                     <Tooltip text="Работа с документами записанными на диск" />
-                  </tooltip>
-               </Button>
-                    <Button fx:id="disks" onAction="#onShowDisks" prefWidth="120.0" text="Запись EX">
+                    <Button fx:id="butDocuments" layoutX="15.0" layoutY="93.0" onAction="#onShowDocuments"
+                            prefWidth="120.0" text="Документы">
                         <font>
-                            <Font name="Arial Black" size="12.0" />
+                            <Font name="Arial Black" size="12.0"/>
                         </font>
-                  <tooltip>
-                     <Tooltip text="Работа с загруженными ISO образами" />
-                  </tooltip>
+                        <tooltip>
+                            <Tooltip text="Работа с документами записанными на диск"/>
+                        </tooltip>
                     </Button>
                     <Button fx:id="butSettings" onAction="#onShowSettings" prefWidth="120.0" text="Настройки">
                         <font>
-                            <Font name="Arial Black" size="12.0" />
+                            <Font name="Arial Black" size="12.0"/>
                         </font>
-                  <tooltip>
-                     <Tooltip text="Изменение настроек приложения" />
-                  </tooltip>
+                        <tooltip>
+                            <Tooltip text="Изменение настроек приложения"/>
+                        </tooltip>
                     </Button>
                 </VBox>
             </children>
         </Pane>
     </left>
     <center>
-        <fx:include source="welcome.fxml" />
+        <fx:include source="welcome.fxml"/>
     </center>
-   <bottom>
-      <HBox maxHeight="20.0" maxWidth="1.7976931348623157E308" minHeight="20.0" prefHeight="21.0" prefWidth="800.0" BorderPane.alignment="CENTER_LEFT">
-         <children>
-            <Pane prefHeight="20.0" prefWidth="130.0" style="-fx-background-color: #AAB2BD;" />
-            <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefHeight="17.0" prefWidth="86.0" text="Сообщения: " textAlignment="RIGHT" />
-            <Label fx:id="labelMessages" maxWidth="1.7976931348623157E308" prefHeight="17.0" text="...">
-               <tooltip>
-                  <Tooltip fx:id="statusMessage" autoHide="true" style="-fx-show-delay: 250ms;" text="Сообщения" />
-               </tooltip>
-            </Label>
-         </children>
-      </HBox>
-   </bottom>
+    <bottom>
+        <HBox maxHeight="20.0" maxWidth="1.7976931348623157E308" minHeight="20.0" prefHeight="21.0" prefWidth="800.0"
+              BorderPane.alignment="CENTER_LEFT">
+            <children>
+                <Pane prefHeight="20.0" prefWidth="130.0" style="-fx-background-color: #AAB2BD;"/>
+                <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefHeight="17.0" prefWidth="86.0"
+                       text="Сообщения: " textAlignment="RIGHT"/>
+                <Label fx:id="labelMessages" maxWidth="1.7976931348623157E308" prefHeight="17.0" text="...">
+                    <tooltip>
+                        <Tooltip fx:id="statusMessage" autoHide="true" style="-fx-show-delay: 250ms;" text="Сообщения"/>
+                    </tooltip>
+                </Label>
+            </children>
+        </HBox>
+    </bottom>
 </BorderPane>

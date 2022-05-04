@@ -7,16 +7,15 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import lombok.extern.java.Log;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.vez.iso.desktop.shared.UserDetails;
 import ru.vez.iso.desktop.shared.AppStateData;
 import ru.vez.iso.desktop.shared.AppStateType;
+import ru.vez.iso.desktop.shared.UserDetails;
 
 import java.util.function.Predicate;
 
@@ -32,7 +31,6 @@ public class LoginCtl {
     @FXML private TextField password;
     @FXML private Button butLogin;
     @FXML public Button butLogout;
-    @FXML private Label lbStatus;
 
     private final ObservableMap<AppStateType, AppStateData> appState;
     private final LoginSrv service;
@@ -76,7 +74,6 @@ public class LoginCtl {
         }
         butLogin.setDisable(userDetails.isLogged());
         butLogout.setDisable(!userDetails.isLogged());
-        lbStatus.setText(statusMessage);
         showAlert(statusMessage);
     }
 
