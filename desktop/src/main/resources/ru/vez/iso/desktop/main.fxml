@@ -129,7 +129,7 @@
                               <Tooltip text="Показать только со статусом: &quot;Готовятся для записи&quot;" />
                            </tooltip>
                         </RadioButton>
-                        <Separator orientation="VERTICAL" prefHeight="32.0" prefWidth="40.0" />
+                        <Separator orientation="VERTICAL" prefHeight="32.0" prefWidth="11.0" />
                         <Button fx:id="butIsoLoad" mnemonicParsing="false" onAction="#onStartIsoLoad">
                            <tooltip>
                               <Tooltip text="Загрузить ISO образ" />
@@ -151,27 +151,9 @@
                               <Insets right="2.0" />
                            </HBox.margin>
                         </Button>
-                        <Button fx:id="butMarkWritten" mnemonicParsing="false" onAction="#onMarkWritten">
-                             <tooltip>
-                                 <Tooltip text="Изменить статус на 'Записано на внешний носитель'" />
-                             </tooltip>
-                             <font>
-                                 <Font name="Arial Black" size="12.0" />
-                             </font>
-                             <graphic>
-                                 <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                                     <image>
-                                         <Image url="@image/arrow.png" />
-                                     </image>
-                                 </ImageView>
-                             </graphic>
-                           <HBox.margin>
-                              <Insets right="2.0" />
-                           </HBox.margin>
-                         </Button>
                         <Button fx:id="butIsoCreate" mnemonicParsing="false" onAction="#onIsoCreate">
                              <tooltip>
-                                 <Tooltip text="Создать ISO образ (если удален)" />
+                                 <Tooltip text="Создать и загрузить созданный ISO образ" />
                              </tooltip>
                              <font>
                                  <Font name="Arial Black" size="12.0" />
@@ -190,6 +172,46 @@
                                  <Insets right="2.0" />
                              </HBox.margin>
                          </Button>
+                        <Separator layoutX="271.0" layoutY="10.0" orientation="VERTICAL" prefHeight="32.0" prefWidth="11.0" />
+                        <Button fx:id="butBurn" mnemonicParsing="false" onAction="#onBurnIso">
+                           <tooltip>
+                              <Tooltip text="Записать основной диск" />
+                           </tooltip>
+                           <font>
+                              <Font name="Arial Black" size="12.0" />
+                           </font>
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@image/write.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button fx:id="butDelete" onAction="#onDeleteIso">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@image/delete.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                           <tooltip>
+                              <Tooltip text="Удалить загруженный ISO файл" />
+                           </tooltip>
+                        </Button>
+                        <Button fx:id="butCheck" onAction="#onCheck">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@image/hash.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                           <tooltip>
+                              <Tooltip text="Проверить " />
+                           </tooltip>
+                        </Button>
                      </children>
                   </HBox>
                </children>

@@ -15,10 +15,16 @@ public interface MainSrv {
     /**
      * Изменить статус EX (записано на внешний носитель)
      * */
-    void changeStatusAsync(StorageUnitFX selected, StorageUnitStatus status);
+    void burnISOAsync(StorageUnitFX selected, StorageUnitStatus status);
 
     /**
      * Запрос на создание ISO файла (EX в статусе "Удален")
      * */
     void isoCreateAsync(StorageUnitFX selected);
+
+    /**
+     * Delete the ISO file from cache and invoke reload
+     * */
+    void deleteFileAndReload(String fileName);
+
 }

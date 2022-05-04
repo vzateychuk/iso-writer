@@ -19,7 +19,6 @@ import ru.vez.iso.desktop.shared.AppSettings;
 import ru.vez.iso.desktop.shared.AppStateData;
 import ru.vez.iso.desktop.shared.AppStateType;
 import ru.vez.iso.desktop.shared.IsoFileFX;
-import ru.vez.iso.desktop.utils.UtilsHelper;
 
 import java.net.URL;
 import java.util.Arrays;
@@ -61,7 +60,9 @@ public class MainCtl implements Initializable {
     // Кнопки
     @FXML private Button butIsoLoad;
     @FXML private Button butReload;
-    @FXML private Button butMarkWritten;
+    @FXML private Button butBurn;
+    @FXML private Button butDelete;
+    @FXML private Button butCheck;
     @FXML public Button butIsoCreate;
 
     // RadioButtons - filter StoreUnits
@@ -141,8 +142,10 @@ public class MainCtl implements Initializable {
 
         // disable the "Write" button if no record selected
         butIsoLoad.disableProperty().bind(tblStorageUnits.getSelectionModel().selectedItemProperty().isNull());
-        butMarkWritten.disableProperty().bind(tblStorageUnits.getSelectionModel().selectedItemProperty().isNull());
         butIsoCreate.disableProperty().bind(tblStorageUnits.getSelectionModel().selectedItemProperty().isNull());
+        butBurn.disableProperty().bind(tblStorageUnits.getSelectionModel().selectedItemProperty().isNull());
+        butDelete.disableProperty().bind(tblStorageUnits.getSelectionModel().selectedItemProperty().isNull());
+        butCheck.disableProperty().bind(tblStorageUnits.getSelectionModel().selectedItemProperty().isNull());
 
         // Operation Days period's filter (when settings changes)
         this.appState.addListener(
@@ -196,6 +199,7 @@ public class MainCtl implements Initializable {
         }
         service.readOpsDayAsync(days);
     }
+
     /**
      * Fire Reload when user ENTER key on Filter button
      * */
@@ -205,7 +209,9 @@ public class MainCtl implements Initializable {
         }
     }
 
-    /** Request backend for */
+    /**
+     * Request backend (ABDD system) to create the ISO
+     * */
     @FXML public void onIsoCreate(ActionEvent ev) {
         StorageUnitFX selected = tblStorageUnits.getSelectionModel().getSelectedItem();
         logger.debug("{}", selected.getNumberSu());
@@ -221,13 +227,31 @@ public class MainCtl implements Initializable {
         service.loadISOAsync(selected.getNumberSu());
     }
 
+    /**
+     * Burn ISO disk
+     * */
+    @FXML public void onBurnIso(ActionEvent ev) {
+        logger.debug("Запись диска");
+    }
 
-    @FXML public void onMarkWritten(ActionEvent ev) {
-        StorageUnitFX selected = tblStorageUnits.getSelectionModel().getSelectedItem();
-        logger.debug("{}", selected.getNumberSu());
-        if (UtilsHelper.getConfirmation("Изменить статус на '" + StorageUnitStatus.RECORDED.getTitle() + "'")) {
-            service.changeStatusAsync(selected, StorageUnitStatus.RECORDED);
+    /**
+     * Delete ISO files from cache
+     * */
+    @FXML public void onDeleteIso(ActionEvent ev) {
+        StorageUnitFX su = tblStorageUnits.getSelectionModel().selectedItemProperty().getValue();
+        logger.debug(su.getIsoFileName());
+        if (!Strings.isBlank(su.getIsoFileName())) {
+            service.deleteFileAndReload(su.getIsoFileName());
+        } else {
+            logger.warn("requested for empty file");
         }
+    }
+
+    /**
+     * Checking the control sum of ISO files
+     * */
+    @FXML public void onCheck(ActionEvent ev) {
+        logger.debug("");
     }
 
     //region PRIVATE
