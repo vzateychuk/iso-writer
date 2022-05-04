@@ -83,7 +83,7 @@ public class NavigationCtl implements Initializable {
         logger.debug("");
         showView(ViewType.LOGIN);
     }
-    public void onShowAbdd(ActionEvent ev) {
+    public void onShowMain(ActionEvent ev) {
         logger.debug("");
         showView(ViewType.MAIN_VIEW);
     }
