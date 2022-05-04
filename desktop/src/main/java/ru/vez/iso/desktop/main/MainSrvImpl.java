@@ -132,10 +132,9 @@ public class MainSrvImpl implements MainSrv {
         CompletableFuture.supplyAsync( () -> {
             logger.debug("id: {}:{}", su.getObjectId(), su.getNumberSu());
             UtilsHelper.makeDelaySec(1);    // TODO send request for Create ISO
-            appState.put(AppStateType.NOTIFICATION, AppStateData.builder().value("На сервере создан ISO образ: " + su.getNumberSu()).build());
+            appState.put(AppStateType.NOTIFICATION, AppStateData.builder().value("Создан ISO образ: " + su.getNumberSu()).build());
             return su;
         }, exec)
-                .thenAccept(loaded -> this.loadISOAsync(loaded.getNumberSu()))
                 .thenAccept(st -> readOpsDayAsync(20))
                 .exceptionally((ex) -> {
                     logger.debug("Error: " + ex.getLocalizedMessage());
@@ -146,17 +145,14 @@ public class MainSrvImpl implements MainSrv {
     @Override
     public void deleteFileAndReload(String fileName) {
 
-        // Avoid multiply invocation
-        if (!future.isDone()) {
-            logger.debug("Async operation in progress, skipping");
-            return;
-        }
-
         future = CompletableFuture.supplyAsync(() -> this.deleteIsoFile(fileName), exec)
                 .thenApply(this::readIsoFileNames)
                 .thenAccept(isoFiles ->
-                        appState.put(AppStateType.ISO_FILES_NAMES, AppStateData.<List<IsoFileFX>>builder().value(isoFiles).build())
-                ).exceptionally((ex) -> {
+                        {
+                            appState.put(AppStateType.ISO_FILES_NAMES, AppStateData.<List<IsoFileFX>>builder().value(isoFiles).build());
+                            appState.put(AppStateType.NOTIFICATION, AppStateData.builder().value("Удален : " + fileName).build());
+                        })
+                .exceptionally((ex) -> {
                     logger.warn(ex.getLocalizedMessage());
                     return null;
                 });

@@ -240,11 +240,11 @@ public class MainCtl implements Initializable {
     @FXML public void onDeleteIso(ActionEvent ev) {
         StorageUnitFX su = tblStorageUnits.getSelectionModel().selectedItemProperty().getValue();
         logger.debug(su.getIsoFileName());
-        if (!Strings.isBlank(su.getIsoFileName())) {
-            service.deleteFileAndReload(su.getIsoFileName());
-        } else {
+        if (Strings.isBlank(su.getIsoFileName())) {
             logger.warn("requested for empty file");
+            appState.put(AppStateType.NOTIFICATION, AppStateData.builder().value("Файл не выбран : " + fileName).build());
         }
+        service.deleteFileAndReload(su.getIsoFileName());
     }
 
     /**
