@@ -85,7 +85,7 @@ public class NavigationCtl implements Initializable {
     }
     public void onShowAbdd(ActionEvent ev) {
         logger.debug("");
-        showView(ViewType.ABDD_VIEW);
+        showView(ViewType.MAIN_VIEW);
     }
     public void onShowSettings(ActionEvent ev) {
         logger.debug("");

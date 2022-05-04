@@ -1,4 +1,4 @@
-package ru.vez.iso.desktop.abdd;
+package ru.vez.iso.desktop.main;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
  * Controller for: "Выбор Единицы хранения для записи на диск"
  * */
 @Log
-public class AbddCtl implements Initializable {
+public class MainCtl implements Initializable {
 
     //region Properties
     private static final Logger logger = LogManager.getLogger();
@@ -71,7 +71,7 @@ public class AbddCtl implements Initializable {
     @FXML private RadioButton exShowPrep;
 
     private final ObservableMap<AppStateType, AppStateData> appState;
-    private final AbddSrv service;
+    private final MainSrv service;
 
     private ObservableList<OperatingDayFX> operatingDays;
     private ObservableList<StorageUnitFX> storageUnits;
@@ -80,7 +80,7 @@ public class AbddCtl implements Initializable {
 
     //endregion
 
-    public AbddCtl(ObservableMap<AppStateType, AppStateData> appState, AbddSrv service) {
+    public MainCtl(ObservableMap<AppStateType, AppStateData> appState, MainSrv service) {
         this.service = service;
         this.appState = appState;
     }

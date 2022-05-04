@@ -1,6 +1,6 @@
-package ru.vez.iso.desktop.abdd;
+package ru.vez.iso.desktop.main;
 
-public interface AbddSrv {
+public interface MainSrv {
 
     /**
      * Загрузить список операционных дней и StorageUnits

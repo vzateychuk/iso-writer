@@ -1,4 +1,4 @@
-package ru.vez.iso.desktop.abdd;
+package ru.vez.iso.desktop.main;
 
 import javafx.collections.ObservableMap;
 import org.apache.logging.log4j.LogManager;
@@ -23,7 +23,7 @@ import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class AbddSrvImpl implements AbddSrv {
+public class MainSrvImpl implements MainSrv {
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -33,7 +33,7 @@ public class AbddSrvImpl implements AbddSrv {
 
     private Map<String, LoadStatus> loadStatus;
 
-    public AbddSrvImpl(ObservableMap<AppStateType, AppStateData> appState, Executor exec) {
+    public MainSrvImpl(ObservableMap<AppStateType, AppStateData> appState, Executor exec) {
         this.appState = appState;
         this.exec = exec;
         this.future = CompletableFuture.allOf();

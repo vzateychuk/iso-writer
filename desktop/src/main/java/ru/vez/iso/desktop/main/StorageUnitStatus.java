@@ -1,4 +1,4 @@
-package ru.vez.iso.desktop.abdd;
+package ru.vez.iso.desktop.main;
 
 /**
  * Статус ЕХ.

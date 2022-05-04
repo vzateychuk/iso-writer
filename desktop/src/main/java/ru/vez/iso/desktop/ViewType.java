@@ -3,7 +3,7 @@ package ru.vez.iso.desktop;
 public enum ViewType {
 
     WELCOME("welcome.fxml", true),
-    ABDD_VIEW("abdd.fxml", true),
+    MAIN_VIEW("main.fxml", true),
     LOGIN("login.fxml", true),
     SETTINGS("settings.fxml", true),
     DISK("disks.fxml", true),

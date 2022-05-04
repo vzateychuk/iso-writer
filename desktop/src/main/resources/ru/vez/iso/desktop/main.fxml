@@ -21,7 +21,7 @@
 <?import javafx.scene.text.Font?>
 
 <SplitPane fx:id="abddView" dividerPositions="0.4" xmlns="http://javafx.com/javafx"
-           xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.vez.iso.desktop.abdd.AbddCtl">
+           xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.vez.iso.desktop.main.MainCtl">
   <items>
       <VBox prefWidth="300.0">
          <children>
