@@ -30,13 +30,13 @@ public class NavigationCtl implements Initializable {
     private static final Logger logger = LogManager.getLogger();
 
     @FXML private BorderPane navigationView;
+    @FXML private Button butLogin;
+    @FXML private Button butMain;
     @FXML private Button disks;
-    @FXML private Button login;
-    @FXML private Button main;
-    @FXML private Button settings;
-    @FXML private Button documents;
+    @FXML private Button butSettings;
+    @FXML private Button butDocuments;
     // Show log messages
-    @FXML public Label logMessages;
+    @FXML public Label labelMessages;
     @FXML public Tooltip statusMessage;
 
     private final NavigationSrv service;
@@ -104,16 +104,21 @@ public class NavigationCtl implements Initializable {
 
 
     private void showMessage(String message) {
+        labelMessages.setText(message);
         statusMessage.hide();
+        statusMessage.setAutoHide(true);
         statusMessage.setText(message);
-        statusMessage.show(logMessages.getScene().getWindow());
+        if (labelMessages.getScene()!=null) {
+            statusMessage.show(labelMessages.getScene().getWindow());
+        }
     }
 
     private void lockControls(boolean lock) {
+
         logger.debug("lock: " + lock);
-        main.setDisable(lock);
-        documents.setDisable(lock);
-        login.setText(lock ? "Вход" : "Выход");
+        butMain.setDisable(lock);
+        butLogin.setText(lock ? "Вход" : "Выход");
+        this.showMessage("Выполнен " + (lock ? "выход" : "вход"));
     }
 
     private void showView(ViewType view) {
