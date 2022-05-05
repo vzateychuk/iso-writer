@@ -72,7 +72,8 @@ public class MainCtl implements Initializable {
     @FXML private RadioButton exShowPrep;
 
     private final ObservableMap<AppStateType, AppStateData> appState;
-    private final MainSrv service;
+    private final MainSrv mainSrv;
+    private final CacheSrv cacheSrv;
 
     private ObservableList<OperatingDayFX> operatingDays;
     private ObservableList<StorageUnitFX> storageUnits;
@@ -81,9 +82,10 @@ public class MainCtl implements Initializable {
 
     //endregion
 
-    public MainCtl(ObservableMap<AppStateType, AppStateData> appState, MainSrv service, DisksSrv disksSrv) {
-        this.service = service;
+    public MainCtl(ObservableMap<AppStateType, AppStateData> appState, MainSrv mainSrv, CacheSrv cacheSrv) {
         this.appState = appState;
+        this.mainSrv = mainSrv;
+        this.cacheSrv = cacheSrv;
     }
 
     @Override
@@ -197,7 +199,7 @@ public class MainCtl implements Initializable {
         } catch ( NumberFormatException ex) {
             logger.warn("can't parse value to int: " + operationDays.getText());
         }
-        service.readOpsDayAsync(days);
+        mainSrv.readOpsDayAsync(days);
     }
 
     /**
@@ -215,7 +217,7 @@ public class MainCtl implements Initializable {
     @FXML public void onIsoCreate(ActionEvent ev) {
         StorageUnitFX selected = tblStorageUnits.getSelectionModel().getSelectedItem();
         logger.debug("{}", selected.getNumberSu());
-        service.isoCreateAsync(selected);
+        mainSrv.isoCreateAsync(selected);
     }
 
     /**
@@ -224,7 +226,7 @@ public class MainCtl implements Initializable {
     @FXML void onStartIsoLoad(ActionEvent ev) {
         StorageUnitFX selected = tblStorageUnits.getSelectionModel().getSelectedItem();
         logger.debug("{}", selected.getNumberSu());
-        service.loadISOAsync(selected.getNumberSu());
+        mainSrv.loadISOAsync(selected.getNumberSu());
     }
 
     /**
@@ -244,7 +246,7 @@ public class MainCtl implements Initializable {
             logger.warn("requested for empty file");
             appState.put(AppStateType.NOTIFICATION, AppStateData.builder().value("Файл не выбран : " + fileName).build());
         }
-        service.deleteFileAndReload(su.getIsoFileName());
+        cacheSrv.deleteFileAndReload(su.getIsoFileName());
     }
 
     /**

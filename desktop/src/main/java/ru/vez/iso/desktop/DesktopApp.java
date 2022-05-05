@@ -164,11 +164,11 @@ public class DesktopApp extends Application {
         viewCache.put(ViewType.DOCUMENTS, buildView(ViewType.DOCUMENTS,t->new DocumentCtl(appState, docSrv)));
 
         MainSrv mainSrv = new MainSrvImpl(appState, exec);
-        DisksSrv disksSrv = new DisksSrvImpl(appState, exec);
-        viewCache.put(ViewType.MAIN_VIEW, buildView(ViewType.MAIN_VIEW, t->new MainCtl(appState, mainSrv, disksSrv)));
+        CacheSrv cacheSrv = new CacheSrvImpl(appState, exec);
+        viewCache.put(ViewType.MAIN_VIEW, buildView(ViewType.MAIN_VIEW, t->new MainCtl(appState, mainSrv, cacheSrv)));
 
         settingsSrv.loadAsync(SettingType.SETTING_FILE.getDefaultValue());
-        disksSrv.readFileCacheAsync(SettingType.ISO_CACHE_PATH.getDefaultValue());
+        cacheSrv.readFileCacheAsync(SettingType.ISO_CACHE_PATH.getDefaultValue());
 
         return viewCache;
     }

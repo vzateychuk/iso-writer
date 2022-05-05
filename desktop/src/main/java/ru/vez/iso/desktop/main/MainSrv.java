@@ -13,7 +13,7 @@ public interface MainSrv {
     void loadISOAsync(String name);
 
     /**
-     * Изменить статус EX (записано на внешний носитель)
+     * Записать ISO на внешний диск
      * */
     void burnISOAsync(StorageUnitFX selected, StorageUnitStatus status);
 
@@ -21,10 +21,5 @@ public interface MainSrv {
      * Запрос на создание ISO файла (EX в статусе "Удален")
      * */
     void isoCreateAsync(StorageUnitFX selected);
-
-    /**
-     * Delete the ISO file from cache and invoke reload
-     * */
-    void deleteFileAndReload(String fileName);
 
 }

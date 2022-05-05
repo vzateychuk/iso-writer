@@ -3,7 +3,10 @@ package ru.vez.iso.desktop.main;
 import javafx.collections.ObservableMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.vez.iso.desktop.shared.*;
+import ru.vez.iso.desktop.shared.AppSettings;
+import ru.vez.iso.desktop.shared.AppStateData;
+import ru.vez.iso.desktop.shared.AppStateType;
+import ru.vez.iso.desktop.shared.LoadStatus;
 import ru.vez.iso.desktop.utils.UtilsHelper;
 
 import java.io.IOException;
@@ -11,14 +14,12 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
-import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -39,6 +40,9 @@ public class MainSrvImpl implements MainSrv {
         this.loadStatus = new ConcurrentHashMap<>();
     }
 
+    /**
+     * Загрузка списков операционных дней и единиц хранения
+     * */
     @Override
     public void readOpsDayAsync(int period) {
 
@@ -112,6 +116,9 @@ public class MainSrvImpl implements MainSrv {
 
     }
 
+    /**
+     * Стартует прожиг диска
+     * */
     @Override
     public void burnISOAsync(StorageUnitFX su, StorageUnitStatus status) {
 
@@ -122,11 +129,14 @@ public class MainSrvImpl implements MainSrv {
             return status;
         }, exec).thenAccept(st -> readOpsDayAsync(20))
                 .exceptionally((ex) -> {
-                    logger.debug("Error: " + ex.getLocalizedMessage());
+                    logger.warn("Error: " + ex.getLocalizedMessage());
                     return null;
                 });
     }
 
+    /**
+     * Запрос на сервер для создания ISO (поскольку тот может быть удален)
+     * */
     @Override
     public void isoCreateAsync(StorageUnitFX su) {
         CompletableFuture.supplyAsync( () -> {
@@ -142,25 +152,9 @@ public class MainSrvImpl implements MainSrv {
                 });
     }
 
-    @Override
-    public void deleteFileAndReload(String fileName) {
-
-        future = CompletableFuture.supplyAsync(() -> this.deleteIsoFile(fileName), exec)
-                .thenApply(this::readIsoFileNames)
-                .thenAccept(isoFiles ->
-                        {
-                            appState.put(AppStateType.ISO_FILES_NAMES, AppStateData.<List<IsoFileFX>>builder().value(isoFiles).build());
-                            appState.put(AppStateType.NOTIFICATION, AppStateData.builder().value("Удален : " + fileName).build());
-                        })
-                .exceptionally((ex) -> {
-                    logger.warn(ex.getLocalizedMessage());
-                    return null;
-                });
-    }
-
     //region PRIVATE
 
-    private List<OperatingDayFX> getOpsDaysWithDelay(int period) {
+    List<OperatingDayFX> getOpsDaysWithDelay(int period) {
 
         logger.debug("");
         UtilsHelper.makeDelaySec(1);    // TODO send request for Operation Days
@@ -172,7 +166,7 @@ public class MainSrvImpl implements MainSrv {
                 .collect(Collectors.toList());
     }
 
-    private List<StorageUnitFX> getStorageUnitsWithDelay(int period) {
+    List<StorageUnitFX> getStorageUnitsWithDelay(int period) {
 
         logger.debug("");
         UtilsHelper.makeDelaySec(1);    // TODO send request for StorageUnits
@@ -187,44 +181,6 @@ public class MainSrvImpl implements MainSrv {
                 })
                 .collect(Collectors.toList());
     }
-
-    private String deleteIsoFile(String fileName) {
-
-        AppSettings sets = (AppSettings) appState.get(AppStateType.SETTINGS).getValue();
-        Path filePath = Paths.get(sets.getIsoCachePath(), fileName);
-        try {
-            Files.delete(filePath);
-        } catch (IOException ex) {
-            logger.warn("unable to delete file: {}", filePath, ex);
-            throw new RuntimeException("unable to delete file: " + filePath);
-        }
-        return sets.getIsoCachePath();
-    }
-
-    /**
-     * iterates over a directory and outputs all of the fi les that end with a *.iso extension
-     * */
-    private List<IsoFileFX> readIsoFileNames(String dir) {
-
-        Path path = Paths.get(dir);
-        List<String> fileNames = this.readAndFilter(path, 1, (p,a) -> p.toString().endsWith(".iso") && a.isRegularFile() )
-                .stream().map(p -> p.getFileName().toString()).collect(Collectors.toList());
-        return fileNames.stream()
-                .sorted(String::compareTo)
-                .map(IsoFileFX::new)
-                .collect(Collectors.toList());
-    }
-
-    private List<Path> readAndFilter(Path path, int depth, BiPredicate<Path, BasicFileAttributes> filter) {
-
-        try {
-            return Files.find(path, depth, filter).collect(Collectors.toList());
-        } catch (IOException e) {
-            logger.warn("Unable to read: " + path);
-            throw new RuntimeException(e);
-        }
-    }
-
 
     //endregion
 }

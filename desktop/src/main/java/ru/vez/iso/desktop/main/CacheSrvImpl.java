@@ -19,14 +19,14 @@ import java.util.concurrent.Executor;
 import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 
-public class DisksSrvImpl implements DisksSrv {
+public class CacheSrvImpl implements CacheSrv {
 
     private static final Logger logger = LogManager.getLogger();
 
     private final ObservableMap<AppStateType, AppStateData> appState;
     private final Executor exec;
 
-    public DisksSrvImpl(ObservableMap<AppStateType, AppStateData> appState, Executor exec) {
+    public CacheSrvImpl(ObservableMap<AppStateType, AppStateData> appState, Executor exec) {
         this.appState = appState;
         this.exec = exec;
     }

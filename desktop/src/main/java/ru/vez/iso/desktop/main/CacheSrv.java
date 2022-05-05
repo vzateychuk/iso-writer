@@ -3,7 +3,7 @@ package ru.vez.iso.desktop.main;
 /**
  * Read/Write/Check operation with CD/DVD disks
  */
-public interface DisksSrv {
+public interface CacheSrv {
 
     /**
      * Загрузить ISO файл в локальный файловый кэш
