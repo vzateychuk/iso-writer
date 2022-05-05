@@ -39,12 +39,12 @@ public class SettingsSrvImpl implements SettingsSrv {
         String filePath = sets.getSettingFile();
 
         future = CompletableFuture.supplyAsync( () -> {
-            logger.debug(String.format("saveAsync to file: '%s'", filePath));
+            logger.debug("file: '{}'", filePath);
             Properties p = sets.getProperties();
             try(OutputStream outputStream = new FileOutputStream(filePath)){
                 p.store(outputStream, "ISO Writer");
             } catch (IOException e) {
-                logger.warn(String.format("Unable to save file: '%s'\n%s", filePath, e));
+                logger.warn("unable to save file: '{}'\n{}", filePath, e);
                 // p = createDefaultSettings();
             }
             return sets;

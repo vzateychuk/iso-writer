@@ -48,7 +48,7 @@ public class MainSrvImpl implements MainSrv {
             return;
         }
 
-        logger.debug("getOperatingDaysAsync. period: " + period);
+        logger.debug("period: " + period);
         CompletableFuture<List<OperatingDayFX>> opsDaysFut = CompletableFuture.supplyAsync(() -> getOpsDaysWithDelay(period), exec);
         CompletableFuture<List<StorageUnitFX>> storeUnitsFut = CompletableFuture.supplyAsync(() -> getStorageUnitsWithDelay(period), exec);
 
@@ -162,7 +162,7 @@ public class MainSrvImpl implements MainSrv {
 
     private List<OperatingDayFX> getOpsDaysWithDelay(int period) {
 
-        logger.debug("getOpsDaysWithDelay");
+        logger.debug("");
         UtilsHelper.makeDelaySec(1);    // TODO send request for Operation Days
         return IntStream.rangeClosed(0, period)
                 .mapToObj(i -> {
@@ -174,7 +174,7 @@ public class MainSrvImpl implements MainSrv {
 
     private List<StorageUnitFX> getStorageUnitsWithDelay(int period) {
 
-        logger.debug("getStorageUnitsWithDelay");
+        logger.debug("");
         UtilsHelper.makeDelaySec(1);    // TODO send request for StorageUnits
         Random rnd = new Random();
         List<StorageUnitStatus> statuses = Collections.unmodifiableList(Arrays.asList(StorageUnitStatus.values()));

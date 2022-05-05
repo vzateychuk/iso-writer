@@ -154,7 +154,6 @@ public class DesktopApp extends Application {
         // create SettingsView and read application settings async
         SettingsSrv settingsSrv = new SettingsSrvImpl(appState, exec);
         viewCache.put(ViewType.SETTINGS, buildView( ViewType.SETTINGS, t -> new SettingsCtl(appState, settingsSrv) ));
-        settingsSrv.loadAsync(SettingType.SETTING_FILE.getDefaultValue());
 
         LoginSrv loginSrv = new LoginSrvImpl(appState, exec);
         loginSrv.logout();
@@ -167,6 +166,8 @@ public class DesktopApp extends Application {
         MainSrv mainSrv = new MainSrvImpl(appState, exec);
         DisksSrv disksSrv = new DisksSrvImpl(appState, exec);
         viewCache.put(ViewType.MAIN_VIEW, buildView(ViewType.MAIN_VIEW, t->new MainCtl(appState, mainSrv, disksSrv)));
+
+        settingsSrv.loadAsync(SettingType.SETTING_FILE.getDefaultValue());
         disksSrv.readFileCacheAsync(SettingType.ISO_CACHE_PATH.getDefaultValue());
 
         return viewCache;

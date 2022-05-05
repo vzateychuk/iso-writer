@@ -116,7 +116,7 @@ public class DocumentCtl implements Initializable {
             txtFilter.setText("");
             // if opened, launch service to read data
             Path path = chosen.toPath();
-            logger.debug("ZIP path: " + path);
+            logger.debug("ZIP: {}", path);
             service.loadAsync(path);
         }
     }
