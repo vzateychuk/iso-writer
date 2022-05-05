@@ -6,7 +6,6 @@ public enum ViewType {
     MAIN_VIEW("main.fxml", true),
     LOGIN("login.fxml", true),
     SETTINGS("settings.fxml", true),
-    DISK("disks.fxml", true),
     DOCUMENTS("documents.fxml", true),
     NAVIGATION("navigation.fxml", true);
 

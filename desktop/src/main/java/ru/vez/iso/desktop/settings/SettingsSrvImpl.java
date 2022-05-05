@@ -81,7 +81,7 @@ public class SettingsSrvImpl implements SettingsSrv {
                     .isoCachePath(
                             props.getProperty(SettingType.ISO_CACHE_PATH.name(), SettingType.ISO_CACHE_PATH.getDefaultValue())
                     )
-                    .abddAPI(props.getProperty(SettingType.ABDD_API.name(), SettingType.ABDD_API.getDefaultValue()))
+                    .abddAPI(props.getProperty(SettingType.BACKEND_API.name(), SettingType.BACKEND_API.getDefaultValue()))
                     .build();
 
         }, exec).thenAccept(

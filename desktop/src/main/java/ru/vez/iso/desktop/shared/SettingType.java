@@ -7,7 +7,7 @@ public enum SettingType {
     OPERATION_DAYS("30"),
     ISO_CACHE_PATH("./temp"),
     REFRESH_PERIOD("5"),
-    ABDD_API("http://localhost:8080/abdd/api");
+    BACKEND_API("http://localhost:8080/abdd/api");
 
     private final String defaultValue;
 

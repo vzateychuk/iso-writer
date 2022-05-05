@@ -12,16 +12,11 @@ import javafx.util.Callback;
 import org.apache.commons.cli.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.vez.iso.desktop.main.MainCtl;
-import ru.vez.iso.desktop.main.MainSrvImpl;
-import ru.vez.iso.desktop.disks.DiskCtl;
-import ru.vez.iso.desktop.disks.DisksSrvImpl;
-import ru.vez.iso.desktop.document.DocumentCtl;
-import ru.vez.iso.desktop.document.DocumentMapper;
-import ru.vez.iso.desktop.document.DocumentMapperImpl;
-import ru.vez.iso.desktop.document.DocumentSrvImpl;
+import ru.vez.iso.desktop.document.*;
 import ru.vez.iso.desktop.login.LoginCtl;
+import ru.vez.iso.desktop.login.LoginSrv;
 import ru.vez.iso.desktop.login.LoginSrvImpl;
+import ru.vez.iso.desktop.main.*;
 import ru.vez.iso.desktop.nav.NavigationCtl;
 import ru.vez.iso.desktop.nav.NavigationSrvImpl;
 import ru.vez.iso.desktop.settings.SettingsCtl;
@@ -67,7 +62,7 @@ public class DesktopApp extends Application {
         Map<ViewType, Parent> viewCache = buildViewCache(appState, executorService);
 
         // create filecache directory
-        createFileCache(SettingType.ISO_CACHE_PATH.getDefaultValue());
+        createFileCacheIfNotExists(SettingType.ISO_CACHE_PATH.getDefaultValue());
 
         // Set OnClose confirmation hook
         stage.setOnCloseRequest(e -> {
@@ -156,17 +151,23 @@ public class DesktopApp extends Application {
 
         Map<ViewType, Parent> viewCache = new HashMap<>();
 
-        viewCache.put(ViewType.LOGIN, buildView(ViewType.LOGIN,t->new LoginCtl(appState, new LoginSrvImpl(appState, exec))));
-        viewCache.put(ViewType.MAIN_VIEW, buildView(ViewType.MAIN_VIEW, t->new MainCtl(appState, new MainSrvImpl(appState, exec))));
-        viewCache.put(ViewType.DISK, buildView(ViewType.DISK,t->new DiskCtl(appState, new DisksSrvImpl(appState, exec))));
-
-        DocumentMapper mapper = new DocumentMapperImpl();
-        viewCache.put(ViewType.DOCUMENTS, buildView(ViewType.DOCUMENTS,t->new DocumentCtl(appState, new DocumentSrvImpl(appState, exec, mapper))));
-
         // create SettingsView and read application settings async
         SettingsSrv settingsSrv = new SettingsSrvImpl(appState, exec);
-        viewCache.put(ViewType.SETTINGS, buildView( ViewType.SETTINGS, t -> new SettingsCtl(appState, settingsSrv)));
+        viewCache.put(ViewType.SETTINGS, buildView( ViewType.SETTINGS, t -> new SettingsCtl(appState, settingsSrv) ));
         settingsSrv.loadAsync(SettingType.SETTING_FILE.getDefaultValue());
+
+        LoginSrv loginSrv = new LoginSrvImpl(appState, exec);
+        loginSrv.logout();
+        viewCache.put(ViewType.LOGIN, buildView(ViewType.LOGIN,t->new LoginCtl(appState, loginSrv)));
+
+        DocumentMapper mapper = new DocumentMapperImpl();
+        DocumentSrv docSrv = new DocumentSrvImpl(appState, exec, mapper);
+        viewCache.put(ViewType.DOCUMENTS, buildView(ViewType.DOCUMENTS,t->new DocumentCtl(appState, docSrv)));
+
+        MainSrv mainSrv = new MainSrvImpl(appState, exec);
+        DisksSrv disksSrv = new DisksSrvImpl(appState, exec);
+        viewCache.put(ViewType.MAIN_VIEW, buildView(ViewType.MAIN_VIEW, t->new MainCtl(appState, mainSrv, disksSrv)));
+        disksSrv.readFileCacheAsync(SettingType.ISO_CACHE_PATH.getDefaultValue());
 
         return viewCache;
     }
@@ -183,7 +184,7 @@ public class DesktopApp extends Application {
     /**
      * Creates the directory along with any of the following parent directories if they do not already exist
      * */
-    private void createFileCache(String cachePath) {
+    private void createFileCacheIfNotExists(String cachePath) {
         Path path = Paths.get(cachePath);
         if  (!Files.exists(path)) {
             try {

@@ -81,7 +81,7 @@ public class MainCtl implements Initializable {
 
     //endregion
 
-    public MainCtl(ObservableMap<AppStateType, AppStateData> appState, MainSrv service) {
+    public MainCtl(ObservableMap<AppStateType, AppStateData> appState, MainSrv service, DisksSrv disksSrv) {
         this.service = service;
         this.appState = appState;
     }

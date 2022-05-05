@@ -1,11 +1,14 @@
-package ru.vez.iso.desktop.disks;
+package ru.vez.iso.desktop.main;
 
+/**
+ * Read/Write/Check operation with CD/DVD disks
+ */
 public interface DisksSrv {
 
     /**
      * Загрузить ISO файл в локальный файловый кэш
      * */
-    void readIsoFileNamesAsync(String dir);
+    void readFileCacheAsync(String dir);
 
     /**
      * Delete the file and invoke reload

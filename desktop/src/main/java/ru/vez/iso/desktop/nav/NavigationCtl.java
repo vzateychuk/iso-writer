@@ -91,10 +91,6 @@ public class NavigationCtl implements Initializable {
         logger.debug("");
         showView(ViewType.SETTINGS);
     }
-    public void onShowDisks(ActionEvent ev) {
-        logger.debug("");
-        showView(ViewType.DISK);
-    }
     public void onShowDocuments(ActionEvent ev) {
         logger.debug("");
         showView(ViewType.DOCUMENTS);

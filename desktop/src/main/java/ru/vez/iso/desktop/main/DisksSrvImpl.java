@@ -1,4 +1,4 @@
-package ru.vez.iso.desktop.disks;
+package ru.vez.iso.desktop.main;
 
 import javafx.collections.ObservableMap;
 import org.apache.logging.log4j.LogManager;
@@ -25,7 +25,6 @@ public class DisksSrvImpl implements DisksSrv {
 
     private final ObservableMap<AppStateType, AppStateData> appState;
     private final Executor exec;
-    private CompletableFuture<Void> future = CompletableFuture.allOf();
 
     public DisksSrvImpl(ObservableMap<AppStateType, AppStateData> appState, Executor exec) {
         this.appState = appState;
@@ -33,16 +32,10 @@ public class DisksSrvImpl implements DisksSrv {
     }
 
     @Override
-    public void readIsoFileNamesAsync(String dir) {
+    public void readFileCacheAsync(String dir) {
 
-        // Avoid multiply invocation
-        if (!future.isDone()) {
-            logger.debug("Async operation in progress, skipping");
-            return;
-        }
-
-        logger.debug("dir: " + dir);
-        future = CompletableFuture.supplyAsync( () -> this.readIsoFileNames(dir), exec )
+        logger.debug("dir: {}", dir);
+        CompletableFuture.supplyAsync( () -> this.readIsoFileNames(dir), exec )
                 .thenAccept(isoFiles ->
                     appState.put(AppStateType.ISO_FILES_NAMES, AppStateData.<List<IsoFileFX>>builder().value(isoFiles).build())
                 ).exceptionally((ex) -> {
@@ -51,27 +44,11 @@ public class DisksSrvImpl implements DisksSrv {
                 });
     }
 
-    public List<IsoFileFX> readIsoFileNames(String dir) {
-
-        Path path = Paths.get(dir);
-        List<String> fileNames = this.readAndFilter(path, 1, (p,a) -> p.toString().endsWith(".iso") && a.isRegularFile() )
-                        .stream().map(p -> p.getFileName().toString()).collect(Collectors.toList());
-        return fileNames.stream()
-                .sorted(String::compareTo)
-                .map(IsoFileFX::new)
-                .collect(Collectors.toList());
-    }
-
     @Override
     public void deleteFileAndReload(String fileName) {
 
-        // Avoid multiply invocation
-        if (!future.isDone()) {
-            logger.debug("Async operation in progress, skipping");
-            return;
-        }
-
-        future = CompletableFuture.supplyAsync(() -> this.deleteFile(fileName), exec)
+        logger.debug("file: {}", fileName);
+        CompletableFuture.supplyAsync(() -> this.deleteFile(fileName), exec)
                 .thenApply(this::readIsoFileNames)
                 .thenAccept(isoFiles ->
                         appState.put(AppStateType.ISO_FILES_NAMES, AppStateData.<List<IsoFileFX>>builder().value(isoFiles).build())
@@ -81,9 +58,21 @@ public class DisksSrvImpl implements DisksSrv {
                 });
     }
 
-    //region Private
+    //region PRIVATE
 
-    private String deleteFile(String fileName) {
+    List<IsoFileFX> readIsoFileNames(String dir) {
+
+        Path path = Paths.get(dir);
+        List<String> fileNames = this.readAndFilter(path, 1, (p,a) -> p.toString().endsWith(".iso") && a.isRegularFile() )
+                .stream().map(p -> p.getFileName().toString()).collect(Collectors.toList());
+
+        return fileNames.stream()
+                .sorted(String::compareTo)
+                .map(IsoFileFX::new)
+                .collect(Collectors.toList());
+    }
+
+    String deleteFile(String fileName) {
 
         AppSettings sets = (AppSettings) appState.get(AppStateType.SETTINGS).getValue();
         Path filePath = Paths.get(sets.getIsoCachePath(), fileName);
