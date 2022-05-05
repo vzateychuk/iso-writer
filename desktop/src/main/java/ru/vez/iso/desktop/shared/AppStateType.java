@@ -11,7 +11,6 @@ public enum AppStateType {
     OPERATION_DAYS,     // Операционные дни и StorageUnits (FX)
     DOCUMENTS,          // Список документов загруженных из REESTR файла
     ISO_FILES_NAMES,    // Список загруженных ISO файлов
-    LOAD_ISO_STATUS,    // Статус загрузки ISO файлов. Содержит Map<storageUnitName, LoadStatus>
     REESTR,             // Данные реестра документов, загруженные из файла DIR.zip форма Документы
     SETTINGS            // Настройки приложения
 

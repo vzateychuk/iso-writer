@@ -11,7 +11,7 @@
                 fileName="./log/application.log"
                 filePattern="./log/application.%i.log.gz"
                 ignoreExceptions="false">
-            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level [%c][%M] %msg%n"/>
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level [%c][%M] %msg%n"/>
             <Policies>
                 <SizeBasedTriggeringPolicy size="10MB" />
             </Policies>

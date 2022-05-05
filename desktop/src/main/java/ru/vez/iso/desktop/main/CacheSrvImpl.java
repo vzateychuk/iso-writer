@@ -3,12 +3,11 @@ package ru.vez.iso.desktop.main;
 import javafx.collections.ObservableMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.vez.iso.desktop.shared.AppSettings;
-import ru.vez.iso.desktop.shared.AppStateData;
-import ru.vez.iso.desktop.shared.AppStateType;
-import ru.vez.iso.desktop.shared.IsoFileFX;
+import ru.vez.iso.desktop.shared.*;
+import ru.vez.iso.desktop.utils.UtilsHelper;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -51,9 +50,48 @@ public class CacheSrvImpl implements CacheSrv {
         CompletableFuture.supplyAsync(() -> this.deleteFile(fileName), exec)
                 .thenApply(this::readIsoFileNames)
                 .thenAccept(isoFiles ->
-                        appState.put(AppStateType.ISO_FILES_NAMES, AppStateData.<List<IsoFileFX>>builder().value(isoFiles).build())
+                        {
+                            appState.put(AppStateType.NOTIFICATION, AppStateData.<String>builder().value("Удален " + fileName).build());
+                            appState.put(AppStateType.ISO_FILES_NAMES, AppStateData.<List<IsoFileFX>>builder().value(isoFiles).build());
+                        }
                 ).exceptionally((ex) -> {
                     logger.warn(ex.getLocalizedMessage());
+                    return null;
+                });
+    }
+
+    /**
+     * Загрузка ISO файла в локальный файловый cache
+     * */
+    @Override
+    public void loadISOAsync(String name) {
+
+        logger.debug(name);
+
+        AppSettings sets = ((AppStateData<AppSettings>)appState.get(AppStateType.SETTINGS)).getValue();
+        String dir = sets.getIsoCachePath();
+
+        CompletableFuture.supplyAsync( () -> {
+            UtilsHelper.makeDelaySec(1);    // TODO load from service
+
+            StringBuilder sb = new StringBuilder("Hello:\n");
+            for (int i = 0; i < 2000_000; i++) {
+                sb.append("something");
+            }
+            String fileName = name + ".iso";
+            Path path = Paths.get(dir, fileName);
+            try {
+                Files.write(path, sb.toString().getBytes(StandardCharsets.UTF_8));
+            } catch (IOException e) {
+                logger.warn("unable to write to: " + path);
+                throw new RuntimeException("unable to write to: " + path);
+            }
+            appState.put(AppStateType.NOTIFICATION, AppStateData.builder().value("Загружен : " + fileName).build());
+            return name;
+        }, exec)
+                .thenAccept( nm -> this.readFileCacheAsync(SettingType.ISO_CACHE_PATH.getDefaultValue()) )
+                .exceptionally( ex -> {
+                    logger.warn("Error: " + ex.getLocalizedMessage());
                     return null;
                 });
     }

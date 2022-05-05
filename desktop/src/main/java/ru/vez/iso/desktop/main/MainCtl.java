@@ -226,7 +226,7 @@ public class MainCtl implements Initializable {
     @FXML void onStartIsoLoad(ActionEvent ev) {
         StorageUnitFX selected = tblStorageUnits.getSelectionModel().getSelectedItem();
         logger.debug("{}", selected.getNumberSu());
-        mainSrv.loadISOAsync(selected.getNumberSu());
+        cacheSrv.loadISOAsync(selected.getNumberSu());
     }
 
     /**
@@ -245,6 +245,7 @@ public class MainCtl implements Initializable {
         if (Strings.isBlank(su.getIsoFileName())) {
             logger.warn("requested for empty file");
             appState.put(AppStateType.NOTIFICATION, AppStateData.builder().value("Файл не выбран : " + fileName).build());
+            return;
         }
         cacheSrv.deleteFileAndReload(su.getIsoFileName());
     }
@@ -261,7 +262,7 @@ public class MainCtl implements Initializable {
     /**
      * Update storeUnit fileName property if there is a filename in fileCache found
      * */
-    private List<StorageUnitFX> getWithFileName(List<StorageUnitFX> storageUnits, List<IsoFileFX> fileCache) {
+    List<StorageUnitFX> getWithFileName(List<StorageUnitFX> storageUnits, List<IsoFileFX> fileCache) {
 
         return storageUnits.stream()
                 .map(su -> {

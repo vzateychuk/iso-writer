@@ -103,8 +103,6 @@ public class DesktopApp extends Application {
 
         ObservableMap<AppStateType, AppStateData> appState = createDefaultAppState();
         appState.put(AppStateType.APP_PROD_MODE, AppStateData.builder().value(isProdMode).build());
-        Map<String, LoadStatus> loadStatusMap = new ConcurrentHashMap<>();
-        appState.put(AppStateType.LOAD_ISO_STATUS, AppStateData.builder().value(loadStatusMap).build());
         return appState;
     }
 

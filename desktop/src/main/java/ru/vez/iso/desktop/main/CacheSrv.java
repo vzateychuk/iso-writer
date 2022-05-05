@@ -14,4 +14,10 @@ public interface CacheSrv {
      * Delete the file and invoke reload
      * */
     void deleteFileAndReload(String fileName);
+
+    /**
+     * Загрузить ISO файл в локальный файловый кэш
+     */
+    void loadISOAsync(String name);
+
 }
