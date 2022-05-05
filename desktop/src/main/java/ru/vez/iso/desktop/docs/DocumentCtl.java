@@ -1,4 +1,4 @@
-package ru.vez.iso.desktop.document;
+package ru.vez.iso.desktop.docs;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -18,10 +18,10 @@ import javafx.stage.FileChooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
-import ru.vez.iso.desktop.document.reestr.RFileType;
-import ru.vez.iso.desktop.document.reestr.Reestr;
-import ru.vez.iso.desktop.document.reestr.ReestrDoc;
-import ru.vez.iso.desktop.document.reestr.ReestrFile;
+import ru.vez.iso.desktop.docs.reestr.RFileType;
+import ru.vez.iso.desktop.docs.reestr.Reestr;
+import ru.vez.iso.desktop.docs.reestr.ReestrDoc;
+import ru.vez.iso.desktop.docs.reestr.ReestrFile;
 import ru.vez.iso.desktop.shared.AppSettings;
 import ru.vez.iso.desktop.shared.AppStateData;
 import ru.vez.iso.desktop.shared.AppStateType;

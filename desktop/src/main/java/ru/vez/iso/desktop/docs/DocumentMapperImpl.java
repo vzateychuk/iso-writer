@@ -1,9 +1,9 @@
-package ru.vez.iso.desktop.document;
+package ru.vez.iso.desktop.docs;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.vez.iso.desktop.document.reestr.ReestrData;
-import ru.vez.iso.desktop.document.reestr.ReestrDoc;
+import ru.vez.iso.desktop.docs.reestr.ReestrData;
+import ru.vez.iso.desktop.docs.reestr.ReestrDoc;
 
 import java.time.LocalDate;
 

@@ -1,10 +1,10 @@
-package ru.vez.iso.desktop.document;
+package ru.vez.iso.desktop.docs;
 
 import com.google.gson.Gson;
 import javafx.collections.ObservableMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.vez.iso.desktop.document.reestr.Reestr;
+import ru.vez.iso.desktop.docs.reestr.Reestr;
 import ru.vez.iso.desktop.shared.AppSettings;
 import ru.vez.iso.desktop.shared.AppStateData;
 import ru.vez.iso.desktop.shared.AppStateType;

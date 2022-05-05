@@ -1,6 +1,6 @@
-package ru.vez.iso.desktop.document;
+package ru.vez.iso.desktop.docs;
 
-import ru.vez.iso.desktop.document.reestr.ReestrDoc;
+import ru.vez.iso.desktop.docs.reestr.ReestrDoc;
 
 /**
  * Маппинг описания документа из Reestr-а в отображаемый в UI DocumentFX

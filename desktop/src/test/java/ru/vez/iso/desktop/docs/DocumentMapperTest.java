@@ -1,9 +1,9 @@
-package ru.vez.iso.desktop.document;
+package ru.vez.iso.desktop.docs;
 
 import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.vez.iso.desktop.document.reestr.Reestr;
+import ru.vez.iso.desktop.docs.reestr.Reestr;
 
 import java.io.BufferedReader;
 import java.io.InputStream;

@@ -1,4 +1,4 @@
-package ru.vez.iso.desktop.document;
+package ru.vez.iso.desktop.docs;
 
 import java.nio.file.Path;
 

@@ -1,4 +1,4 @@
-package ru.vez.iso.desktop.document.reestr;
+package ru.vez.iso.desktop.docs.reestr;
 
 
 import lombok.AllArgsConstructor;
