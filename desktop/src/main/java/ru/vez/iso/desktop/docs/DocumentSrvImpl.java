@@ -67,7 +67,9 @@ public class DocumentSrvImpl implements DocumentSrv {
         }, exec).thenAccept(docs ->
                 appState.put(AppStateType.DOCUMENTS, AppStateData.<List<DocumentFX>>builder().value(docs).build())
         ).exceptionally((ex) -> {
-            logger.debug("Unable: " + ex.getLocalizedMessage());
+            String errMsg = String.format("unable to create Reestr object: '%s'",zipPath);
+            logger.error(errMsg,ex);
+            appState.put(AppStateType.NOTIFICATION, AppStateData.<String>builder().value(errMsg).build());
             return null;
         } );
     }
@@ -84,7 +86,7 @@ public class DocumentSrvImpl implements DocumentSrv {
             String fromFile = reader.readLine();
             return new Gson().fromJson(fromFile, Reestr.class);
         } catch (Exception ex) {
-            throw new RuntimeException("unable to create Reestr object", ex);
+            throw new RuntimeException("unable to load: " + path, ex);
         }
     }
 
