@@ -4,10 +4,10 @@ import javafx.collections.ObservableMap;
 import lombok.extern.java.Log;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.vez.iso.desktop.shared.UserDetails;
 import ru.vez.iso.desktop.shared.AppStateData;
 import ru.vez.iso.desktop.shared.AppStateType;
-import ru.vez.iso.desktop.utils.UtilsHelper;
+import ru.vez.iso.desktop.shared.UserDetails;
+import ru.vez.iso.desktop.shared.UtilsHelper;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
@@ -52,7 +52,7 @@ public class LoginSrvImpl implements LoginSrv {
 
     @Override
     public void logout() {
-        logger.debug("logout");
+        logger.debug("");
         appState.put(AppStateType.USER_DETAILS, AppStateData.builder().value(UserDetails.NOT_SIGNED_USER).build());
     }
 }

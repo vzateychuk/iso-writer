@@ -13,7 +13,7 @@ import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.shared.AppSettings;
 import ru.vez.iso.desktop.shared.AppStateData;
 import ru.vez.iso.desktop.shared.AppStateType;
-import ru.vez.iso.desktop.utils.UtilsHelper;
+import ru.vez.iso.desktop.shared.UtilsHelper;
 
 /**
  * Controller for View "Форма настроек"

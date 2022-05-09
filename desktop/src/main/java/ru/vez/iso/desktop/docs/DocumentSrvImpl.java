@@ -2,19 +2,22 @@ package ru.vez.iso.desktop.docs;
 
 import com.google.gson.Gson;
 import javafx.collections.ObservableMap;
+import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import ru.vez.iso.desktop.docs.reestr.Reestr;
-import ru.vez.iso.desktop.shared.AppSettings;
-import ru.vez.iso.desktop.shared.AppStateData;
-import ru.vez.iso.desktop.shared.AppStateType;
-import ru.vez.iso.desktop.shared.MyContants;
-import ru.vez.iso.desktop.utils.UtilsHelper;
+import ru.vez.iso.desktop.shared.*;
 
 import java.io.BufferedReader;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.MessageDigest;
+import java.security.Security;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
@@ -35,10 +38,13 @@ public class DocumentSrvImpl implements DocumentSrv {
         this.appState = appState;
         this.exec = exec;
         this.mapper = mapper;
+
+        // это таинственное заклинание необходимо для выполнения проверки checksum в методе isChecksumEquals
+        Security.addProvider(new BouncyCastleProvider());
     }
 
     @Override
-    public void loadAsync(Path zipPath) {
+    public void loadAsync(Path dirZip) {
 
         // Avoid multiply invocation
         if (!future.isDone()) {
@@ -46,7 +52,7 @@ public class DocumentSrvImpl implements DocumentSrv {
             return;
         }
 
-        logger.debug(zipPath);
+        logger.debug(dirZip);
 
         future = CompletableFuture.supplyAsync(() -> {
 
@@ -54,7 +60,7 @@ public class DocumentSrvImpl implements DocumentSrv {
             String cachePath = ((AppStateData<AppSettings>)appState.get(AppStateType.SETTINGS)).getValue().getIsoCachePath();
             Path unzippedPath = Paths.get(cachePath, MyContants.UNZIP_FOLDER);
             UtilsHelper.clearFolder(unzippedPath);
-            UtilsHelper.unzipToFolder(unzippedPath, zipPath);
+            UtilsHelper.unzipToFolder(unzippedPath, dirZip);
 
             // Read REESTR and save application state
             Path reestrPath = Paths.get(unzippedPath.toString(), MyContants.REESTR_FILE);
@@ -67,11 +73,28 @@ public class DocumentSrvImpl implements DocumentSrv {
         }, exec).thenAccept(docs ->
                 appState.put(AppStateType.DOCUMENTS, AppStateData.<List<DocumentFX>>builder().value(docs).build())
         ).exceptionally((ex) -> {
-            String errMsg = String.format("unable to create Reestr object: '%s'",zipPath);
+            String errMsg = String.format("unable to create Reestr object: '%s'", dirZip);
             logger.error(errMsg,ex);
             appState.put(AppStateType.NOTIFICATION, AppStateData.<String>builder().value(errMsg).build());
             return null;
         } );
+    }
+
+    @Override
+    public boolean compareCheckSum(Path checksumFile, Path dirZip) {
+
+        final String ALGO = "GOST3411-2012-512";    // Название алгоритма по ГОСТ
+        final MessageDigest gostDigest = DigestUtils.getDigest(ALGO);
+
+        try ( InputStream dirZipFis = Files.newInputStream(dirZip) ) {
+            String expectedHash = new String(Files.readAllBytes(checksumFile), StandardCharsets.UTF_8);
+            String actualHash = Hex.encodeHexString(DigestUtils.digest(gostDigest, dirZipFis));
+            logger.debug("Compare Hash\nexpect:\t'{}'\nactual:\t'{}'", expectedHash, actualHash);
+            return actualHash.equals(expectedHash);
+        } catch (Exception ex) {
+            logger.error("Unable to compare checksums for: {}, {}", checksumFile, dirZip, ex);
+            throw new RuntimeException(ex);
+        }
     }
 
     //region PRIVATE

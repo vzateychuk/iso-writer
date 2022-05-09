@@ -4,7 +4,6 @@ import javafx.collections.ObservableMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.shared.*;
-import ru.vez.iso.desktop.utils.UtilsHelper;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

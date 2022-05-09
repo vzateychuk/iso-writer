@@ -5,7 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.shared.AppStateData;
 import ru.vez.iso.desktop.shared.AppStateType;
-import ru.vez.iso.desktop.utils.UtilsHelper;
+import ru.vez.iso.desktop.shared.UtilsHelper;
 
 import java.time.LocalDate;
 import java.util.Arrays;

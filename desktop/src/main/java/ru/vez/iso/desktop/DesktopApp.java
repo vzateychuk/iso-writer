@@ -23,7 +23,6 @@ import ru.vez.iso.desktop.settings.SettingsCtl;
 import ru.vez.iso.desktop.settings.SettingsSrv;
 import ru.vez.iso.desktop.settings.SettingsSrvImpl;
 import ru.vez.iso.desktop.shared.*;
-import ru.vez.iso.desktop.utils.UtilsHelper;
 
 import java.io.IOException;
 import java.nio.file.Files;

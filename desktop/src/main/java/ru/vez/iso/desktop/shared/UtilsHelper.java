@@ -1,4 +1,4 @@
-package ru.vez.iso.desktop.utils;
+package ru.vez.iso.desktop.shared;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;

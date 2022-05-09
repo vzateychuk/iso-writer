@@ -31,6 +31,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -55,7 +56,7 @@ public class DocumentCtl implements Initializable {
     @FXML private TableColumn<DocumentFX, Double> sumDoc;
 
     @FXML private Button butOpenZip;
-    @FXML private Button butCheckHash;
+    @FXML private Button butCheckSum;
     @FXML private Button butFilter;
     @FXML private Button butOpen;
     @FXML public Button butExplore;
@@ -63,11 +64,13 @@ public class DocumentCtl implements Initializable {
 
     private final ObservableMap<AppStateType, AppStateData> appState;
     private ObservableList<DocumentFX> documents;
-    private final DocumentSrv service;
+    private final DocumentSrv docSrv;
+
+    private Path currentPath;
 
     public DocumentCtl(ObservableMap<AppStateType, AppStateData> appState, DocumentSrv srv) {
         this.appState = appState;
-        this.service = srv;
+        this.docSrv = srv;
     }
 
     @Override
@@ -112,12 +115,13 @@ public class DocumentCtl implements Initializable {
         chooseFile.getExtensionFilters().add(new FileChooser.ExtensionFilter("DIR.ZIP", "*.zip"));
 
         File chosen = chooseFile.showOpenDialog(null);
+        // if opened, save as current directory and launch service to read data
         if (chosen != null) {
             txtFilter.setText("");
-            // if opened, launch service to read data
-            Path path = chosen.toPath();
-            logger.debug("ZIP: {}", path);
-            service.loadAsync(path);
+            Path dirZip = chosen.toPath();
+            this.currentPath = dirZip.getParent();
+            logger.debug("Open: {}", dirZip);
+            docSrv.loadAsync(dirZip);
         }
     }
 
@@ -172,7 +176,7 @@ public class DocumentCtl implements Initializable {
 
     @FXML void onFilter(ActionEvent ev) {
 
-        logger.debug("");
+        logger.debug(txtFilter.getText());
 
         AppStateData<List<DocumentFX>> data = (AppStateData<List<DocumentFX>>) appState.get(AppStateType.DOCUMENTS);
         if (data != null) {
@@ -184,11 +188,26 @@ public class DocumentCtl implements Initializable {
             onFilter(null);
         }
     }
-    @FXML void onCheckHash(ActionEvent ev) {
-        logger.debug("");
+
+    // check hashes for DIR.zip and checksum
+    @FXML void onCheckSum(ActionEvent ev) {
+
+        Path checksum = Paths.get(this.currentPath.toString(), "checksum.txt");
+        Path dirZip = Paths.get(this.currentPath.toString(), "DIR.zip");
+        if (Files.exists(checksum) && Files.exists(dirZip)) {
+            logger.debug("Open: {}", checksum);
+            String msg = docSrv.compareCheckSum(checksum, dirZip)
+                        ? "HASH-суммы в checksum.txt и DIR.zip совпадают"
+                        : "HASH-суммы в checksum.txt и DIR.zip различаются";
+            appState.put(AppStateType.NOTIFICATION, AppStateData.builder().value(msg).build());
+        } else {
+            logger.warn("Not found: '{}' or '{}'", checksum, dirZip);
+            appState.put(AppStateType.NOTIFICATION, AppStateData.builder().value("Не найден: " + checksum).build());
+        }
+
     }
 
-    //region Private
+    //region PRIVATE
 
     /**
      * Filter list of documents and display
@@ -215,7 +234,7 @@ public class DocumentCtl implements Initializable {
         this.documents = FXCollections.observableList(filtered);
         tblDocuments.setItems(this.documents);
         // Enable/disable disk-related buttons
-        butCheckHash.setDisable(filtered.size()==0);
+        butCheckSum.setDisable(filtered.size()==0);
     }
 
     //endregion
