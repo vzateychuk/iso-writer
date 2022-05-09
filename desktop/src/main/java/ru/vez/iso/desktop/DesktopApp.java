@@ -22,7 +22,10 @@ import ru.vez.iso.desktop.nav.NavigationSrvImpl;
 import ru.vez.iso.desktop.settings.SettingsCtl;
 import ru.vez.iso.desktop.settings.SettingsSrv;
 import ru.vez.iso.desktop.settings.SettingsSrvImpl;
-import ru.vez.iso.desktop.shared.*;
+import ru.vez.iso.desktop.shared.AppStateData;
+import ru.vez.iso.desktop.shared.AppStateType;
+import ru.vez.iso.desktop.shared.SettingType;
+import ru.vez.iso.desktop.shared.UtilsHelper;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -135,8 +138,6 @@ public class DesktopApp extends Application {
     private ObservableMap<AppStateType, AppStateData> createDefaultAppState() {
 
         Map<AppStateType, AppStateData> mapState = new ConcurrentHashMap<>();
-        mapState.put( AppStateType.USER_DETAILS, AppStateData.builder().value(UserDetails.NOT_SIGNED_USER).build() );
-
         return FXCollections.observableMap(mapState);
     }
 
@@ -153,7 +154,6 @@ public class DesktopApp extends Application {
         viewCache.put(ViewType.SETTINGS, buildView( ViewType.SETTINGS, t -> new SettingsCtl(appState, settingsSrv) ));
 
         LoginSrv loginSrv = new LoginSrvImpl(appState, exec);
-        loginSrv.logout();
         viewCache.put(ViewType.LOGIN, buildView(ViewType.LOGIN,t->new LoginCtl(appState, loginSrv)));
 
         DocumentMapper mapper = new DocumentMapperImpl();

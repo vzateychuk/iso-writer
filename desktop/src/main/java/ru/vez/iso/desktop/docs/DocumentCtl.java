@@ -58,8 +58,8 @@ public class DocumentCtl implements Initializable {
     @FXML private Button butOpenZip;
     @FXML private Button butCheckSum;
     @FXML private Button butFilter;
-    @FXML private Button butOpen;
-    @FXML public Button butExplore;
+    @FXML private Button butViewDoc;
+    @FXML public Button butExploreDoc;
     @FXML private TextField txtFilter;
 
     private final ObservableMap<AppStateType, AppStateData> appState;
@@ -102,8 +102,8 @@ public class DocumentCtl implements Initializable {
                 });
 
         // disable buttons if no record selected
-        butOpen.disableProperty().bind( tblDocuments.getSelectionModel().selectedItemProperty().isNull() );
-        butExplore.disableProperty().bind( tblDocuments.getSelectionModel().selectedItemProperty().isNull() );
+        butViewDoc.disableProperty().bind( tblDocuments.getSelectionModel().selectedItemProperty().isNull() );
+        butExploreDoc.disableProperty().bind( tblDocuments.getSelectionModel().selectedItemProperty().isNull() );
     }
 
     // open ChooseFile dialog and fire service to load documents from ZIP
@@ -126,7 +126,7 @@ public class DocumentCtl implements Initializable {
     }
 
     // open a document's file natively
-    @FXML void onOpen(ActionEvent ev) {
+    @FXML void onViewDoc(ActionEvent ev) {
 
         logger.debug("");
         final Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
@@ -154,7 +154,8 @@ public class DocumentCtl implements Initializable {
     }
 
     // open a folder with document natively
-    @FXML public void onExplore(ActionEvent ev) {
+    @FXML public void onExploreDocs(ActionEvent ev) {
+
         logger.debug("");
         final Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
         if (desktop == null || !desktop.isSupported(Desktop.Action.OPEN)) {
@@ -202,7 +203,8 @@ public class DocumentCtl implements Initializable {
             appState.put(AppStateType.NOTIFICATION, AppStateData.builder().value(msg).build());
         } else {
             logger.warn("Not found: '{}' or '{}'", checksum, dirZip);
-            appState.put(AppStateType.NOTIFICATION, AppStateData.builder().value("Не найден: " + checksum).build());
+            String str = new String("Не найден: " + checksum);
+            appState.put(AppStateType.NOTIFICATION, AppStateData.builder().value(str).build());
         }
 
     }

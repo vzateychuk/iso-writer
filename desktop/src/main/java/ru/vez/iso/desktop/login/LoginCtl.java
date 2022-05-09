@@ -5,6 +5,7 @@ import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableMap;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -17,13 +18,15 @@ import ru.vez.iso.desktop.shared.AppStateData;
 import ru.vez.iso.desktop.shared.AppStateType;
 import ru.vez.iso.desktop.shared.UserDetails;
 
+import java.net.URL;
+import java.util.ResourceBundle;
 import java.util.function.Predicate;
 
 /**
  * Controller for LoginForm
  * */
 @Log
-public class LoginCtl {
+public class LoginCtl implements Initializable {
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -38,12 +41,18 @@ public class LoginCtl {
     public LoginCtl(ObservableMap<AppStateType, AppStateData> appState, LoginSrv service) {
         this.service = service;
         this.appState = appState;
+    }
+
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+
         this.appState.addListener(
                 (MapChangeListener<AppStateType, AppStateData>) change -> {
-                  if (AppStateType.USER_DETAILS.equals(change.getKey())) {
-                      UserDetails userDetails = (UserDetails) change.getValueAdded().getValue();
-                      Platform.runLater(()->displayLogin(userDetails));
-                  }
+                    if (AppStateType.USER_DETAILS.equals(change.getKey())) {
+                                UserDetails userDetails = (UserDetails) change.getValueAdded().getValue();
+                        Platform.runLater(()->displayLogin(userDetails));
+                    }
                 });
     }
 
@@ -63,7 +72,7 @@ public class LoginCtl {
         service.logout();
     }
 
-    //region Private
+    //region PRIVATE
 
     private void displayLogin(UserDetails userDetails) {
         String statusMessage = "Не выполнен вход";

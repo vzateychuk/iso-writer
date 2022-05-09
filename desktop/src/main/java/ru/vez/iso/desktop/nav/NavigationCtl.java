@@ -79,7 +79,8 @@ public class NavigationCtl implements Initializable {
         this.lockControls(prodMode);
     }
 
-    public void onShowLogin(ActionEvent ev) {
+    public void onLoginLogout(ActionEvent ev) {
+        appState.put(AppStateType.USER_DETAILS, AppStateData.builder().value(UserDetails.NOT_SIGNED_USER).build());
         showView(ViewType.LOGIN);
     }
     public void onShowMain(ActionEvent ev) {

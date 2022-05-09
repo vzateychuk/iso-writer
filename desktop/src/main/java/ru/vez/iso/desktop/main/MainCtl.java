@@ -62,7 +62,7 @@ public class MainCtl implements Initializable {
     @FXML private Button butReload;
     @FXML private Button butBurn;
     @FXML private Button butDelete;
-    @FXML private Button butCheck;
+    @FXML private Button butCheckSum;
     @FXML public Button butIsoCreate;
 
     // RadioButtons - filter StoreUnits
@@ -147,7 +147,7 @@ public class MainCtl implements Initializable {
         butIsoCreate.disableProperty().bind(tblStorageUnits.getSelectionModel().selectedItemProperty().isNull());
         butBurn.disableProperty().bind(tblStorageUnits.getSelectionModel().selectedItemProperty().isNull());
         butDelete.disableProperty().bind(tblStorageUnits.getSelectionModel().selectedItemProperty().isNull());
-        butCheck.disableProperty().bind(tblStorageUnits.getSelectionModel().selectedItemProperty().isNull());
+        butCheckSum.disableProperty().bind(tblStorageUnits.getSelectionModel().selectedItemProperty().isNull());
 
         // Operation Days period's filter (when settings changes)
         this.appState.addListener(
@@ -164,7 +164,6 @@ public class MainCtl implements Initializable {
 
         // StoreUnitsStatus status filter (RadioButtons)
         filterGroup.selectedToggleProperty().addListener((o, old, newVal) -> {
-            logger.debug("storageUnits filter: " + ((RadioButton) newVal).getText());
             if (exShowAvail == newVal) {
                 statusesFilter = Collections.unmodifiableList(Arrays.asList(StorageUnitStatus.READY_TO_RECORDING, StorageUnitStatus.RECORDED));
             } else if (exShowPrep == newVal) {
@@ -253,7 +252,7 @@ public class MainCtl implements Initializable {
     /**
      * Checking the control sum of ISO files
      * */
-    @FXML public void onCheck(ActionEvent ev) {
+    @FXML public void onCheckSum(ActionEvent ev) {
         logger.debug("");
     }
 
@@ -303,6 +302,7 @@ public class MainCtl implements Initializable {
      */
     private void filterAndDisplayStorageUnits(List<StorageUnitFX> storageUnits, List<StorageUnitStatus> filter) {
 
+        logger.debug("filter: {}", filter);
         this.storageUnits = FXCollections.observableList(storageUnits);
         // filter storageUnits if filter is not null
         ObservableList<StorageUnitFX> filtered =
