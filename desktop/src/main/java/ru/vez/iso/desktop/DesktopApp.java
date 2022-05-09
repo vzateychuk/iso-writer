@@ -137,8 +137,9 @@ public class DesktopApp extends Application {
      * */
     private ObservableMap<AppStateType, AppStateData> createDefaultAppState() {
 
-        Map<AppStateType, AppStateData> mapState = new ConcurrentHashMap<>();
-        return FXCollections.observableMap(mapState);
+        Map<AppStateType, AppStateData> appState = new ConcurrentHashMap<>();
+        appState.put(AppStateType.ZIP_DIR, AppStateData.builder().value("").build());
+        return FXCollections.observableMap(appState);
     }
 
     /**

@@ -115,7 +115,7 @@
                            </tooltip>
                         </RadioButton>
                         <Separator orientation="VERTICAL" prefHeight="32.0" prefWidth="11.0" />
-                        <Button fx:id="butIsoLoad" mnemonicParsing="false" onAction="#onStartIsoLoad">
+                        <Button fx:id="butIsoLoad" disable="true" mnemonicParsing="false" onAction="#onStartIsoLoad">
                            <tooltip>
                               <Tooltip text="Загрузить ISO образ" />
                            </tooltip>
@@ -136,7 +136,7 @@
                               <Insets right="2.0" />
                            </HBox.margin>
                         </Button>
-                        <Button fx:id="butIsoCreate" mnemonicParsing="false" onAction="#onIsoCreate">
+                        <Button fx:id="butIsoCreate" disable="true" mnemonicParsing="false" onAction="#onIsoCreate">
                              <tooltip>
                                  <Tooltip text="Создать и загрузить созданный ISO образ" />
                              </tooltip>
@@ -158,7 +158,7 @@
                              </HBox.margin>
                          </Button>
                         <Separator layoutX="271.0" layoutY="10.0" orientation="VERTICAL" prefHeight="32.0" prefWidth="11.0" />
-                        <Button fx:id="butBurn" mnemonicParsing="false" onAction="#onBurnIso">
+                        <Button fx:id="butBurn" disable="true" mnemonicParsing="false" onAction="#onBurnIso">
                            <tooltip>
                               <Tooltip text="Записать основной диск" />
                            </tooltip>
@@ -173,7 +173,7 @@
                               </ImageView>
                            </graphic>
                         </Button>
-                        <Button fx:id="butDelete" onAction="#onDeleteIso">
+                        <Button fx:id="butDelete" disable="true" onAction="#onDeleteIso">
                            <graphic>
                               <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -185,7 +185,7 @@
                               <Tooltip text="Удалить загруженный ISO файл" />
                            </tooltip>
                         </Button>
-                        <Button fx:id="butCheckSum" onAction="#onCheckSum">
+                        <Button fx:id="butCheckSum" disable="true" onAction="#onCheckSum">
                            <graphic>
                               <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>

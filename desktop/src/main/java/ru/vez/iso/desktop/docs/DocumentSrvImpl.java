@@ -58,12 +58,12 @@ public class DocumentSrvImpl implements DocumentSrv {
 
             // Clear unzipped files: delete path where unzip files will be stored
             String cachePath = ((AppStateData<AppSettings>)appState.get(AppStateType.SETTINGS)).getValue().getIsoCachePath();
-            Path unzippedPath = Paths.get(cachePath, MyContants.UNZIP_FOLDER);
+            Path unzippedPath = Paths.get(cachePath, MyConst.UNZIP_FOLDER);
             UtilsHelper.clearFolder(unzippedPath);
             UtilsHelper.unzipToFolder(unzippedPath, dirZip);
 
             // Read REESTR and save application state
-            Path reestrPath = Paths.get(unzippedPath.toString(), MyContants.REESTR_FILE);
+            Path reestrPath = Paths.get(unzippedPath.toString(), MyConst.REESTR_FILE);
             Reestr reestr = readReestrFrom(reestrPath);
             appState.put(AppStateType.REESTR, AppStateData.<Reestr>builder().value(reestr).build());
 
@@ -83,8 +83,7 @@ public class DocumentSrvImpl implements DocumentSrv {
     @Override
     public boolean compareCheckSum(Path checksumFile, Path dirZip) {
 
-        final String ALGO = "GOST3411-2012-512";    // Название алгоритма по ГОСТ
-        final MessageDigest gostDigest = DigestUtils.getDigest(ALGO);
+        final MessageDigest gostDigest = DigestUtils.getDigest(MyConst.ALGO_GOST);
 
         try ( InputStream dirZipFis = Files.newInputStream(dirZip) ) {
             String expectedHash = new String(Files.readAllBytes(checksumFile), StandardCharsets.UTF_8);

@@ -1,12 +1,19 @@
 package ru.vez.iso.desktop.main;
 
 import javafx.collections.ObservableMap;
+import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.shared.AppStateData;
 import ru.vez.iso.desktop.shared.AppStateType;
+import ru.vez.iso.desktop.shared.MyConst;
 import ru.vez.iso.desktop.shared.UtilsHelper;
 
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.security.MessageDigest;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
@@ -94,6 +101,30 @@ public class MainSrvImpl implements MainSrv {
             return su;
         }, exec)
                 .thenAccept(st -> readOpsDayAsync(20))
+                .exceptionally((ex) -> {
+                    logger.debug("Error: " + ex.getLocalizedMessage());
+                    return null;
+                });
+    }
+
+    @Override
+    public void checkSumAsync(Path dirZip) {
+
+        CompletableFuture.supplyAsync( () -> {
+            UtilsHelper.makeDelaySec(1);
+            final MessageDigest gostDigest = DigestUtils.getDigest(MyConst.ALGO_GOST);
+            try ( InputStream dirZipFis = Files.newInputStream(dirZip) ) {
+                String actualHash = Hex.encodeHexString(DigestUtils.digest(gostDigest, dirZipFis));
+                String expectedHash = actualHash; // TODO read from ABDD server response
+                logger.debug("Compare Hash\nexpect:\t'{}'\nactual:\t'{}'", expectedHash, actualHash);
+                String result = expectedHash.equals(actualHash) ? "УСПЕШНО" : "НЕУСПЕШНО";
+                appState.put(AppStateType.NOTIFICATION, AppStateData.builder().value("Проверка ключа: " + result + " ("+dirZip+")").build());
+            } catch (Exception ex) {
+                logger.error("Unable to compare checksums for: {}", dirZip, ex);
+                throw new RuntimeException(ex);
+            }
+            return null;
+        }, exec)
                 .exceptionally((ex) -> {
                     logger.debug("Error: " + ex.getLocalizedMessage());
                     return null;

@@ -15,12 +15,11 @@ import lombok.extern.java.Log;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
-import ru.vez.iso.desktop.shared.AppSettings;
-import ru.vez.iso.desktop.shared.AppStateData;
-import ru.vez.iso.desktop.shared.AppStateType;
-import ru.vez.iso.desktop.shared.IsoFileFX;
+import ru.vez.iso.desktop.shared.*;
 
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -142,12 +141,14 @@ public class MainCtl implements Initializable {
                     }
                 });
 
-        // disable the "Write" button if no record selected
-        butIsoLoad.disableProperty().bind(tblStorageUnits.getSelectionModel().selectedItemProperty().isNull());
-        butIsoCreate.disableProperty().bind(tblStorageUnits.getSelectionModel().selectedItemProperty().isNull());
-        butBurn.disableProperty().bind(tblStorageUnits.getSelectionModel().selectedItemProperty().isNull());
-        butDelete.disableProperty().bind(tblStorageUnits.getSelectionModel().selectedItemProperty().isNull());
-        butCheckSum.disableProperty().bind(tblStorageUnits.getSelectionModel().selectedItemProperty().isNull());
+        // disable buttons if no record selected
+        tblStorageUnits.getSelectionModel().selectedItemProperty().addListener((o, oldVal, newVal) -> {
+            butIsoLoad.setDisable(newVal == null);
+            butIsoCreate.setDisable(newVal == null);
+            butBurn.setDisable(newVal == null);
+            butDelete.setDisable(newVal == null);
+            butCheckSum.setDisable(newVal == null);
+        });
 
         // Operation Days period's filter (when settings changes)
         this.appState.addListener(
@@ -253,7 +254,17 @@ public class MainCtl implements Initializable {
      * Checking the control sum of ISO files
      * */
     @FXML public void onCheckSum(ActionEvent ev) {
-        logger.debug("");
+
+        String currentPath = (String)appState.get(AppStateType.ZIP_DIR).getValue();
+        if (Strings.isBlank(currentPath)) {
+            appState.put(AppStateType.NOTIFICATION, AppStateData.builder().value("Невозможно выполнить проверку контрольной суммы. Не открыт DIR.zip").build());
+            logger.warn("DIR.zip path not defined, exit");
+            return;
+        }
+        logger.debug(currentPath);
+
+        Path dirZip = Paths.get(currentPath, MyConst.DIR_ZIP);
+        mainSrv.checkSumAsync(dirZip);
     }
 
     //region PRIVATE

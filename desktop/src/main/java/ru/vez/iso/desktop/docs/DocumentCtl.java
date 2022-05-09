@@ -25,7 +25,7 @@ import ru.vez.iso.desktop.docs.reestr.ReestrFile;
 import ru.vez.iso.desktop.shared.AppSettings;
 import ru.vez.iso.desktop.shared.AppStateData;
 import ru.vez.iso.desktop.shared.AppStateType;
-import ru.vez.iso.desktop.shared.MyContants;
+import ru.vez.iso.desktop.shared.MyConst;
 
 import java.awt.*;
 import java.io.File;
@@ -65,8 +65,6 @@ public class DocumentCtl implements Initializable {
     private final ObservableMap<AppStateType, AppStateData> appState;
     private ObservableList<DocumentFX> documents;
     private final DocumentSrv docSrv;
-
-    private Path currentPath;
 
     public DocumentCtl(ObservableMap<AppStateType, AppStateData> appState, DocumentSrv srv) {
         this.appState = appState;
@@ -112,17 +110,20 @@ public class DocumentCtl implements Initializable {
         FileChooser chooseFile = new FileChooser();
         chooseFile.setInitialDirectory(Paths.get(System.getProperty("user.home")).toFile());
         chooseFile.getExtensionFilters().clear();
-        chooseFile.getExtensionFilters().add(new FileChooser.ExtensionFilter("DIR.ZIP", "*.zip"));
+        chooseFile.getExtensionFilters().add(new FileChooser.ExtensionFilter(MyConst.DIR_ZIP, "*.zip"));
 
         File chosen = chooseFile.showOpenDialog(null);
+
         // if opened, save as current directory and launch service to read data
-        if (chosen != null) {
-            txtFilter.setText("");
-            Path dirZip = chosen.toPath();
-            this.currentPath = dirZip.getParent();
-            logger.debug("Open: {}", dirZip);
-            docSrv.loadAsync(dirZip);
+        if (chosen == null) {
+            return;
         }
+
+        txtFilter.setText("");
+        Path dirZip = chosen.toPath();
+        appState.put(AppStateType.ZIP_DIR, AppStateData.builder().value(dirZip.getParent().toString()).build());
+        logger.debug("Open: {}", dirZip);
+        docSrv.loadAsync(dirZip);
     }
 
     // open a document's file natively
@@ -143,7 +144,7 @@ public class DocumentCtl implements Initializable {
                     .filter(f -> f.getType().equals(RFileType.PF)).findAny()
                     .orElseThrow(() -> new RuntimeException(RFileType.PF.getTitle() + " not found in REESTR, exit"));
         AppSettings sets = ((AppStateData<AppSettings>) appState.get(AppStateType.SETTINGS)).getValue();
-        Path unzippedPath = Paths.get(sets.getIsoCachePath(), MyContants.UNZIP_FOLDER, doc.getObjectId(), file.getPath());
+        Path unzippedPath = Paths.get(sets.getIsoCachePath(), MyConst.UNZIP_FOLDER, doc.getObjectId(), file.getPath());
 
         logger.debug("open: {}", unzippedPath);
         try {
@@ -165,7 +166,7 @@ public class DocumentCtl implements Initializable {
 
         DocumentFX doc = tblDocuments.getSelectionModel().getSelectedItem();
         AppSettings sets = ((AppStateData<AppSettings>) appState.get(AppStateType.SETTINGS)).getValue();
-        Path unzippedPath = Paths.get(sets.getIsoCachePath(), MyContants.UNZIP_FOLDER, doc.getObjectId());
+        Path unzippedPath = Paths.get(sets.getIsoCachePath(), MyConst.UNZIP_FOLDER, doc.getObjectId());
 
         logger.debug("open: {}", unzippedPath);
         try {
@@ -193,8 +194,15 @@ public class DocumentCtl implements Initializable {
     // check hashes for DIR.zip and checksum
     @FXML void onCheckSum(ActionEvent ev) {
 
-        Path checksum = Paths.get(this.currentPath.toString(), "checksum.txt");
-        Path dirZip = Paths.get(this.currentPath.toString(), "DIR.zip");
+        String currentPath = (String)appState.get(AppStateType.ZIP_DIR).getValue();
+        if (Strings.isBlank(currentPath)) {
+            appState.put(AppStateType.NOTIFICATION, AppStateData.builder().value("Невозможно выполнить проверку контрольной суммы. Не открыт DIR.zip").build());
+            logger.warn("DIR.zip path not defined, exit");
+            return;
+        }
+
+        Path checksum = Paths.get(currentPath, "checksum.txt");
+        Path dirZip = Paths.get(currentPath, MyConst.DIR_ZIP);
         if (Files.exists(checksum) && Files.exists(dirZip)) {
             logger.debug("Open: {}", checksum);
             String msg = docSrv.compareCheckSum(checksum, dirZip)

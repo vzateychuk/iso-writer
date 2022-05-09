@@ -1,5 +1,7 @@
 package ru.vez.iso.desktop.main;
 
+import java.nio.file.Path;
+
 public interface MainSrv {
 
     /**
@@ -16,5 +18,13 @@ public interface MainSrv {
      * Запрос на создание ISO файла (EX в статусе "Удален")
      * */
     void isoCreateAsync(StorageUnitFX selected);
+
+    /**
+     * Проверка checkSum с данными сервера
+     * @throws RuntimeException если нет возможности прочитать данные checksum с диска или сервера
+     *
+     * @param dirZip - путь к файлу DIR.zip
+     * */
+    void checkSumAsync(Path dirZip);
 
 }
