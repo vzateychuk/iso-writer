@@ -5,6 +5,7 @@ import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableMap;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
@@ -15,10 +16,13 @@ import ru.vez.iso.desktop.shared.AppStateData;
 import ru.vez.iso.desktop.shared.AppStateType;
 import ru.vez.iso.desktop.shared.UtilsHelper;
 
+import java.net.URL;
+import java.util.ResourceBundle;
+
 /**
  * Controller for View "Форма настроек"
  * */
-public class SettingsCtl {
+public class SettingsCtl implements Initializable {
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -38,6 +42,13 @@ public class SettingsCtl {
     public SettingsCtl(ObservableMap<AppStateType, AppStateData> appState, SettingsSrv service) {
         this.appState = appState;
         this.service = service;
+    }
+
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        logger.debug(location);
+
         this.appState.addListener(
                 (MapChangeListener<AppStateType, AppStateData>) change -> {
                     if (AppStateType.SETTINGS.equals(change.getKey())) {

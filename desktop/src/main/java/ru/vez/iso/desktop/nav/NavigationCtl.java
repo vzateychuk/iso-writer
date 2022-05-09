@@ -73,22 +73,19 @@ public class NavigationCtl implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        logger.debug("");
+        logger.debug(location);
         // lock controls in prod mode
         boolean prodMode = (Boolean)appState.get(AppStateType.APP_PROD_MODE).getValue();
         this.lockControls(prodMode);
     }
 
     public void onShowLogin(ActionEvent ev) {
-        logger.debug("");
         showView(ViewType.LOGIN);
     }
     public void onShowMain(ActionEvent ev) {
-        logger.debug("");
         showView(ViewType.MAIN_VIEW);
     }
     public void onShowSettings(ActionEvent ev) {
-        logger.debug("");
         showView(ViewType.SETTINGS);
     }
     public void onShowDocuments(ActionEvent ev) {
@@ -111,7 +108,7 @@ public class NavigationCtl implements Initializable {
 
     private void lockControls(boolean lock) {
 
-        logger.debug("lock: " + lock);
+        logger.debug(lock);
         butMain.setDisable(lock);
         butLogin.setText(lock ? "Вход" : "Выход");
         this.showMessage("Выполнен " + (lock ? "выход" : "вход"));

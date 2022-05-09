@@ -90,7 +90,7 @@ public class MainCtl implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        logger.debug("initialize");
+        logger.debug(location);
 
         // Setting table Operation Days
         operatingDays = FXCollections.emptyObservableList();

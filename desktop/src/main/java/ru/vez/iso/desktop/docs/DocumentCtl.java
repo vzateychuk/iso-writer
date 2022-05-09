@@ -76,7 +76,7 @@ public class DocumentCtl implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        logger.debug("");
+        logger.debug(location);
         // Setting UI
         documents = FXCollections.emptyObservableList();
         tblDocuments.setItems(documents);
