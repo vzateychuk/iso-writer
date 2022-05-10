@@ -144,7 +144,7 @@ public class MainCtl implements Initializable {
 
         // disable buttons if no record selected
         tblStorageUnits.getSelectionModel().selectedItemProperty().addListener((o, oldVal, newVal) -> {
-            butIsoLoad.setDisable(newVal == null);
+            butIsoLoad.setDisable(newVal == null || newVal.isDeleted());
             butIsoCreate.setDisable(newVal == null || !newVal.isDeleted());
             butBurn.setDisable(newVal == null || Strings.isBlank(newVal.getIsoFileName()));
             butDelete.setDisable(newVal == null || Strings.isBlank(newVal.getIsoFileName()));
@@ -238,7 +238,12 @@ public class MainCtl implements Initializable {
      * Burn ISO disk
      * */
     @FXML public void onBurnIso(ActionEvent ev) {
-        logger.debug("Запись диска");
+
+        String diskLabel = UtilsHelper.getDiskLabel();
+        if (Strings.isBlank(diskLabel)) {
+            return;
+        }
+        logger.debug(diskLabel);
     }
 
     /**

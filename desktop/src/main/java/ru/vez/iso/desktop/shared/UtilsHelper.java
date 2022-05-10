@@ -1,6 +1,7 @@
 package ru.vez.iso.desktop.shared;
 
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -135,6 +136,31 @@ public class UtilsHelper {
         }
 
         return destFile;
+    }
+
+    /**
+     * Показать пользователю диалог выбора наклейки для прожигаемого диска
+     *
+     * @return либо наклейку вида носителя (основной/запасной), либо пустую строку - пользователь не выбрал
+     * */
+    public static String getDiskLabel() {
+
+        ButtonType btBase = new ButtonType("Основной");
+        ButtonType btReserve = new ButtonType("Запасной");
+        ButtonType btCancel =  new ButtonType("Отмена", ButtonBar.ButtonData.CANCEL_CLOSE);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
+                "Выбор типа носителя",
+                btBase, btReserve, btCancel);
+        alert.setTitle("Внимание!");
+        alert.setHeaderText("Запись ISO-образа карточки ЕХ на диск");
+
+        ButtonType choice = alert.showAndWait().orElse(btCancel);
+        if (btBase.equals(choice)) {
+            return "Основной";
+        } else if (btReserve.equals(choice)) {
+            return "Запасной";
+        }
+        return "";
     }
 
     //endregion
