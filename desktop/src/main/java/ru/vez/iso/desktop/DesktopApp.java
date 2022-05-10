@@ -28,6 +28,8 @@ import ru.vez.iso.desktop.shared.SettingType;
 import ru.vez.iso.desktop.shared.UtilsHelper;
 
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -37,6 +39,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.jar.Manifest;
 
 /**
  * Runnable Application class
@@ -77,13 +80,14 @@ public class DesktopApp extends Application {
         });
 
         // Build and show the navigation view
-        stage.setTitle("Writer App" + (isProdMode ? "" : " DEV Mode"));
         stage.getIcons().add(new Image(DesktopApp.class.getResourceAsStream("image/iso.png")));
         Parent navigation = buildView(
                 ViewType.NAVIGATION, t->new NavigationCtl(appState, new NavigationSrvImpl(), viewCache)
         );
         stage.setScene(new Scene(navigation));
-        logger.info("Starting the application! -----------------------");
+        String appVersion = this.getVersion();
+        stage.setTitle(String.format("IsoWriter. Режим:%s. Версия:%s", (isProdMode ? "PROD" : "DEV"), appVersion));
+        logger.info("---> Application started! ver: {} <---", appVersion);
         stage.show();
     }
 
@@ -195,5 +199,20 @@ public class DesktopApp extends Application {
         }
     }
 
+    /**
+     * Get application version
+     * */
+    private String getVersion() {
+        URLClassLoader cl = (URLClassLoader) DesktopApp.class.getClassLoader();
+        URL url = cl.findResource("META-INF/MANIFEST.MF");
+        String result = "";
+        try {
+            Manifest manifest = new Manifest(url.openStream());
+            result = manifest.getMainAttributes().getValue("version");
+        } catch (IOException ex) {
+            logger.warn("Unable to read version", ex);
+        }
+        return result;
+    }
     //endregion
 }

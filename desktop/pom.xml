@@ -95,6 +95,10 @@
                             <addClasspath>true</addClasspath>
                             <mainClass>ru.vez.iso.desktop.DesktopApp</mainClass>
                         </manifest>
+                        <manifestEntries>
+                            <mode>development</mode>
+                            <version>${project.version}</version>
+                        </manifestEntries>
                     </archive>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
@@ -121,6 +125,10 @@
                             <addClasspath>true</addClasspath>
                             <mainClass>ru.vez.iso.desktop.DesktopApp</mainClass>
                         </manifest>
+                        <manifestEntries>
+                            <mode>development</mode>
+                            <version>${project.version}</version>
+                        </manifestEntries>
                     </archive>
                 </configuration>
             </plugin>
