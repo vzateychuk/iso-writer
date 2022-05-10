@@ -156,7 +156,7 @@ public class MainSrvImpl implements MainSrv {
                     LocalDate date = LocalDate.of(1900+i, i%12+1, i%12+1);
                     String opsDayId = String.valueOf(i%period);
                     return new StorageUnitFX( String.valueOf(i), opsDayId, "numberSu-" + i,
-                            date, i, date, statuses.get(rnd.nextInt(statuses.size())), date, "" );
+                            date, i, date, statuses.get(rnd.nextInt(statuses.size())), date, "", i%3==0);
                 })
                 .collect(Collectors.toList());
     }

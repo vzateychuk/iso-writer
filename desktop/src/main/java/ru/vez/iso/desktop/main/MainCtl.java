@@ -55,6 +55,7 @@ public class MainCtl implements Initializable {
     @FXML private TableColumn<StorageUnitFX, String> storageUnitStatus;
     @FXML private TableColumn<StorageUnitFX, String> savingDate;
     @FXML private TableColumn<StorageUnitFX, String> fileName;
+    @FXML public TableColumn <StorageUnitFX, String> deleted;
 
     // Кнопки
     @FXML private Button butIsoLoad;
@@ -111,7 +112,6 @@ public class MainCtl implements Initializable {
         tblStorageUnits.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         // set selection mode to only 1 row
         tblStorageUnits.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-
         numberSu.setCellValueFactory(cell -> cell.getValue().numberSuProperty());
         creationDate.setCellValueFactory(cell -> cell.getValue().creationDateProperty());
         dataSize.setCellValueFactory(cell -> cell.getValue().dataSizeProperty());
@@ -119,6 +119,7 @@ public class MainCtl implements Initializable {
         storageUnitStatus.setCellValueFactory(cell -> cell.getValue().storageUnitStatusProperty());
         savingDate.setCellValueFactory(cell -> cell.getValue().savingDateProperty());
         fileName.setCellValueFactory(cell -> cell.getValue().isoFileNameProperty());
+        deleted.setCellValueFactory(cell -> cell.getValue().deletedProperty());
 
         // Operation Days table listener
         this.appState.addListener(
@@ -144,9 +145,9 @@ public class MainCtl implements Initializable {
         // disable buttons if no record selected
         tblStorageUnits.getSelectionModel().selectedItemProperty().addListener((o, oldVal, newVal) -> {
             butIsoLoad.setDisable(newVal == null);
-            butIsoCreate.setDisable(newVal == null);
-            butBurn.setDisable(newVal == null);
-            butDelete.setDisable(newVal == null);
+            butIsoCreate.setDisable(newVal == null || !newVal.isDeleted());
+            butBurn.setDisable(newVal == null || Strings.isBlank(newVal.getIsoFileName()));
+            butDelete.setDisable(newVal == null || Strings.isBlank(newVal.getIsoFileName()));
             butCheckSum.setDisable(newVal == null);
         });
 
@@ -289,8 +290,8 @@ public class MainCtl implements Initializable {
                                     su.getStorageDate(),
                                     su.getStorageUnitStatus(),
                                     su.getSavingDate(),
-                                    fileName
-                            );
+                                    fileName,
+                                    su.isDeleted());
                     };
                     return updated;
                 })

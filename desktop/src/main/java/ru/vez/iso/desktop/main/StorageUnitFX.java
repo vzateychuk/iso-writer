@@ -24,6 +24,7 @@ public class StorageUnitFX {
     private final ObjectProperty<StorageUnitStatus> storageUnitStatus;
     private final ObjectProperty<LocalDate> savingDate;
     private final StringProperty isoFileName;
+    private final BooleanProperty deleted;
 
     public StorageUnitFX(
             String objectId,
@@ -34,8 +35,8 @@ public class StorageUnitFX {
             LocalDate storageDate,
             StorageUnitStatus storageUnitStatus,
             LocalDate savingDate,
-            String isoFileName
-    ) {
+            String isoFileName,
+            boolean deleted) {
         this.objectId = objectId;
         this.operatingDayId = operatingDayId;
         this.numberSu = new SimpleStringProperty(numberSu);
@@ -45,6 +46,7 @@ public class StorageUnitFX {
         this.storageUnitStatus = new SimpleObjectProperty<>(storageUnitStatus);
         this.savingDate = new SimpleObjectProperty<>(savingDate);
         this.isoFileName = new SimpleStringProperty(isoFileName);
+        this.deleted = new SimpleBooleanProperty(deleted);
     }
 
     public String getObjectId() {
@@ -102,6 +104,13 @@ public class StorageUnitFX {
     }
     public StringProperty isoFileNameProperty() {
         return isoFileName;
+    }
+
+    public boolean isDeleted() {
+        return deleted.get();
+    }
+    public StringProperty deletedProperty() {
+        return new SimpleStringProperty(deleted.get() ? "Да" : "");
     }
 
     @Override
