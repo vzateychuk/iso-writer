@@ -13,7 +13,7 @@ import java.util.Properties;
 public class AppSettings {
 
     private final String settingFile;
-    private final int refreshOpsDaySec;
+    private final int refreshMin;
     private final int filterOpsDays;
     private final String isoCachePath;
     private final String abddAPI;
@@ -21,7 +21,7 @@ public class AppSettings {
     public Properties getProperties() {
 
         Properties p = new Properties();
-        p.setProperty(SettingType.REFRESH_PERIOD.name(), String.valueOf(this.refreshOpsDaySec));
+        p.setProperty(SettingType.REFRESH_PERIOD.name(), String.valueOf(this.refreshMin));
         p.setProperty(SettingType.SETTING_FILE.name(), this.settingFile);
         p.setProperty(SettingType.OPERATION_DAYS.name(), String.valueOf(this.filterOpsDays));
         p.setProperty(SettingType.ISO_CACHE_PATH.name(), this.isoCachePath);

@@ -19,9 +19,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -30,10 +28,11 @@ public class MainSrvImpl implements MainSrv {
     private static final Logger logger = LogManager.getLogger();
 
     private final ObservableMap<AppStateType, AppStateData> appState;
-    private final Executor exec;
+    private final ScheduledExecutorService exec;
     private Future<Void> future;
+    private ScheduledFuture<?> scheduledReload;
 
-    public MainSrvImpl(ObservableMap<AppStateType, AppStateData> appState, Executor exec) {
+    public MainSrvImpl(ObservableMap<AppStateType, AppStateData> appState, ScheduledExecutorService exec) {
         this.appState = appState;
         this.exec = exec;
         this.future = CompletableFuture.allOf();
@@ -131,11 +130,31 @@ public class MainSrvImpl implements MainSrv {
                 });
     }
 
+    @Override
+    public void scheduleReadInterval(int refreshMinutes, int filterDays) {
+
+        logger.debug("periodMin: {}, filterDays: {}", refreshMinutes, filterDays);
+
+        if (refreshMinutes > 0) {
+            if (scheduledReload != null) {
+                scheduledReload.cancel(true);
+            }
+            this.scheduledReload = exec.scheduleWithFixedDelay(
+                    ()-> readOpsDayAsync(filterDays),
+                    1,
+                    refreshMinutes *60,
+                    TimeUnit.SECONDS
+            );
+        } else {
+            logger.warn("incorrect period: {}", refreshMinutes);
+        }
+
+    }
+
     //region PRIVATE
 
     List<OperatingDayFX> getOpsDaysWithDelay(int period) {
 
-        logger.debug("");
         UtilsHelper.makeDelaySec(1);    // TODO send request for Operation Days
         return IntStream.rangeClosed(0, period)
                 .mapToObj(i -> {
@@ -147,7 +166,6 @@ public class MainSrvImpl implements MainSrv {
 
     List<StorageUnitFX> getStorageUnitsWithDelay(int period) {
 
-        logger.debug("");
         UtilsHelper.makeDelaySec(1);    // TODO send request for StorageUnits
         Random rnd = new Random();
         List<StorageUnitStatus> statuses = Collections.unmodifiableList(Arrays.asList(StorageUnitStatus.values()));

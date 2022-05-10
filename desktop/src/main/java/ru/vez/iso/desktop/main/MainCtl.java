@@ -161,6 +161,10 @@ public class MainCtl implements Initializable {
                             operationDays.setText(String.valueOf(filterDays));
                             this.onReload(null);
                         } );
+
+                        // reschedule "reload" with the new param time
+                        int refreshPeriod = sets.getRefreshMin();
+                        mainSrv.scheduleReadInterval(refreshPeriod, filterDays);
                     }
                 });
 

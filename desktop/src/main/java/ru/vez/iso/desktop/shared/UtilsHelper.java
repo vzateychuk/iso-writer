@@ -34,15 +34,21 @@ public class UtilsHelper {
      * Parse text value to int. Default value will be used if parse fails
      *
      * @param text - value will be parsed to Int
-     * @param defaultValue - value will be parsed if the text fails to parse
+     * @param defaultVal - value will be parsed if the text fails to parse
      * @return parsed value
      * */
-    public static int parseIntOrDefault(String text, int defaultValue) {
-        int val = defaultValue;
+    public static int parseIntOrDefault(String text, String defaultVal) {
+
+        int val = 1;
         try{
             val = Integer.parseInt(text);
+            if (val < 1 || val > 100) {
+                logger.warn("Incorrect value {}, default {} will be used", text, defaultVal);
+                val = Integer.parseInt(defaultVal);
+            }
         } catch (NumberFormatException ex){
             logger.warn("unable to convert to int, value: " + text);
+            val = Integer.parseInt(defaultVal);
         }
         return val;
     }

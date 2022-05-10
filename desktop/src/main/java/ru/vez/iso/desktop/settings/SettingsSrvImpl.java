@@ -45,7 +45,6 @@ public class SettingsSrvImpl implements SettingsSrv {
                 p.store(outputStream, "ISO Writer");
             } catch (IOException e) {
                 logger.warn("unable to save file: '{}'\n{}", filePath, e);
-                // p = createDefaultSettings();
             }
             return sets;
         }, exec).thenAccept(
@@ -72,7 +71,7 @@ public class SettingsSrvImpl implements SettingsSrv {
             // return new ApplicationSettings instance
             return AppSettings.builder()
                     .settingFile(props.getProperty(SettingType.SETTING_FILE.name(), SettingType.SETTING_FILE.getDefaultValue()))
-                    .refreshOpsDaySec( Integer.parseInt(
+                    .refreshMin( Integer.parseInt(
                             props.getProperty(SettingType.REFRESH_PERIOD.name(), SettingType.REFRESH_PERIOD.getDefaultValue())
                     ) )
                     .filterOpsDays( Integer.parseInt(

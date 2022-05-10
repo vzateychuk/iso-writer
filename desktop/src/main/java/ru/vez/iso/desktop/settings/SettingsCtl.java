@@ -11,10 +11,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.vez.iso.desktop.shared.AppSettings;
-import ru.vez.iso.desktop.shared.AppStateData;
-import ru.vez.iso.desktop.shared.AppStateType;
-import ru.vez.iso.desktop.shared.UtilsHelper;
+import ru.vez.iso.desktop.shared.*;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -59,17 +56,21 @@ public class SettingsCtl implements Initializable {
     }
 
     @FXML public void onSave(ActionEvent ev) {
-        logger.debug("onSave");
-        AppSettings curr = ((AppStateData<AppSettings>)appState.get(AppStateType.SETTINGS)).getValue();
-        int operDays = UtilsHelper.parseIntOrDefault(operationDays.getText(), curr.getFilterOpsDays());
-        int refreshSec = UtilsHelper.parseIntOrDefault(refreshPeriod.getText(), curr.getRefreshOpsDaySec());
+        logger.debug("");
+
+        AppSettings curSettings = ((AppStateData<AppSettings>)appState.get(AppStateType.SETTINGS)).getValue();
+
+        int operDays = UtilsHelper.parseIntOrDefault(operationDays.getText(), SettingType.OPERATION_DAYS.getDefaultValue());
+        int refreshMin = UtilsHelper.parseIntOrDefault(refreshPeriod.getText(), SettingType.REFRESH_PERIOD.getDefaultValue());
+
         AppSettings newSetting = AppSettings.builder()
                 .abddAPI(abddAPI.getText())
                 .filterOpsDays(operDays)
-                .settingFile(curr.getSettingFile())
+                .settingFile(curSettings.getSettingFile())
                 .isoCachePath(fileCache.getText())
-                .refreshOpsDaySec(refreshSec)
+                .refreshMin(refreshMin)
                 .build();
+
         service.saveAsync(newSetting);
     }
 
@@ -119,7 +120,7 @@ public class SettingsCtl implements Initializable {
                 customPeriod.setSelected(true);
         }
         operationDays.setText( String.valueOf(operDays) );
-        refreshPeriod.setText( String.valueOf(sets.getRefreshOpsDaySec()) );
+        refreshPeriod.setText( String.valueOf(sets.getRefreshMin()) );
         fileCache.setText( sets.getIsoCachePath() );
         abddAPI.setText( sets.getAbddAPI() );
     }

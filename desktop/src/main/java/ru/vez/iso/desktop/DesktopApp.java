@@ -36,9 +36,8 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.jar.Manifest;
 
 /**
@@ -61,7 +60,7 @@ public class DesktopApp extends Application {
 
         // Create executor where all background tasks will be executed
         int numOfCores = Runtime.getRuntime().availableProcessors();
-        ExecutorService executorService = Executors.newFixedThreadPool(numOfCores * 4);
+        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(numOfCores * 4);
 
         // Build ViewCache with all views
         Map<ViewType, Parent> viewCache = buildViewCache(appState, executorService);
@@ -150,7 +149,8 @@ public class DesktopApp extends Application {
      * Create viewCache Map just to switch between views
      * Application state and services created and injected
      * */
-    private Map<ViewType, Parent> buildViewCache(ObservableMap<AppStateType, AppStateData> appState, Executor exec) throws IOException {
+    private Map<ViewType, Parent> buildViewCache(
+            ObservableMap<AppStateType, AppStateData> appState, ScheduledExecutorService exec) throws IOException {
 
         Map<ViewType, Parent> viewCache = new HashMap<>();
 

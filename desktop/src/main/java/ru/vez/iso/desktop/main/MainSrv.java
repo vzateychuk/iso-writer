@@ -27,4 +27,12 @@ public interface MainSrv {
      * */
     void checkSumAsync(Path dirZip);
 
+    /**
+     * This method will reschedule "loadOpsDay" with the refreshPeriod
+     *
+     * @param refreshPeriod - in minutes
+     * @param filterDays
+     */
+    void scheduleReadInterval(int refreshPeriod, int filterDays);
+
 }
