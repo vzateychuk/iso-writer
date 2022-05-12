@@ -16,16 +16,19 @@ import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.ViewType;
 import ru.vez.iso.desktop.shared.AppStateData;
 import ru.vez.iso.desktop.shared.AppStateType;
+import ru.vez.iso.desktop.shared.MessageSrv;
 import ru.vez.iso.desktop.shared.UserDetails;
 
 import java.net.URL;
 import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.ResourceBundle;
 
 /**
  * Navigation controller. Load all other views/and shows application status
  */
-public class NavigationCtl implements Initializable {
+public class NavigationCtl implements Initializable, Observer {
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -42,16 +45,20 @@ public class NavigationCtl implements Initializable {
     private final NavigationSrv service;
     private final Map<ViewType, Parent> viewCache;
     private final ObservableMap<AppStateType, AppStateData> appState;
+    private final MessageSrv msgSrv;
     private ViewType currView = ViewType.WELCOME;
 
     public NavigationCtl(
             ObservableMap<AppStateType, AppStateData> appState,
             NavigationSrv service,
-            Map<ViewType, Parent> viewCache
-    ) {
+            Map<ViewType, Parent> viewCache,
+            MessageSrv msgSrv) {
         this.service = service;
         this.viewCache = viewCache;
         this.appState = appState;
+        this.msgSrv = msgSrv;
+        this.msgSrv.addObserver(this);
+
         // Login listener: Enable controls on login
         this.appState.addListener(
                 (MapChangeListener<AppStateType, AppStateData>) change -> {
@@ -61,6 +68,7 @@ public class NavigationCtl implements Initializable {
                     }
                 });
 
+/*
         this.appState.addListener(
                 (MapChangeListener<AppStateType, AppStateData>) change -> {
                     if (AppStateType.NOTIFICATION.equals(change.getKey())) {
@@ -68,8 +76,8 @@ public class NavigationCtl implements Initializable {
                         Platform.runLater(()->showMessage(message));
                     }
                 });
+*/
     }
-
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -77,6 +85,11 @@ public class NavigationCtl implements Initializable {
         // lock controls in prod mode
         boolean prodMode = (Boolean)appState.get(AppStateType.APP_PROD_MODE).getValue();
         this.lockControls(prodMode);
+    }
+
+    @Override
+    public void update(Observable o, Object message) {
+        Platform.runLater(()->showMessage((String)message));
     }
 
     public void onLoginLogout(ActionEvent ev) {
@@ -96,8 +109,8 @@ public class NavigationCtl implements Initializable {
 
     //region PRIVATE
 
-
     private void showMessage(String message) {
+
         labelMessages.setText(message);
         statusMessage.hide();
         statusMessage.setAutoHide(true);
@@ -112,7 +125,7 @@ public class NavigationCtl implements Initializable {
         logger.debug(lock);
         butMain.setDisable(lock);
         butLogin.setText(lock ? "Вход" : "Выход");
-        this.showMessage("Выполнен " + (lock ? "выход" : "вход"));
+//        this.showMessage("Выполнен " + (lock ? "выход" : "вход"));
     }
 
     private void showView(ViewType view) {

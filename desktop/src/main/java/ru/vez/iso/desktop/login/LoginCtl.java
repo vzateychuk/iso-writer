@@ -6,7 +6,6 @@ import javafx.collections.ObservableMap;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
@@ -20,7 +19,6 @@ import ru.vez.iso.desktop.shared.UserDetails;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.function.Predicate;
 
 /**
  * Controller for LoginForm
@@ -43,7 +41,6 @@ public class LoginCtl implements Initializable {
         this.appState = appState;
     }
 
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -51,52 +48,36 @@ public class LoginCtl implements Initializable {
                 (MapChangeListener<AppStateType, AppStateData>) change -> {
                     if (AppStateType.USER_DETAILS.equals(change.getKey())) {
                                 UserDetails userDetails = (UserDetails) change.getValueAdded().getValue();
-                        Platform.runLater(()->displayLogin(userDetails));
+                        Platform.runLater(()-> changeControls(userDetails.isLogged()));
                     }
                 });
     }
 
-    @FXML public void onLogin(ActionEvent ev) {
-        logger.debug("onLogin");
+    @FXML public void onPressLogin(ActionEvent ev) {
+        logger.debug("");
         service.loginAsync(username.getText(), password.getText());
     }
 
     @FXML public void onPressEnter(KeyEvent ev) {
         if( ev.getCode() == KeyCode.ENTER ) {
-            onLogin(null);
+            onPressLogin(null);
         }
     }
 
     @FXML public void onLogout(ActionEvent ev) {
-        logger.debug("onLogout");
+        logger.debug("");
         service.logout();
     }
 
     //region PRIVATE
 
-    private void displayLogin(UserDetails userDetails) {
-        String statusMessage = "Не выполнен вход";
-        if (userDetails.isLogged()) {
+    private void changeControls(boolean logged) {
+        if (logged) {
             username.setText("");
             password.setText("");
-            statusMessage = String.format("Выполнен вход '%s'", userDetails.getUsername());
         }
-        butLogin.setDisable(userDetails.isLogged());
-        butLogout.setDisable(!userDetails.isLogged());
-        showAlert(statusMessage);
-    }
-
-    private void showAlert(String msg) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Внимание");
-        alert.setHeaderText(null);
-        alert.setContentText(msg);
-        alert.showAndWait();
-    }
-
-    private boolean isValid(String username, String pwd) {
-        Predicate<String> notEmpty = s -> s != null && s.trim().length() > 0;
-        return notEmpty.test(username) && notEmpty.test(pwd);
+        butLogin.setDisable(logged);
+        butLogout.setDisable(!logged);
     }
 
     //endregion

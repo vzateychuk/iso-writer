@@ -7,7 +7,7 @@ public enum AppStateType {
 
     APP_PROD_MODE,      // Режим приложения: PROD / DEV
     ZIP_DIR,       // Путь к файлу DIR.zip открытый пользователем в форме "Документы"
-    NOTIFICATION,       // Сообщение о нотификации
+    // NOTIFICATION,       // Сообщение о нотификации
     USER_DETAILS,       // Информация о текущем загруженном пользователе
     OPERATION_DAYS,     // Операционные дни и StorageUnits (FX)
     DOCUMENTS,          // Список документов загруженных из REESTR файла

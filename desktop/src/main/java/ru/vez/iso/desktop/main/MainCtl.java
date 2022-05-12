@@ -74,6 +74,7 @@ public class MainCtl implements Initializable {
     private final ObservableMap<AppStateType, AppStateData> appState;
     private final MainSrv mainSrv;
     private final CacheSrv cacheSrv;
+    private final MessageSrv msgSrv;
 
     private ObservableList<OperatingDayFX> operatingDays;
     private ObservableList<StorageUnitFX> storageUnits;
@@ -82,10 +83,15 @@ public class MainCtl implements Initializable {
 
     //endregion
 
-    public MainCtl(ObservableMap<AppStateType, AppStateData> appState, MainSrv mainSrv, CacheSrv cacheSrv) {
+    public MainCtl(ObservableMap<AppStateType,
+                   AppStateData> appState,
+                   MainSrv mainSrv,
+                   CacheSrv cacheSrv,
+                   MessageSrv msgSrv) {
         this.appState = appState;
         this.mainSrv = mainSrv;
         this.cacheSrv = cacheSrv;
+        this.msgSrv = msgSrv;
     }
 
     @Override
@@ -253,8 +259,7 @@ public class MainCtl implements Initializable {
         StorageUnitFX su = tblStorageUnits.getSelectionModel().selectedItemProperty().getValue();
         logger.debug(su.getIsoFileName());
         if (Strings.isBlank(su.getIsoFileName())) {
-            logger.warn("requested for empty file");
-            appState.put(AppStateType.NOTIFICATION, AppStateData.builder().value("Файл не выбран : " + fileName).build());
+            this.msgSrv.news("Файл не выбран : " + fileName);
             return;
         }
         cacheSrv.deleteFileAndReload(su.getIsoFileName());
@@ -267,7 +272,7 @@ public class MainCtl implements Initializable {
 
         String currentPath = (String)appState.get(AppStateType.ZIP_DIR).getValue();
         if (Strings.isBlank(currentPath)) {
-            appState.put(AppStateType.NOTIFICATION, AppStateData.builder().value("Невозможно выполнить проверку контрольной суммы. Не открыт DIR.zip").build());
+            this.msgSrv.news("Невозможно выполнить проверку контрольной суммы. DIR.zip не открыт");
             logger.warn("DIR.zip path not defined, exit");
             return;
         }

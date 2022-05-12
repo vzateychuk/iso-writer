@@ -31,13 +31,19 @@ public class DocumentSrvImpl implements DocumentSrv {
     private final ObservableMap<AppStateType, AppStateData> appState;
     private final Executor exec;
     private final DocumentMapper mapper;
+    private final MessageSrv msgSrv;
 
     private Future<Void> future = CompletableFuture.allOf();
 
-    public DocumentSrvImpl(ObservableMap<AppStateType, AppStateData> appState, Executor exec, DocumentMapper mapper) {
+    public DocumentSrvImpl(ObservableMap<AppStateType,
+                           AppStateData> appState,
+                           Executor exec,
+                           DocumentMapper mapper,
+                           MessageSrv msgSrv) {
         this.appState = appState;
         this.exec = exec;
         this.mapper = mapper;
+        this.msgSrv = msgSrv;
 
         // это таинственное заклинание необходимо для выполнения проверки checksum в методе isChecksumEquals
         Security.addProvider(new BouncyCastleProvider());
@@ -73,9 +79,8 @@ public class DocumentSrvImpl implements DocumentSrv {
         }, exec).thenAccept(docs ->
                 appState.put(AppStateType.DOCUMENTS, AppStateData.<List<DocumentFX>>builder().value(docs).build())
         ).exceptionally((ex) -> {
-            String errMsg = String.format("unable to create Reestr object: '%s'", dirZip);
-            logger.error(errMsg,ex);
-            appState.put(AppStateType.NOTIFICATION, AppStateData.<String>builder().value(errMsg).build());
+            logger.error("unable to create Reestr object: " + dirZip, ex);
+            this.msgSrv.news("Ошибка чтения DIR.zip");
             return null;
         } );
     }

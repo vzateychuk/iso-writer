@@ -17,16 +17,21 @@ import java.util.concurrent.Executor;
 import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 
+/**
+ * Работа с файловым cache
+ * */
 public class CacheSrvImpl implements CacheSrv {
 
     private static final Logger logger = LogManager.getLogger();
 
     private final ObservableMap<AppStateType, AppStateData> appState;
     private final Executor exec;
+    private final MessageSrv msgSrv;
 
-    public CacheSrvImpl(ObservableMap<AppStateType, AppStateData> appState, Executor exec) {
+    public CacheSrvImpl(ObservableMap<AppStateType, AppStateData> appState, Executor exec, MessageSrv msgSrv) {
         this.appState = appState;
         this.exec = exec;
+        this.msgSrv = msgSrv;
     }
 
     @Override
@@ -37,7 +42,7 @@ public class CacheSrvImpl implements CacheSrv {
                 .thenAccept(isoFiles ->
                     appState.put(AppStateType.ISO_FILES_NAMES, AppStateData.<List<IsoFileFX>>builder().value(isoFiles).build())
                 ).exceptionally((ex) -> {
-                    logger.debug("Error: " + ex.getLocalizedMessage());
+                    logger.error(ex);
                     return null;
                 });
     }
@@ -50,11 +55,11 @@ public class CacheSrvImpl implements CacheSrv {
                 .thenApply(this::readIsoFileNames)
                 .thenAccept(isoFiles ->
                         {
-                            appState.put(AppStateType.NOTIFICATION, AppStateData.<String>builder().value("Удален " + fileName).build());
                             appState.put(AppStateType.ISO_FILES_NAMES, AppStateData.<List<IsoFileFX>>builder().value(isoFiles).build());
+                            msgSrv.news("Удален " + fileName);
                         }
                 ).exceptionally((ex) -> {
-                    logger.warn(ex.getLocalizedMessage());
+                    logger.error(ex);
                     return null;
                 });
     }
@@ -85,12 +90,12 @@ public class CacheSrvImpl implements CacheSrv {
                 logger.warn("unable to write to: " + path);
                 throw new RuntimeException("unable to write to: " + path);
             }
-            appState.put(AppStateType.NOTIFICATION, AppStateData.builder().value("Загружен : " + fileName).build());
+            msgSrv.news("Загружен : " + fileName);
             return name;
         }, exec)
                 .thenAccept( nm -> this.readFileCacheAsync(SettingType.ISO_CACHE_PATH.getDefaultValue()) )
                 .exceptionally( ex -> {
-                    logger.warn("Error: " + ex.getLocalizedMessage());
+                    logger.error(ex);
                     return null;
                 });
     }

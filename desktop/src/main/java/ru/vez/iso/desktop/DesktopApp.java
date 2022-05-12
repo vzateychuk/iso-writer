@@ -18,14 +18,12 @@ import ru.vez.iso.desktop.login.LoginSrv;
 import ru.vez.iso.desktop.login.LoginSrvImpl;
 import ru.vez.iso.desktop.main.*;
 import ru.vez.iso.desktop.nav.NavigationCtl;
+import ru.vez.iso.desktop.nav.NavigationSrv;
 import ru.vez.iso.desktop.nav.NavigationSrvImpl;
 import ru.vez.iso.desktop.settings.SettingsCtl;
 import ru.vez.iso.desktop.settings.SettingsSrv;
 import ru.vez.iso.desktop.settings.SettingsSrvImpl;
-import ru.vez.iso.desktop.shared.AppStateData;
-import ru.vez.iso.desktop.shared.AppStateType;
-import ru.vez.iso.desktop.shared.SettingType;
-import ru.vez.iso.desktop.shared.UtilsHelper;
+import ru.vez.iso.desktop.shared.*;
 
 import java.io.IOException;
 import java.net.URL;
@@ -62,8 +60,9 @@ public class DesktopApp extends Application {
         int numOfCores = Runtime.getRuntime().availableProcessors();
         ScheduledExecutorService executorService = Executors.newScheduledThreadPool(numOfCores * 4);
 
+        MessageSrv msgSrv = new MessageSrvImpl();
         // Build ViewCache with all views
-        Map<ViewType, Parent> viewCache = buildViewCache(appState, executorService);
+        Map<ViewType, Parent> viewCache = buildViewCache(appState, executorService, msgSrv);
 
         // create filecache directory
         createFileCacheIfNotExists(SettingType.ISO_CACHE_PATH.getDefaultValue());
@@ -80,8 +79,9 @@ public class DesktopApp extends Application {
 
         // Build and show the navigation view
         stage.getIcons().add(new Image(DesktopApp.class.getResourceAsStream("image/iso.png")));
+        NavigationSrv navSrv = new NavigationSrvImpl();
         Parent navigation = buildView(
-                ViewType.NAVIGATION, t->new NavigationCtl(appState, new NavigationSrvImpl(), viewCache)
+                ViewType.NAVIGATION, t->new NavigationCtl(appState, navSrv, viewCache, msgSrv)
         );
         stage.setScene(new Scene(navigation));
         String appVersion = this.getVersion();
@@ -150,26 +150,29 @@ public class DesktopApp extends Application {
      * Application state and services created and injected
      * */
     private Map<ViewType, Parent> buildViewCache(
-            ObservableMap<AppStateType, AppStateData> appState, ScheduledExecutorService exec) throws IOException {
+                            ObservableMap<AppStateType,
+                            AppStateData> appState,
+                            ScheduledExecutorService exec,
+                            MessageSrv msgSrv) throws IOException {
 
         Map<ViewType, Parent> viewCache = new HashMap<>();
 
         // create SettingsView and read application settings async
-        SettingsSrv settingsSrv = new SettingsSrvImpl(appState, exec);
-        viewCache.put(ViewType.SETTINGS, buildView( ViewType.SETTINGS, t -> new SettingsCtl(appState, settingsSrv) ));
+        SettingsSrv setsSrv = new SettingsSrvImpl(appState, exec, msgSrv);
+        viewCache.put(ViewType.SETTINGS, buildView( ViewType.SETTINGS, t -> new SettingsCtl(appState, setsSrv) ));
 
-        LoginSrv loginSrv = new LoginSrvImpl(appState, exec);
+        LoginSrv loginSrv = new LoginSrvImpl(appState, exec, msgSrv);
         viewCache.put(ViewType.LOGIN, buildView(ViewType.LOGIN,t->new LoginCtl(appState, loginSrv)));
 
         DocumentMapper mapper = new DocumentMapperImpl();
-        DocumentSrv docSrv = new DocumentSrvImpl(appState, exec, mapper);
-        viewCache.put(ViewType.DOCUMENTS, buildView(ViewType.DOCUMENTS,t->new DocumentCtl(appState, docSrv)));
+        DocumentSrv docSrv = new DocumentSrvImpl(appState, exec, mapper, msgSrv);
+        viewCache.put(ViewType.DOCUMENTS, buildView(ViewType.DOCUMENTS,t->new DocumentCtl(appState, docSrv, msgSrv)));
 
-        MainSrv mainSrv = new MainSrvImpl(appState, exec);
-        CacheSrv cacheSrv = new CacheSrvImpl(appState, exec);
-        viewCache.put(ViewType.MAIN_VIEW, buildView(ViewType.MAIN_VIEW, t->new MainCtl(appState, mainSrv, cacheSrv)));
+        MainSrv mainSrv = new MainSrvImpl(appState, exec, msgSrv);
+        CacheSrv cacheSrv = new CacheSrvImpl(appState, exec, msgSrv);
+        viewCache.put(ViewType.MAIN_VIEW, buildView(ViewType.MAIN_VIEW, t->new MainCtl(appState, mainSrv, cacheSrv, msgSrv)));
 
-        settingsSrv.loadAsync(SettingType.SETTING_FILE.getDefaultValue());
+        setsSrv.loadAsync(SettingType.SETTING_FILE.getDefaultValue());
         cacheSrv.readFileCacheAsync(SettingType.ISO_CACHE_PATH.getDefaultValue());
 
         return viewCache;

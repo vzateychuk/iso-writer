@@ -5,10 +5,7 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.vez.iso.desktop.shared.AppStateData;
-import ru.vez.iso.desktop.shared.AppStateType;
-import ru.vez.iso.desktop.shared.MyConst;
-import ru.vez.iso.desktop.shared.UtilsHelper;
+import ru.vez.iso.desktop.shared.*;
 
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -29,12 +26,15 @@ public class MainSrvImpl implements MainSrv {
 
     private final ObservableMap<AppStateType, AppStateData> appState;
     private final ScheduledExecutorService exec;
+    private final MessageSrv msgSrv;
+
     private Future<Void> future;
     private ScheduledFuture<?> scheduledReload;
 
-    public MainSrvImpl(ObservableMap<AppStateType, AppStateData> appState, ScheduledExecutorService exec) {
+    public MainSrvImpl(ObservableMap<AppStateType, AppStateData> appState, ScheduledExecutorService exec, MessageSrv msgSrv) {
         this.appState = appState;
         this.exec = exec;
+        this.msgSrv = msgSrv;
         this.future = CompletableFuture.allOf();
     }
 
@@ -65,7 +65,7 @@ public class MainSrvImpl implements MainSrv {
         }).thenAccept(opsDay -> appState.put(
                 AppStateType.OPERATION_DAYS, AppStateData.builder().value(opsDay).build()
         )).exceptionally((ex) -> {
-            logger.warn("Unable: " + ex.getLocalizedMessage());
+            logger.error(ex);
             return null;
         } );
     }
@@ -79,11 +79,11 @@ public class MainSrvImpl implements MainSrv {
         CompletableFuture.supplyAsync( () -> {
             logger.debug("id: {}:{}", su.getObjectId(), su.getNumberSu());
             UtilsHelper.makeDelaySec(1);    // TODO send request for change EX status
-            appState.put(AppStateType.NOTIFICATION, AppStateData.builder().value("Записан диск: " + su.getNumberSu()).build());
+            this.msgSrv.news("Записан диск: " + su.getNumberSu());
             return status;
         }, exec).thenAccept(st -> readOpsDayAsync(20))
                 .exceptionally( ex -> {
-                    logger.warn("Error: " + ex.getLocalizedMessage());
+                    logger.error(ex);
                     return null;
                 });
     }
@@ -96,12 +96,12 @@ public class MainSrvImpl implements MainSrv {
         CompletableFuture.supplyAsync( () -> {
             logger.debug("id: {}:{}", su.getObjectId(), su.getNumberSu());
             UtilsHelper.makeDelaySec(1);    // TODO send request for Create ISO
-            appState.put(AppStateType.NOTIFICATION, AppStateData.builder().value("Создан ISO образ: " + su.getNumberSu()).build());
+            this.msgSrv.news("Создан ISO образ: " + su.getNumberSu());
             return su;
         }, exec)
                 .thenAccept(st -> readOpsDayAsync(20))
                 .exceptionally((ex) -> {
-                    logger.debug("Error: " + ex.getLocalizedMessage());
+                    logger.error(ex);
                     return null;
                 });
     }
@@ -117,7 +117,7 @@ public class MainSrvImpl implements MainSrv {
                 String expectedHash = actualHash; // TODO read from ABDD server response
                 logger.debug("Compare Hash\nexpect:\t'{}'\nactual:\t'{}'", expectedHash, actualHash);
                 String result = expectedHash.equals(actualHash) ? "УСПЕШНО" : "НЕУСПЕШНО";
-                appState.put(AppStateType.NOTIFICATION, AppStateData.builder().value("Проверка ключа: " + result + " ("+dirZip+")").build());
+                this.msgSrv.news("Проверка ключа: " + result + " (" + dirZip + ")");
             } catch (Exception ex) {
                 logger.error("Unable to compare checksums for: {}", dirZip, ex);
                 throw new RuntimeException(ex);
@@ -125,7 +125,7 @@ public class MainSrvImpl implements MainSrv {
             return null;
         }, exec)
                 .exceptionally((ex) -> {
-                    logger.debug("Error: " + ex.getLocalizedMessage());
+                    logger.error(ex);
                     return null;
                 });
     }

@@ -22,10 +22,7 @@ import ru.vez.iso.desktop.docs.reestr.RFileType;
 import ru.vez.iso.desktop.docs.reestr.Reestr;
 import ru.vez.iso.desktop.docs.reestr.ReestrDoc;
 import ru.vez.iso.desktop.docs.reestr.ReestrFile;
-import ru.vez.iso.desktop.shared.AppSettings;
-import ru.vez.iso.desktop.shared.AppStateData;
-import ru.vez.iso.desktop.shared.AppStateType;
-import ru.vez.iso.desktop.shared.MyConst;
+import ru.vez.iso.desktop.shared.*;
 
 import java.awt.*;
 import java.io.File;
@@ -65,10 +62,12 @@ public class DocumentCtl implements Initializable {
     private final ObservableMap<AppStateType, AppStateData> appState;
     private ObservableList<DocumentFX> documents;
     private final DocumentSrv docSrv;
+    private final MessageSrv msgSrv;
 
-    public DocumentCtl(ObservableMap<AppStateType, AppStateData> appState, DocumentSrv srv) {
+    public DocumentCtl(ObservableMap<AppStateType, AppStateData> appState, DocumentSrv srv, MessageSrv msgSrv) {
         this.appState = appState;
         this.docSrv = srv;
+        this.msgSrv = msgSrv;
     }
 
     @Override
@@ -196,7 +195,7 @@ public class DocumentCtl implements Initializable {
 
         String currentPath = (String)appState.get(AppStateType.ZIP_DIR).getValue();
         if (Strings.isBlank(currentPath)) {
-            appState.put(AppStateType.NOTIFICATION, AppStateData.builder().value("Невозможно выполнить проверку контрольной суммы. Не открыт DIR.zip").build());
+            this.msgSrv.news("Невозможно выполнить проверку контрольной суммы. Не открыт DIR.zip");
             logger.warn("DIR.zip path not defined, exit");
             return;
         }
@@ -208,11 +207,10 @@ public class DocumentCtl implements Initializable {
             String msg = docSrv.compareCheckSum(checksum, dirZip)
                         ? "HASH-суммы в checksum.txt и DIR.zip совпадают"
                         : "HASH-суммы в checksum.txt и DIR.zip различаются";
-            appState.put(AppStateType.NOTIFICATION, AppStateData.builder().value(msg).build());
+            this.msgSrv.news(msg);
         } else {
             logger.warn("Not found: '{}' or '{}'", checksum, dirZip);
-            String str = new String("Не найден: " + checksum);
-            appState.put(AppStateType.NOTIFICATION, AppStateData.builder().value(str).build());
+            this.msgSrv.news("Не найден: " + checksum);
         }
 
     }

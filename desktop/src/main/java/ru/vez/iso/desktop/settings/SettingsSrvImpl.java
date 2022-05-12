@@ -3,10 +3,7 @@ package ru.vez.iso.desktop.settings;
 import javafx.collections.ObservableMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.vez.iso.desktop.shared.AppSettings;
-import ru.vez.iso.desktop.shared.AppStateData;
-import ru.vez.iso.desktop.shared.AppStateType;
-import ru.vez.iso.desktop.shared.SettingType;
+import ru.vez.iso.desktop.shared.*;
 
 import java.io.*;
 import java.util.Properties;
@@ -20,11 +17,13 @@ public class SettingsSrvImpl implements SettingsSrv {
 
     private final ObservableMap<AppStateType, AppStateData> appState;
     private final Executor exec;
+    private final MessageSrv msgSrv;
     private Future<Void> future = CompletableFuture.allOf();
 
-    public SettingsSrvImpl(ObservableMap<AppStateType, AppStateData> appState, Executor exec) {
+    public SettingsSrvImpl(ObservableMap<AppStateType, AppStateData> appState, Executor exec, MessageSrv msgSrv) {
         this.appState = appState;
         this.exec = exec;
+        this.msgSrv = msgSrv;
     }
 
     @Override
@@ -32,7 +31,7 @@ public class SettingsSrvImpl implements SettingsSrv {
 
         // Avoid multiply pressing
         if (!future.isDone()) {
-            logger.debug("Async operation in progress, skipping");
+            this.msgSrv.news("Операция выполняется, подождите");
             return;
         }
 
@@ -43,14 +42,16 @@ public class SettingsSrvImpl implements SettingsSrv {
             Properties p = sets.getProperties();
             try(OutputStream outputStream = new FileOutputStream(filePath)){
                 p.store(outputStream, "ISO Writer");
-            } catch (IOException e) {
-                logger.warn("unable to save file: '{}'\n{}", filePath, e);
+                this.msgSrv.news("Настройки сохранены");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
             }
             return sets;
         }, exec).thenAccept(
                 settings -> appState.put(AppStateType.SETTINGS, AppStateData.builder().value(settings).build())
         ).exceptionally((ex) -> {
-            logger.debug("Unable: " + ex.getLocalizedMessage());
+            this.msgSrv.news("Не удалось сохранить настройки");
+            logger.error("Unable to save settings: ", ex);
             return null;
         } );
     }
