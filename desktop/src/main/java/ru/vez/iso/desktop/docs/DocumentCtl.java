@@ -61,10 +61,10 @@ public class DocumentCtl implements Initializable {
 
     private final ObservableMap<AppStateType, AppStateData> appState;
     private ObservableList<DocumentFX> documents;
-    private final DocumentSrv docSrv;
+    private final DocSrv docSrv;
     private final MessageSrv msgSrv;
 
-    public DocumentCtl(ObservableMap<AppStateType, AppStateData> appState, DocumentSrv srv, MessageSrv msgSrv) {
+    public DocumentCtl(ObservableMap<AppStateType, AppStateData> appState, DocSrv srv, MessageSrv msgSrv) {
         this.appState = appState;
         this.docSrv = srv;
         this.msgSrv = msgSrv;
@@ -80,11 +80,11 @@ public class DocumentCtl implements Initializable {
         tblDocuments.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         // Column settings
-        branch.setCellValueFactory(cell -> cell.getValue().branchProperty());
+        branch.setCellValueFactory(cell -> cell.getValue().branchNameProperty());
         docDate.setCellValueFactory(cell -> cell.getValue().docDateProperty());
         docNumber.setCellValueFactory(cell -> cell.getValue().docNumberProperty());
         docStatusName.setCellValueFactory(cell -> cell.getValue().docStatusNameProperty());
-        kindIdName.setCellValueFactory(cell -> cell.getValue().docTypeProperty());
+        kindIdName.setCellValueFactory(cell -> cell.getValue().kindNameProperty());
         operDayDate.setCellValueFactory(cell -> cell.getValue().operDayDateProperty());
         sumDoc.setCellValueFactory(cell -> cell.getValue().sumDocProperty());
 
@@ -233,8 +233,8 @@ public class DocumentCtl implements Initializable {
 
         Predicate<DocumentFX> filterDoc = d ->
                 !Strings.isBlank(d.getDocNumber()) && d.getDocNumber().toLowerCase().contains(filter.toLowerCase())
-                  || d.getDocType().getTitle().toLowerCase().contains(filter.toLowerCase())
-                  || d.getBranch().getTitle().toLowerCase().contains(filter.toLowerCase())
+                  || d.getKindName().toLowerCase().contains(filter.toLowerCase())
+                  || d.getBranchName().toLowerCase().contains(filter.toLowerCase())
                   || d.getDocStatusName().getTitle().toLowerCase().contains(filter.toLowerCase());
         // Set items to the tableView
         List<DocumentFX> filtered = Strings.isBlank(filter) ? docs : docs.stream().filter(filterDoc).collect(Collectors.toList());

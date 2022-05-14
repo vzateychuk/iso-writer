@@ -1,402 +1,940 @@
 {
-  "storageUnitId":"b0160e2e-f44b-4668-a116-b6ec20386dde",
+  "storageUnitId":"4a47e82e-f411-4248-93c1-757203e54096",
   "docs":[
     {
-      "id":"1650257167",
-      "basePath":"/5ea709b2-f4c7-48ee-8ece-2dfcd90079ac/",
+      "externalObjectId":"bigR-4-1",
+      "basePath":"/8f6b3abf-2690-41f3-9811-e970a9ec25e6/",
       "files":[
         {
-          "type":"PF",
-          "hash":"93b96af0858c82ed390833b9f83bf2a321d6f64744aa5cc35e66ebaa5cfb9349",
-          "path":"4c00eb87-bd90-4bfe-b71d-f8eead2e5b19.pdf"
+          "type":"JSON",
+          "hash":"cd497e009c5eedf5220ca81c570aa6f87f0060dd2922cfd0c5a091c85800f5ae",
+          "path":"d929c0cb-03f5-4b77-8457-94edd229175e.json"
         },
         {
-          "type":"JSON",
-          "hash":"b20bdad173b1b1e0c5dfd3259440ad2947cbb82cb18e357fc217cb734dc6bb6d",
-          "path":"37551e7e-11b3-4b66-8a22-cd17aace8144.json"
+          "type":"PF",
+          "hash":"4af3161a2d3bad206822644a04d085795caa8cff754d055772d2facf622c7024",
+          "path":"43d1b091-d64b-47ce-803c-92f7a6360578.pdf"
         }
       ],
       "data":{
-        "objectId":"5ea709b2-f4c7-48ee-8ece-2dfcd90079ac",
-        "objectName":"Документы операционного дня АБДД",
+        "objectId":"8f6b3abf-2690-41f3-9811-e970a9ec25e6",
         "creator":"admin",
         "modifier":"admin",
-        "creationDate":"2022-04-18T11:46:07.925891",
-        "modifyDate":"2022-04-18T12:03:23.082151",
-        "deleted":false,
+        "creationDate":"2022-05-05T10:50:21.391498",
+        "modifyDate":"2022-05-11T09:52:39.344597",
         "typeName":"DocPaymentAbdd",
-        "hasFile":false,
-        "author":"ФИО автора",
-        "docNumber":"974838",
-        "docDate":"2021-06-22",
-        "controllerName":"ФИО контролера",
-        "controllerDate":"2021-06-22T15:59:59+07:00",
-        "packet":"Номер пачки",
+        "author":"Авторенко Иван Иванович",
+        "docNumber":"ЦБ 20.03",
+        "docDate":"2021-03-20",
+        "controllerName":"Контроленко Петр Петрович",
+        "controllerDate":"2021-03-20T11:59:59+03:00",
+        "packet":"Пак 07.02",
         "arm":"123",
-        "branchId":"209acf66-fed0-466f-8cf2-067609011e16",
-        "jsonId":{
-          "contentId":"625ced0f8e7881495681db9f",
-          "storageId":"ece8b5e9-92d8-4843-b666-3ed1b95a0f79"
-        },
-        "kindId":"4dd31a13-7428-4135-b5a0-43eda447ce42",
-        "externalObjectId":"1650257167",
+        "branchId":"25e8792a-9ef9-44b4-8784-fcb8bd15707e",
+        "branchName":"Кредитный департамент",
+        "kindId":"487de403-4efa-473f-b307-2aa039a14843",
+        "kindName":"Мемориальный ордер",
         "docStatus":"CREATED",
         "correctionMark":false,
-        "executor":"Павлов Павел Павлович",
-        "docSum":23171.56,
-        "deleteMark":false,
-        "operationImportId":"e76de71c-1291-477f-ba5c-1db260fc9a39",
+        "executor":"Экзов Павел Павлович",
+        "docSum":6101.69,
+        "operationImportId":"38c3a0ff-d699-4fa0-8b84-976d5a39265c",
+        "operDayDate":"2022-05-05",
         "docPaymentLine":[
           {
             "creator":"admin",
             "modifier":"admin",
-            "creationDate":"2022-04-18T11:46:08.033403",
-            "modifyDate":"2022-04-18T11:46:08.033429",
-            "objectId":"d97652c0-e68f-4e27-b89e-19cf935ed998",
-            "accountNumber":"40817810452000036054",
-            "accountName":"ЮГО-ЗАПАДНЫЙ БАНК ПАО СБЕРБАНК, г Ростов-на-Дону",
-            "bankBic":"046015602",
-            "accountHolder":"МАТАЕВА СВЕТЛАНА АЛЕКСЕЕВНА//344019, РОССИЯ, РОСТОВСКАЯ, РОСТОВ-НА-ДОНУ, СОВЕТСКАЯ, Д 47/1, КВ 76//40817810452000036054",
-            "accountSum":23171.56,
-            "accountType":"PAYER"
-          },
-          {
-            "creator":"admin",
-            "modifier":"admin",
-            "creationDate":"2022-04-18T11:46:08.086698",
-            "modifyDate":"2022-04-18T11:46:08.086724",
-            "objectId":"13dc35e4-bd8d-4dc9-bb15-ce4bdac29fdf",
-            "accountNumber":"40702810900660010682",
-            "accountName":"АО Банк ДОМ.РФ, г. Москва",
-            "bankBic":"044525266",
-            "accountHolder":"АО ТЕПЛОКОММУНЭНЕРГО",
-            "accountSum":23171.56,
-            "accountType":"RECIPIENT"
-          }
-        ]
-      }
-    },
-    {
-      "id":"1650257174",
-      "basePath":"/b26e85e5-ca42-4a08-bba2-fda680cee9fe/",
-      "files":[
-        {
-          "type":"JSON",
-          "hash":"234c9859bfc1453aaf7a57e213690748872f69d3da774ef7f277f7c1d218e7a6",
-          "path":"68dec1f1-24a1-4294-8da9-a571bf430d2a.json"
-        },
-        {
-          "type":"PF",
-          "hash":"cadecda0cf25d6fd1266181aba27c5f734bf39a2558233cba140660cc57d0cdf",
-          "path":"6e006ac7-dab9-4c12-b843-d61241058999.pdf"
-        }
-      ],
-      "data":{
-        "objectId":"b26e85e5-ca42-4a08-bba2-fda680cee9fe",
-        "objectName":"Документы операционного дня АБДД",
-        "creator":"admin",
-        "modifier":"admin",
-        "creationDate":"2022-04-18T11:46:14.510898",
-        "modifyDate":"2022-04-18T12:03:21.795744",
-        "deleted":false,
-        "typeName":"DocPaymentAbdd",
-        "hasFile":false,
-        "author":"Иванов Иван Иванович",
-        "docNumber":"29107",
-        "docDate":"2021-06-28",
-        "controllerName":"Петров Петр Петрович",
-        "controllerDate":"2011-12-04T11:15:30+07:00",
-        "packet":"номер пакета",
-        "arm":"123",
-        "branchId":"aec7e48b-b1e8-4720-8e46-db3d3c1a6398",
-        "jsonId":{
-          "contentId":"625ced168e7881495681dba9",
-          "storageId":"ece8b5e9-92d8-4843-b666-3ed1b95a0f79"
-        },
-        "kindId":"8b3fc6da-6ec1-439b-aba8-34992bc15fcb",
-        "externalObjectId":"1650257174",
-        "docStatus":"CREATED",
-        "correctionMark":true,
-        "executor":"Павлов Павел Павлович",
-        "docSum":5827.30,
-        "deleteMark":false,
-        "operationImportId":"e76de71c-1291-477f-ba5c-1db260fc9a39",
-        "docPaymentLine":[
-          {
-            "creator":"admin",
-            "modifier":"admin",
-            "creationDate":"2022-04-18T11:46:14.563991",
-            "modifyDate":"2022-04-18T11:46:14.564016",
-            "objectId":"fb6f4077-652b-47e8-af2a-0534e153d0e5",
-            "accountNumber":"42307810701300034158",
-            "accountSum":123.45,
+            "creationDate":"2022-05-05T10:50:21.392274",
+            "modifyDate":"2022-05-05T10:50:21.392281",
+            "objectId":"faae5af3-b06b-46fe-bb7b-244bb52bce64",
+            "accountNumber":"607.01.810.8.0000.0000005",
+            "accountName":"Приобретение нематериальных активов",
+            "accountSum":6101.69,
             "accountType":"DEBIT"
           },
           {
             "creator":"admin",
             "modifier":"admin",
-            "creationDate":"2022-04-18T11:46:14.616381",
-            "modifyDate":"2022-04-18T11:46:14.616416",
-            "objectId":"0bd276ae-cf69-49d4-927f-27263fdc6d26",
-            "accountNumber":"4230781070130003999",
-            "accountSum":678.90,
-            "accountType":"DEBIT"
+            "creationDate":"2022-05-05T10:50:21.392796",
+            "modifyDate":"2022-05-05T10:50:21.392802",
+            "objectId":"6b299640-2694-46a7-9401-9c31c792d2c8",
+            "accountNumber":"603.11.810.7.0000.0000029",
+            "accountName":"Расчеты с поставщиками, подрядчиками и покупателями. Фирма «Компьютер-Сервис»",
+            "accountSum":3101.69,
+            "accountType":"CREDIT"
           },
           {
             "creator":"admin",
             "modifier":"admin",
-            "creationDate":"2022-04-18T11:46:14.668626",
-            "modifyDate":"2022-04-18T11:46:14.668656",
-            "objectId":"0e35c403-3e16-4e29-b6d2-fc42e0b763e0",
-            "accountNumber":"20202810501300000001",
-            "accountSum":987.65,
+            "creationDate":"2022-05-05T10:50:21.393687",
+            "modifyDate":"2022-05-05T10:50:21.393692",
+            "objectId":"ec712c6b-79b1-41ca-a53b-352b101bafa1",
+            "accountNumber":"99999810000000000002",
+            "accountName":"Счет для корреспонд. с активными внебал. счетами2",
+            "accountSum":3000.00,
             "accountType":"CREDIT"
           }
         ]
       }
     },
     {
-      "id":"1650258164",
-      "basePath":"/41d24533-57a8-414f-b0ae-bccb6668d6aa/",
+      "externalObjectId":"bigR-4-2",
+      "basePath":"/ebf1e5d6-f9c8-4c27-8576-e8822e2884de/",
       "files":[
         {
           "type":"JSON",
-          "hash":"b20bdad173b1b1e0c5dfd3259440ad2947cbb82cb18e357fc217cb734dc6bb6d",
-          "path":"0c1cbfd4-3574-4618-a1d1-af9f8007c3fb.json"
+          "hash":"cd497e009c5eedf5220ca81c570aa6f87f0060dd2922cfd0c5a091c85800f5ae",
+          "path":"e5d84b4e-1985-4a26-b6fc-a597b551029b.json"
         },
         {
           "type":"PF",
-          "hash":"7f9dfeefbb27554a2c7d12a2257e7adf306d5fd641394ee05962c1ac57bd9a9f",
-          "path":"4524c21e-7b72-4cb0-8848-0e4b4d8e17bf.pdf"
+          "hash":"e143fa476a845c9db9000dc1ccaaaabf6403a28dadc63116c69afc75f31df2d2",
+          "path":"0a6c0cf7-f126-4675-b252-e9a6b04ea21b.pdf"
         }
       ],
       "data":{
-        "objectId":"41d24533-57a8-414f-b0ae-bccb6668d6aa",
-        "objectName":"Документы операционного дня АБДД",
+        "objectId":"ebf1e5d6-f9c8-4c27-8576-e8822e2884de",
         "creator":"admin",
         "modifier":"admin",
-        "creationDate":"2022-04-18T12:02:45.277486",
-        "modifyDate":"2022-04-18T12:03:23.135428",
-        "deleted":false,
+        "creationDate":"2022-05-05T10:50:25.346062",
+        "modifyDate":"2022-05-11T09:52:39.345546",
         "typeName":"DocPaymentAbdd",
-        "hasFile":false,
-        "author":"ФИО автора",
-        "docNumber":"974838",
-        "docDate":"2021-06-22",
-        "controllerName":"ФИО контролера",
-        "controllerDate":"2021-06-22T15:59:59+07:00",
-        "packet":"Номер пачки",
+        "author":"Авторенко Иван Иванович",
+        "docNumber":"ЦБ 20.03",
+        "docDate":"2021-03-20",
+        "controllerName":"Контроленко Петр Петрович",
+        "controllerDate":"2021-03-20T11:59:59+03:00",
+        "packet":"Пак 07.02",
         "arm":"123",
-        "branchId":"209acf66-fed0-466f-8cf2-067609011e16",
-        "jsonId":{
-          "contentId":"625cf0f56fe8d5580f08fac7",
-          "storageId":"ece8b5e9-92d8-4843-b666-3ed1b95a0f79"
-        },
-        "kindId":"4dd31a13-7428-4135-b5a0-43eda447ce42",
-        "externalObjectId":"1650258164",
+        "branchId":"25e8792a-9ef9-44b4-8784-fcb8bd15707e",
+        "branchName":"Кредитный департамент",
+        "kindId":"487de403-4efa-473f-b307-2aa039a14843",
+        "kindName":"Мемориальный ордер",
         "docStatus":"CREATED",
         "correctionMark":false,
-        "executor":"Павлов Павел Павлович",
-        "docSum":23171.56,
-        "deleteMark":false,
-        "operationImportId":"e76de71c-1291-477f-ba5c-1db260fc9a39",
+        "executor":"Экзов Павел Павлович",
+        "docSum":6101.69,
+        "operationImportId":"38c3a0ff-d699-4fa0-8b84-976d5a39265c",
+        "operDayDate":"2022-05-05",
         "docPaymentLine":[
           {
             "creator":"admin",
             "modifier":"admin",
-            "creationDate":"2022-04-18T12:02:45.384005",
-            "modifyDate":"2022-04-18T12:02:45.384029",
-            "objectId":"db878452-4d6c-42da-bf67-107ed3197332",
-            "accountNumber":"40817810452000036054",
-            "accountName":"ЮГО-ЗАПАДНЫЙ БАНК ПАО СБЕРБАНК, г Ростов-на-Дону",
-            "bankBic":"046015602",
-            "accountHolder":"МАТАЕВА СВЕТЛАНА АЛЕКСЕЕВНА//344019, РОССИЯ, РОСТОВСКАЯ, РОСТОВ-НА-ДОНУ, СОВЕТСКАЯ, Д 47/1, КВ 76//40817810452000036054",
-            "accountSum":23171.56,
-            "accountType":"PAYER"
+            "creationDate":"2022-05-05T10:50:25.346796",
+            "modifyDate":"2022-05-05T10:50:25.346802",
+            "objectId":"05b91647-04d3-47bb-8988-33d5a3b7efcd",
+            "accountNumber":"607.01.810.8.0000.0000005",
+            "accountName":"Приобретение нематериальных активов",
+            "accountSum":6101.69,
+            "accountType":"DEBIT"
           },
           {
             "creator":"admin",
             "modifier":"admin",
-            "creationDate":"2022-04-18T12:02:45.436823",
-            "modifyDate":"2022-04-18T12:02:45.436845",
-            "objectId":"325fa5f7-5c78-4289-b8ce-aaf9d1a61f61",
-            "accountNumber":"40702810900660010682",
-            "accountName":"АО Банк ДОМ.РФ, г. Москва",
-            "bankBic":"044525266",
-            "accountHolder":"АО ТЕПЛОКОММУНЭНЕРГО",
-            "accountSum":23171.56,
-            "accountType":"RECIPIENT"
+            "creationDate":"2022-05-05T10:50:25.347225",
+            "modifyDate":"2022-05-05T10:50:25.34723",
+            "objectId":"27639e81-27c4-46f0-a71a-e4eefb68d370",
+            "accountNumber":"603.11.810.7.0000.0000029",
+            "accountName":"Расчеты с поставщиками, подрядчиками и покупателями. Фирма «Компьютер-Сервис»",
+            "accountSum":3101.69,
+            "accountType":"CREDIT"
+          },
+          {
+            "creator":"admin",
+            "modifier":"admin",
+            "creationDate":"2022-05-05T10:50:25.347737",
+            "modifyDate":"2022-05-05T10:50:25.347743",
+            "objectId":"7af4de18-6390-4bb3-99c8-b1e22b231104",
+            "accountNumber":"99999810000000000002",
+            "accountName":"Счет для корреспонд. с активными внебал. счетами2",
+            "accountSum":3000.00,
+            "accountType":"CREDIT"
           }
         ]
       }
     },
     {
-      "id":"1650258169",
-      "basePath":"/8b2ad3c2-3294-4f3a-bcba-db4ae772dad0/",
+      "externalObjectId":"bigR-4-3",
+      "basePath":"/180e5dbe-c207-423d-97ef-8eac69502eb2/",
       "files":[
         {
           "type":"JSON",
-          "hash":"b20bdad173b1b1e0c5dfd3259440ad2947cbb82cb18e357fc217cb734dc6bb6d",
-          "path":"c1e07d57-fd72-4e88-a7ef-1befd3c66fcf.json"
+          "hash":"cd497e009c5eedf5220ca81c570aa6f87f0060dd2922cfd0c5a091c85800f5ae",
+          "path":"dd097886-fe90-4a53-8197-89cf6e38c327.json"
         },
         {
           "type":"PF",
-          "hash":"dfd4b3243b75dfd85afe7ce8159ed165b83e99cb66f5a149417393d01c35b258",
-          "path":"19e975fc-b956-47a9-aa56-aba36cad4cca.pdf"
+          "hash":"1d9e46be4db6323f02c2ab2382dd38adac62bc7c6b62b412171123b0ec424ad6",
+          "path":"1fdce713-d908-49d8-81d5-3e014ea5e098.pdf"
         }
       ],
       "data":{
-        "objectId":"8b2ad3c2-3294-4f3a-bcba-db4ae772dad0",
-        "objectName":"Документы операционного дня АБДД",
+        "objectId":"180e5dbe-c207-423d-97ef-8eac69502eb2",
         "creator":"admin",
         "modifier":"admin",
-        "creationDate":"2022-04-18T12:02:49.799987",
-        "modifyDate":"2022-04-18T12:03:25.050104",
-        "deleted":false,
+        "creationDate":"2022-05-05T10:50:29.032605",
+        "modifyDate":"2022-05-11T09:52:39.351934",
         "typeName":"DocPaymentAbdd",
-        "hasFile":false,
-        "author":"ФИО автора",
-        "docNumber":"974838",
-        "docDate":"2021-06-22",
-        "controllerName":"ФИО контролера",
-        "controllerDate":"2021-06-22T15:59:59+07:00",
-        "packet":"Номер пачки",
+        "author":"Авторенко Иван Иванович",
+        "docNumber":"ЦБ 20.03",
+        "docDate":"2021-03-20",
+        "controllerName":"Контроленко Петр Петрович",
+        "controllerDate":"2021-03-20T11:59:59+03:00",
+        "packet":"Пак 07.02",
         "arm":"123",
-        "branchId":"209acf66-fed0-466f-8cf2-067609011e16",
-        "jsonId":{
-          "contentId":"625cf0f96fe8d5580f08facd",
-          "storageId":"ece8b5e9-92d8-4843-b666-3ed1b95a0f79"
-        },
-        "kindId":"4dd31a13-7428-4135-b5a0-43eda447ce42",
-        "externalObjectId":"1650258169",
+        "branchId":"25e8792a-9ef9-44b4-8784-fcb8bd15707e",
+        "branchName":"Кредитный департамент",
+        "kindId":"487de403-4efa-473f-b307-2aa039a14843",
+        "kindName":"Мемориальный ордер",
         "docStatus":"CREATED",
         "correctionMark":false,
-        "executor":"Павлов Павел Павлович",
-        "docSum":23171.56,
-        "deleteMark":false,
-        "operationImportId":"e76de71c-1291-477f-ba5c-1db260fc9a39",
+        "executor":"Экзов Павел Павлович",
+        "docSum":6101.69,
+        "operationImportId":"38c3a0ff-d699-4fa0-8b84-976d5a39265c",
+        "operDayDate":"2022-05-05",
         "docPaymentLine":[
           {
             "creator":"admin",
             "modifier":"admin",
-            "creationDate":"2022-04-18T12:02:49.852357",
-            "modifyDate":"2022-04-18T12:02:49.85238",
-            "objectId":"63cc844c-3e69-4595-926a-0f5fcfdf3e37",
-            "accountNumber":"40817810452000036054",
-            "accountName":"ЮГО-ЗАПАДНЫЙ БАНК ПАО СБЕРБАНК, г Ростов-на-Дону",
-            "bankBic":"046015602",
-            "accountHolder":"МАТАЕВА СВЕТЛАНА АЛЕКСЕЕВНА//344019, РОССИЯ, РОСТОВСКАЯ, РОСТОВ-НА-ДОНУ, СОВЕТСКАЯ, Д 47/1, КВ 76//40817810452000036054",
-            "accountSum":23171.56,
-            "accountType":"PAYER"
+            "creationDate":"2022-05-05T10:50:29.035603",
+            "modifyDate":"2022-05-05T10:50:29.035609",
+            "objectId":"bcc1f024-ee76-436f-b8cd-50c79bf8e474",
+            "accountNumber":"607.01.810.8.0000.0000005",
+            "accountName":"Приобретение нематериальных активов",
+            "accountSum":6101.69,
+            "accountType":"DEBIT"
           },
           {
             "creator":"admin",
             "modifier":"admin",
-            "creationDate":"2022-04-18T12:02:49.904739",
-            "modifyDate":"2022-04-18T12:02:49.904762",
-            "objectId":"adcc7494-814a-4aa7-97b0-76c5fcd0ac29",
-            "accountNumber":"40702810900660010682",
-            "accountName":"АО Банк ДОМ.РФ, г. Москва",
-            "bankBic":"044525266",
-            "accountHolder":"АО ТЕПЛОКОММУНЭНЕРГО",
-            "accountSum":23171.56,
-            "accountType":"RECIPIENT"
+            "creationDate":"2022-05-05T10:50:29.036367",
+            "modifyDate":"2022-05-05T10:50:29.036372",
+            "objectId":"3c6740bd-0a6c-4d89-bc8d-5b3d9fd3ad68",
+            "accountNumber":"603.11.810.7.0000.0000029",
+            "accountName":"Расчеты с поставщиками, подрядчиками и покупателями. Фирма «Компьютер-Сервис»",
+            "accountSum":3101.69,
+            "accountType":"CREDIT"
+          },
+          {
+            "creator":"admin",
+            "modifier":"admin",
+            "creationDate":"2022-05-05T10:50:29.036803",
+            "modifyDate":"2022-05-05T10:50:29.036808",
+            "objectId":"a2fbf6d9-7d62-42bb-9430-3551032ec7a4",
+            "accountNumber":"99999810000000000002",
+            "accountName":"Счет для корреспонд. с активными внебал. счетами2",
+            "accountSum":3000.00,
+            "accountType":"CREDIT"
           }
         ]
       }
     },
     {
-      "id":"1650257177",
-      "basePath":"/6d29541b-9be1-49c0-93cb-ef43573eb050/",
+      "externalObjectId":"bigR-4-4",
+      "basePath":"/ffc13e72-022c-44d9-8180-d14426a87efb/",
+      "files":[
+        {
+          "type":"JSON",
+          "hash":"cd497e009c5eedf5220ca81c570aa6f87f0060dd2922cfd0c5a091c85800f5ae",
+          "path":"4b091f03-65b7-4d8f-97ab-ca607b19008c.json"
+        },
+        {
+          "type":"PF",
+          "hash":"4bfa18ab27881f30ed918acd326703874695dada6ae75b85df2d094729ee8a48",
+          "path":"fead2eb4-78bf-4e07-b86c-b4b2cc872c9a.pdf"
+        }
+      ],
+      "data":{
+        "objectId":"ffc13e72-022c-44d9-8180-d14426a87efb",
+        "creator":"admin",
+        "modifier":"admin",
+        "creationDate":"2022-05-05T10:50:31.868897",
+        "modifyDate":"2022-05-11T09:52:39.343871",
+        "typeName":"DocPaymentAbdd",
+        "author":"Авторенко Иван Иванович",
+        "docNumber":"ЦБ 20.03",
+        "docDate":"2021-03-20",
+        "controllerName":"Контроленко Петр Петрович",
+        "controllerDate":"2021-03-20T11:59:59+03:00",
+        "packet":"Пак 07.02",
+        "arm":"123",
+        "branchId":"25e8792a-9ef9-44b4-8784-fcb8bd15707e",
+        "branchName":"Кредитный департамент",
+        "kindId":"487de403-4efa-473f-b307-2aa039a14843",
+        "kindName":"Мемориальный ордер",
+        "docStatus":"CREATED",
+        "correctionMark":false,
+        "executor":"Экзов Павел Павлович",
+        "docSum":6101.69,
+        "operationImportId":"38c3a0ff-d699-4fa0-8b84-976d5a39265c",
+        "operDayDate":"2022-05-05",
+        "docPaymentLine":[
+          {
+            "creator":"admin",
+            "modifier":"admin",
+            "creationDate":"2022-05-05T10:50:31.872088",
+            "modifyDate":"2022-05-05T10:50:31.872094",
+            "objectId":"b2e87d98-20c5-4352-b9e0-ee73c31c0327",
+            "accountNumber":"607.01.810.8.0000.0000005",
+            "accountName":"Приобретение нематериальных активов",
+            "accountSum":6101.69,
+            "accountType":"DEBIT"
+          },
+          {
+            "creator":"admin",
+            "modifier":"admin",
+            "creationDate":"2022-05-05T10:50:31.872814",
+            "modifyDate":"2022-05-05T10:50:31.872819",
+            "objectId":"63f8e467-7483-45d7-8069-16b29b43fe8c",
+            "accountNumber":"603.11.810.7.0000.0000029",
+            "accountName":"Расчеты с поставщиками, подрядчиками и покупателями. Фирма «Компьютер-Сервис»",
+            "accountSum":3101.69,
+            "accountType":"CREDIT"
+          },
+          {
+            "creator":"admin",
+            "modifier":"admin",
+            "creationDate":"2022-05-05T10:50:31.873249",
+            "modifyDate":"2022-05-05T10:50:31.873254",
+            "objectId":"c6d3e238-e64a-4e12-b5c4-dfd093076991",
+            "accountNumber":"99999810000000000002",
+            "accountName":"Счет для корреспонд. с активными внебал. счетами2",
+            "accountSum":3000.00,
+            "accountType":"CREDIT"
+          }
+        ]
+      }
+    },
+    {
+      "externalObjectId":"bigR-4-5",
+      "basePath":"/46384d08-3d5d-4f68-9f19-bd413ec9d8aa/",
+      "files":[
+        {
+          "type":"JSON",
+          "hash":"cd497e009c5eedf5220ca81c570aa6f87f0060dd2922cfd0c5a091c85800f5ae",
+          "path":"75814a35-faf5-428b-9dbb-b6e52bd1b0d9.json"
+        },
+        {
+          "type":"PF",
+          "hash":"c2c00b42a47c6bbf061c17343269241e0b0d509fd180c7c6cde261ae43ce1d65",
+          "path":"9c5b9aed-5836-4f36-8bcc-3738a3bab4b8.pdf"
+        }
+      ],
+      "data":{
+        "objectId":"46384d08-3d5d-4f68-9f19-bd413ec9d8aa",
+        "creator":"admin",
+        "modifier":"admin",
+        "creationDate":"2022-05-05T10:50:34.95345",
+        "modifyDate":"2022-05-11T09:52:39.346234",
+        "typeName":"DocPaymentAbdd",
+        "author":"Авторенко Иван Иванович",
+        "docNumber":"ЦБ 20.03",
+        "docDate":"2021-03-20",
+        "controllerName":"Контроленко Петр Петрович",
+        "controllerDate":"2021-03-20T11:59:59+03:00",
+        "packet":"Пак 07.02",
+        "arm":"123",
+        "branchId":"25e8792a-9ef9-44b4-8784-fcb8bd15707e",
+        "branchName":"Кредитный департамент",
+        "kindId":"487de403-4efa-473f-b307-2aa039a14843",
+        "kindName":"Мемориальный ордер",
+        "docStatus":"CREATED",
+        "correctionMark":false,
+        "executor":"Экзов Павел Павлович",
+        "docSum":6101.69,
+        "operationImportId":"38c3a0ff-d699-4fa0-8b84-976d5a39265c",
+        "operDayDate":"2022-05-05",
+        "docPaymentLine":[
+          {
+            "creator":"admin",
+            "modifier":"admin",
+            "creationDate":"2022-05-05T10:50:34.955109",
+            "modifyDate":"2022-05-05T10:50:34.955148",
+            "objectId":"da4b7f71-4ad4-42cd-b3ec-2639ccae6c9c",
+            "accountNumber":"607.01.810.8.0000.0000005",
+            "accountName":"Приобретение нематериальных активов",
+            "accountSum":6101.69,
+            "accountType":"DEBIT"
+          },
+          {
+            "creator":"admin",
+            "modifier":"admin",
+            "creationDate":"2022-05-05T10:50:34.95587",
+            "modifyDate":"2022-05-05T10:50:34.955925",
+            "objectId":"2c06ac48-b810-4d57-b529-4e929112f961",
+            "accountNumber":"603.11.810.7.0000.0000029",
+            "accountName":"Расчеты с поставщиками, подрядчиками и покупателями. Фирма «Компьютер-Сервис»",
+            "accountSum":3101.69,
+            "accountType":"CREDIT"
+          },
+          {
+            "creator":"admin",
+            "modifier":"admin",
+            "creationDate":"2022-05-05T10:50:34.956449",
+            "modifyDate":"2022-05-05T10:50:34.956454",
+            "objectId":"a54d4ec3-f8b1-48b4-8073-68101754c637",
+            "accountNumber":"99999810000000000002",
+            "accountName":"Счет для корреспонд. с активными внебал. счетами2",
+            "accountSum":3000.00,
+            "accountType":"CREDIT"
+          }
+        ]
+      }
+    },
+    {
+      "externalObjectId":"bigR-4-6",
+      "basePath":"/12069543-f88b-4e5b-b462-daf8725e22d6/",
+      "files":[
+        {
+          "type":"JSON",
+          "hash":"758cd2f400d5ad48dca22c81542ec032ca7600f16cbca3b0222ae3a064df602e",
+          "path":"016df56c-0226-45f5-a044-c4db0b11d3e8.json"
+        },
+        {
+          "type":"PF",
+          "hash":"6837735b9710ee99a27aa46c2ec555e0e7c86f51b041c02d3612fb5b8ba85e53",
+          "path":"3d44ce85-a27e-479c-b63f-05a00ca5f86c.pdf"
+        }
+      ],
+      "data":{
+        "objectId":"12069543-f88b-4e5b-b462-daf8725e22d6",
+        "creator":"admin",
+        "modifier":"admin",
+        "creationDate":"2022-05-05T10:50:56.503265",
+        "modifyDate":"2022-05-11T09:52:39.103788",
+        "typeName":"DocPaymentAbdd",
+        "author":"Иванов Иван Иванович",
+        "docNumber":"ЦБ 20.03",
+        "docDate":"2021-03-20",
+        "controllerName":"Петров Петр Петрович",
+        "controllerDate":"2021-03-20T11:59:59+03:00",
+        "packet":"Номер пачки",
+        "arm":"123",
+        "branchId":"25e8792a-9ef9-44b4-8784-fcb8bd15707e",
+        "branchName":"Кредитный департамент",
+        "kindId":"487de403-4efa-473f-b307-2aa039a14843",
+        "kindName":"Мемориальный ордер",
+        "docStatus":"CREATED",
+        "correctionMark":false,
+        "executor":"Павлов Павел Павлович",
+        "docSum":1936.94,
+        "operationImportId":"38c3a0ff-d699-4fa0-8b84-976d5a39265c",
+        "operDayDate":"2022-05-05",
+        "docPaymentLine":[
+          {
+            "creator":"admin",
+            "modifier":"admin",
+            "creationDate":"2022-05-05T10:50:56.504014",
+            "modifyDate":"2022-05-05T10:50:56.504019",
+            "objectId":"d18b3c59-753b-42aa-8f14-0c93a06c76dd",
+            "accountNumber":"91802840200000014825",
+            "accountName":"Мокренко Валерий Иванович,К/Д РК-300013",
+            "accountSum":1936.94,
+            "accountType":"DEBIT"
+          },
+          {
+            "creator":"admin",
+            "modifier":"admin",
+            "creationDate":"2022-05-05T10:50:56.504479",
+            "modifyDate":"2022-05-05T10:50:56.504857",
+            "objectId":"d82db784-e312-41c2-b275-db873e104646",
+            "accountNumber":"99999810000000000000",
+            "accountName":"Счет для корреспонд. с активными внебал. счетами",
+            "accountSum":1936.94,
+            "accountType":"CREDIT"
+          }
+        ]
+      }
+    },
+    {
+      "externalObjectId":"bigR-4-7",
+      "basePath":"/5c2e02a4-fbaf-4f0f-b0a6-d34664160dcb/",
+      "files":[
+        {
+          "type":"JSON",
+          "hash":"758cd2f400d5ad48dca22c81542ec032ca7600f16cbca3b0222ae3a064df602e",
+          "path":"7a22fb6f-51d7-47ab-b3ba-de4558ddc877.json"
+        },
+        {
+          "type":"PF",
+          "hash":"d521e16058d69214b687e5e66c811de3d8ff15fe026912163dfa96126a74bd81",
+          "path":"55d51a5a-190c-4bbd-a784-06a4a9bad6f3.pdf"
+        }
+      ],
+      "data":{
+        "objectId":"5c2e02a4-fbaf-4f0f-b0a6-d34664160dcb",
+        "creator":"admin",
+        "modifier":"admin",
+        "creationDate":"2022-05-05T10:51:00.075002",
+        "modifyDate":"2022-05-11T09:52:39.353223",
+        "typeName":"DocPaymentAbdd",
+        "author":"Иванов Иван Иванович",
+        "docNumber":"ЦБ 20.03",
+        "docDate":"2021-03-20",
+        "controllerName":"Петров Петр Петрович",
+        "controllerDate":"2021-03-20T11:59:59+03:00",
+        "packet":"Номер пачки",
+        "arm":"123",
+        "branchId":"25e8792a-9ef9-44b4-8784-fcb8bd15707e",
+        "branchName":"Кредитный департамент",
+        "kindId":"487de403-4efa-473f-b307-2aa039a14843",
+        "kindName":"Мемориальный ордер",
+        "docStatus":"CREATED",
+        "correctionMark":false,
+        "executor":"Павлов Павел Павлович",
+        "docSum":1936.94,
+        "operationImportId":"38c3a0ff-d699-4fa0-8b84-976d5a39265c",
+        "operDayDate":"2022-05-05",
+        "docPaymentLine":[
+          {
+            "creator":"admin",
+            "modifier":"admin",
+            "creationDate":"2022-05-05T10:51:00.078366",
+            "modifyDate":"2022-05-05T10:51:00.078371",
+            "objectId":"78e088dd-c07f-45dd-92c8-2342cf5d35ae",
+            "accountNumber":"91802840200000014825",
+            "accountName":"Мокренко Валерий Иванович,К/Д РК-300013",
+            "accountSum":1936.94,
+            "accountType":"DEBIT"
+          },
+          {
+            "creator":"admin",
+            "modifier":"admin",
+            "creationDate":"2022-05-05T10:51:00.079113",
+            "modifyDate":"2022-05-05T10:51:00.079118",
+            "objectId":"c36f5528-156d-488d-bbdc-242d33f9e391",
+            "accountNumber":"99999810000000000000",
+            "accountName":"Счет для корреспонд. с активными внебал. счетами",
+            "accountSum":1936.94,
+            "accountType":"CREDIT"
+          }
+        ]
+      }
+    },
+    {
+      "externalObjectId":"bigR-4-8",
+      "basePath":"/431a9ed4-6b83-4a41-8b5c-62857f6b3855/",
+      "files":[
+        {
+          "type":"PF",
+          "hash":"60a0f639ba4d07651d1213c4fb9ad3847228e70d656356cec44c9b02e441993e",
+          "path":"17d0646a-c125-48f3-849e-8d64cf13ff91.pdf"
+        },
+        {
+          "type":"JSON",
+          "hash":"758cd2f400d5ad48dca22c81542ec032ca7600f16cbca3b0222ae3a064df602e",
+          "path":"15bc76dc-87c5-44bd-8de7-7fc9525fcca0.json"
+        }
+      ],
+      "data":{
+        "objectId":"431a9ed4-6b83-4a41-8b5c-62857f6b3855",
+        "creator":"admin",
+        "modifier":"admin",
+        "creationDate":"2022-05-05T10:51:02.740979",
+        "modifyDate":"2022-05-11T09:52:39.34712",
+        "typeName":"DocPaymentAbdd",
+        "author":"Иванов Иван Иванович",
+        "docNumber":"ЦБ 20.03",
+        "docDate":"2021-03-20",
+        "controllerName":"Петров Петр Петрович",
+        "controllerDate":"2021-03-20T11:59:59+03:00",
+        "packet":"Номер пачки",
+        "arm":"123",
+        "branchId":"25e8792a-9ef9-44b4-8784-fcb8bd15707e",
+        "branchName":"Кредитный департамент",
+        "kindId":"487de403-4efa-473f-b307-2aa039a14843",
+        "kindName":"Мемориальный ордер",
+        "docStatus":"CREATED",
+        "correctionMark":false,
+        "executor":"Павлов Павел Павлович",
+        "docSum":1936.94,
+        "operationImportId":"38c3a0ff-d699-4fa0-8b84-976d5a39265c",
+        "operDayDate":"2022-05-05",
+        "docPaymentLine":[
+          {
+            "creator":"admin",
+            "modifier":"admin",
+            "creationDate":"2022-05-05T10:51:02.744327",
+            "modifyDate":"2022-05-05T10:51:02.744333",
+            "objectId":"942d76dc-63b6-459c-a4a1-7a340f32196b",
+            "accountNumber":"91802840200000014825",
+            "accountName":"Мокренко Валерий Иванович,К/Д РК-300013",
+            "accountSum":1936.94,
+            "accountType":"DEBIT"
+          },
+          {
+            "creator":"admin",
+            "modifier":"admin",
+            "creationDate":"2022-05-05T10:51:02.745053",
+            "modifyDate":"2022-05-05T10:51:02.745057",
+            "objectId":"f52c4c4c-ad0a-42e0-b80d-5f46d52e0d6a",
+            "accountNumber":"99999810000000000000",
+            "accountName":"Счет для корреспонд. с активными внебал. счетами",
+            "accountSum":1936.94,
+            "accountType":"CREDIT"
+          }
+        ]
+      }
+    },
+    {
+      "externalObjectId":"bigR-4-9",
+      "basePath":"/7f786bb9-38fa-42bb-9f1a-c51854d7976a/",
+      "files":[
+        {
+          "type":"JSON",
+          "hash":"758cd2f400d5ad48dca22c81542ec032ca7600f16cbca3b0222ae3a064df602e",
+          "path":"6656c68a-43be-4d09-baeb-13b1a4d59365.json"
+        },
+        {
+          "type":"PF",
+          "hash":"ecf162a97718b5bb357a1cc72ffde52eb511480084a136f4a53e0fda291f9d38",
+          "path":"b615b770-e87c-4acc-bb87-a0c2cabd9ed9.pdf"
+        }
+      ],
+      "data":{
+        "objectId":"7f786bb9-38fa-42bb-9f1a-c51854d7976a",
+        "creator":"admin",
+        "modifier":"admin",
+        "creationDate":"2022-05-05T10:51:06.297232",
+        "modifyDate":"2022-05-11T09:52:39.347559",
+        "typeName":"DocPaymentAbdd",
+        "author":"Иванов Иван Иванович",
+        "docNumber":"ЦБ 20.03",
+        "docDate":"2021-03-20",
+        "controllerName":"Петров Петр Петрович",
+        "controllerDate":"2021-03-20T11:59:59+03:00",
+        "packet":"Номер пачки",
+        "arm":"123",
+        "branchId":"25e8792a-9ef9-44b4-8784-fcb8bd15707e",
+        "branchName":"Кредитный департамент",
+        "kindId":"487de403-4efa-473f-b307-2aa039a14843",
+        "kindName":"Мемориальный ордер",
+        "docStatus":"CREATED",
+        "correctionMark":false,
+        "executor":"Павлов Павел Павлович",
+        "docSum":1936.94,
+        "operationImportId":"38c3a0ff-d699-4fa0-8b84-976d5a39265c",
+        "operDayDate":"2022-05-05",
+        "docPaymentLine":[
+          {
+            "creator":"admin",
+            "modifier":"admin",
+            "creationDate":"2022-05-05T10:51:06.297899",
+            "modifyDate":"2022-05-05T10:51:06.297904",
+            "objectId":"5f1aeaa7-70d3-4e8e-b66b-e071c868aa90",
+            "accountNumber":"91802840200000014825",
+            "accountName":"Мокренко Валерий Иванович,К/Д РК-300013",
+            "accountSum":1936.94,
+            "accountType":"DEBIT"
+          },
+          {
+            "creator":"admin",
+            "modifier":"admin",
+            "creationDate":"2022-05-05T10:51:06.298327",
+            "modifyDate":"2022-05-05T10:51:06.298331",
+            "objectId":"fe5ccd42-fe6c-43f4-9c5d-7a0c2bbfef20",
+            "accountNumber":"99999810000000000000",
+            "accountName":"Счет для корреспонд. с активными внебал. счетами",
+            "accountSum":1936.94,
+            "accountType":"CREDIT"
+          }
+        ]
+      }
+    },
+    {
+      "externalObjectId":"bigR-4-10",
+      "basePath":"/c64d466c-46a5-4931-aafb-27753d458bf2/",
+      "files":[
+        {
+          "type":"JSON",
+          "hash":"758cd2f400d5ad48dca22c81542ec032ca7600f16cbca3b0222ae3a064df602e",
+          "path":"4a3186b2-3eca-4064-9b94-ff0c22f7d89d.json"
+        },
+        {
+          "type":"PF",
+          "hash":"ae9eee2766e6b02ed64636691ed8a4d77888ad6d1f3d40b921a40249b4004032",
+          "path":"5d2972f8-9afe-41b5-af87-447b43b753a2.pdf"
+        }
+      ],
+      "data":{
+        "objectId":"c64d466c-46a5-4931-aafb-27753d458bf2",
+        "creator":"admin",
+        "modifier":"admin",
+        "creationDate":"2022-05-05T10:51:09.73862",
+        "modifyDate":"2022-05-11T09:52:39.342942",
+        "typeName":"DocPaymentAbdd",
+        "author":"Иванов Иван Иванович",
+        "docNumber":"ЦБ 20.03",
+        "docDate":"2021-03-20",
+        "controllerName":"Петров Петр Петрович",
+        "controllerDate":"2021-03-20T11:59:59+03:00",
+        "packet":"Номер пачки",
+        "arm":"123",
+        "branchId":"25e8792a-9ef9-44b4-8784-fcb8bd15707e",
+        "branchName":"Кредитный департамент",
+        "kindId":"487de403-4efa-473f-b307-2aa039a14843",
+        "kindName":"Мемориальный ордер",
+        "docStatus":"CREATED",
+        "correctionMark":false,
+        "executor":"Павлов Павел Павлович",
+        "docSum":1936.94,
+        "operationImportId":"38c3a0ff-d699-4fa0-8b84-976d5a39265c",
+        "operDayDate":"2022-05-05",
+        "docPaymentLine":[
+          {
+            "creator":"admin",
+            "modifier":"admin",
+            "creationDate":"2022-05-05T10:51:09.740303",
+            "modifyDate":"2022-05-05T10:51:09.740309",
+            "objectId":"d9d4ded6-594b-418a-ba94-e63850f58bfc",
+            "accountNumber":"91802840200000014825",
+            "accountName":"Мокренко Валерий Иванович,К/Д РК-300013",
+            "accountSum":1936.94,
+            "accountType":"DEBIT"
+          },
+          {
+            "creator":"admin",
+            "modifier":"admin",
+            "creationDate":"2022-05-05T10:51:09.741271",
+            "modifyDate":"2022-05-05T10:51:09.741276",
+            "objectId":"f36efdc6-83fc-435f-9450-9c3eddba433c",
+            "accountNumber":"99999810000000000000",
+            "accountName":"Счет для корреспонд. с активными внебал. счетами",
+            "accountSum":1936.94,
+            "accountType":"CREDIT"
+          }
+        ]
+      }
+    },
+    {
+      "externalObjectId":"bigR-12-2",
+      "basePath":"/0ba024c8-a0af-4cbc-8430-0a8b0132f824/",
       "files":[
         {
           "type":"JSON",
           "hash":"e7f3f8136bead1f4a10bca38f41e0e7519f471fd09a408e6a6eec877c804bb9b",
-          "path":"e97def76-6030-4ddb-9299-c6e344550a3c.json"
+          "path":"702550bd-972c-4da1-9d1a-06fd62ac5207.json"
         },
         {
           "type":"PF",
-          "hash":"d8154c6ce9adee2bcf064d6cb1d4a3102b6d6d0002947571efae715a04659138",
-          "path":"751b32c9-aba2-44e3-9c63-6c4c18547a66.pdf"
+          "hash":"3f6d6514f53ba5a04b63df4dbab1cb10e5363dee73a639ace9c39c1fe2535cfb",
+          "path":"53b4cacd-aa66-45e8-b2dd-c2b1aa2c2bc2.pdf"
         }
       ],
       "data":{
-        "objectId":"6d29541b-9be1-49c0-93cb-ef43573eb050",
-        "objectName":"Документы операционного дня АБДД",
+        "objectId":"0ba024c8-a0af-4cbc-8430-0a8b0132f824",
         "creator":"admin",
         "modifier":"admin",
-        "creationDate":"2022-04-18T11:46:18.084927",
-        "modifyDate":"2022-04-18T12:03:26.961608",
-        "deleted":false,
+        "creationDate":"2022-05-05T11:01:15.751066",
+        "modifyDate":"2022-05-11T09:52:39.381827",
         "typeName":"DocReportAbdd",
-        "hasFile":false,
         "author":"Авторов Никита Петрович",
         "docDate":"2021-06-28",
         "controllerName":"Иванова Ольга Сергеевна",
-        "controllerDate":"2021-05-27T15:59:59+07:00",
+        "controllerDate":"2021-05-27T11:59:59+03:00",
         "packet":"Пакет",
         "arm":"123",
-        "branchId":"aec7e48b-b1e8-4720-8e46-db3d3c1a6398",
-        "jsonId":{
-          "contentId":"625ced198e7881495681dbad",
-          "storageId":"ece8b5e9-92d8-4843-b666-3ed1b95a0f79"
-        },
+        "branchId":"25e8792a-9ef9-44b4-8784-fcb8bd15707e",
+        "branchName":"Кредитный департамент",
         "kindId":"decb0b13-9eb2-4e95-ae4c-356d60e976bd",
-        "externalObjectId":"1650257177",
+        "kindName":"Оборотная ведомость",
         "docStatus":"CREATED",
         "correctionMark":true,
         "executor":"Исполнительный Иван Сергеевич",
-        "deleteMark":false,
-        "operationImportId":"e76de71c-1291-477f-ba5c-1db260fc9a39",
+        "operationImportId":"38c3a0ff-d699-4fa0-8b84-976d5a39265c",
+        "operDayDate":"2022-05-05",
         "reportStartDate":"за  25 июня 2021",
         "reportEndDate":"2022-12-26"
       }
     },
     {
-      "id":"1650257179",
-      "basePath":"/b2aba2e0-b74b-4ea5-bf86-0ff072a56f64/",
+      "externalObjectId":"bigR-12-3",
+      "basePath":"/394fcd96-0397-471c-afd3-1c89110db451/",
       "files":[
         {
           "type":"JSON",
-          "hash":"1",
-          "path":"f29134a4-0b25-4659-9a4c-99b16d25d0d0.json"
+          "hash":"e7f3f8136bead1f4a10bca38f41e0e7519f471fd09a408e6a6eec877c804bb9b",
+          "path":"0d594726-9fba-40ae-92b0-181d2bf533a7.json"
         },
         {
           "type":"PF",
-          "hash":"07027dbb612ae13f9bb64f0334e7633495386e3d2342205e863201ad619b8a0e",
-          "path":"e087cc53-bedd-40a3-ba74-a474d43c2a87.pdf"
+          "hash":"88d307c144fb1be1f7e851d26e416ee81b138d46d942a9de1a61ba4c5da68908",
+          "path":"41dab41e-02e8-4aaf-84f8-a4f1a2c33bd5.pdf"
         }
       ],
       "data":{
-        "objectId":"b2aba2e0-b74b-4ea5-bf86-0ff072a56f64",
-        "objectName":"Документы операционного дня АБДД",
+        "objectId":"394fcd96-0397-471c-afd3-1c89110db451",
         "creator":"admin",
         "modifier":"admin",
-        "creationDate":"2022-04-18T11:46:31.010244",
-        "modifyDate":"2022-04-18T12:03:27.016436",
-        "deleted":false,
+        "creationDate":"2022-05-05T11:01:19.287079",
+        "modifyDate":"2022-05-11T09:52:39.382161",
         "typeName":"DocReportAbdd",
-        "hasFile":false,
         "author":"Авторов Никита Петрович",
         "docDate":"2021-06-28",
         "controllerName":"Иванова Ольга Сергеевна",
-        "controllerDate":"2021-05-27T15:59:59+07:00",
+        "controllerDate":"2021-05-27T11:59:59+03:00",
         "packet":"Пакет",
         "arm":"123",
-        "branchId":"aec7e48b-b1e8-4720-8e46-db3d3c1a6398",
-        "jsonId":{
-          "contentId":"625ced1c8e7881495681dbaf",
-          "storageId":"ece8b5e9-92d8-4843-b666-3ed1b95a0f79"
-        },
+        "branchId":"25e8792a-9ef9-44b4-8784-fcb8bd15707e",
+        "branchName":"Кредитный департамент",
         "kindId":"decb0b13-9eb2-4e95-ae4c-356d60e976bd",
-        "externalObjectId":"1650257179",
+        "kindName":"Оборотная ведомость",
         "docStatus":"CREATED",
         "correctionMark":true,
         "executor":"Исполнительный Иван Сергеевич",
-        "deleteMark":false,
-        "operationImportId":"e76de71c-1291-477f-ba5c-1db260fc9a39",
+        "operationImportId":"38c3a0ff-d699-4fa0-8b84-976d5a39265c",
+        "operDayDate":"2022-05-05",
         "reportStartDate":"за  25 июня 2021",
         "reportEndDate":"2022-12-26"
+      }
+    },
+    {
+      "externalObjectId":"bigR-12-1",
+      "basePath":"/5c5f756f-9967-474c-b346-d7dec2c6188a/",
+      "files":[
+        {
+          "type":"JSON",
+          "hash":"e7f3f8136bead1f4a10bca38f41e0e7519f471fd09a408e6a6eec877c804bb9b",
+          "path":"3fd887b9-df48-4737-b0f2-4915e8ea72ee.json"
+        },
+        {
+          "type":"PF",
+          "hash":"799aeb0226cc8d791a74cc6c4cc18c87856c7727fa10868d42d099bb375cd4cc",
+          "path":"bd741fe3-792e-4efe-a0cf-178726bba9fa.pdf"
+        }
+      ],
+      "data":{
+        "objectId":"5c5f756f-9967-474c-b346-d7dec2c6188a",
+        "creator":"admin",
+        "modifier":"admin",
+        "creationDate":"2022-05-05T11:01:09.689879",
+        "modifyDate":"2022-05-11T09:52:39.381457",
+        "typeName":"DocReportAbdd",
+        "author":"Авторов Никита Петрович",
+        "docDate":"2021-06-28",
+        "controllerName":"Иванова Ольга Сергеевна",
+        "controllerDate":"2021-05-27T11:59:59+03:00",
+        "packet":"Пакет",
+        "arm":"123",
+        "branchId":"25e8792a-9ef9-44b4-8784-fcb8bd15707e",
+        "branchName":"Кредитный департамент",
+        "kindId":"decb0b13-9eb2-4e95-ae4c-356d60e976bd",
+        "kindName":"Оборотная ведомость",
+        "docStatus":"CREATED",
+        "correctionMark":true,
+        "executor":"Исполнительный Иван Сергеевич",
+        "operationImportId":"38c3a0ff-d699-4fa0-8b84-976d5a39265c",
+        "operDayDate":"2022-05-05",
+        "reportStartDate":"за  25 июня 2021",
+        "reportEndDate":"2022-12-26"
+      }
+    },
+    {
+      "externalObjectId":"bigR-10-1",
+      "basePath":"/b2d3d7e7-cad7-41b0-81f9-c14be9badb00/",
+      "files":[
+        {
+          "type":"JSON",
+          "hash":"e86fe4d87f123886335d4f26eb93acb5f415ccf8cf5abc65a890f6b3aad2e629",
+          "path":"c0a110da-58cc-4f20-bdea-8fba62caecab.json"
+        }
+      ],
+      "data":{
+        "objectId":"b2d3d7e7-cad7-41b0-81f9-c14be9badb00",
+        "creator":"admin",
+        "modifier":"admin",
+        "creationDate":"2022-05-05T10:58:43.113677",
+        "modifyDate":"2022-05-11T09:52:39.382496",
+        "typeName":"DocReportAbdd",
+        "author":"Иванов Иван Иванович",
+        "docDate":"2020-02-19",
+        "controllerName":"Петров Петр Петрович",
+        "controllerDate":"2021-06-21T11:59:59+03:00",
+        "packet":"номер пакета",
+        "arm":"123",
+        "branchId":"25e8792a-9ef9-44b4-8784-fcb8bd15707e",
+        "branchName":"Кредитный департамент",
+        "kindId":"feb1abb4-7010-495c-8979-28cf0895af95",
+        "kindName":"Ведомость остатков по счетам кредитной организации",
+        "docStatus":"CREATED",
+        "correctionMark":false,
+        "executor":"Павлов Павел Павлович",
+        "operationImportId":"38c3a0ff-d699-4fa0-8b84-976d5a39265c",
+        "operDayDate":"2022-05-05",
+        "reportStartDate":"2021-06-25",
+        "reportEndDate":"2021-06-29"
+      }
+    },
+    {
+      "externalObjectId":"bigR-10-3",
+      "basePath":"/9864cffc-60d4-4118-9571-b58e41c03f8b/",
+      "files":[
+        {
+          "type":"JSON",
+          "hash":"e86fe4d87f123886335d4f26eb93acb5f415ccf8cf5abc65a890f6b3aad2e629",
+          "path":"94798d10-642a-44c6-9a83-e38a5c761324.json"
+        }
+      ],
+      "data":{
+        "objectId":"9864cffc-60d4-4118-9571-b58e41c03f8b",
+        "creator":"admin",
+        "modifier":"admin",
+        "creationDate":"2022-05-05T10:58:56.149899",
+        "modifyDate":"2022-05-11T09:52:39.383192",
+        "typeName":"DocReportAbdd",
+        "author":"Иванов Иван Иванович",
+        "docDate":"2020-02-19",
+        "controllerName":"Петров Петр Петрович",
+        "controllerDate":"2021-06-21T11:59:59+03:00",
+        "packet":"номер пакета",
+        "arm":"123",
+        "branchId":"25e8792a-9ef9-44b4-8784-fcb8bd15707e",
+        "branchName":"Кредитный департамент",
+        "kindId":"feb1abb4-7010-495c-8979-28cf0895af95",
+        "kindName":"Ведомость остатков по счетам кредитной организации",
+        "docStatus":"CREATED",
+        "correctionMark":false,
+        "executor":"Павлов Павел Павлович",
+        "operationImportId":"38c3a0ff-d699-4fa0-8b84-976d5a39265c",
+        "operDayDate":"2022-05-05",
+        "reportStartDate":"2021-06-25",
+        "reportEndDate":"2021-06-29"
+      }
+    },
+    {
+      "externalObjectId":"bigR-10-2",
+      "basePath":"/31f61139-1128-4760-aa52-f7faa91e21e5/",
+      "files":[
+        {
+          "type":"JSON",
+          "hash":"e86fe4d87f123886335d4f26eb93acb5f415ccf8cf5abc65a890f6b3aad2e629",
+          "path":"51dbef20-3146-449e-ad1d-11b97f7930c7.json"
+        }
+      ],
+      "data":{
+        "objectId":"31f61139-1128-4760-aa52-f7faa91e21e5",
+        "creator":"admin",
+        "modifier":"admin",
+        "creationDate":"2022-05-05T10:58:50.2126",
+        "modifyDate":"2022-05-11T09:52:39.382854",
+        "typeName":"DocReportAbdd",
+        "author":"Иванов Иван Иванович",
+        "docDate":"2020-02-19",
+        "controllerName":"Петров Петр Петрович",
+        "controllerDate":"2021-06-21T11:59:59+03:00",
+        "packet":"номер пакета",
+        "arm":"123",
+        "branchId":"25e8792a-9ef9-44b4-8784-fcb8bd15707e",
+        "branchName":"Кредитный департамент",
+        "kindId":"feb1abb4-7010-495c-8979-28cf0895af95",
+        "kindName":"Ведомость остатков по счетам кредитной организации",
+        "docStatus":"CREATED",
+        "correctionMark":false,
+        "executor":"Павлов Павел Павлович",
+        "operationImportId":"38c3a0ff-d699-4fa0-8b84-976d5a39265c",
+        "operDayDate":"2022-05-05",
+        "reportStartDate":"2021-06-25",
+        "reportEndDate":"2021-06-29"
       }
     }
   ]

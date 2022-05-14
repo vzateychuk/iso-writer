@@ -164,8 +164,8 @@ public class DesktopApp extends Application {
         LoginSrv loginSrv = new LoginSrvImpl(appState, exec, msgSrv);
         viewCache.put(ViewType.LOGIN, buildView(ViewType.LOGIN,t->new LoginCtl(appState, loginSrv)));
 
-        DocumentMapper mapper = new DocumentMapperImpl();
-        DocumentSrv docSrv = new DocumentSrvImpl(appState, exec, mapper, msgSrv);
+        DocMapper mapper = new DocMapperImpl();
+        DocSrv docSrv = new DocSrvImpl(appState, exec, mapper, msgSrv);
         viewCache.put(ViewType.DOCUMENTS, buildView(ViewType.DOCUMENTS,t->new DocumentCtl(appState, docSrv, msgSrv)));
 
         MainSrv mainSrv = new MainSrvImpl(appState, exec, msgSrv);

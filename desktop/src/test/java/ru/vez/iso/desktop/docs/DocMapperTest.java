@@ -12,12 +12,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class DocumentMapperTest {
+class DocMapperTest {
 
     private String json;
-    private DocumentMapper mapper;
+    private DocMapper mapper;
 
     @BeforeEach
     void setUp() {
@@ -27,7 +27,7 @@ class DocumentMapperTest {
         json = readr.lines().collect(Collectors.joining(System.getProperty("line.separator")));
 
         // create Mapper
-        mapper = new DocumentMapperImpl();
+        mapper = new DocMapperImpl();
     }
 
     @Test
@@ -40,6 +40,6 @@ class DocumentMapperTest {
         List<DocumentFX> docs = reestr.getDocs().stream().map(d -> mapper.mapToDocFX(d)).collect(Collectors.toList());
 
         // Assert
-        assertEquals(6, docs.size());
+        assertEquals(docs.size(), docs.size());
     }
 }

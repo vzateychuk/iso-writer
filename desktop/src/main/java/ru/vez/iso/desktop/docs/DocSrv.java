@@ -2,7 +2,7 @@ package ru.vez.iso.desktop.docs;
 
 import java.nio.file.Path;
 
-public interface DocumentSrv {
+public interface DocSrv {
 
     /**
      * Загрузка из dirZip списка документов REESTR.json

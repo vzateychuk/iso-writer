@@ -1,6 +1,7 @@
 package ru.vez.iso.desktop.docs;
 
 import javafx.beans.property.*;
+import javafx.beans.value.ObservableValue;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -11,27 +12,27 @@ import java.util.Objects;
  * */
 public class DocumentFX {
 
-    private final String objectId;              // Уникальный идентификатор из вебсервиса
-    private final StringProperty docNumber;     // Уникальный номер ЕХ
-    private final ObjectProperty<Double> sumDoc;
-    private final ObjectProperty<LocalDate> operDayDate;
-    private final ObjectProperty<DocType> docType;
-    private final ObjectProperty<LocalDate> docDate;
-    private final ObjectProperty<BranchType> branch;
-    private final ObjectProperty<DocStatus> docStatusName;
-    // uses in View when selecting the current row
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-  public DocumentFX(String objectId, String docNumber, double sumDoc, LocalDate operDayDate,
-      DocType docType, LocalDate docDate, BranchType branch, DocStatus docStatusName) {
+    private final String objectId;              // Уникальный идентификатор из вебсервиса
+    private final StringProperty docNumber;     // Уникальный номер ЕХ
+    private final DoubleProperty sumDoc;
+    private final ObjectProperty<LocalDate> operDayDate;
+    private final StringProperty kindName;
+    private final ObjectProperty<LocalDate> docDate;
+    private final StringProperty branchName;
+    private final ObjectProperty<DocStatus> docStatusName;
 
-        this.objectId = objectId;
-        this.docNumber = new SimpleStringProperty(docNumber);
-        this.sumDoc = new SimpleObjectProperty<>(sumDoc);
+  public DocumentFX(String objectId, String docNumber, double sumDoc, LocalDate operDayDate,
+                    String kindName, LocalDate docDate, String branchName, DocStatus docStatusName) {
+
+        this.objectId = objectId == null ? "" : objectId;
+        this.docNumber = new SimpleStringProperty(docNumber == null ? "" : docNumber);
+        this.sumDoc = new SimpleDoubleProperty(sumDoc);
         this.operDayDate = new SimpleObjectProperty<>(operDayDate);
-        this.docType = new SimpleObjectProperty<>(docType);
+        this.kindName = new SimpleStringProperty(kindName == null ? "" : kindName);
         this.docDate = new SimpleObjectProperty<>(docDate);
-        this.branch = new SimpleObjectProperty<>(branch);
+        this.branchName = new SimpleStringProperty(branchName == null ? "" : branchName);
         this.docStatusName = new SimpleObjectProperty<>(docStatusName);
     }
 
@@ -42,8 +43,8 @@ public class DocumentFX {
     public double getSumDoc() {
         return sumDoc.get();
     }
-    public ObjectProperty<Double> sumDocProperty() {
-        return sumDoc;
+    public ObservableValue<Double> sumDocProperty() {
+        return sumDoc.asObject();
     }
 
     public String getDocNumber() {
@@ -60,11 +61,11 @@ public class DocumentFX {
         return new SimpleStringProperty(operDayDate.get().format(formatter));
     }
 
-    public DocType getDocType() {
-        return docType.get();
+    public String getKindName() {
+        return kindName.get();
     }
-    public StringProperty docTypeProperty() {
-        return new SimpleStringProperty(docType.get().getTitle());
+    public StringProperty kindNameProperty() {
+        return kindName;
     }
 
     public LocalDate getDocDate() {
@@ -74,11 +75,11 @@ public class DocumentFX {
         return new SimpleStringProperty(docDate.get().format(formatter));
     }
 
-    public BranchType getBranch() {
-        return branch.get();
+    public String getBranchName() {
+        return branchName.get();
     }
-    public StringProperty branchProperty() {
-        return new SimpleStringProperty(branch.get().getTitle());
+    public StringProperty branchNameProperty() {
+        return branchName;
     }
 
     public DocStatus getDocStatusName() {
@@ -96,28 +97,28 @@ public class DocumentFX {
         return getObjectId().equals(that.getObjectId()) &&
                 getDocNumber().equals(that.getDocNumber()) &&
                 getOperDayDate().equals(that.getOperDayDate()) &&
-                getDocType().equals(that.getDocType()) &&
+                getKindName().equals(that.getKindName()) &&
                 getDocDate().equals(that.getDocDate()) &&
-                getBranch().equals(that.getBranch()) &&
+                getBranchName().equals(that.getBranchName()) &&
                 getDocStatusName().equals(that.getDocStatusName());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(objectId, docNumber, operDayDate, docType, docDate, branch, docStatusName);
+        return Objects.hash(objectId, docNumber, operDayDate, kindName, docDate, branchName, docStatusName);
     }
 
     @Override
     public String toString() {
         return "DocumentFX{" +
-                "objectId='" + objectId + '\'' +
-                ", docNumber=" + docNumber +
-                ", sumDoc=" + sumDoc +
-                ", operDayDate=" + operDayDate +
-                ", docType=" + docType +
-                ", docDate=" + docDate +
-                ", branch=" + branch +
-                ", docStatusName=" + docStatusName +
+                "objectId='" + this.getObjectId() + '\'' +
+                ", docNumber=" + this.getDocNumber() +
+                ", sumDoc=" + this.getSumDoc() +
+                ", operDayDate=" + this.getDocDate().format(formatter) +
+                ", kindName=" + this.getKindName() +
+                ", docDate=" + this.getDocDate().format(formatter) +
+                ", branch=" + this.getBranchName() +
+                ", docStatusName=" + this.getDocStatusName() +
                 '}';
     }
 }

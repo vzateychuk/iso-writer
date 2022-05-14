@@ -24,22 +24,22 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
-public class DocumentSrvImpl implements DocumentSrv {
+public class DocSrvImpl implements DocSrv {
 
     private static final Logger logger = LogManager.getLogger();
 
     private final ObservableMap<AppStateType, AppStateData> appState;
     private final Executor exec;
-    private final DocumentMapper mapper;
+    private final DocMapper mapper;
     private final MessageSrv msgSrv;
 
     private Future<Void> future = CompletableFuture.allOf();
 
-    public DocumentSrvImpl(ObservableMap<AppStateType,
+    public DocSrvImpl(ObservableMap<AppStateType,
                            AppStateData> appState,
-                           Executor exec,
-                           DocumentMapper mapper,
-                           MessageSrv msgSrv) {
+                      Executor exec,
+                      DocMapper mapper,
+                      MessageSrv msgSrv) {
         this.appState = appState;
         this.exec = exec;
         this.mapper = mapper;

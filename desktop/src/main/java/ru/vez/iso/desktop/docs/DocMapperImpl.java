@@ -10,7 +10,7 @@ import java.time.LocalDate;
 /**
  * Мапер из REESTR Doc в отображаемый DocumentFX
  * */
-public class DocumentMapperImpl implements DocumentMapper {
+public class DocMapperImpl implements DocMapper {
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -19,8 +19,6 @@ public class DocumentMapperImpl implements DocumentMapper {
 
         ReestrData rd = d.getData();
 
-        DocType docType = this.getDocType(rd.getTypeName());
-        BranchType branch = this.getBranchType(rd.getBranchId());
         DocStatus docStatus = this.getDocStatus(rd.getDocStatus());
 
         LocalDate operDayDate = LocalDate.parse(rd.getDocDate());
@@ -31,9 +29,9 @@ public class DocumentMapperImpl implements DocumentMapper {
                             rd.getDocNumber(),
                             rd.getDocSum(),
                             operDayDate,
-                            docType,
+                            rd.getKindName(),
                             docDate,
-                            branch,
+                            rd.getBranchName(),
                             docStatus);
     }
 
@@ -57,16 +55,6 @@ public class DocumentMapperImpl implements DocumentMapper {
             logger.warn("unable to map BranchType: {}", branchType);
         }
         return BranchType.UNKNOWN_BRANCH;
-    }
-
-    private DocType getDocType(String docType) {
-
-        try {
-            return DocType.valueOf(docType);
-        } catch (IllegalArgumentException ex) {
-            logger.warn("unable to map DocType: {}", docType);
-        }
-        return DocType.UNKNOWN_TYPE;
     }
 
     //endregion
