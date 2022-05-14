@@ -85,7 +85,7 @@ public class DesktopApp extends Application {
         );
         stage.setScene(new Scene(navigation));
         String appVersion = this.getVersion();
-        stage.setTitle(String.format("IsoWriter. Режим:%s. Версия:%s", (isProdMode ? "PROD" : "DEV"), appVersion));
+        stage.setTitle(String.format("Desktop. Режим:%s. Версия:%s", (isProdMode ? "PROD" : "DEV"), appVersion));
         logger.info("---> Application started! ver: {} <---", appVersion);
         stage.show();
     }

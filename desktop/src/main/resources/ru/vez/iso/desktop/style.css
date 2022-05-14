@@ -1,0 +1,70 @@
+/* root - стиль по умолчанию */
+.root {
+	-fx-font-family: "Arial";
+	-fx-font-size: 14px;
+	-fx-alignment: CENTER;
+	-fx-background-color: #8BC540;
+}
+
+/* desktop-header-1 - стиль для больших заголовков */
+.desktop-header-1 {
+	-fx-font-family: "Arial";
+	-fx-font-size: 26px;
+	-fx-font-weight: bold;
+	-fx-alignment: CENTER;
+}
+
+/* desktop-header-2 - стиль для небольших заголовков */
+.desktop-header-2 {
+	-fx-font-family: "Arial";
+	-fx-font-size: 18px;
+	-fx-font-weight: bold;
+	-fx-alignment: CENTER;
+}
+
+/* desktop-label - стиль для надписей для TextEdit компонент */
+.desktop-label {
+	-fx-font-family: "Arial";
+	-fx-font-size: 14px;
+	-fx-alignment: CENTER_RIGHT;
+}
+
+/* tooltip - стиль всплывающих подсказок и уведомлений */
+.tooltip{
+	-fx-background-color: white;
+	-fx-text-fill: black;
+}
+
+/* radio-button - стиль для переключателей типа radio-buttons */
+.radio-button{
+	-fx-font-size: 12px;
+	-fx-font-family: "Arial";
+	-fx-fill: #818181;
+	-fx-effect: innershadow( three-pass-box , rgba(0,0,0,0.7) , 6, 0.0 , 0 , 2 );
+}
+
+/* desktop-btn - стиль для кнопок без текста, но с иконками */
+.desktop-btn{
+}
+
+/* desktop-button - стиль для обычных кнопок */
+.desktop-button {
+}
+
+/* text-field - стиль для полей ввода */
+.text-field {
+		-fx-font-family: "Arial";
+		-fx-font-size: 14px;
+		-fx-padding: 3,3,3,3;
+		-fx-border-color: black;
+		-fx-border-width: 1;
+		-fx-border-radius: 3;
+		-fx-border: gone;
+		-fx-background-color: transparent;
+		-fx-text-fill: black;
+}
+
+/* navigation-pane-left - стиль левой панели с кнопками */
+.navigation-pane-left {
+	-fx-background-color: #AAB2BD
+}

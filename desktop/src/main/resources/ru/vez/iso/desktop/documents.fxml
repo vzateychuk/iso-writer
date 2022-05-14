@@ -3,107 +3,97 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.text.*?>
 <BorderPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="ru.vez.iso.desktop.docs.DocumentCtl">
-   <children>
-   </children>
-   <top>
-      <ToolBar maxWidth="1.7976931348623157E308" prefHeight="40.0" BorderPane.alignment="CENTER">
-        <items>
-            <Button fx:id="butOpenZip" accessibleHelp="Открыть диск" accessibleText="Открыть диск" layoutX="10.0"
-                    layoutY="12.0" mnemonicParsing="false" onAction="#onOpenZip">
-               <font>
-                  <Font name="Arial Black" size="12.0" />
-               </font>
-               <graphic>
-                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@image/open.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-               <tooltip>
-                  <Tooltip text="Выбрать диск с документами (файл Dev.zip)" />
-               </tooltip>
-            </Button>
-            <Button fx:id="butViewDoc" disable="true" layoutX="10.0" layoutY="12.0" mnemonicParsing="false" onAction="#onViewDoc">
-                <font>
-                    <Font name="Arial Black" size="12.0" />
-                </font>
-                <graphic>
-                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                        <image>
-                            <Image url="@image/view.png" />
-                        </image>
-                    </ImageView>
-                </graphic>
-               <tooltip>
-                  <Tooltip text="Просмотр документа" />
-               </tooltip>
-            </Button>
-            <Button fx:id="butExploreDoc" disable="true" layoutX="10.0" layoutY="12.0" mnemonicParsing="false" onAction="#onExploreDocs">
-                <font>
-                    <Font name="Arial Black" size="12.0" />
-                </font>
-                <graphic>
-                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                        <image>
-                            <Image url="@image/download.png" />
-                        </image>
-                    </ImageView>
-                </graphic>
-                <tooltip>
-                    <Tooltip text="Открыть папку с документом" />
-                </tooltip>
-            </Button>
-            <Button fx:id="butCheckSum" disable="true" layoutX="170.0" layoutY="12.0" mnemonicParsing="false" onAction="#onCheckSum">
-               <font>
-                  <Font name="Arial Black" size="12.0" />
-               </font>
-               <graphic>
-                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@image/hash.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-               <tooltip>
-                  <Tooltip text="Проверить контрольную сумму (hash)" />
-               </tooltip>
-            </Button>
-            <TextField fx:id="txtFilter" promptText="фильтр" />
-            <Button fx:id="butFilter" layoutX="10.0" layoutY="12.0" mnemonicParsing="false" onAction="#onFilter" onKeyPressed="#onFilterEnter">
-               <font>
-                  <Font name="Arial Black" size="12.0" />
-               </font>
-               <graphic>
-                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@image/search.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-               <tooltip>
-                  <Tooltip text="Выполнить поиск" />
-               </tooltip>
-            </Button>
+            fx:controller="ru.vez.iso.desktop.docs.DocumentCtl"
+            stylesheets="@style.css">
+    <children>
+    </children>
+    <top>
+        <ToolBar maxWidth="1.7976931348623157E308" prefHeight="40.0" BorderPane.alignment="CENTER">
+            <items>
+                <Button fx:id="butOpenZip" accessibleHelp="Открыть диск" accessibleText="Открыть диск" layoutX="10.0"
+                        layoutY="12.0" mnemonicParsing="false" onAction="#onOpenZip">
+                    <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@image/open.png"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                    <tooltip>
+                        <Tooltip text="Выбрать диск с документами (файл Dev.zip)"/>
+                    </tooltip>
+                </Button>
+                <Button fx:id="butViewDoc" disable="true" layoutX="10.0" layoutY="12.0" mnemonicParsing="false"
+                        onAction="#onViewDoc">
+                    <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@image/view.png"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                    <tooltip>
+                        <Tooltip text="Просмотр документа"/>
+                    </tooltip>
+                </Button>
+                <Button fx:id="butExploreDoc" disable="true" layoutX="10.0" layoutY="12.0" mnemonicParsing="false"
+                        onAction="#onExploreDocs">
+                    <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@image/download.png"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                    <tooltip>
+                        <Tooltip text="Открыть папку с документом"/>
+                    </tooltip>
+                </Button>
+                <Button fx:id="butCheckSum" disable="true" layoutX="170.0" layoutY="12.0" mnemonicParsing="false"
+                        onAction="#onCheckSum">
+                    <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@image/hash.png"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                    <tooltip>
+                        <Tooltip text="Проверить контрольную сумму (hash)"/>
+                    </tooltip>
+                </Button>
+                <TextField fx:id="txtFilter" promptText="фильтр"/>
+                <Button fx:id="butFilter" layoutX="10.0" layoutY="12.0" mnemonicParsing="false" onAction="#onFilter"
+                        onKeyPressed="#onFilterEnter">
+                    <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@image/search.png"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                    <tooltip>
+                        <Tooltip text="Выполнить поиск"/>
+                    </tooltip>
+                </Button>
 
-        </items>
-      </ToolBar>
-   </top>
-   <center>
-       <TableView fx:id="tblDocuments" maxHeight="1.7976931348623157E308">
-           <columns>
-               <TableColumn fx:id="docNumber" prefWidth="100.0" text="Номер документа" />
-               <TableColumn fx:id="kindIdName" editable="false" minWidth="50.0" prefWidth="100.0" text="Вид документа" />
-               <TableColumn fx:id="operDayDate" prefWidth="75.0" text="Дата опер.дня" />
-               <TableColumn fx:id="sumDoc" prefWidth="75.0" text="Сумма" />
-               <TableColumn fx:id="branch" prefWidth="75.0" text="Подразделение" />
-               <TableColumn fx:id="docDate" prefWidth="75.0" text="Дата документа" />
-               <TableColumn fx:id="docStatusName" prefWidth="75.0" text="Статус документа" />
-           </columns>
-       </TableView>
-   </center>
+            </items>
+        </ToolBar>
+    </top>
+    <center>
+        <TableView fx:id="tblDocuments" maxHeight="1.7976931348623157E308">
+            <columns>
+                <TableColumn fx:id="docNumber" prefWidth="100.0" text="Номер документа"/>
+                <TableColumn fx:id="kindIdName" editable="false" minWidth="50.0" prefWidth="100.0"
+                             text="Вид документа"/>
+                <TableColumn fx:id="operDayDate" prefWidth="75.0" text="Дата опер.дня"/>
+                <TableColumn fx:id="sumDoc" prefWidth="75.0" text="Сумма"/>
+                <TableColumn fx:id="branch" prefWidth="75.0" text="Подразделение"/>
+                <TableColumn fx:id="docDate" prefWidth="75.0" text="Дата документа"/>
+                <TableColumn fx:id="docStatusName" prefWidth="75.0" text="Статус документа"/>
+            </columns>
+        </TableView>
+    </center>
 
 </BorderPane>

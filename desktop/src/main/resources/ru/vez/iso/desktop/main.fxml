@@ -4,216 +4,217 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.scene.text.Font?>
 <SplitPane fx:id="abddView" dividerPositions="0.4" xmlns="http://javafx.com/javafx"
-           xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.vez.iso.desktop.main.MainCtl">
-  <items>
-      <VBox prefWidth="300.0">
-         <children>
-            <GridPane>
-              <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="202.199951171875" minWidth="10.0" prefWidth="95.60001220703126" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="348.6000205993652" minWidth="10.0" prefWidth="84.59998779296873" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="348.6000205993652" minWidth="10.0" prefWidth="237.80001220703127" />
-              </columnConstraints>
-              <rowConstraints>
-                <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
-              </rowConstraints>
-               <children>
-                  <Label alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="200.0" text="Список операционных дней" GridPane.columnSpan="3">
-                     <font>
-                        <Font name="Arial Black" size="14.0" />
-                     </font>
-                  </Label>
-                  <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" prefHeight="200.0" text="Показать:" GridPane.rowIndex="1">
-                     <font>
-                        <Font name="Arial Black" size="12.0" />
-                     </font>
-                  </Label>
-                  <TextField fx:id="operationDays" promptText="30" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                  <Button fx:id="butReload" mnemonicParsing="false" onAction="#onReload" onKeyPressed="#onFilterEnter" GridPane.columnIndex="2" GridPane.rowIndex="1">
-                     <tooltip>
-                        <Tooltip text="Перечитать список" />
-                     </tooltip>
-                     <font>
-                        <Font name="Arial Black" size="12.0" />
-                     </font>
-                     <graphic>
-                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@image/reload.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Button>
-               </children>
-            </GridPane>
-            <TableView fx:id="tblOperatingDays" maxHeight="1.7976931348623157E308" VBox.vgrow="ALWAYS">
-              <columns>
-                  <TableColumn fx:id="operatingDay" editable="false" maxWidth="100.0" minWidth="80.0" text="Дата опер.дня" />
-                  <TableColumn fx:id="typeSu" editable="false" maxWidth="80.0" minWidth="40.0" prefWidth="40.0" text="Вид EX" />
-                  <TableColumn fx:id="edited" editable="false" maxWidth="80.0" minWidth="40.0" prefWidth="40.0" text="Исправлен?" />
-                  <TableColumn fx:id="status" editable="false" minWidth="80.0" text="Статус" />
-                  <TableColumn fx:id="createdAt" editable="false" maxWidth="100.0" minWidth="80.0" text="Создан" />
-              </columns>
-            </TableView>
-         </children>
-      </VBox>
-      <VBox prefWidth="500.0">
-         <children>
-            <GridPane gridLinesVisible="true">
-               <columnConstraints>
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-               </columnConstraints>
-               <rowConstraints>
-                  <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
-               </rowConstraints>
-               <children>
-                  <Label alignment="CENTER" maxHeight="200.0" maxWidth="1.7976931348623157E308" prefHeight="200.0" text="Список единиц хранения">
-                     <font>
-                        <Font name="Arial Black" size="14.0" />
-                     </font>
-                  </Label>
-                  <HBox maxHeight="200.0" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
-                     <children>
-                        <RadioButton fx:id="exShowAll" mnemonicParsing="false" selected="true" text="Все">
-                           <font>
-                              <Font name="Arial Black" size="12.0" />
-                           </font>
-                           <padding>
-                              <Insets bottom="5.0" left="5.0" right="5.0" top="10.0" />
-                           </padding>
-                           <toggleGroup>
-                              <ToggleGroup fx:id="filterGroup" />
-                           </toggleGroup>
-                           <tooltip>
-                              <Tooltip text="Показать все EX" />
-                           </tooltip>
-                        </RadioButton>
-                        <RadioButton fx:id="exShowAvail" disable="true" mnemonicParsing="false" text="Доступные" toggleGroup="$filterGroup">
-                           <font>
-                              <Font name="Arial Black" size="12.0" />
-                           </font>
-                           <padding>
-                              <Insets bottom="5.0" left="5.0" right="5.0" top="10.0" />
-                           </padding>
-                           <tooltip>
-                              <Tooltip text="Показать только со статусами: &quot;Готово для записи на внешний носитель&quot;, &quot;Записано на внешний носитель&quot;" />
-                           </tooltip>
-                        </RadioButton>
-                        <RadioButton fx:id="exShowPrep" disable="true" mnemonicParsing="false" text="Готовятся" toggleGroup="$filterGroup">
-                           <padding>
-                              <Insets bottom="5.0" left="5.0" right="5.0" top="10.0" />
-                           </padding>
-                           <font>
-                              <Font name="Arial Black" size="12.0" />
-                           </font>
-                           <tooltip>
-                              <Tooltip text="Показать только со статусом: &quot;Готовятся для записи&quot;" />
-                           </tooltip>
-                        </RadioButton>
-                        <Separator orientation="VERTICAL" prefHeight="32.0" prefWidth="11.0" />
-                        <Button fx:id="butIsoLoad" disable="true" mnemonicParsing="false" onAction="#onStartIsoLoad">
-                           <tooltip>
-                              <Tooltip text="Загрузить ISO образ" />
-                           </tooltip>
-                           <font>
-                              <Font name="Arial Black" size="12.0" />
-                           </font>
-                           <graphic>
-                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@image/download.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                           <opaqueInsets>
-                              <Insets />
-                           </opaqueInsets>
-                           <HBox.margin>
-                              <Insets right="2.0" />
-                           </HBox.margin>
+           xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.vez.iso.desktop.main.MainCtl"
+           stylesheets="@style.css">
+    <items>
+        <VBox prefWidth="300.0">
+            <children>
+                <GridPane>
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="202.199951171875" minWidth="10.0"
+                                           prefWidth="95.60001220703126"/>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="348.6000205993652" minWidth="10.0"
+                                           prefWidth="84.59998779296873"/>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="348.6000205993652" minWidth="10.0"
+                                           prefWidth="237.80001220703127"/>
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                        <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                    </rowConstraints>
+                    <children>
+                        <Label alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="200.0"
+                               text="Список операционных дней" GridPane.columnSpan="3"
+                               stylesheets="@style.css" styleClass="desktop-header-2">
+                        </Label>
+                        <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" prefHeight="200.0"
+                               text="Показать:"
+                               GridPane.rowIndex="1">
+                        </Label>
+                        <TextField fx:id="operationDays" promptText="30" GridPane.columnIndex="1"
+                                   GridPane.rowIndex="1"/>
+                        <Button fx:id="butReload" mnemonicParsing="false" onAction="#onReload"
+                                onKeyPressed="#onFilterEnter"
+                                GridPane.columnIndex="2" GridPane.rowIndex="1" styleClass="desktop-btn">
+                            <tooltip>
+                                <Tooltip text="Перечитать список"/>
+                            </tooltip>
+                            <font>
+                                <Font name="Arial Black" size="12.0"/>
+                            </font>
+                            <graphic>
+                                <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@image/reload.png"/>
+                                    </image>
+                                </ImageView>
+                            </graphic>
                         </Button>
-                        <Button fx:id="butIsoCreate" disable="true" mnemonicParsing="false" onAction="#onIsoCreate">
-                             <tooltip>
-                                 <Tooltip text="Создать ISO образ на сервере" />
-                             </tooltip>
-                             <font>
-                                 <Font name="Arial Black" size="12.0" />
-                             </font>
-                             <graphic>
-                                 <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                                     <image>
-                                         <Image url="@image/plus.png" />
-                                     </image>
-                                 </ImageView>
-                             </graphic>
-                             <opaqueInsets>
-                                 <Insets />
-                             </opaqueInsets>
-                             <HBox.margin>
-                                 <Insets right="2.0" />
-                             </HBox.margin>
-                         </Button>
-                        <Separator layoutX="271.0" layoutY="10.0" orientation="VERTICAL" prefHeight="32.0" prefWidth="11.0" />
-                        <Button fx:id="butBurn" disable="true" mnemonicParsing="false" onAction="#onBurnIso">
-                           <tooltip>
-                              <Tooltip text="Записать основной диск" />
-                           </tooltip>
-                           <font>
-                              <Font name="Arial Black" size="12.0" />
-                           </font>
-                           <graphic>
-                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@image/write.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Button>
-                        <Button fx:id="butDelete" disable="true" onAction="#onDeleteIso">
-                           <graphic>
-                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@image/delete.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                           <tooltip>
-                              <Tooltip text="Удалить загруженный ISO файл" />
-                           </tooltip>
-                        </Button>
-                        <Button fx:id="butCheckSum" disable="true" onAction="#onCheckSum">
-                           <graphic>
-                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@image/hash.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                           <tooltip>
-                              <Tooltip text="Сравнить CheckSum открытого DIR.zip с значением на ABDD сервере" />
-                           </tooltip>
-                        </Button>
-                     </children>
-                  </HBox>
-               </children>
-            </GridPane>
-             <TableView fx:id="tblStorageUnits" maxHeight="1.7976931348623157E308" VBox.vgrow="ALWAYS">
-              <columns>
-                  <TableColumn fx:id="numberSu" maxWidth="200.0" minWidth="100.0" prefWidth="100.0" text="Номер EX" />
-                  <TableColumn fx:id="creationDate" maxWidth="100.0" minWidth="80.0" text="Создан" />
-                  <TableColumn fx:id="dataSize" editable="false" maxWidth="80.0" minWidth="40.0" text="Размер ISO" />
-                  <TableColumn fx:id="storageDate" maxWidth="100.0" minWidth="80.0" text="Срок хранения" />
-                  <TableColumn fx:id="storageUnitStatus" minWidth="80.0" text="Статус EX" />
-                  <TableColumn fx:id="savingDate" maxWidth="100.0" minWidth="80.0" text="Дата записи" />
-                  <TableColumn fx:id="fileName" minWidth="80.0" text="Имя ISO файла (если загружен)" />
-                  <TableColumn fx:id="deleted" minWidth="60.0" maxWidth="60.0" text="Удален" />
-              </columns>
-            </TableView>
-         </children>
-      </VBox>
-  </items>
+                    </children>
+                </GridPane>
+                <TableView fx:id="tblOperatingDays" maxHeight="1.7976931348623157E308" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="operatingDay" editable="false" maxWidth="100.0" minWidth="80.0"
+                                     text="Дата опер.дня"/>
+                        <TableColumn fx:id="typeSu" editable="false" maxWidth="80.0" minWidth="40.0" prefWidth="40.0"
+                                     text="Вид EX"/>
+                        <TableColumn fx:id="edited" editable="false" maxWidth="80.0" minWidth="40.0" prefWidth="40.0"
+                                     text="Исправлен?"/>
+                        <TableColumn fx:id="status" editable="false" minWidth="80.0" text="Статус"/>
+                        <TableColumn fx:id="createdAt" editable="false" maxWidth="100.0" minWidth="80.0" text="Создан"/>
+                    </columns>
+                </TableView>
+            </children>
+        </VBox>
+        <VBox prefWidth="500.0">
+            <children>
+                <GridPane gridLinesVisible="true">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                        <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                    </rowConstraints>
+                    <children>
+                        <Label alignment="CENTER" maxHeight="200.0" maxWidth="1.7976931348623157E308" prefHeight="200.0"
+                               text="Список единиц хранения" stylesheets="@style.css" styleClass="desktop-header-2">
+                        </Label>
+                        <HBox maxHeight="200.0" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1"
+                              alignment="CENTER_LEFT">
+                            <children>
+                                <RadioButton fx:id="exShowAll" mnemonicParsing="false" selected="true" text="Все">
+                                    <padding>
+                                        <Insets bottom="5.0" left="5.0" right="5.0" top="10.0"/>
+                                    </padding>
+                                    <toggleGroup>
+                                        <ToggleGroup fx:id="filterGroup"/>
+                                    </toggleGroup>
+                                    <tooltip>
+                                        <Tooltip text="Показать все EX"/>
+                                    </tooltip>
+                                </RadioButton>
+                                <RadioButton fx:id="exShowAvail" disable="true" mnemonicParsing="false" text="Доступные"
+                                             toggleGroup="$filterGroup">
+                                    <padding>
+                                        <Insets bottom="5.0" left="5.0" right="5.0" top="10.0"/>
+                                    </padding>
+                                    <tooltip>
+                                        <Tooltip
+                                                text="Показать только со статусами: &quot;Готово для записи на внешний носитель&quot;, &quot;Записано на внешний носитель&quot;"/>
+                                    </tooltip>
+                                </RadioButton>
+                                <RadioButton fx:id="exShowPrep" disable="true" mnemonicParsing="false" text="Готовятся"
+                                             toggleGroup="$filterGroup">
+                                    <padding>
+                                        <Insets bottom="5.0" left="5.0" right="5.0" top="10.0"/>
+                                    </padding>
+                                    <tooltip>
+                                        <Tooltip text="Показать только со статусом: &quot;Готовятся для записи&quot;"/>
+                                    </tooltip>
+                                </RadioButton>
+                                <Separator orientation="VERTICAL" prefHeight="32.0" prefWidth="11.0"/>
+                                <Button fx:id="butIsoLoad" disable="true" mnemonicParsing="false"
+                                        onAction="#onStartIsoLoad"
+                                        styleClass="desktop-btn">
+                                    <tooltip>
+                                        <Tooltip text="Загрузить ISO образ"/>
+                                    </tooltip>
+                                    <graphic>
+                                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true"
+                                                   preserveRatio="true">
+                                            <image>
+                                                <Image url="@image/download.png"/>
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                    <opaqueInsets>
+                                        <Insets/>
+                                    </opaqueInsets>
+                                </Button>
+                                <Button fx:id="butIsoCreate" disable="true" mnemonicParsing="false"
+                                        onAction="#onIsoCreate"
+                                        styleClass="desktop-btn">
+                                    <tooltip>
+                                        <Tooltip text="Создать ISO образ на сервере"/>
+                                    </tooltip>
+                                    <graphic>
+                                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true"
+                                                   preserveRatio="true">
+                                            <image>
+                                                <Image url="@image/plus.png"/>
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                    <opaqueInsets>
+                                        <Insets/>
+                                    </opaqueInsets>
+                                </Button>
+                                <Separator layoutX="271.0" layoutY="10.0" orientation="VERTICAL" prefHeight="32.0"
+                                           prefWidth="11.0"/>
+                                <Button fx:id="butBurn" disable="true" mnemonicParsing="false" onAction="#onBurnIso"
+                                        styleClass="desktop-btn">
+                                    <tooltip>
+                                        <Tooltip text="Начать прожиг диска"/>
+                                    </tooltip>
+                                    <graphic>
+                                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true"
+                                                   preserveRatio="true">
+                                            <image>
+                                                <Image url="@image/write.png"/>
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                </Button>
+                                <Button fx:id="butDelete" disable="true" onAction="#onDeleteIso"
+                                        styleClass="desktop-btn">
+                                    <graphic>
+                                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true"
+                                                   preserveRatio="true">
+                                            <image>
+                                                <Image url="@image/delete.png"/>
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                    <tooltip>
+                                        <Tooltip text="Удалить загруженный ISO файл"/>
+                                    </tooltip>
+                                </Button>
+                                <Button fx:id="butCheckSum" disable="true" onAction="#onCheckSum"
+                                        styleClass="desktop-btn">
+                                    <graphic>
+                                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true"
+                                                   preserveRatio="true">
+                                            <image>
+                                                <Image url="@image/hash.png"/>
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                    <tooltip>
+                                        <Tooltip text="Выполнить проверку CheckSum со значением на ABDD сервере"/>
+                                    </tooltip>
+                                </Button>
+                            </children>
+                        </HBox>
+                    </children>
+                </GridPane>
+                <TableView fx:id="tblStorageUnits" maxHeight="1.7976931348623157E308" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="numberSu" maxWidth="200.0" minWidth="100.0" prefWidth="100.0"
+                                     text="Номер EX"/>
+                        <TableColumn fx:id="creationDate" maxWidth="100.0" minWidth="80.0" text="Создан"/>
+                        <TableColumn fx:id="dataSize" editable="false" maxWidth="80.0" minWidth="40.0"
+                                     text="Размер ISO"/>
+                        <TableColumn fx:id="storageDate" maxWidth="100.0" minWidth="80.0" text="Срок хранения"/>
+                        <TableColumn fx:id="storageUnitStatus" minWidth="80.0" text="Статус EX"/>
+                        <TableColumn fx:id="savingDate" maxWidth="100.0" minWidth="80.0" text="Дата записи"/>
+                        <TableColumn fx:id="fileName" minWidth="80.0" text="Имя ISO файла (если загружен)"/>
+                        <TableColumn fx:id="deleted" minWidth="60.0" maxWidth="60.0" text="Удален"/>
+                    </columns>
+                </TableView>
+            </children>
+        </VBox>
+    </items>
 </SplitPane>
