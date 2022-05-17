@@ -120,7 +120,7 @@
                                         onAction="#onStartIsoLoad"
                                         styleClass="desktop-btn">
                                     <tooltip>
-                                        <Tooltip text="Загрузить ISO образ"/>
+                                        <Tooltip text="Загрузить iso-образ"/>
                                     </tooltip>
                                     <graphic>
                                         <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true"
@@ -138,7 +138,7 @@
                                         onAction="#onIsoCreate"
                                         styleClass="desktop-btn">
                                     <tooltip>
-                                        <Tooltip text="Создать ISO образ на сервере"/>
+                                        <Tooltip text="Сформировать iso-образ"/>
                                     </tooltip>
                                     <graphic>
                                         <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true"
@@ -157,13 +157,13 @@
                                 <Button fx:id="butBurn" disable="true" mnemonicParsing="false" onAction="#onBurnIso"
                                         styleClass="desktop-btn">
                                     <tooltip>
-                                        <Tooltip text="Начать прожиг диска"/>
+                                        <Tooltip text="Записать iso-образ"/>
                                     </tooltip>
                                     <graphic>
                                         <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true"
                                                    preserveRatio="true">
                                             <image>
-                                                <Image url="@image/write.png"/>
+                                                <Image url="@image/burn.png"/>
                                             </image>
                                         </ImageView>
                                     </graphic>
@@ -179,7 +179,7 @@
                                         </ImageView>
                                     </graphic>
                                     <tooltip>
-                                        <Tooltip text="Удалить загруженный ISO файл"/>
+                                        <Tooltip text="Удалить iso-образ"/>
                                     </tooltip>
                                 </Button>
                                 <Button fx:id="butCheckSum" disable="true" onAction="#onCheckSum"
@@ -188,7 +188,7 @@
                                         <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true"
                                                    preserveRatio="true">
                                             <image>
-                                                <Image url="@image/hash.png"/>
+                                                <Image url="@image/checksum.png"/>
                                             </image>
                                         </ImageView>
                                     </graphic>
