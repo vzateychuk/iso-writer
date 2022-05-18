@@ -64,5 +64,7 @@
 
 /* navigation-pane-left - стиль левой панели с кнопками */
 .navigation-pane-left {
-	-fx-background-color: #AAB2BD
+	-fx-pref-width: 130px;
+	-fx-padding: 16px;
+	-fx-background-color: #2F444E;
 }

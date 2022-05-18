@@ -1,6 +1,9 @@
 package ru.vez.iso.desktop.shared;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @ToString
@@ -8,7 +11,7 @@ import lombok.*;
 @AllArgsConstructor
 public class UserDetails {
 
-    public static UserDetails NOT_SIGNED_USER = new UserDetails();
+    public final static UserDetails NOT_SIGNED_USER = new UserDetails();
 
     private String username = "";
     private String password = "";

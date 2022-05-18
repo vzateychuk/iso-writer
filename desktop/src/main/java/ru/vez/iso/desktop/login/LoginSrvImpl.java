@@ -41,18 +41,18 @@ public class LoginSrvImpl implements LoginSrv {
             return "admin".equals(username) && "admin".equals(password)
                     ? new UserDetails(username, password, username+"-"+password)
                     : UserDetails.NOT_SIGNED_USER;
-        }, exec).thenAccept(userDetails -> {
-            appState.put(AppStateType.USER_DETAILS, AppStateData.<UserDetails>builder().value(userDetails).build());
-            this.msgSrv.news("Выполнен вход: " + username);
-        }).exceptionally((ex) -> {
-            logger.error("Unable: " + ex.getLocalizedMessage());
+        }, exec).thenAccept(usr -> {
+            appState.put(AppStateType.USER_DETAILS, AppStateData.<UserDetails>builder().value(usr).build());
+            String msg = "Выполнен " + (usr.isLogged() ? String.format("вход: %s", username) : "выход");
+            this.msgSrv.news(msg);
+        }).exceptionally(ex -> {
+            logger.error(ex);
             return null;
         } );
     }
 
     @Override
     public void logout() {
-        appState.put(AppStateType.USER_DETAILS, AppStateData.builder().value(UserDetails.NOT_SIGNED_USER).build());
-        this.msgSrv.news("Выполнен выход");
+        this.loginAsync("", "");
     }
 }

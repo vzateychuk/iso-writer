@@ -1,17 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-<BorderPane fx:id="navigationView" prefHeight="400.0" prefWidth="800.0" xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.vez.iso.desktop.nav.NavigationCtl"
-            stylesheets="@style.css">
+<BorderPane fx:id="navigationView" prefHeight="400.0" prefWidth="800.0" stylesheets="@style.css"
+            xmlns="http://javafx.com/javafx/" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="ru.vez.iso.desktop.nav.NavigationCtl">
     <left>
-        <Pane prefHeight="400.0" prefWidth="130.0" styleClass="navigation-pane-left" BorderPane.alignment="CENTER">
+        <Pane prefHeight="400.0" styleClass="navigation-pane-left" BorderPane.alignment="CENTER">
             <children>
-                <VBox alignment="CENTER" layoutY="34.0" prefHeight="161.0" prefWidth="130.0" spacing="5">
+                <VBox alignment="CENTER" layoutY="-1.0" prefHeight="245.0" prefWidth="130.0" spacing="5">
+                    <ImageView fitHeight="88.0" fitWidth="129.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                            <Image url="@image/logo.png"/>
+                        </image>
+                        <VBox.margin>
+                            <Insets bottom="10.0" top="10.0"/>
+                        </VBox.margin>
+                    </ImageView>
                     <Button fx:id="butLogin" onAction="#onLoginLogout" prefWidth="120.0" text="Вход">
                         <tooltip>
-                            <Tooltip text="Подключение к удаленному серверу ABDD"/>
+                            <Tooltip text="Подключение к серверу ABDD"/>
                         </tooltip>
                     </Button>
                     <Button fx:id="butMain" disable="true" onAction="#onShowMain" prefWidth="120.0" text="Загрузка EX">
@@ -20,14 +31,12 @@
                         </tooltip>
                     </Button>
                     <Button fx:id="butDocuments" layoutX="15.0" layoutY="93.0" onAction="#onShowDocuments"
-                            prefWidth="120.0" text="Документы"
-                    >
+                            prefWidth="120.0" text="Документы">
                         <tooltip>
                             <Tooltip text="Работа с документами записанными на диск"/>
                         </tooltip>
                     </Button>
-                    <Button fx:id="butSettings" onAction="#onShowSettings" prefWidth="120.0" text="Настройки"
-                    >
+                    <Button fx:id="butSettings" onAction="#onShowSettings" prefWidth="120.0" text="Настройки">
                         <tooltip>
                             <Tooltip text="Изменение настроек приложения"/>
                         </tooltip>
@@ -37,15 +46,13 @@
         </Pane>
     </left>
     <center>
-        <fx:include source="welcome.fxml"/>
+        <fx:include source="welcome.fxml" BorderPane.alignment="BOTTOM_RIGHT"/>
     </center>
     <bottom>
         <HBox maxHeight="20.0" maxWidth="1.7976931348623157E308" minHeight="20.0" prefHeight="21.0" prefWidth="800.0"
               BorderPane.alignment="CENTER_RIGHT">
             <children>
-                <Pane prefHeight="20.0" prefWidth="130.0" style="-fx-background-color: #AAB2BD;"/>
-                <Label prefHeight="17.0" prefWidth="90.0"
-                       text="Статус: " textAlignment="RIGHT"/>
+                <Label prefHeight="17.0" prefWidth="90.0" text="Статус: " textAlignment="RIGHT"/>
                 <Label fx:id="labelMessages" maxWidth="1.7976931348623157E308" prefHeight="17.0" text="...">
                     <tooltip>
                         <Tooltip fx:id="statusMessage" autoHide="true" style="-fx-show-delay: 250ms;" text="Сообщения"/>

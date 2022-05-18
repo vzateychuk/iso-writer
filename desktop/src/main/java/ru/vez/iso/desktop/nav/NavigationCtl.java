@@ -67,16 +67,6 @@ public class NavigationCtl implements Initializable, Observer {
                         Platform.runLater(()->lockControls(userDetails == UserDetails.NOT_SIGNED_USER));
                     }
                 });
-
-/*
-        this.appState.addListener(
-                (MapChangeListener<AppStateType, AppStateData>) change -> {
-                    if (AppStateType.NOTIFICATION.equals(change.getKey())) {
-                        String message = (String) change.getValueAdded().getValue();
-                        Platform.runLater(()->showMessage(message));
-                    }
-                });
-*/
     }
 
     @Override
@@ -93,7 +83,7 @@ public class NavigationCtl implements Initializable, Observer {
     }
 
     public void onLoginLogout(ActionEvent ev) {
-        appState.put(AppStateType.USER_DETAILS, AppStateData.builder().value(UserDetails.NOT_SIGNED_USER).build());
+        logger.debug("");
         showView(ViewType.LOGIN);
     }
     public void onShowMain(ActionEvent ev) {
@@ -124,8 +114,6 @@ public class NavigationCtl implements Initializable, Observer {
 
         logger.debug(lock);
         butMain.setDisable(lock);
-        butLogin.setText(lock ? "Вход" : "Выход");
-//        this.showMessage("Выполнен " + (lock ? "выход" : "вход"));
     }
 
     private void showView(ViewType view) {
