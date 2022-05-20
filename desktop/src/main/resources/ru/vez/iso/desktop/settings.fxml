@@ -1,111 +1,117 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
-<BorderPane prefHeight="300.0" prefWidth="400.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.vez.iso.desktop.settings.SettingsCtl">
-    <top>
-        <HBox maxWidth="1.7976931348623157E308" prefHeight="47.0" BorderPane.alignment="CENTER">
-            <children>
-                <Text styleClass="desktop-header-1" text="Настройки" textAlignment="CENTER"
-                      wrappingWidth="465.3656116425991">
-                    <HBox.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
-                    </HBox.margin>
-                </Text>
-            </children>
-        </HBox>
-    </top>
-    <center>
-        <GridPane maxWidth="1.7976931348623157E308" prefHeight="200.0" BorderPane.alignment="CENTER">
-            <children>
-                <Text layoutX="6.0" layoutY="38.0" styleClass="desktop-header-2"
-                      text="Отображать список операционных дней:" textAlignment="CENTER"
-                      wrappingWidth="485.3656921386719" GridPane.columnIndex="0" GridPane.columnSpan="1"
-                      GridPane.rowIndex="0">
-                    <GridPane.margin>
-                        <Insets bottom="10.0" top="10.0"/>
-                    </GridPane.margin>
-                </Text>
-                <HBox alignment="TOP_CENTER" maxWidth="1.7976931348623157E308" prefWidth="40.0" GridPane.columnSpan="2"
-                      GridPane.rowIndex="1" GridPane.rowSpan="2147483647">
-                    <RadioButton fx:id="quarterPeriod" layoutX="29.0" layoutY="62.0" mnemonicParsing="false"
-                                 onAction="#onQuarterChoice" text="Квартал">
-                        <toggleGroup>
-                            <ToggleGroup fx:id="opsPeriodGroup"/>
-                        </toggleGroup>
-                        <padding>
-                            <Insets right="10.0"/>
-                        </padding>
-                    </RadioButton>
-                    <RadioButton fx:id="monthPeriod" layoutX="136.0" layoutY="62.0" mnemonicParsing="false"
-                                 onAction="#onMonthChoice" text="Месяц" toggleGroup="$opsPeriodGroup">
-                        <padding>
-                            <Insets right="10.0"/>
-                        </padding>
-                    </RadioButton>
-                    <RadioButton fx:id="weekPeriod" layoutX="238.0" layoutY="62.0" mnemonicParsing="false"
-                                 onAction="#onWeekChoice" text="Неделя" toggleGroup="$opsPeriodGroup">
-                        <padding>
-                            <Insets right="10.0"/>
-                        </padding>
-                    </RadioButton>
-                    <RadioButton fx:id="customPeriod" layoutX="338.0" layoutY="62.0" mnemonicParsing="false"
-                                 onAction="#onCustomChoice" text="Выбрать период" toggleGroup="$opsPeriodGroup">
-                    </RadioButton>
-                    <GridPane.margin>
-                        <Insets bottom="10.0" top="10.0"/>
-                    </GridPane.margin>
-                </HBox>
-                <Text layoutX="92.0" layoutY="132.0" text="Период, дней:" textAlignment="RIGHT"
-                      wrappingWidth="259.9657287597656" GridPane.rowIndex="2">
-                </Text>
-                <Text layoutX="31.0" layoutY="183.0" text="Обновлять данные, мин:" textAlignment="RIGHT"
-                      wrappingWidth="260.5" GridPane.rowIndex="3">
-                </Text>
-                <TextField fx:id="operationDays" layoutX="260.0" layoutY="114.0" maxWidth="1.7976931348623157E308"
-                           prefHeight="26.0" promptText="Дней" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-                <TextField fx:id="refreshPeriod" layoutX="260.0" layoutY="164.0" maxWidth="1.7976931348623157E308"
-                           prefHeight="26.0" promptText="Мин." GridPane.columnIndex="1" GridPane.rowIndex="3"/>
-                <Text text="ABDD сервер API:" textAlignment="RIGHT" wrappingWidth="259.5" GridPane.rowIndex="4">
-                </Text>
-                <TextField fx:id="abddAPI" maxWidth="1.7976931348623157E308" prefHeight="26.0"
-                           promptText="http://localhost:8080/api" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
-                <Text disable="true" text="Папка файловый кэш:" textAlignment="RIGHT" wrappingWidth="259.5"
-                      GridPane.rowIndex="5">
-                </Text>
-                <TextField fx:id="fileCache" disable="true" editable="false" maxWidth="1.7976931348623157E308"
-                           prefHeight="26.0" promptText="temp" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
-            </children>
-            <columnConstraints>
-                <ColumnConstraints maxWidth="1.7976931348623157E308" minWidth="255.0"/>
-                <ColumnConstraints maxWidth="1.7976931348623157E308" minWidth="100.0"/>
-            </columnConstraints>
-            <rowConstraints>
-                <RowConstraints/>
-                <RowConstraints minHeight="40.0" prefHeight="40.0"/>
-                <RowConstraints minHeight="40.0" prefHeight="40.0"/>
-                <RowConstraints minHeight="40.0" prefHeight="40.0"/>
-                <RowConstraints minHeight="40.0" prefHeight="40.0"/>
-                <RowConstraints minHeight="40.0" prefHeight="40.0"/>
-            </rowConstraints>
-            <padding>
-                <Insets right="10.0"/>
-            </padding>
-        </GridPane>
-    </center>
-    <bottom>
-        <ButtonBar maxWidth="1.7976931348623157E308" prefHeight="40.0" prefWidth="400.0">
+<GridPane prefHeight="300.0" prefWidth="400.0" xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.vez.iso.desktop.settings.SettingsCtl"
+          stylesheets="@style.css">
+
+    <Label alignment="BOTTOM_CENTER" layoutX="179.0" layoutY="52.0" maxWidth="1.7976931348623157E308" prefHeight="54.0"
+           text="Настройки" textAlignment="CENTER"
+           GridPane.columnSpan="2" GridPane.rowIndex="2" GridPane.columnIndex="1"
+           styleClass="desktop-header-1" >
+    </Label>
+
+    <Label layoutX="6.0" layoutY="38.0"
+           text="Отображать список операционных дней:" textAlignment="CENTER"
+           GridPane.columnSpan="2" GridPane.rowIndex="3" GridPane.columnIndex="1"
+           styleClass="desktop-header-2" >
+    </Label>
+
+    <HBox alignment="TOP_CENTER" maxWidth="1.7976931348623157E308" prefWidth="40.0"
+          GridPane.columnSpan="2" GridPane.rowIndex="4" GridPane.columnIndex="1">
+
+        <RadioButton fx:id="quarterPeriod" layoutX="29.0" layoutY="62.0" mnemonicParsing="false"
+                     onAction="#onQuarterChoice" text="Квартал" toggleGroup="$opsPeriodGroup">
+        </RadioButton>
+
+        <RadioButton fx:id="monthPeriod" layoutX="136.0" layoutY="62.0" mnemonicParsing="false"
+                     onAction="#onMonthChoice" text="Месяц" toggleGroup="$opsPeriodGroup">
+        </RadioButton>
+
+        <RadioButton fx:id="weekPeriod" layoutX="238.0" layoutY="62.0" mnemonicParsing="false"
+                     onAction="#onWeekChoice" text="Неделя" toggleGroup="$opsPeriodGroup">
+        </RadioButton>
+
+        <RadioButton fx:id="customPeriod" layoutX="338.0" layoutY="62.0" mnemonicParsing="false"
+                     onAction="#onCustomChoice" text="Выбрать период" toggleGroup="$opsPeriodGroup">
+        </RadioButton>
+
+    </HBox>
+
+    <Label layoutX="92.0" layoutY="132.0" text="Период, дней:" textAlignment="RIGHT"
+           GridPane.rowIndex="5" GridPane.columnIndex="1">
+    </Label>
+
+    <TextField fx:id="operationDays" layoutX="260.0" layoutY="114.0" maxWidth="1.7976931348623157E308"
+               prefHeight="26.0" promptText="Период, дней"
+               GridPane.rowIndex="5" GridPane.columnIndex="2" styleClass="desktop-input"/>
+
+    <Label layoutX="31.0" layoutY="183.0" text="Обновлять данные, мин:" textAlignment="RIGHT"
+           GridPane.rowIndex="6" GridPane.columnIndex="1">
+    </Label>
+
+    <TextField fx:id="refreshPeriod" layoutX="260.0" layoutY="164.0" maxWidth="1.7976931348623157E308"
+               prefHeight="26.0" promptText="Мин."
+               GridPane.rowIndex="6" GridPane.columnIndex="2" styleClass="desktop-input"/>
+
+    <Label text="ABDD сервер API:" textAlignment="RIGHT"
+           GridPane.rowIndex="7" GridPane.columnIndex="1">
+    </Label>
+
+    <TextField fx:id="abddAPI" maxWidth="1.7976931348623157E308" prefHeight="26.0"
+               promptText="http://localhost:8080/api"
+               GridPane.rowIndex="7" GridPane.columnIndex="2" styleClass="desktop-input"/>
+
+    <Label disable="true" text="Папка файловый кэш:" textAlignment="RIGHT"
+           GridPane.rowIndex="8" GridPane.columnIndex="1">
+    </Label>
+
+    <TextField fx:id="fileCache" disable="true" editable="false" maxWidth="1.7976931348623157E308"
+               prefHeight="26.0" promptText="temp"
+               GridPane.rowIndex="8" GridPane.columnIndex="2" styleClass="desktop-input"/>
+
+    <ButtonBar maxWidth="1.7976931348623157E308"
+               GridPane.columnSpan="2" GridPane.rowIndex="9" GridPane.columnIndex="1"
+               styleClass="desktop-input">
             <buttons>
                 <Button contentDisplay="CENTER" defaultButton="true" onAction="#onSave" text="Сохранить"
-                        textAlignment="CENTER"/>
-            </buttons>
-            <padding>
-                <Insets right="10.0"/>
-            </padding>
-        </ButtonBar>
-    </bottom>
+                        textAlignment="CENTER" styleClass="desktop-button">
+                    <tooltip>
+                        <Tooltip text="Сохранить настройки"/>
+                    </tooltip>
+                    <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@image/write.png"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
 
-</BorderPane>
+                </Button>
+            </buttons>
+    </ButtonBar>
+
+    <columnConstraints>
+        <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0"/>
+        <ColumnConstraints prefWidth="300.0"/>
+        <ColumnConstraints prefWidth="300.0"/>
+        <ColumnConstraints halignment="RIGHT" hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0"/>
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="TOP" vgrow="ALWAYS"/>
+        <RowConstraints/>
+        <RowConstraints/>
+        <RowConstraints/>
+        <RowConstraints/>
+        <RowConstraints/>
+        <RowConstraints/>
+        <RowConstraints/>
+        <RowConstraints/>
+        <RowConstraints/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="BOTTOM" vgrow="ALWAYS"/>
+    </rowConstraints>
+
+</GridPane>

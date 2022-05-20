@@ -48,23 +48,36 @@
 
 /* desktop-button - стиль для обычных кнопок */
 .desktop-button {
+	-fx-text-fill: white;
+	-fx-alignment: bottom_left;
+	-fx-pref-width: 150px;
+	-fx-border-radius: 3px;
+	-fx-background-color: #2F444E;
+}
+/* кнопка при наведении курсора */
+.desktop-button:hover {
+	-fx-text-fill: white;
+	-fx-background-color: green;
 }
 
-/* text-field - стиль для полей ввода */
-.text-field {
-		-fx-font-family: "Arial";
-		-fx-font-size: 14px;
-		-fx-padding: 3,3,3,3;
-		-fx-border-color: black;
-		-fx-border-width: 1;
-		-fx-border-radius: 3;
-		-fx-border: gone;
-		-fx-background-color: transparent;
+/* INPUT - стиль для полей ввода */
+.desktop-input {
+	-fx-font-family: "Arial";
+	-fx-font-size: 14px;
+	-fx-border-width: 1px;
+	-fx-border-radius: 4px;
+	-fx-background-color: white;
+	-fx-border-color: lightgray;
+}
+
+.desktop-input:focused{
+	-fx-border-color: green;
 }
 
 /* navigation-pane-left - стиль левой панели с кнопками */
 .navigation-pane-left {
-	-fx-pref-width: 130px;
-	-fx-padding: 16px;
+	-fx-pref-width: 150px;
+	-fx-padding: 1px;
 	-fx-background-color: #2F444E;
 }
+

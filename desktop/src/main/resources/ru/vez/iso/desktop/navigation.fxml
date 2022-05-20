@@ -2,8 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <BorderPane fx:id="navigationView" prefHeight="400.0" prefWidth="800.0" stylesheets="@style.css"
             xmlns="http://javafx.com/javafx/" xmlns:fx="http://javafx.com/fxml/1"
@@ -11,7 +10,7 @@
     <left>
         <Pane prefHeight="400.0" styleClass="navigation-pane-left" BorderPane.alignment="CENTER">
             <children>
-                <VBox alignment="CENTER" layoutY="-1.0" prefHeight="245.0" prefWidth="130.0" spacing="5">
+                <VBox alignment="CENTER" layoutY="-1.0" prefHeight="245.0" spacing="5">
                     <ImageView fitHeight="88.0" fitWidth="129.0" pickOnBounds="true" preserveRatio="true">
                         <image>
                             <Image url="@image/logo.png"/>
@@ -20,26 +19,57 @@
                             <Insets bottom="10.0" top="10.0"/>
                         </VBox.margin>
                     </ImageView>
-                    <Button fx:id="butLogin" onAction="#onLoginLogout" prefWidth="120.0" text="Вход">
+                    <Button fx:id="butLogin" onAction="#onLoginLogout" text="Вход"
+                            styleClass="desktop-button">
                         <tooltip>
-                            <Tooltip text="Подключение к серверу ABDD"/>
+                            <Tooltip text="Подключиться к серверу"/>
                         </tooltip>
+                        <graphic>
+                            <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                <image>
+                                    <Image url="@image/login.png"/>
+                                </image>
+                            </ImageView>
+                        </graphic>
                     </Button>
-                    <Button fx:id="butMain" disable="true" onAction="#onShowMain" prefWidth="120.0" text="Загрузка EX">
+                    <Button fx:id="butMain" disable="true" onAction="#onShowMain" text="Загрузка EX"
+                            styleClass="desktop-button">
                         <tooltip>
-                            <Tooltip text="Загрузка ISO образов"/>
+                            <Tooltip text="Загрузить/Записать ЕХ"/>
                         </tooltip>
+                        <graphic>
+                            <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                <image>
+                                    <Image url="@image/disk.png"/>
+                                </image>
+                            </ImageView>
+                        </graphic>
                     </Button>
                     <Button fx:id="butDocuments" layoutX="15.0" layoutY="93.0" onAction="#onShowDocuments"
-                            prefWidth="120.0" text="Документы">
+                            text="Документы" styleClass="desktop-button">
                         <tooltip>
-                            <Tooltip text="Работа с документами записанными на диск"/>
+                            <Tooltip text="Открыть документы"/>
                         </tooltip>
+                        <graphic>
+                            <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                <image>
+                                    <Image url="@image/docs.png"/>
+                                </image>
+                            </ImageView>
+                        </graphic>
                     </Button>
-                    <Button fx:id="butSettings" onAction="#onShowSettings" prefWidth="120.0" text="Настройки">
+                    <Button fx:id="butSettings" onAction="#onShowSettings" text="Настройки"
+                            styleClass="desktop-button">
                         <tooltip>
-                            <Tooltip text="Изменение настроек приложения"/>
+                            <Tooltip text="Изменить настройки"/>
                         </tooltip>
+                        <graphic>
+                            <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                <image>
+                                    <Image url="@image/settings.png"/>
+                                </image>
+                            </ImageView>
+                        </graphic>
                     </Button>
                 </VBox>
             </children>
