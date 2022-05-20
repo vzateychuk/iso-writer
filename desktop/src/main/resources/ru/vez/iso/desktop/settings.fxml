@@ -4,35 +4,34 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-<GridPane prefHeight="300.0" prefWidth="400.0" xmlns="http://javafx.com/javafx"
-          xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.vez.iso.desktop.settings.SettingsCtl"
-          stylesheets="@style.css">
+<GridPane stylesheets="@style.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="ru.vez.iso.desktop.settings.SettingsCtl">
 
     <Label alignment="BOTTOM_CENTER" layoutX="179.0" layoutY="52.0" maxWidth="1.7976931348623157E308" prefHeight="54.0"
-           text="Настройки" textAlignment="CENTER"
-           GridPane.columnSpan="2" GridPane.rowIndex="2" GridPane.columnIndex="1"
-           styleClass="desktop-header-1" >
+           styleClass="desktop-header-1" text="Настройки" textAlignment="CENTER" GridPane.columnIndex="1"
+           GridPane.columnSpan="2" GridPane.rowIndex="2">
     </Label>
 
-    <Label layoutX="6.0" layoutY="38.0"
-           text="Отображать список операционных дней:" textAlignment="CENTER"
-           GridPane.columnSpan="2" GridPane.rowIndex="3" GridPane.columnIndex="1"
-           styleClass="desktop-header-2" >
+    <Label layoutX="6.0" layoutY="38.0" styleClass="desktop-header-2" text="Отображать список операционных дней:"
+           textAlignment="CENTER" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3">
     </Label>
 
-    <HBox alignment="TOP_CENTER" maxWidth="1.7976931348623157E308" prefWidth="40.0"
-          GridPane.columnSpan="2" GridPane.rowIndex="4" GridPane.columnIndex="1">
+    <HBox alignment="TOP_CENTER" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.columnSpan="2"
+          GridPane.rowIndex="4">
 
         <RadioButton fx:id="quarterPeriod" layoutX="29.0" layoutY="62.0" mnemonicParsing="false"
-                     onAction="#onQuarterChoice" text="Квартал" toggleGroup="$opsPeriodGroup">
+                     onAction="#onQuarterChoice" text="Квартал">
+            <toggleGroup>
+                <ToggleGroup fx:id="opsPeriodGroup"/>
+            </toggleGroup>
         </RadioButton>
 
         <RadioButton fx:id="monthPeriod" layoutX="136.0" layoutY="62.0" mnemonicParsing="false"
                      onAction="#onMonthChoice" text="Месяц" toggleGroup="$opsPeriodGroup">
         </RadioButton>
 
-        <RadioButton fx:id="weekPeriod" layoutX="238.0" layoutY="62.0" mnemonicParsing="false"
-                     onAction="#onWeekChoice" text="Неделя" toggleGroup="$opsPeriodGroup">
+        <RadioButton fx:id="weekPeriod" layoutX="238.0" layoutY="62.0" mnemonicParsing="false" onAction="#onWeekChoice"
+                     text="Неделя" toggleGroup="$opsPeriodGroup">
         </RadioButton>
 
         <RadioButton fx:id="customPeriod" layoutX="338.0" layoutY="62.0" mnemonicParsing="false"
@@ -41,77 +40,72 @@
 
     </HBox>
 
-    <Label layoutX="92.0" layoutY="132.0" text="Период, дней:" textAlignment="RIGHT"
-           GridPane.rowIndex="5" GridPane.columnIndex="1">
+    <Label layoutX="92.0" layoutY="132.0" styleClass="desktop-label" text="Период, дней:" textAlignment="RIGHT"
+           GridPane.columnIndex="1" GridPane.rowIndex="5">
     </Label>
 
-    <TextField fx:id="operationDays" layoutX="260.0" layoutY="114.0" maxWidth="1.7976931348623157E308"
-               prefHeight="26.0" promptText="Период, дней"
-               GridPane.rowIndex="5" GridPane.columnIndex="2" styleClass="desktop-input"/>
+    <TextField fx:id="operationDays" layoutX="260.0" layoutY="114.0" maxWidth="1.7976931348623157E308" prefHeight="26.0"
+               promptText="Период, дней" styleClass="desktop-input" GridPane.columnIndex="2" GridPane.rowIndex="5"/>
 
-    <Label layoutX="31.0" layoutY="183.0" text="Обновлять данные, мин:" textAlignment="RIGHT"
-           GridPane.rowIndex="6" GridPane.columnIndex="1">
+    <Label layoutX="31.0" layoutY="183.0" styleClass="desktop-label" text="Обновлять данные, мин:" textAlignment="RIGHT"
+           GridPane.columnIndex="1" GridPane.rowIndex="6">
     </Label>
 
-    <TextField fx:id="refreshPeriod" layoutX="260.0" layoutY="164.0" maxWidth="1.7976931348623157E308"
-               prefHeight="26.0" promptText="Мин."
-               GridPane.rowIndex="6" GridPane.columnIndex="2" styleClass="desktop-input"/>
+    <TextField fx:id="refreshPeriod" layoutX="260.0" layoutY="164.0" maxWidth="1.7976931348623157E308" prefHeight="26.0"
+               promptText="Мин." styleClass="desktop-input" GridPane.columnIndex="2" GridPane.rowIndex="6"/>
 
-    <Label text="ABDD сервер API:" textAlignment="RIGHT"
-           GridPane.rowIndex="7" GridPane.columnIndex="1">
+    <Label styleClass="desktop-label" text="ABDD сервер API:" textAlignment="RIGHT" GridPane.columnIndex="1"
+           GridPane.rowIndex="7">
     </Label>
 
     <TextField fx:id="abddAPI" maxWidth="1.7976931348623157E308" prefHeight="26.0"
-               promptText="http://localhost:8080/api"
-               GridPane.rowIndex="7" GridPane.columnIndex="2" styleClass="desktop-input"/>
+               promptText="http://localhost:8080/api" styleClass="desktop-input" GridPane.columnIndex="2"
+               GridPane.rowIndex="7"/>
 
-    <Label disable="true" text="Папка файловый кэш:" textAlignment="RIGHT"
-           GridPane.rowIndex="8" GridPane.columnIndex="1">
+    <Label disable="true" styleClass="desktop-label" text="Папка файловый кэш:" textAlignment="RIGHT"
+           GridPane.columnIndex="1" GridPane.rowIndex="8">
     </Label>
 
-    <TextField fx:id="fileCache" disable="true" editable="false" maxWidth="1.7976931348623157E308"
-               prefHeight="26.0" promptText="temp"
-               GridPane.rowIndex="8" GridPane.columnIndex="2" styleClass="desktop-input"/>
+    <TextField fx:id="fileCache" disable="true" editable="false" maxWidth="1.7976931348623157E308" prefHeight="26.0"
+               promptText="temp" styleClass="desktop-input" GridPane.columnIndex="2" GridPane.rowIndex="8"/>
 
-    <ButtonBar maxWidth="1.7976931348623157E308"
-               GridPane.columnSpan="2" GridPane.rowIndex="9" GridPane.columnIndex="1"
-               styleClass="desktop-input">
-            <buttons>
-                <Button contentDisplay="CENTER" defaultButton="true" onAction="#onSave" text="Сохранить"
-                        textAlignment="CENTER" styleClass="desktop-button">
-                    <tooltip>
-                        <Tooltip text="Сохранить настройки"/>
-                    </tooltip>
-                    <graphic>
-                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                            <image>
-                                <Image url="@image/write.png"/>
-                            </image>
-                        </ImageView>
-                    </graphic>
+    <ButtonBar nodeOrientation="LEFT_TO_RIGHT" prefHeight="40.0" prefWidth="200.0" GridPane.columnIndex="1"
+               GridPane.columnSpan="2" GridPane.rowIndex="9">
+        <buttons>
+            <Button defaultButton="true" onAction="#onSave" styleClass="desktop-button" text="Сохранить">
+                <tooltip>
+                    <Tooltip text="Сохранить настройки"/>
+                </tooltip>
+                <graphic>
+                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                            <Image url="@image/write.png"/>
+                        </image>
+                    </ImageView>
+                </graphic>
 
-                </Button>
-            </buttons>
+            </Button>
+        </buttons>
     </ButtonBar>
 
     <columnConstraints>
-        <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0"/>
-        <ColumnConstraints prefWidth="300.0"/>
-        <ColumnConstraints prefWidth="300.0"/>
-        <ColumnConstraints halignment="RIGHT" hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0"/>
+        <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" minWidth="10.0"/>
+        <ColumnConstraints/>
+        <ColumnConstraints/>
+        <ColumnConstraints halignment="RIGHT" hgrow="ALWAYS" minWidth="10.0"/>
     </columnConstraints>
     <rowConstraints>
-        <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="TOP" vgrow="ALWAYS"/>
+        <RowConstraints minHeight="10.0" valignment="TOP" vgrow="ALWAYS"/>
         <RowConstraints/>
         <RowConstraints/>
-        <RowConstraints/>
-        <RowConstraints/>
-        <RowConstraints/>
-        <RowConstraints/>
-        <RowConstraints/>
-        <RowConstraints/>
-        <RowConstraints/>
-        <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="BOTTOM" vgrow="ALWAYS"/>
+        <RowConstraints prefHeight="40.0"/>
+        <RowConstraints prefHeight="40.0"/>
+        <RowConstraints prefHeight="40.0"/>
+        <RowConstraints prefHeight="40.0"/>
+        <RowConstraints prefHeight="40.0"/>
+        <RowConstraints prefHeight="40.0"/>
+        <RowConstraints prefHeight="40.0"/>
+        <RowConstraints minHeight="10.0" valignment="BOTTOM" vgrow="ALWAYS"/>
     </rowConstraints>
 
 </GridPane>
