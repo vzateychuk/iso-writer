@@ -4,21 +4,17 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Font?>
-<SplitPane fx:id="abddView" dividerPositions="0.4" xmlns="http://javafx.com/javafx"
-           xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.vez.iso.desktop.main.MainCtl"
-           stylesheets="@style.css">
+<SplitPane fx:id="abddView" dividerPositions="0.4" stylesheets="@style.css" xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.vez.iso.desktop.main.MainCtl">
     <items>
         <VBox prefWidth="300.0">
             <children>
                 <GridPane>
                     <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="202.199951171875" minWidth="10.0"
-                                           prefWidth="95.60001220703126"/>
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="348.6000205993652" minWidth="10.0"
-                                           prefWidth="84.59998779296873"/>
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="348.6000205993652" minWidth="10.0"
-                                           prefWidth="237.80001220703127"/>
+                        <ColumnConstraints maxWidth="-Infinity" minWidth="20.0" prefWidth="20.0"/>
+                        <ColumnConstraints minWidth="30.0"/>
+                        <ColumnConstraints minWidth="30.0"/>
+                        <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="10.0"/>
                     </columnConstraints>
                     <rowConstraints>
                         <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES"/>
@@ -26,24 +22,21 @@
                     </rowConstraints>
                     <children>
                         <Label alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="200.0"
-                               text="Список операционных дней" GridPane.columnSpan="3"
-                               stylesheets="@style.css" styleClass="desktop-header-2">
+                               styleClass="desktop-header-2" stylesheets="@style.css" text="Список операционных дней"
+                               GridPane.columnIndex="1" GridPane.columnSpan="3">
                         </Label>
                         <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" prefHeight="200.0"
-                               text="Показать:"
+                               styleClass="desktop-label" text="Показать:" GridPane.columnIndex="1"
                                GridPane.rowIndex="1">
                         </Label>
-                        <TextField fx:id="operationDays" promptText="30" GridPane.columnIndex="1"
-                                   GridPane.rowIndex="1"/>
+                        <TextField fx:id="operationDays" promptText="30" styleClass="desktop-input-short"
+                                   GridPane.columnIndex="2" GridPane.rowIndex="1"/>
                         <Button fx:id="butReload" mnemonicParsing="false" onAction="#onReload"
-                                onKeyPressed="#onFilterEnter"
-                                GridPane.columnIndex="2" GridPane.rowIndex="1" styleClass="desktop-btn">
+                                onKeyPressed="#onFilterEnter" styleClass="desktop-btn" GridPane.columnIndex="3"
+                                GridPane.rowIndex="1">
                             <tooltip>
-                                <Tooltip text="Перечитать список"/>
+                                <Tooltip text="Обновить"/>
                             </tooltip>
-                            <font>
-                                <Font name="Arial Black" size="12.0"/>
-                            </font>
                             <graphic>
                                 <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                     <image>
@@ -70,7 +63,7 @@
         </VBox>
         <VBox prefWidth="500.0">
             <children>
-                <GridPane gridLinesVisible="true">
+                <GridPane>
                     <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
                     </columnConstraints>
@@ -80,10 +73,10 @@
                     </rowConstraints>
                     <children>
                         <Label alignment="CENTER" maxHeight="200.0" maxWidth="1.7976931348623157E308" prefHeight="200.0"
-                               text="Список единиц хранения" stylesheets="@style.css" styleClass="desktop-header-2">
+                               styleClass="desktop-header-2" stylesheets="@style.css" text="Список единиц хранения">
                         </Label>
-                        <HBox maxHeight="200.0" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1"
-                              alignment="CENTER_LEFT">
+                        <HBox alignment="CENTER_LEFT" maxHeight="200.0" prefHeight="200.0" prefWidth="200.0"
+                              GridPane.rowIndex="1">
                             <children>
                                 <RadioButton fx:id="exShowAll" mnemonicParsing="false" selected="true" text="Все">
                                     <padding>
@@ -117,8 +110,7 @@
                                 </RadioButton>
                                 <Separator orientation="VERTICAL" prefHeight="32.0" prefWidth="11.0"/>
                                 <Button fx:id="butIsoLoad" disable="true" mnemonicParsing="false"
-                                        onAction="#onStartIsoLoad"
-                                        styleClass="desktop-btn">
+                                        onAction="#onStartIsoLoad" styleClass="desktop-btn">
                                     <tooltip>
                                         <Tooltip text="Загрузить iso-образ"/>
                                     </tooltip>
@@ -135,8 +127,7 @@
                                     </opaqueInsets>
                                 </Button>
                                 <Button fx:id="butIsoCreate" disable="true" mnemonicParsing="false"
-                                        onAction="#onIsoCreate"
-                                        styleClass="desktop-btn">
+                                        onAction="#onIsoCreate" styleClass="desktop-btn">
                                     <tooltip>
                                         <Tooltip text="Сформировать iso-образ"/>
                                     </tooltip>
@@ -211,7 +202,7 @@
                         <TableColumn fx:id="storageUnitStatus" minWidth="80.0" text="Статус EX"/>
                         <TableColumn fx:id="savingDate" maxWidth="100.0" minWidth="80.0" text="Дата записи"/>
                         <TableColumn fx:id="fileName" minWidth="80.0" text="Имя ISO файла (если загружен)"/>
-                        <TableColumn fx:id="deleted" minWidth="60.0" maxWidth="60.0" text="Удален"/>
+                        <TableColumn fx:id="deleted" maxWidth="60.0" minWidth="60.0" text="Удален"/>
                     </columns>
                 </TableView>
             </children>

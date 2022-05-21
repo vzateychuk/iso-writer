@@ -63,6 +63,15 @@
 
 /* desktop-btn - стиль для кнопок без текста, но с иконками */
 .desktop-btn{
+	-fx-padding: 3 3 3 3;
+	-fx-border-radius: 3px;
+	-fx-background-color: current;
+}
+
+.desktop-btn:hover {
+	-fx-background-radius: 8,7,6;
+	-fx-background-insets: 0,1,2;
+	-fx-background-color: #CCCCCC;
 }
 
 /* desktop-button - стиль для обычных кнопок */
@@ -91,6 +100,21 @@
 }
 
 .desktop-input:focused{
+	-fx-border-color: green;
+}
+
+/* Короткое поле ввода */
+.desktop-input-short {
+	-fx-font-family: "Arial";
+	-fx-font-size: 14px;
+	-fx-border-width: 1px;
+	-fx-border-radius: 4px;
+	-fx-background-color: white;
+	-fx-border-color: lightgray;
+	-fx-pref-width: 50px;
+}
+
+.desktop-input-short:focused{
 	-fx-border-color: green;
 }
 
