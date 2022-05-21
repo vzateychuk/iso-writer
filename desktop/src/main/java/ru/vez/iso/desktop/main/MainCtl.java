@@ -152,7 +152,8 @@ public class MainCtl implements Initializable {
         tblStorageUnits.getSelectionModel().selectedItemProperty().addListener((o, oldVal, newVal) -> {
             butIsoLoad.setDisable(newVal == null || newVal.isDeleted());
             butIsoCreate.setDisable(newVal == null || !newVal.isDeleted());
-            butBurn.setDisable(newVal == null || Strings.isBlank(newVal.getIsoFileName()));
+            butBurn.setDisable(newVal == null || Strings.isBlank(newVal.getIsoFileName())
+                    || !Collections.unmodifiableList(Arrays.asList(StorageUnitStatus.READY_TO_RECORDING, StorageUnitStatus.RECORDED)).contains(newVal.getStorageUnitStatus()));
             butDelete.setDisable(newVal == null || Strings.isBlank(newVal.getIsoFileName()));
             butCheckSum.setDisable(newVal == null);
         });
