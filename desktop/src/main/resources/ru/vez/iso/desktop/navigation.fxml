@@ -82,7 +82,7 @@
         <HBox maxHeight="20.0" maxWidth="1.7976931348623157E308" minHeight="20.0" prefHeight="21.0" prefWidth="800.0"
               BorderPane.alignment="CENTER_RIGHT">
             <children>
-                <Label prefHeight="17.0" prefWidth="90.0" text="Статус: " textAlignment="RIGHT"/>
+                <Label prefHeight="17.0" prefWidth="60.0" text="Статус: " textAlignment="RIGHT" alignment="BOTTOM_RIGHT"/>
                 <Label fx:id="labelMessages" maxWidth="1.7976931348623157E308" prefHeight="17.0" text="...">
                     <tooltip>
                         <Tooltip fx:id="statusMessage" autoHide="true" style="-fx-show-delay: 250ms;" text="Сообщения"/>

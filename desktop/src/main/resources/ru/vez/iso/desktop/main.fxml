@@ -30,7 +30,7 @@
                                GridPane.rowIndex="1">
                         </Label>
                         <TextField fx:id="operationDays" promptText="30" styleClass="desktop-input-short"
-                                   GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+                                   GridPane.columnIndex="2" GridPane.rowIndex="1" onKeyPressed="#onFilterEnter"/>
                         <Button fx:id="butReload" mnemonicParsing="false" onAction="#onReload"
                                 onKeyPressed="#onFilterEnter" styleClass="desktop-btn" GridPane.columnIndex="3"
                                 GridPane.rowIndex="1">

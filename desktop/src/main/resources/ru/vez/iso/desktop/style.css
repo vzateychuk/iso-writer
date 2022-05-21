@@ -63,9 +63,11 @@
 
 /* desktop-btn - стиль для кнопок без текста, но с иконками */
 .desktop-btn{
+	-fx-background-radius: 8,7,6;
+	-fx-background-insets: 0,1,2;
 	-fx-padding: 3 3 3 3;
 	-fx-border-radius: 3px;
-	-fx-background-color: current;
+	-fx-background-color: transparent;
 }
 
 .desktop-btn:hover {
