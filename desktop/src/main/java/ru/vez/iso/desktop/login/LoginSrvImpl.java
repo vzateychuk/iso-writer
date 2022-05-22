@@ -1,7 +1,10 @@
 package ru.vez.iso.desktop.login;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import javafx.collections.ObservableMap;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
@@ -13,6 +16,9 @@ import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.shared.*;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
@@ -47,6 +53,7 @@ public class LoginSrvImpl implements LoginSrv {
             return;
         }
 
+        // Create multipart POST request
         String api = ((AppStateData<AppSettings>) appState.get(AppStateType.SETTINGS)).getValue().getAbddAPI();
         HttpPost httpPost = new HttpPost(api);
 
@@ -54,34 +61,36 @@ public class LoginSrvImpl implements LoginSrv {
                 .addTextBody("username", username)
                 .addTextBody("password", password)
                 .build();
-
         httpPost.setEntity(multipart);
 
         future = CompletableFuture.supplyAsync(() -> {
             logger.debug("user: '{}'", username);
+            this.msgSrv.news("Подключение: " + username);
 
             try (CloseableHttpClient httpClient = HttpClients.createDefault();
                  CloseableHttpResponse response = httpClient.execute(httpPost)) {
-
+                // Create response handler
+                int code = response.getStatusLine().getStatusCode();
                 final HttpEntity resEntity = response.getEntity();
-                if (resEntity == null) {
-                    throw new RuntimeException("NULL Response received");
+                if (code != HttpStatus.SC_OK || resEntity == null) {
+                    throw new RuntimeException("Server sent bad response: " + code);
                 }
-                logger.debug("Response content length: {}", resEntity.getContentLength());
+                Reader reader = new InputStreamReader(resEntity.getContent(), StandardCharsets.UTF_8);
+                JsonObject jsonObject  = new Gson().fromJson(reader, JsonObject.class);
+                String token = this.removeBearer(jsonObject.get("data").getAsString());
+                UserDetails result = jsonObject.get("ok").getAsBoolean()
+                        ? new UserDetails(username, password, token)
+                        : UserDetails.NOT_SIGNED_USER;
                 EntityUtils.consume(resEntity);
-
+                return result;
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
-
-            return "admin".equals(username) && "admin".equals(password)
-                    ? new UserDetails(username, password, username+"-"+password)
-                    : UserDetails.NOT_SIGNED_USER;
         }, exec).thenAccept(usr -> {
             appState.put(AppStateType.USER_DETAILS, AppStateData.<UserDetails>builder().value(usr).build());
-            String msg = "Выполнен " + (usr.isLogged() ? String.format("вход: %s", username) : "выход");
-            this.msgSrv.news(msg);
+            this.msgSrv.news("Выполнен " + (usr.isLogged() ? String.format("вход: %s", usr.getUsername()) : "выход"));
         }).exceptionally(ex -> {
+            this.msgSrv.news("Неуспешно, ошибка: " + ex.getLocalizedMessage());
             logger.error(ex);
             return null;
         } );
@@ -89,6 +98,15 @@ public class LoginSrvImpl implements LoginSrv {
 
     @Override
     public void logout() {
-        this.loginAsync("", "");
+        appState.put(AppStateType.USER_DETAILS, AppStateData.<UserDetails>builder().value(UserDetails.NOT_SIGNED_USER).build());
+        this.msgSrv.news("Выполнен выход");
     }
+
+    //region PRIVATE
+
+    private String removeBearer(String source) {
+        return source.contains("Bearer ") ? source.substring("Bearer ".length()) : source;
+    }
+
+    //endregion
 }

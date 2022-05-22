@@ -169,17 +169,20 @@ public class DesktopApp extends Application {
         SettingsSrv settingsSrv = new SettingsSrvImpl(appState, exec, msgSrv);
         viewCache.put(ViewType.SETTINGS, buildView( ViewType.SETTINGS, t -> new SettingsCtl(appState, settingsSrv) ));
 
+        // LoginView + LoginService
         LoginSrv loginSrv = runMode != RunMode.NOOP
                 ? new LoginSrvImpl(appState, exec, msgSrv)
                 : new LoginSrvNoopImpl(appState, exec, msgSrv);
         viewCache.put(ViewType.LOGIN, buildView(ViewType.LOGIN,t->new LoginCtl(appState, loginSrv)));
 
+        // DocumentView + DocumentService
         DocMapper mapper = new DocMapperImpl();
         DocSrv docSrv = runMode == RunMode.NOOP
                 ? new DocSrvImpl(appState, exec, mapper, msgSrv)
                 : new DocSrvImpl(appState, exec, mapper, msgSrv);
         viewCache.put(ViewType.DOCUMENTS, buildView(ViewType.DOCUMENTS,t->new DocumentCtl(appState, docSrv, msgSrv)));
 
+        // MainView + MainService
         MainSrv mainSrv = runMode == RunMode.NOOP
                 ? new MainSrvImpl(appState, exec, msgSrv)
                 : new MainSrvImpl(appState, exec, msgSrv);

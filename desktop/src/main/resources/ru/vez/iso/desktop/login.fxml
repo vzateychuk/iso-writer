@@ -24,7 +24,7 @@
            text="Пароль:" GridPane.columnIndex="1" GridPane.rowIndex="4" styleClass="desktop-label">
     </Label>
 
-    <PasswordField fx:id="password" layoutX="133.0" layoutY="222.0" onKeyPressed="#onPressEnter" prefHeight="26.0"
+    <PasswordField fx:id="password" layoutX="133.0" layoutY="222.0" prefHeight="26.0"
                    prefWidth="274.0" promptText="admin" GridPane.columnIndex="2" GridPane.rowIndex="4"
                    styleClass="desktop-input"/>
 
