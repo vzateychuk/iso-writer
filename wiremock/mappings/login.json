@@ -1,0 +1,18 @@
+{
+    "request": {
+        "method": "POST",
+        "url": "/login",
+        "headers": {
+            "Content-Type": {
+                "contains": "multipart/form-data"
+            }
+        }
+    },
+    "response": {
+        "status": 200,
+        "headers": {
+            "Content-Type": "application/json"
+        },
+	"bodyFileName": "./login-resp.json"
+    }
+}
