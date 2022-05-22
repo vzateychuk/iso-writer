@@ -10,12 +10,15 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.apache.commons.cli.*;
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.docs.*;
 import ru.vez.iso.desktop.login.LoginCtl;
 import ru.vez.iso.desktop.login.LoginSrv;
 import ru.vez.iso.desktop.login.LoginSrvImpl;
+import ru.vez.iso.desktop.login.LoginSrvNoopImpl;
 import ru.vez.iso.desktop.main.*;
 import ru.vez.iso.desktop.nav.NavigationCtl;
 import ru.vez.iso.desktop.nav.NavigationSrv;
@@ -162,13 +165,13 @@ public class DesktopApp extends Application {
 
         Map<ViewType, Parent> viewCache = new HashMap<>();
 
-        // create SettingsView and read application settings async
+        // SettingsView + SettingService
         SettingsSrv settingsSrv = new SettingsSrvImpl(appState, exec, msgSrv);
         viewCache.put(ViewType.SETTINGS, buildView( ViewType.SETTINGS, t -> new SettingsCtl(appState, settingsSrv) ));
 
-        LoginSrv loginSrv = runMode == RunMode.NOOP
+        LoginSrv loginSrv = runMode != RunMode.NOOP
                 ? new LoginSrvImpl(appState, exec, msgSrv)
-                : new LoginSrvImpl(appState, exec, msgSrv);
+                : new LoginSrvNoopImpl(appState, exec, msgSrv);
         viewCache.put(ViewType.LOGIN, buildView(ViewType.LOGIN,t->new LoginCtl(appState, loginSrv)));
 
         DocMapper mapper = new DocMapperImpl();
@@ -187,6 +190,10 @@ public class DesktopApp extends Application {
         fileCacheSrv.readFileCacheAsync(SettingType.ISO_CACHE_PATH.getDefaultValue());
 
         return viewCache;
+    }
+
+    private HttpClient newHttpClient() {
+        return HttpClients.createDefault();
     }
 
     private Parent buildView(ViewType view, Callback<Class<?>, Object> controllerFactory) throws IOException {

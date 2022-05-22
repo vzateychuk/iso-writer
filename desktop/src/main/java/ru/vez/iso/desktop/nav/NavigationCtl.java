@@ -71,7 +71,7 @@ public class NavigationCtl implements Initializable, Observer {
         logger.debug(location);
         // lock controls in Production mode
         RunMode runMode = (RunMode)appState.get(AppStateType.APP_RUN_MODE).getValue();
-        this.lockControls(RunMode.PROD == runMode);
+        // this.lockControls(RunMode.PROD == runMode);
     }
 
     @Override
@@ -111,6 +111,9 @@ public class NavigationCtl implements Initializable, Observer {
 
         logger.debug(lock);
         butMain.setDisable(lock);
+        if (!lock) {
+            showView(ViewType.MAIN_VIEW);
+        }
     }
 
     private void showView(ViewType view) {
