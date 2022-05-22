@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 /**
  * Работа с файловым cache
  * */
-public class CacheSrvImpl implements CacheSrv {
+public class FileCacheSrvImpl implements FileCacheSrv {
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -28,7 +28,11 @@ public class CacheSrvImpl implements CacheSrv {
     private final Executor exec;
     private final MessageSrv msgSrv;
 
-    public CacheSrvImpl(ObservableMap<AppStateType, AppStateData> appState, Executor exec, MessageSrv msgSrv) {
+    public FileCacheSrvImpl(
+            ObservableMap<AppStateType, AppStateData> appState,
+            Executor exec,
+            MessageSrv msgSrv
+    ) {
         this.appState = appState;
         this.exec = exec;
         this.msgSrv = msgSrv;

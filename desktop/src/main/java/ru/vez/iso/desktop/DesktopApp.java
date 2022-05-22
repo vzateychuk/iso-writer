@@ -62,7 +62,7 @@ public class DesktopApp extends Application {
 
         MessageSrv msgSrv = new MessageSrvImpl();
         // Build ViewCache with all views
-        Map<ViewType, Parent> viewCache = buildViewCache(appState, executorService, msgSrv);
+        Map<ViewType, Parent> viewCache = buildViewCache(appState, executorService, msgSrv, runMode);
 
         // create filecache directory
         createFileCacheIfNotExists(SettingType.ISO_CACHE_PATH.getDefaultValue());
@@ -85,8 +85,8 @@ public class DesktopApp extends Application {
         );
         stage.setScene(new Scene(navigation));
         String appVersion = this.getVersion();
-        stage.setTitle(String.format("Desktop. Режим:%s. Версия:%s", runMode.name(), appVersion));
-        logger.info("---> Application started! ver: {} <---", appVersion);
+        stage.setTitle(String.format("Desktop. Версия:%s; Режим:%s", appVersion, runMode.name()));
+        logger.info("---> Application started! ver: {}, mode: {} <---", appVersion, runMode);
         stage.show();
     }
 
@@ -94,12 +94,11 @@ public class DesktopApp extends Application {
 
         // parse command argument to define application run-mode
         runMode = getAppRunMode(args);
-        logger.info("Run mode: " + runMode);
+        logger.debug("Run mode: " + runMode);
         launch(args);
     }
 
-    //region Private
-
+    //region PRIVATE
 
     /**
      * Created ApplicationState Map with initial values
@@ -156,30 +155,36 @@ public class DesktopApp extends Application {
      * Application state and services created and injected
      * */
     private Map<ViewType, Parent> buildViewCache(
-                            ObservableMap<AppStateType,
-                            AppStateData> appState,
-                            ScheduledExecutorService exec,
-                            MessageSrv msgSrv) throws IOException {
+            ObservableMap<AppStateType, AppStateData> appState,
+            ScheduledExecutorService exec,
+            MessageSrv msgSrv,
+            RunMode runMode) throws IOException {
 
         Map<ViewType, Parent> viewCache = new HashMap<>();
 
         // create SettingsView and read application settings async
-        SettingsSrv setsSrv = new SettingsSrvImpl(appState, exec, msgSrv);
-        viewCache.put(ViewType.SETTINGS, buildView( ViewType.SETTINGS, t -> new SettingsCtl(appState, setsSrv) ));
+        SettingsSrv settingsSrv = new SettingsSrvImpl(appState, exec, msgSrv);
+        viewCache.put(ViewType.SETTINGS, buildView( ViewType.SETTINGS, t -> new SettingsCtl(appState, settingsSrv) ));
 
-        LoginSrv loginSrv = new LoginSrvImpl(appState, exec, msgSrv);
+        LoginSrv loginSrv = runMode == RunMode.NOOP
+                ? new LoginSrvImpl(appState, exec, msgSrv)
+                : new LoginSrvImpl(appState, exec, msgSrv);
         viewCache.put(ViewType.LOGIN, buildView(ViewType.LOGIN,t->new LoginCtl(appState, loginSrv)));
 
         DocMapper mapper = new DocMapperImpl();
-        DocSrv docSrv = new DocSrvImpl(appState, exec, mapper, msgSrv);
+        DocSrv docSrv = runMode == RunMode.NOOP
+                ? new DocSrvImpl(appState, exec, mapper, msgSrv)
+                : new DocSrvImpl(appState, exec, mapper, msgSrv);
         viewCache.put(ViewType.DOCUMENTS, buildView(ViewType.DOCUMENTS,t->new DocumentCtl(appState, docSrv, msgSrv)));
 
-        MainSrv mainSrv = new MainSrvImpl(appState, exec, msgSrv);
-        CacheSrv cacheSrv = new CacheSrvImpl(appState, exec, msgSrv);
-        viewCache.put(ViewType.MAIN_VIEW, buildView(ViewType.MAIN_VIEW, t->new MainCtl(appState, mainSrv, cacheSrv, msgSrv)));
+        MainSrv mainSrv = runMode == RunMode.NOOP
+                ? new MainSrvImpl(appState, exec, msgSrv)
+                : new MainSrvImpl(appState, exec, msgSrv);
+        FileCacheSrv fileCacheSrv = new FileCacheSrvImpl(appState, exec, msgSrv);
+        viewCache.put(ViewType.MAIN_VIEW, buildView(ViewType.MAIN_VIEW, t->new MainCtl(appState, mainSrv, fileCacheSrv, msgSrv)));
 
-        setsSrv.loadAsync(SettingType.SETTING_FILE.getDefaultValue());
-        cacheSrv.readFileCacheAsync(SettingType.ISO_CACHE_PATH.getDefaultValue());
+        settingsSrv.loadAsync(SettingType.SETTING_FILE.getDefaultValue());
+        fileCacheSrv.readFileCacheAsync(SettingType.ISO_CACHE_PATH.getDefaultValue());
 
         return viewCache;
     }
@@ -191,7 +196,6 @@ public class DesktopApp extends Application {
         loader.setControllerFactory(controllerFactory);
         return loader.load();
     }
-
 
     /**
      * Creates the directory along with any of the following parent directories if they do not already exist

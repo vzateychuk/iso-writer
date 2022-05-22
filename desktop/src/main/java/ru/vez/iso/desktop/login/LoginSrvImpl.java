@@ -1,7 +1,6 @@
 package ru.vez.iso.desktop.login;
 
 import javafx.collections.ObservableMap;
-import lombok.extern.java.Log;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.shared.*;
@@ -10,7 +9,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
 
-@Log
 public class LoginSrvImpl implements LoginSrv {
 
     private static final Logger logger = LogManager.getLogger();

@@ -73,7 +73,7 @@ public class MainCtl implements Initializable {
 
     private final ObservableMap<AppStateType, AppStateData> appState;
     private final MainSrv mainSrv;
-    private final CacheSrv cacheSrv;
+    private final FileCacheSrv fileCacheSrv;
     private final MessageSrv msgSrv;
 
     private ObservableList<OperatingDayFX> operatingDays;
@@ -86,11 +86,11 @@ public class MainCtl implements Initializable {
     public MainCtl(ObservableMap<AppStateType,
                    AppStateData> appState,
                    MainSrv mainSrv,
-                   CacheSrv cacheSrv,
+                   FileCacheSrv fileCacheSrv,
                    MessageSrv msgSrv) {
         this.appState = appState;
         this.mainSrv = mainSrv;
-        this.cacheSrv = cacheSrv;
+        this.fileCacheSrv = fileCacheSrv;
         this.msgSrv = msgSrv;
     }
 
@@ -238,7 +238,7 @@ public class MainCtl implements Initializable {
     @FXML void onStartIsoLoad(ActionEvent ev) {
         StorageUnitFX selected = tblStorageUnits.getSelectionModel().getSelectedItem();
         logger.debug("{}", selected.getNumberSu());
-        cacheSrv.loadISOAsync(selected.getNumberSu());
+        fileCacheSrv.loadISOAsync(selected.getNumberSu());
     }
 
     /**
@@ -263,7 +263,7 @@ public class MainCtl implements Initializable {
             this.msgSrv.news("Файл не выбран : " + fileName);
             return;
         }
-        cacheSrv.deleteFileAndReload(su.getIsoFileName());
+        fileCacheSrv.deleteFileAndReload(su.getIsoFileName());
     }
 
     /**

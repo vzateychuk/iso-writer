@@ -31,7 +31,11 @@ public class MainSrvImpl implements MainSrv {
     private Future<Void> future;
     private ScheduledFuture<?> scheduledReload;
 
-    public MainSrvImpl(ObservableMap<AppStateType, AppStateData> appState, ScheduledExecutorService exec, MessageSrv msgSrv) {
+    public MainSrvImpl(
+            ObservableMap<AppStateType, AppStateData> appState,
+            ScheduledExecutorService exec,
+            MessageSrv msgSrv
+    ) {
         this.appState = appState;
         this.exec = exec;
         this.msgSrv = msgSrv;
