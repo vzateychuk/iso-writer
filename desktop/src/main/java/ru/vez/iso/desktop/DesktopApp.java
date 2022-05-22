@@ -48,7 +48,7 @@ import java.util.jar.Manifest;
 public class DesktopApp extends Application {
 
     private static final Logger logger = LogManager.getLogger();
-    private static boolean isProdMode = false;
+    private static RunMode runMode;
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -70,7 +70,7 @@ public class DesktopApp extends Application {
         // Set OnClose confirmation hook
         stage.setOnCloseRequest(e -> {
             e.consume();
-            if (isProdMode && !UtilsHelper.getConfirmation("Вы уверены? Может быть запущена запись на диск.")) {
+            if (runMode == RunMode.PROD && !UtilsHelper.getConfirmation("Вы уверены?")) {
                 return;
             }
             executorService.shutdownNow();
@@ -85,7 +85,7 @@ public class DesktopApp extends Application {
         );
         stage.setScene(new Scene(navigation));
         String appVersion = this.getVersion();
-        stage.setTitle(String.format("Desktop. Режим:%s. Версия:%s", (isProdMode ? "PROD" : "DEV"), appVersion));
+        stage.setTitle(String.format("Desktop. Режим:%s. Версия:%s", runMode.name(), appVersion));
         logger.info("---> Application started! ver: {} <---", appVersion);
         stage.show();
     }
@@ -93,8 +93,8 @@ public class DesktopApp extends Application {
     public static void main(String[] args) {
 
         // parse command argument to define application run-mode
-        isProdMode = getAppIsProdMode(args);
-        logger.debug("Main. DEV mode? " + !isProdMode);
+        runMode = getAppRunMode(args);
+        logger.info("Run mode: " + runMode);
         launch(args);
     }
 
@@ -107,15 +107,21 @@ public class DesktopApp extends Application {
     private ObservableMap<AppStateType, AppStateData> createAppStateMap() {
 
         ObservableMap<AppStateType, AppStateData> appState = createDefaultAppState();
-        appState.put(AppStateType.APP_PROD_MODE, AppStateData.builder().value(isProdMode).build());
+        appState.put(AppStateType.APP_RUN_MODE, AppStateData.builder().value(runMode).build());
         return appState;
     }
 
-    private static boolean getAppIsProdMode(String[] args) {
+    /**
+     * Parse args for Application run-mode
+     * Possible values prod/dev/noop
+     *
+     * @see RunMode
+     * */
+    private static RunMode getAppRunMode(String[] args) {
 
         Options options = new Options();
 
-        Option input = new Option("m", "mode", true, "run mode: prod/dev");
+        Option input = new Option("m", "mode", true, "run mode: prod/dev/noop");
         input.setRequired(false);
         options.addOption(input);
 
@@ -125,14 +131,14 @@ public class DesktopApp extends Application {
 
         try {
             cmd = parser.parse(options, args);
-            String mode = cmd.getOptionValue("mode", "prod");
-            return !mode.isEmpty() && "prod".equals(mode.toLowerCase());
+            String sMode = cmd.getOptionValue("mode", "noop").toUpperCase();
+            return RunMode.valueOf(sMode);
         } catch (ParseException e) {
             logger.debug(e.getMessage());
             formatter.printHelp("jar-name", options);
             System.exit(1);
         }
-        return false;
+        return RunMode.NOOP;
     }
 
     /**

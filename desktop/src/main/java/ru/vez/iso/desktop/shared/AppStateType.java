@@ -5,9 +5,8 @@ package ru.vez.iso.desktop.shared;
  * */
 public enum AppStateType {
 
-    APP_PROD_MODE,      // Режим приложения: PROD / DEV
-    ZIP_DIR,       // Путь к файлу DIR.zip открытый пользователем в форме "Документы"
-    // NOTIFICATION,       // Сообщение о нотификации
+    APP_RUN_MODE,       // Режим запуска приложения: Enum RunMode
+    ZIP_DIR,            // Путь к файлу DIR.zip открытый пользователем в форме "Документы"
     USER_DETAILS,       // Информация о текущем загруженном пользователе
     OPERATION_DAYS,     // Операционные дни и StorageUnits (FX)
     DOCUMENTS,          // Список документов загруженных из REESTR файла

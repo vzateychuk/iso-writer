@@ -14,10 +14,7 @@ import javafx.scene.layout.BorderPane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.ViewType;
-import ru.vez.iso.desktop.shared.AppStateData;
-import ru.vez.iso.desktop.shared.AppStateType;
-import ru.vez.iso.desktop.shared.MessageSrv;
-import ru.vez.iso.desktop.shared.UserDetails;
+import ru.vez.iso.desktop.shared.*;
 
 import java.net.URL;
 import java.util.Map;
@@ -72,9 +69,9 @@ public class NavigationCtl implements Initializable, Observer {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         logger.debug(location);
-        // lock controls in prod mode
-        boolean prodMode = (Boolean)appState.get(AppStateType.APP_PROD_MODE).getValue();
-        this.lockControls(prodMode);
+        // lock controls in Production mode
+        RunMode runMode = (RunMode)appState.get(AppStateType.APP_RUN_MODE).getValue();
+        this.lockControls(RunMode.PROD == runMode);
     }
 
     @Override
