@@ -3,6 +3,62 @@
 	-fx-font-family: "Arial";
 	-fx-font-size: 14px;
 	-fx-alignment: CENTER;
+	domrf-primary: #8BC540;
+	domrf-secondary: #2F444E;
+	domrf-grey: #76787A;
+	domrf-card: #F1F3F4;
+	grey-15: #CCCCCC;
+}
+
+/* navigation-pane-left - стиль левой панели с кнопками */
+.navigation-pane-left {
+	-fx-pref-width: 155px;
+	-fx-padding: 3px;
+	-fx-background-color: domrf-secondary;
+}
+
+/*** BUTTONS ***/
+
+/* SIMPLE BUTTONS */
+.desktop-btn {
+	/* -fx-text-alignment	[ left | center | right | justify ] */
+	/* box-shadow offset-x | offset-y | blur-radius | spread-radius | color */
+	/* dropshadow( <blur-type> , <color> , <radius> , <spread> , <x> , <y> ) */
+	/* <blur-type> [ gaussian | one-pass-box | three-pass-box | two-pass-box ] */
+	-fx-border-style: null;
+	-fx-font-size: 14px;
+	-fx-line-height: 2em;
+	-fx-text-transform: uppercase;
+	-fx-text-alignment: center;
+	-fx-padding: 4px 16px 4px 16px;
+	-fx-min-height: 2.572em;
+	-fx-background-color: transparent;
+	-fx-border-radius: 3px;
+	-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 15, 0.5, 0, 1);
+	-fx-pref-width: 150px;
+}
+/* DENSE */
+.desktop-btn.dense {
+	-fx-padding: 0.285em;
+	-fx-min-height: 2em;
+	-fx-line-height: 1.715em;
+}
+/* BUTTONS COLORS */
+.desktop-btn.primary {
+	-fx-background-color: domrf-primary;
+	-fx-text-fill: domrf-primary;
+	-fx-border-color: domrf-primary domrf-primary domrf-primary domrf-primary;
+}
+/* FILLED BUTTONS */
+.desktop-btn.filled {
+	-fx-text-fill: #fff !important;
+}
+/* OUTLINED BUTTONS */
+.desktop-btn.outline {
+	-fx-background-color: transparent !important;
+	-fx-border-style: solid  solid solid solid;
+	-fx-border-width: 1;
+	-fx-effect: null;
 }
 
 /* desktop-header-1 - стиль для больших заголовков */
@@ -62,6 +118,7 @@
 }
 
 /* desktop-btn - стиль для кнопок без текста, но с иконками */
+/*
 .desktop-btn{
 	-fx-background-radius: 8,7,6;
 	-fx-background-insets: 0,1,2;
@@ -69,6 +126,7 @@
 	-fx-border-radius: 3px;
 	-fx-background-color: transparent;
 }
+*/
 
 .desktop-btn:hover {
 	-fx-background-radius: 8,7,6;
@@ -76,18 +134,17 @@
 	-fx-background-color: #CCCCCC;
 }
 
-/* desktop-button - стиль для обычных кнопок */
-.desktop-button {
+/* NAVIGATION - Кнопки навигации */
+.desktop-nav-button {
 	-fx-text-fill: white;
 	-fx-alignment: bottom_left;
-	-fx-pref-width: 150px;
+	-fx-pref-width: 145px;
 	-fx-border-radius: 3px;
-	-fx-background-color: #2F444E;
+	-fx-background-color: transparent;
 }
-/* кнопка при наведении курсора */
-.desktop-button:hover {
+.desktop-nav-button:hover {
 	-fx-text-fill: white;
-	-fx-background-color: green;
+	-fx-background-color: domrf-primary;
 }
 
 /* INPUT - стиль для полей ввода */
@@ -118,12 +175,5 @@
 
 .desktop-input-short:focused{
 	-fx-border-color: green;
-}
-
-/* navigation-pane-left - стиль левой панели с кнопками */
-.navigation-pane-left {
-	-fx-pref-width: 150px;
-	-fx-padding: 1px;
-	-fx-background-color: #2F444E;
 }
 

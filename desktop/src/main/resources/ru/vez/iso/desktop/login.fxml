@@ -4,35 +4,34 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-<GridPane hgap="5.0" vgap="5.0" xmlns="http://javafx.com/javafx/"
-          xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.vez.iso.desktop.login.LoginCtl"
-          stylesheets="@style.css">
+<?import java.lang.*?>
+<GridPane hgap="5.0" stylesheets="@style.css" vgap="5.0" xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.vez.iso.desktop.login.LoginCtl">
 
     <Label alignment="BOTTOM_CENTER" layoutX="179.0" layoutY="52.0" maxWidth="1.7976931348623157E308" prefHeight="54.0"
-           text="Вход в АБДД" textAlignment="CENTER" GridPane.columnIndex="1"
-           GridPane.columnSpan="2" GridPane.rowIndex="2" styleClass="desktop-header-1" >
+           styleClass="desktop-header-1" text="Вход в АБДД" textAlignment="CENTER" GridPane.columnIndex="1"
+           GridPane.columnSpan="2" GridPane.rowIndex="2">
     </Label>
 
     <Label alignment="TOP_RIGHT" layoutX="30.0" layoutY="159.0" maxWidth="1.7976931348623157E308"
-           text="Имя пользователя:" GridPane.columnIndex="1" GridPane.rowIndex="3" styleClass="desktop-label">
+           styleClass="desktop-label" text="Имя пользователя:" GridPane.columnIndex="1" GridPane.rowIndex="3">
     </Label>
 
     <TextField fx:id="username" layoutX="133.0" layoutY="157.0" prefHeight="26.0" prefWidth="274.0" promptText="admin"
-               GridPane.columnIndex="2" GridPane.rowIndex="3" styleClass="desktop-input"/>
+               styleClass="desktop-input" GridPane.columnIndex="2" GridPane.rowIndex="3"/>
 
     <Label alignment="TOP_RIGHT" layoutX="37.0" layoutY="224.0" maxWidth="1.7976931348623157E308"
-           text="Пароль:" GridPane.columnIndex="1" GridPane.rowIndex="4" styleClass="desktop-label">
+           styleClass="desktop-label" text="Пароль:" GridPane.columnIndex="1" GridPane.rowIndex="4">
     </Label>
 
-    <PasswordField fx:id="password" layoutX="133.0" layoutY="222.0" prefHeight="26.0"
-                   prefWidth="274.0" promptText="admin" GridPane.columnIndex="2" GridPane.rowIndex="4"
-                   styleClass="desktop-input"/>
+    <PasswordField fx:id="password" layoutX="133.0" layoutY="222.0" prefHeight="26.0" prefWidth="274.0"
+                   promptText="admin" styleClass="desktop-input" GridPane.columnIndex="2" GridPane.rowIndex="4"/>
 
-    <ButtonBar nodeOrientation="LEFT_TO_RIGHT" prefHeight="40.0" prefWidth="200.0"
-               GridPane.columnIndex="2" GridPane.rowIndex="5">
+    <ButtonBar nodeOrientation="LEFT_TO_RIGHT" prefHeight="40.0" prefWidth="200.0" GridPane.columnIndex="2"
+               GridPane.rowIndex="5">
         <buttons>
             <Button fx:id="butLogin" defaultButton="true" onAction="#onPressLogin" onKeyPressed="#onPressEnter"
-                    styleClass="desktop-button" text="Войти">
+                    text="ВОЙТИ">
                 <tooltip>
                     <Tooltip text="Подключиться к серверу"/>
                 </tooltip>
@@ -43,8 +42,14 @@
                         </image>
                     </ImageView>
                 </graphic>
+                <styleClass>
+                    <String fx:value="desktop-btn"/>
+                    <String fx:value="dense"/>
+                    <String fx:value="filled"/>
+                    <String fx:value="primary"/>
+                </styleClass>
             </Button>
-            <Button fx:id="butLogout" disable="true" onAction="#onLogout" styleClass="desktop-button" text="Выйти">
+            <Button fx:id="butLogout" disable="true" onAction="#onLogout" text="ВЫЙТИ">
                 <tooltip>
                     <Tooltip text="Отключиться от сервера"/>
                 </tooltip>
@@ -55,6 +60,12 @@
                         </image>
                     </ImageView>
                 </graphic>
+                <styleClass>
+                    <String fx:value="desktop-btn"/>
+                    <String fx:value="dense"/>
+                    <String fx:value="outline"/>
+                    <String fx:value="primary"/>
+                </styleClass>
             </Button>
         </buttons>
     </ButtonBar>
