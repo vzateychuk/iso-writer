@@ -30,6 +30,11 @@ public class RadioButtonsToggle {
         }
     }
 
+    public void disable(Button button, boolean flag) {
+        if (buttonPairs.containsKey(button)) {
+            buttonPairs.get(button).disable(flag);
+        }
+    }
 }
 
 class PairButton<A extends Button, B extends Button> {
@@ -39,6 +44,7 @@ class PairButton<A extends Button, B extends Button> {
     public PairButton(A outerButton, B innerButton) {
         this.outerButton = outerButton;
         this.innerButton = innerButton;
+        this.setActive(false);
     }
 
     public void setActive(boolean active){
@@ -47,4 +53,10 @@ class PairButton<A extends Button, B extends Button> {
         this.outerButton.getStyleClass().add(styleClass);
         this.innerButton.setVisible(active);
     }
+
+    public void disable(boolean flag){
+        this.outerButton.setDisable(flag);
+        this.innerButton.setDisable(flag);
+    }
+
 }

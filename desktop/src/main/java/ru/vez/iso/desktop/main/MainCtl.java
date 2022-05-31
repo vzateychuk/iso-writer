@@ -66,11 +66,15 @@ public class MainCtl implements Initializable {
     @FXML public Button butIsoCreate;
 
     // RadioButtons - filter StoreUnits
-    @FXML private ToggleGroup filterGroup;
-    @FXML private RadioButton exShowAll;
-    @FXML private RadioButton exShowAvail;
-    @FXML private RadioButton exShowPrep;
+    @FXML public Button radioStatusAll;
+    @FXML public Button radioStatusAllInner;
+    @FXML public Button radioStatusAvailable;
+    @FXML public Button radioStatusAvailableInner;
+    @FXML public Button radioStatusPrepared;
+    @FXML public Button radioStatusPreparedInner;
+    private final RadioButtonsToggle radioButtonsToggle;
 
+    // Internal state
     private final ObservableMap<AppStateType, AppStateData> appState;
     private final MainSrv mainSrv;
     private final FileCacheSrv fileCacheSrv;
@@ -79,7 +83,6 @@ public class MainCtl implements Initializable {
     private ObservableList<OperatingDayFX> operatingDays;
     private ObservableList<StorageUnitFX> storageUnits;
     private List<StorageUnitStatus> statusesFilter;
-    private int period = 1;
 
     //endregion
 
@@ -92,6 +95,7 @@ public class MainCtl implements Initializable {
         this.mainSrv = mainSrv;
         this.fileCacheSrv = fileCacheSrv;
         this.msgSrv = msgSrv;
+        this.radioButtonsToggle = new RadioButtonsToggle();
     }
 
     @Override
@@ -175,19 +179,6 @@ public class MainCtl implements Initializable {
                     }
                 });
 
-        // StoreUnitsStatus status filter (RadioButtons)
-        filterGroup.selectedToggleProperty().addListener((o, old, newVal) -> {
-            if (exShowAvail == newVal) {
-                statusesFilter = Collections.unmodifiableList(Arrays.asList(StorageUnitStatus.READY_TO_RECORDING, StorageUnitStatus.RECORDED));
-            } else if (exShowPrep == newVal) {
-                statusesFilter = Collections.singletonList(StorageUnitStatus.PREPARING_RECORDING);
-            } else {
-                statusesFilter = null;
-            }
-            // re-filter storageUnits and display
-            this.filterAndDisplayStorageUnits(storageUnits, statusesFilter);
-        });
-
         // ISO_FILES in cache changed
         this.appState.addListener(
                 (MapChangeListener<AppStateType, AppStateData>) change -> {
@@ -198,6 +189,42 @@ public class MainCtl implements Initializable {
                         Platform.runLater( ()-> this.filterAndDisplayStorageUnits(withFileNames, statusesFilter) );
                     }
                 });
+
+        // StoreUnitsStatus status filter (RadioButtons)
+        this.radioButtonsToggle.add(radioStatusAll, radioStatusAllInner);
+        this.radioButtonsToggle.add(radioStatusAvailable, radioStatusAvailableInner);
+        this.radioButtonsToggle.add(radioStatusPrepared, radioStatusPreparedInner);
+        this.radioButtonsToggle.setActive(radioStatusAll);
+    }
+
+    /**
+     * Choice filterStatusAll - Все
+     * */
+    @FXML public void onStatusAllChoice(ActionEvent ev) {
+        logger.debug("");
+        this.radioButtonsToggle.setActive(radioStatusAll);
+        this.statusesFilter = null;
+        this.filterAndDisplayStorageUnits(storageUnits, null);
+    }
+
+    /**
+     * Choice filterStatusAvailable - Доступные для записи
+     * */
+    @FXML public void onStatusAvailableChoice(ActionEvent ev) {
+        logger.debug("");
+        this.radioButtonsToggle.setActive(radioStatusAvailable);
+        this.statusesFilter = Collections.unmodifiableList(Arrays.asList(StorageUnitStatus.READY_TO_RECORDING, StorageUnitStatus.RECORDED));
+        this.filterAndDisplayStorageUnits(storageUnits, this.statusesFilter);
+    }
+
+    /**
+     * Choice filterStatusPrepared - Готовые для записи
+     * */
+    @FXML public void onStatusShowPrepChoice(ActionEvent ev) {
+        logger.debug("");
+        this.radioButtonsToggle.setActive(radioStatusPrepared);
+        this.statusesFilter = Collections.singletonList(StorageUnitStatus.PREPARING_RECORDING);
+        this.filterAndDisplayStorageUnits(storageUnits, this.statusesFilter);
     }
 
     /**
@@ -205,7 +232,7 @@ public class MainCtl implements Initializable {
      * */
     @FXML public void onReload(ActionEvent ev) {
         logger.debug("");
-        int days = period++;
+        int days = 1;
         try {
             days = Integer.parseUnsignedInt(operationDays.getText());
         } catch ( NumberFormatException ex) {
@@ -313,7 +340,6 @@ public class MainCtl implements Initializable {
                 .collect(Collectors.toList());
     }
 
-
     /**
      * Refresh master OperatingDays table
      * Must be executed in Main Application Thread only!
@@ -337,8 +363,6 @@ public class MainCtl implements Initializable {
                         ? this.storageUnits
                         : this.storageUnits.filtered(su -> filter.stream().anyMatch(f -> f.equals(su.getStorageUnitStatus())));
         // disable the storageUnits filter (radio-buttons) if no data available
-        exShowAvail.setDisable(filtered.size() == 0);
-        exShowPrep.setDisable(filtered.size() == 0);
         this.tblStorageUnits.setItems(filtered);
     }
 

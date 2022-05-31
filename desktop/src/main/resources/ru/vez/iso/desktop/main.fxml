@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
@@ -29,8 +29,8 @@
                                styleClass="desktop-label" text="Показать:" GridPane.columnIndex="1"
                                GridPane.rowIndex="1">
                         </Label>
-                        <TextField fx:id="operationDays" promptText="30" styleClass="desktop-input-short"
-                                   GridPane.columnIndex="2" GridPane.rowIndex="1" onKeyPressed="#onFilterEnter"/>
+                        <TextField fx:id="operationDays" onKeyPressed="#onFilterEnter" promptText="30"
+                                   styleClass="desktop-input-short" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
                         <Button fx:id="butReload" mnemonicParsing="false" onAction="#onReload"
                                 onKeyPressed="#onFilterEnter" styleClass="desktop-btn" GridPane.columnIndex="3"
                                 GridPane.rowIndex="1">
@@ -78,39 +78,61 @@
                         <HBox alignment="CENTER_LEFT" maxHeight="200.0" prefHeight="200.0" prefWidth="200.0"
                               GridPane.rowIndex="1">
                             <children>
-                                <RadioButton fx:id="exShowAll" mnemonicParsing="false" selected="true" text="Все">
-                                    <padding>
-                                        <Insets bottom="5.0" left="5.0" right="5.0" top="10.0"/>
-                                    </padding>
-                                    <toggleGroup>
-                                        <ToggleGroup fx:id="filterGroup"/>
-                                    </toggleGroup>
-                                    <tooltip>
-                                        <Tooltip text="Показать все EX"/>
-                                    </tooltip>
-                                </RadioButton>
-                                <RadioButton fx:id="exShowAvail" disable="true" mnemonicParsing="false" text="Доступные"
-                                             toggleGroup="$filterGroup">
-                                    <padding>
-                                        <Insets bottom="5.0" left="5.0" right="5.0" top="10.0"/>
-                                    </padding>
-                                    <tooltip>
-                                        <Tooltip
-                                                text="Показать только со статусами: &quot;Готово для записи на внешний носитель&quot;, &quot;Записано на внешний носитель&quot;"/>
-                                    </tooltip>
-                                </RadioButton>
-                                <RadioButton fx:id="exShowPrep" disable="true" mnemonicParsing="false" text="Готовятся"
-                                             toggleGroup="$filterGroup">
-                                    <padding>
-                                        <Insets bottom="5.0" left="5.0" right="5.0" top="10.0"/>
-                                    </padding>
-                                    <tooltip>
-                                        <Tooltip text="Показать только со статусом: &quot;Готовятся для записи&quot;"/>
-                                    </tooltip>
-                                </RadioButton>
+                                <HBox alignment="CENTER_LEFT">
+                                    <HBox.margin>
+                                        <Insets right="5.0"/>
+                                    </HBox.margin>
+                                    <Button fx:id="radioStatusAll" alignment="CENTER" contentDisplay="CENTER"
+                                            ellipsisString="" onAction="#onStatusAllChoice"
+                                            styleClass="desktop-radio-active" textAlignment="CENTER">
+                                        <tooltip>
+                                            <Tooltip text="Выбрать все EX"/>
+                                        </tooltip>
+                                        <graphic>
+                                            <Button fx:id="radioStatusAllInner" alignment="CENTER"
+                                                    contentDisplay="CENTER" ellipsisString=""
+                                                    styleClass="desktop-radio-active-inner" textAlignment="CENTER"/>
+                                        </graphic>
+                                    </Button>
+                                    <Label styleClass="desktop-radio-label" text="Все"/>
+                                </HBox>
+                                <HBox alignment="CENTER_LEFT">
+                                    <Button fx:id="radioStatusAvailable" alignment="CENTER" contentDisplay="CENTER"
+                                            ellipsisString="" onAction="#onStatusAvailableChoice"
+                                            styleClass="desktop-radio" textAlignment="CENTER">
+                                        <tooltip>
+                                            <Tooltip
+                                                    text="Показать только со статусами: &quot;Готово для записи на внешний носитель&quot;, &quot;Записано на внешний носитель&quot;"/>
+                                        </tooltip>
+                                        <graphic>
+                                            <Button fx:id="radioStatusAvailableInner" alignment="CENTER"
+                                                    contentDisplay="CENTER" ellipsisString=""
+                                                    styleClass="desktop-radio-active-inner" textAlignment="CENTER"/>
+                                        </graphic>
+                                    </Button>
+                                    <Label styleClass="desktop-radio-label" text="Доступные"/>
+                                </HBox>
+                                <HBox alignment="CENTER_LEFT">
+                                    <Button fx:id="radioStatusPrepared" alignment="CENTER" contentDisplay="CENTER"
+                                            ellipsisString="" onAction="#onStatusShowPrepChoice"
+                                            styleClass="desktop-radio" textAlignment="CENTER">
+                                        <tooltip>
+                                            <Tooltip
+                                                    text="Показать только со статусом: &quot;Готовятся для записи&quot;"/>
+                                        </tooltip>
+                                        <graphic>
+                                            <Button fx:id="radioStatusPreparedInner" alignment="CENTER"
+                                                    contentDisplay="CENTER" ellipsisString=""
+                                                    styleClass="desktop-radio-active-inner" textAlignment="CENTER"/>
+                                        </graphic>
+                                    </Button>
+                                    <Label styleClass="desktop-radio-label" text="Готовятся"/>
+                                </HBox>
+
                                 <Separator orientation="VERTICAL" prefHeight="32.0" prefWidth="11.0"/>
+
                                 <Button fx:id="butIsoLoad" disable="true" mnemonicParsing="false"
-                                        onAction="#onStartIsoLoad" styleClass="desktop-btn">
+                                        onAction="#onStartIsoLoad">
                                     <tooltip>
                                         <Tooltip text="Загрузить iso-образ"/>
                                     </tooltip>
@@ -127,7 +149,7 @@
                                     </opaqueInsets>
                                 </Button>
                                 <Button fx:id="butIsoCreate" disable="true" mnemonicParsing="false"
-                                        onAction="#onIsoCreate" styleClass="desktop-btn">
+                                        onAction="#onIsoCreate">
                                     <tooltip>
                                         <Tooltip text="Сформировать iso-образ"/>
                                     </tooltip>
@@ -145,8 +167,7 @@
                                 </Button>
                                 <Separator layoutX="271.0" layoutY="10.0" orientation="VERTICAL" prefHeight="32.0"
                                            prefWidth="11.0"/>
-                                <Button fx:id="butBurn" disable="true" mnemonicParsing="false" onAction="#onBurnIso"
-                                        styleClass="desktop-btn">
+                                <Button fx:id="butBurn" disable="true" mnemonicParsing="false" onAction="#onBurnIso">
                                     <tooltip>
                                         <Tooltip text="Записать iso-образ"/>
                                     </tooltip>
@@ -159,8 +180,7 @@
                                         </ImageView>
                                     </graphic>
                                 </Button>
-                                <Button fx:id="butDelete" disable="true" onAction="#onDeleteIso"
-                                        styleClass="desktop-btn">
+                                <Button fx:id="butDelete" disable="true" onAction="#onDeleteIso">
                                     <graphic>
                                         <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true"
                                                    preserveRatio="true">
@@ -173,8 +193,7 @@
                                         <Tooltip text="Удалить iso-образ"/>
                                     </tooltip>
                                 </Button>
-                                <Button fx:id="butCheckSum" disable="true" onAction="#onCheckSum"
-                                        styleClass="desktop-btn">
+                                <Button fx:id="butCheckSum" disable="true" onAction="#onCheckSum">
                                     <graphic>
                                         <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true"
                                                    preserveRatio="true">
@@ -188,6 +207,9 @@
                                     </tooltip>
                                 </Button>
                             </children>
+                            <padding>
+                                <Insets left="5.0" right="5.0"/>
+                            </padding>
                         </HBox>
                     </children>
                 </GridPane>
