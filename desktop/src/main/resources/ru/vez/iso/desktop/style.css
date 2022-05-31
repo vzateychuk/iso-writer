@@ -109,29 +109,6 @@
 	-fx-text-fill: black;
 }
 
-/* radio-button - стиль для переключателей типа radio-buttons */
-.radio-button{
-	-fx-font-family: "Arial";
-	-fx-font-size: 14px;
-	-fx-fill: #818181;
-	-fx-effect: innershadow( three-pass-box , rgba(0,0,0,0.7) , 6, 0.0 , 0 , 2 );
-	/* this is just analogue of margin */
-	-fx-padding: 5px;
-	-fx-border-insets: 5px;
-	-fx-background-insets: 5px;
-}
-
-/* desktop-btn - стиль для кнопок без текста, но с иконками */
-/*
-.desktop-btn{
-	-fx-background-radius: 8,7,6;
-	-fx-background-insets: 0,1,2;
-	-fx-padding: 3 3 3 3;
-	-fx-border-radius: 3px;
-	-fx-background-color: transparent;
-}
-*/
-
 .desktop-btn:hover {
 	-fx-background-radius: 8,7,6;
 	-fx-background-insets: 0,1,2;
@@ -177,7 +154,52 @@
 	-fx-pref-width: 50px;
 }
 
+/*
 .desktop-input-short:focused{
 	-fx-border-color: green;
 }
+*/
 
+.desktop-radio {
+	-fx-min-width: 15px;
+	-fx-pref-width: 20px;
+	-fx-min-height: 15px;
+	-fx-pref-height: 20px;
+	-fx-background-color: transparent;
+	-fx-background-radius: 100;
+	-fx-border-style: solid;
+	-fx-border-color: rgba(0, 0, 0, 0.54);
+	-fx-border-radius: 100;
+}
+.desktop-radio:hover {
+	-fx-cursor: hand;
+	-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 7, 1, 0, 0);
+}
+
+.desktop-radio-active {
+	-fx-min-width: 15px;
+	-fx-pref-width: 20px;
+	-fx-min-height: 15px;
+	-fx-pref-height: 20px;
+	-fx-background-color: transparent;
+	-fx-background-radius: 100;
+	-fx-border-style: solid;
+	-fx-border-color: domrf-primary;
+	-fx-border-radius: 100;
+}
+.desktop-radio-active:hover {
+	-fx-cursor: hand;
+	-fx-effect: dropshadow(three-pass-box, rgba(139, 197, 64, 0.08), 7, 1, 0, 0);
+}
+.desktop-radio-active-inner {
+	-fx-min-width: 1px;
+	-fx-pref-width: 1px;
+	-fx-min-height: 1px;
+	-fx-pref-height: 1px;
+	-fx-background-color: domrf-primary;
+	-fx-background-radius: 100;
+	-fx-effect: dropshadow(three-pass-box, domrf-primary, 5, 1, 0, 0);
+}
+.desktop-radio-label {
+	-fx-padding: 1 5 1 5;
+}

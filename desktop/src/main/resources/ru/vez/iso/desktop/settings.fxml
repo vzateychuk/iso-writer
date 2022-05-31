@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -16,27 +17,53 @@
            textAlignment="CENTER" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3">
     </Label>
 
-    <HBox alignment="TOP_CENTER" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.columnSpan="2"
+    <HBox alignment="CENTER" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.columnSpan="2"
           GridPane.rowIndex="4">
 
-        <RadioButton fx:id="quarterPeriod" layoutX="29.0" layoutY="62.0" mnemonicParsing="false"
-                     onAction="#onQuarterChoice" text="Квартал">
-            <toggleGroup>
-                <ToggleGroup fx:id="opsPeriodGroup"/>
-            </toggleGroup>
-        </RadioButton>
-
-        <RadioButton fx:id="monthPeriod" layoutX="136.0" layoutY="62.0" mnemonicParsing="false"
-                     onAction="#onMonthChoice" text="Месяц" toggleGroup="$opsPeriodGroup">
-        </RadioButton>
-
-        <RadioButton fx:id="weekPeriod" layoutX="238.0" layoutY="62.0" mnemonicParsing="false" onAction="#onWeekChoice"
-                     text="Неделя" toggleGroup="$opsPeriodGroup">
-        </RadioButton>
-
-        <RadioButton fx:id="customPeriod" layoutX="338.0" layoutY="62.0" mnemonicParsing="false"
-                     onAction="#onCustomChoice" text="Выбрать период" toggleGroup="$opsPeriodGroup">
-        </RadioButton>
+        <HBox alignment="CENTER_LEFT">
+            <HBox.margin>
+                <Insets right="5.0" />
+            </HBox.margin>
+            <Button fx:id="radioQuarter" onAction="#onQuarterChoice" alignment="CENTER" contentDisplay="CENTER" ellipsisString="" styleClass="desktop-radio-active" textAlignment="CENTER">
+                    <graphic>
+                        <Button fx:id="radioQuarterInner" visible="false" styleClass="desktop-radio-active-inner" alignment="CENTER" contentDisplay="CENTER" ellipsisString="" textAlignment="CENTER" />
+                    </graphic>
+            </Button>
+            <Label text="Квартал" styleClass="desktop-radio-label"></Label>
+        </HBox>
+        <HBox alignment="CENTER_LEFT">
+            <HBox.margin>
+                <Insets right="5.0" />
+            </HBox.margin>
+            <Button fx:id="radioMonth" onAction="#onMonthChoice" alignment="CENTER" contentDisplay="CENTER" ellipsisString="" styleClass="desktop-radio-active" textAlignment="CENTER">
+                <graphic>
+                    <Button fx:id="radioMonthInner" alignment="CENTER" contentDisplay="CENTER" ellipsisString="" styleClass="desktop-radio-active-inner" textAlignment="CENTER" />
+                </graphic>
+            </Button>
+            <Label text="Месяц" styleClass="desktop-radio-label"></Label>
+        </HBox>
+        <HBox alignment="CENTER_LEFT">
+            <HBox.margin>
+                <Insets right="5.0" />
+            </HBox.margin>
+            <Button fx:id="radioWeek" onAction="#onWeekChoice" alignment="CENTER" contentDisplay="CENTER" ellipsisString="" styleClass="desktop-radio-active" textAlignment="CENTER">
+                <graphic>
+                    <Button fx:id="radioWeekInner" alignment="CENTER" contentDisplay="CENTER" ellipsisString="" styleClass="desktop-radio-active-inner" textAlignment="CENTER" />
+                </graphic>
+            </Button>
+            <Label text="Неделя" styleClass="desktop-radio-label"></Label>
+        </HBox>
+        <HBox alignment="CENTER_LEFT">
+            <HBox.margin>
+                <Insets right="5.0" />
+            </HBox.margin>
+            <Button fx:id="radioCustom" onAction="#onCustomChoice" alignment="CENTER" contentDisplay="CENTER" ellipsisString="" styleClass="desktop-radio-active" textAlignment="CENTER">
+                <graphic>
+                    <Button fx:id="radioCustomInner" alignment="CENTER" contentDisplay="CENTER" ellipsisString="" styleClass="desktop-radio-active-inner" textAlignment="CENTER" />
+                </graphic>
+            </Button>
+            <Label text="Выбрать период" styleClass="desktop-radio-label"></Label>
+        </HBox>
 
     </HBox>
 

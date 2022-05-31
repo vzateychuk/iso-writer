@@ -6,9 +6,8 @@ import javafx.collections.ObservableMap;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.RadioButton;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.shared.*;
@@ -22,16 +21,22 @@ import java.util.ResourceBundle;
 public class SettingsCtl implements Initializable {
 
     private static final Logger logger = LogManager.getLogger();
-
-    @FXML private ToggleGroup opsPeriodGroup;
-    @FXML private RadioButton quarterPeriod;
-    @FXML private RadioButton monthPeriod;
-    @FXML private RadioButton weekPeriod;
-    @FXML private RadioButton customPeriod;
+    //
     @FXML private TextField operationDays;
     @FXML private TextField refreshPeriod;
     @FXML private TextField abddAPI;
     @FXML private TextField fileCache;
+
+    // radio-buttons group
+    @FXML public Button radioQuarter;
+    @FXML public Button radioQuarterInner;
+    @FXML public Button radioMonth;
+    @FXML public Button radioMonthInner;
+    @FXML public Button radioWeek;
+    @FXML public Button radioWeekInner;
+    @FXML public Button radioCustom;
+    @FXML public Button radioCustomInner;
+    private final RadioButtonsToggle radioButtonsToggle;
 
     private final ObservableMap<AppStateType, AppStateData> appState;
     private final SettingsSrv service;
@@ -39,6 +44,8 @@ public class SettingsCtl implements Initializable {
     public SettingsCtl(ObservableMap<AppStateType, AppStateData> appState, SettingsSrv service) {
         this.appState = appState;
         this.service = service;
+
+        this.radioButtonsToggle = new RadioButtonsToggle();
     }
 
 
@@ -50,9 +57,15 @@ public class SettingsCtl implements Initializable {
                 (MapChangeListener<AppStateType, AppStateData>) change -> {
                     if (AppStateType.SETTINGS.equals(change.getKey())) {
                         AppSettings sets = ((AppStateData<AppSettings>)appState.get(AppStateType.SETTINGS)).getValue();
-                        Platform.runLater(()->displaySettings(sets));
+                        Platform.runLater( ()->displaySettings(sets) );
                     }
                 });
+
+        // RadioButtons
+        this.radioButtonsToggle.add(radioQuarter, radioQuarterInner);
+        this.radioButtonsToggle.add(radioMonth, radioMonthInner);
+        this.radioButtonsToggle.add(radioWeek, radioWeekInner);
+        this.radioButtonsToggle.add(radioCustom, radioCustomInner);
     }
 
     @FXML public void onSave(ActionEvent ev) {
@@ -75,21 +88,25 @@ public class SettingsCtl implements Initializable {
     }
 
     @FXML void onQuarterChoice(ActionEvent ev) {
+        radioButtonsToggle.setActive(radioQuarter);
         operationDays.setText("90");
         operationDays.setDisable(true);
     }
 
     @FXML void onMonthChoice(ActionEvent ev) {
+        radioButtonsToggle.setActive(radioMonth);
         operationDays.setText("30");
         operationDays.setDisable(true);
     }
 
     @FXML void onWeekChoice(ActionEvent ev) {
+        radioButtonsToggle.setActive(radioWeek);
         operationDays.setText("7");
         operationDays.setDisable(true);
     }
 
     @FXML void onCustomChoice(ActionEvent ev) {
+        radioButtonsToggle.setActive(radioCustom);
         operationDays.setDisable(false);
     }
 
@@ -105,19 +122,19 @@ public class SettingsCtl implements Initializable {
         switch (operDays) {
             case 90:
                 onQuarterChoice(null);
-                quarterPeriod.setSelected(true);
+                radioButtonsToggle.setActive(radioQuarter);
                 break;
             case 30:
                 onMonthChoice(null);
-                monthPeriod.setSelected(true);
+                radioButtonsToggle.setActive(radioMonth);
                 break;
             case 7:
                 onWeekChoice(null);
-                weekPeriod.setSelected(true);
+                radioButtonsToggle.setActive(radioWeek);
                 break;
             default:
                 onCustomChoice(null);
-                customPeriod.setSelected(true);
+                radioButtonsToggle.setActive(radioCustom);
         }
         operationDays.setText( String.valueOf(operDays) );
         refreshPeriod.setText( String.valueOf(sets.getRefreshMin()) );
