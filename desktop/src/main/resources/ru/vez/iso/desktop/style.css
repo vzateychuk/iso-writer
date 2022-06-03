@@ -159,6 +159,7 @@
 	-fx-background-color: white;
 	-fx-border-color: lightgray;
 	-fx-pref-width: 300px;
+	-fx-padding: 0px 12px 0px 12px;
 }
 
 .desktop-input:focused{
@@ -234,4 +235,27 @@ https://stackoverflow.com/questions/21936585/transparent-background-of-a-textare
 
 .desktop-title .scroll-pane .content{
 	-fx-background-color: transparent;
+}
+
+/* TABLE VIEW */
+.table-view {
+	/*-fx-border-width: 0 !important;*/
+	-fx-border-color: rgba(0,0,0,0.12);
+}
+
+.table-view .table-cell {
+	-fx-border-color: transparent transparent rgba(0, 0, 0, 0.08)  transparent !important;
+	-fx-text-fill: domrf-secondary !important;
+}
+
+.table-row-cell:hover {
+	-fx-background-color: rgba(0, 0, 0, 0.04);
+}
+
+.table-row-cell:selected {
+	-fx-background-color: rgba(0, 0, 0, 0.12) !important;
+}
+
+.table-row-cell:even {
+	-fx-background-color: rgba(0, 0, 0, 0.02);
 }
