@@ -65,6 +65,28 @@
 	-fx-effect: null;
 }
 
+/* ROUND BUTTONS */
+.desktop-btn-round {
+	-fx-border-radius: 100;
+	-fx-padding: 10;
+	-fx-min-width: 30;
+	-fx-pref-width: 34;
+	-fx-min-height: 30;
+	-fx-pref-height: 34;
+	-fx-effect: null;
+	-fx-background-color: transparent;
+	-fx-background-radius: 100;
+}
+.desktop-btn-round:hover {
+	-fx-cursor: hand;
+}
+.desktop-btn-round.primary:hover {
+	-fx-background-color: rgba(139, 197, 64, 0.1);
+}
+.desktop-btn-round.secondary:hover {
+	-fx-background-color: rgba(47, 68, 78, 0.1);
+}
+
 /* desktop-header-1 - стиль для больших заголовков */
 .desktop-header-1 {
 	-fx-font-family: "Arial";
@@ -154,12 +176,7 @@
 	-fx-pref-width: 50px;
 }
 
-/*
-.desktop-input-short:focused{
-	-fx-border-color: green;
-}
-*/
-
+/** RADIO BUTTONS */
 .desktop-radio {
 	-fx-min-width: 15px;
 	-fx-pref-width: 20px;

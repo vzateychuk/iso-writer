@@ -5,6 +5,7 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
+<?import java.lang.String?>
 <GridPane stylesheets="@style.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1"
           fx:controller="ru.vez.iso.desktop.settings.SettingsCtl">
 
@@ -107,7 +108,7 @@
     <ButtonBar nodeOrientation="LEFT_TO_RIGHT" prefHeight="40.0" prefWidth="200.0" GridPane.columnIndex="1"
                GridPane.columnSpan="2" GridPane.rowIndex="9">
         <buttons>
-            <Button defaultButton="true" onAction="#onSave" styleClass="desktop-button" text="Сохранить">
+            <Button defaultButton="true" onAction="#onSave" text="СОХРАНИТЬ">
                 <tooltip>
                     <Tooltip text="Сохранить настройки"/>
                 </tooltip>
@@ -118,7 +119,12 @@
                         </image>
                     </ImageView>
                 </graphic>
-
+                <styleClass>
+                    <String fx:value="desktop-btn"/>
+                    <String fx:value="dense"/>
+                    <String fx:value="filled"/>
+                    <String fx:value="primary"/>
+                </styleClass>
             </Button>
         </buttons>
     </ButtonBar>

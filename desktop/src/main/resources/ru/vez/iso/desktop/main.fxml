@@ -4,6 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import java.lang.*?>
 <SplitPane fx:id="abddView" dividerPositions="0.4" stylesheets="@style.css" xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.vez.iso.desktop.main.MainCtl">
     <items>
@@ -32,7 +33,7 @@
                         <TextField fx:id="operationDays" onKeyPressed="#onFilterEnter" promptText="30"
                                    styleClass="desktop-input-short" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
                         <Button fx:id="butReload" mnemonicParsing="false" onAction="#onReload"
-                                onKeyPressed="#onFilterEnter" styleClass="desktop-btn" GridPane.columnIndex="3"
+                                onKeyPressed="#onFilterEnter" GridPane.columnIndex="3"
                                 GridPane.rowIndex="1">
                             <tooltip>
                                 <Tooltip text="Обновить"/>
@@ -40,10 +41,14 @@
                             <graphic>
                                 <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                     <image>
-                                        <Image url="@image/reload.png"/>
+                                        <Image url="@image/refresh-primary.png"/>
                                     </image>
                                 </ImageView>
                             </graphic>
+                            <styleClass>
+                                <String fx:value="desktop-btn-round"/>
+                                <String fx:value="primary"/>
+                            </styleClass>
                         </Button>
                     </children>
                 </GridPane>
@@ -140,13 +145,14 @@
                                         <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true"
                                                    preserveRatio="true">
                                             <image>
-                                                <Image url="@image/download.png"/>
+                                                <Image url="@image/download-primary.png"/>
                                             </image>
                                         </ImageView>
                                     </graphic>
-                                    <opaqueInsets>
-                                        <Insets/>
-                                    </opaqueInsets>
+                                    <styleClass>
+                                        <String fx:value="desktop-btn-round"/>
+                                        <String fx:value="primary"/>
+                                    </styleClass>
                                 </Button>
                                 <Button fx:id="butIsoCreate" disable="true" mnemonicParsing="false"
                                         onAction="#onIsoCreate">
@@ -157,13 +163,14 @@
                                         <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true"
                                                    preserveRatio="true">
                                             <image>
-                                                <Image url="@image/plus.png"/>
+                                                <Image url="@image/add-circle-primary.png"/>
                                             </image>
                                         </ImageView>
                                     </graphic>
-                                    <opaqueInsets>
-                                        <Insets/>
-                                    </opaqueInsets>
+                                    <styleClass>
+                                        <String fx:value="desktop-btn-round"/>
+                                        <String fx:value="primary"/>
+                                    </styleClass>
                                 </Button>
                                 <Separator layoutX="271.0" layoutY="10.0" orientation="VERTICAL" prefHeight="32.0"
                                            prefWidth="11.0"/>
@@ -175,36 +182,48 @@
                                         <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true"
                                                    preserveRatio="true">
                                             <image>
-                                                <Image url="@image/burn.png"/>
+                                                <Image url="@image/save-as-primary.png"/>
                                             </image>
                                         </ImageView>
                                     </graphic>
+                                    <styleClass>
+                                        <String fx:value="desktop-btn-round"/>
+                                        <String fx:value="primary"/>
+                                    </styleClass>
                                 </Button>
                                 <Button fx:id="butDelete" disable="true" onAction="#onDeleteIso">
-                                    <graphic>
-                                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true"
-                                                   preserveRatio="true">
-                                            <image>
-                                                <Image url="@image/delete.png"/>
-                                            </image>
-                                        </ImageView>
-                                    </graphic>
                                     <tooltip>
                                         <Tooltip text="Удалить iso-образ"/>
                                     </tooltip>
-                                </Button>
-                                <Button fx:id="butCheckSum" disable="true" onAction="#onCheckSum">
                                     <graphic>
                                         <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true"
                                                    preserveRatio="true">
                                             <image>
-                                                <Image url="@image/checksum.png"/>
+                                                <Image url="@image/delete-primary.png"/>
                                             </image>
                                         </ImageView>
                                     </graphic>
+                                    <styleClass>
+                                        <String fx:value="desktop-btn-round"/>
+                                        <String fx:value="primary"/>
+                                    </styleClass>
+                                </Button>
+                                <Button fx:id="butCheckSum" disable="true" onAction="#onCheckSum">
                                     <tooltip>
                                         <Tooltip text="Выполнить проверку CheckSum со значением на ABDD сервере"/>
                                     </tooltip>
+                                    <graphic>
+                                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true"
+                                                   preserveRatio="true">
+                                            <image>
+                                                <Image url="@image/check-primary.png"/>
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                    <styleClass>
+                                        <String fx:value="desktop-btn-round"/>
+                                        <String fx:value="primary"/>
+                                    </styleClass>
                                 </Button>
                             </children>
                             <padding>
