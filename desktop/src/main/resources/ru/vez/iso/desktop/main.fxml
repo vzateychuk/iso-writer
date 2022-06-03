@@ -31,7 +31,12 @@
                                GridPane.rowIndex="1">
                         </Label>
                         <TextField fx:id="operationDays" onKeyPressed="#onFilterEnter" promptText="30"
-                                   styleClass="desktop-input-short" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+                                   GridPane.columnIndex="2" GridPane.rowIndex="1">
+                            <styleClass>
+                                <String fx:value="desktop-input"/>
+                                <String fx:value="short"/>
+                            </styleClass>
+                        </TextField>
                         <Button fx:id="butReload" mnemonicParsing="false" onAction="#onReload"
                                 onKeyPressed="#onFilterEnter" GridPane.columnIndex="3"
                                 GridPane.rowIndex="1">
