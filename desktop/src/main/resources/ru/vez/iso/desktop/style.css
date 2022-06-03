@@ -12,7 +12,7 @@
 
 /* navigation-pane-left - стиль левой панели с кнопками */
 .navigation-pane-left {
-	-fx-pref-width: 155px;
+	-fx-pref-width: 180px;
 	-fx-padding: 3px;
 	-fx-background-color: domrf-secondary;
 }
@@ -213,4 +213,25 @@
 }
 .desktop-radio-label {
 	-fx-padding: 1 5 1 5;
+}
+
+/** APP HEADER */
+.desktop-title {
+	-fx-background-color: transparent;
+	-fx-text-fill: white;
+}
+/**
+Transparent background for text area
+https://stackoverflow.com/questions/21936585/transparent-background-of-a-textarea-in-javafx-8
+*/
+.desktop-title .scroll-pane {
+	-fx-background-color: transparent;
+}
+
+.desktop-title .scroll-pane .viewport{
+	-fx-background-color: transparent;
+}
+
+.desktop-title .scroll-pane .content{
+	-fx-background-color: transparent;
 }

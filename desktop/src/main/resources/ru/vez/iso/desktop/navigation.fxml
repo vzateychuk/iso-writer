@@ -8,17 +8,25 @@
             xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="ru.vez.iso.desktop.nav.NavigationCtl">
     <left>
-        <Pane prefHeight="400.0" styleClass="navigation-pane-left" BorderPane.alignment="CENTER">
+        <Pane prefHeight="380.0" prefWidth="150.0" styleClass="navigation-pane-left" BorderPane.alignment="CENTER">
             <children>
-                <VBox alignment="CENTER" layoutY="-1.0" prefHeight="245.0" spacing="5">
-                    <ImageView fitHeight="88.0" fitWidth="129.0" pickOnBounds="true" preserveRatio="true">
-                        <image>
-                            <Image url="@image/logo.png"/>
-                        </image>
-                        <VBox.margin>
-                            <Insets bottom="10.0" top="10.0"/>
-                        </VBox.margin>
-                    </ImageView>
+                <VBox alignment="TOP_CENTER" layoutY="-1.0" prefHeight="245.0" prefWidth="183.0" spacing="5.0">
+                    <HBox alignment="CENTER" maxWidth="200" prefHeight="40.0" prefWidth="145.0">
+                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@image/logo.png"/>
+                            </image>
+                            <VBox.margin>
+                                <Insets bottom="10.0" top="10.0"/>
+                            </VBox.margin>
+                            <HBox.margin>
+                                <Insets/>
+                            </HBox.margin>
+                        </ImageView>
+                        <TextArea prefHeight="51.0" prefWidth="162.0" styleClass="desktop-title" wrapText="true">
+                            Запись документов опердня
+                        </TextArea>
+                    </HBox>
                     <Button fx:id="butLogin" onAction="#onLoginLogout" styleClass="desktop-nav-button" text="Вход">
                         <tooltip>
                             <Tooltip text="Подключиться к серверу"/>
