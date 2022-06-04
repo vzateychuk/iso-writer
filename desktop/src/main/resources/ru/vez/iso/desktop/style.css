@@ -152,14 +152,19 @@
 
 /* INPUT - стиль для полей ввода */
 .desktop-input {
-	-fx-font-family: "Arial";
-	-fx-font-size: 14px;
-	-fx-border-width: 1px;
-	-fx-border-radius: 4px;
-	-fx-background-color: white;
-	-fx-border-color: lightgray;
+	-fx-background-color: rgba(0, 0, 0, 0.05) !important;
+	-fx-font-size: 14 !important;
+	-fx-pref-height: 30;
+	-fx-min-height: 20;
+	-fx-padding: 0px 8px 0px 8px !important;
+	-fx-border-color: rgba(0, 0, 0, 0.42) !important;
+	-fx-border-radius: 4px 4px 0px 0px !important;
+	-fx-border-width: 0px 0px 1px 0px !important;
 	-fx-pref-width: 300px;
-	-fx-padding: 0px 12px 0px 12px;
+}
+
+.desktop-input:focused {
+	-fx-background-color: rgba(0, 0, 0, 0.12) !important;
 }
 
 .desktop-input:focused{
