@@ -12,7 +12,7 @@
 
 /* navigation-pane-left - стиль левой панели с кнопками */
 .navigation-pane-left {
-	-fx-pref-width: 180px;
+	-fx-pref-width: 200px;
 	-fx-padding: 3px;
 	-fx-background-color: domrf-secondary;
 }
@@ -141,7 +141,7 @@
 .desktop-nav-button {
 	-fx-text-fill: white;
 	-fx-alignment: bottom_left;
-	-fx-pref-width: 145px;
+	-fx-pref-width: 200px;
 	-fx-border-radius: 3px;
 	-fx-background-color: transparent;
 }
@@ -219,7 +219,10 @@
 /** APP HEADER */
 .desktop-title {
 	-fx-background-color: transparent;
+	-fx-padding: 5px 1px 1px 5px;
 	-fx-text-fill: white;
+	-fx-hbar-policy: NEVER;
+	-fx-vbar-policy: NEVER;
 }
 /**
 Transparent background for text area
