@@ -66,14 +66,24 @@ public class DesktopApp extends Application {
 
         // Create executor where all background tasks will be executed
         int numOfCores = Runtime.getRuntime().availableProcessors();
-        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(numOfCores * 4);
+        ScheduledExecutorService exec = Executors.newScheduledThreadPool(numOfCores * 4);
 
+        // Create services
         MessageSrv msgSrv = new MessageSrvImpl();
-        // Build ViewCache with all views
-        Map<ViewType, Parent> viewCache = buildViewCache(appState, executorService, msgSrv, runMode);
+        SettingsSrv settingsSrv = new SettingsSrvImpl(appState, exec, msgSrv);
+        AppSettings settings = settingsSrv.load( SettingType.SETTING_FILE.getDefaultValue() );
+        if ( !Files.exists( Paths.get(SettingType.SETTING_FILE.getDefaultValue())) ) {
+            settingsSrv.save( SettingType.SETTING_FILE.getDefaultValue(), settings );
+        }
+        FileCacheSrv fileCache = new FileCacheSrvImpl(appState, exec, msgSrv);
 
-        // create filecache directory
-        createFileCacheIfNotExists(SettingType.ISO_CACHE_PATH.getDefaultValue());
+        // Build ViewCache with all views
+        Map<ViewType, Parent> viewCache = buildViewCache(appState, exec, msgSrv, settingsSrv, fileCache, runMode);
+        settingsSrv.loadAsync(SettingType.SETTING_FILE.getDefaultValue());
+
+        // create filecache directory and readAsync
+        createFileCacheIfNotExists( settings.getIsoCachePath() );
+        fileCache.readFileCacheAsync( settings.getSettingFile() );
 
         // Set OnClose confirmation hook
         stage.setOnCloseRequest(e -> {
@@ -81,7 +91,7 @@ public class DesktopApp extends Application {
             if (runMode == RunMode.PROD && !UtilsHelper.getConfirmation("Вы уверены?")) {
                 return;
             }
-            executorService.shutdownNow();
+            exec.shutdownNow();
             stage.close();
         });
 
@@ -167,12 +177,13 @@ public class DesktopApp extends Application {
             ObservableMap<AppStateType, AppStateData> appState,
             ScheduledExecutorService exec,
             MessageSrv msgSrv,
+            SettingsSrv settingsSrv,
+            FileCacheSrv fileCache,
             RunMode runMode) throws IOException {
 
         Map<ViewType, Parent> viewCache = new HashMap<>();
 
         // SettingsView + SettingService
-        SettingsSrv settingsSrv = new SettingsSrvImpl(appState, exec, msgSrv);
         viewCache.put(ViewType.SETTINGS, buildView( ViewType.SETTINGS, t -> new SettingsCtl(appState, settingsSrv) ));
 
         // LoginView + LoginService
@@ -183,20 +194,13 @@ public class DesktopApp extends Application {
 
         // DocumentView + DocumentService
         DocMapper mapper = new DocMapperImpl();
-        DocSrv docSrv = runMode == RunMode.NOOP
-                ? new DocSrvImpl(appState, exec, mapper, msgSrv)
-                : new DocSrvImpl(appState, exec, mapper, msgSrv);
+        DocSrv docSrv = new DocSrvImpl(appState, exec, mapper, msgSrv);
         viewCache.put(ViewType.DOCUMENTS, buildView(ViewType.DOCUMENTS,t->new DocumentCtl(appState, docSrv, msgSrv)));
 
         // MainView + MainService
-        MainSrv mainSrv = runMode == RunMode.NOOP
-                ? new MainSrvImpl(appState, exec, msgSrv)
-                : new MainSrvImpl(appState, exec, msgSrv);
-        FileCacheSrv fileCacheSrv = new FileCacheSrvImpl(appState, exec, msgSrv);
-        viewCache.put(ViewType.MAIN_VIEW, buildView(ViewType.MAIN_VIEW, t->new MainCtl(appState, mainSrv, fileCacheSrv, msgSrv)));
-
-        settingsSrv.loadAsync(SettingType.SETTING_FILE.getDefaultValue());
-        fileCacheSrv.readFileCacheAsync(SettingType.ISO_CACHE_PATH.getDefaultValue());
+        MainSrv mainSrv = new MainSrvImpl(appState, exec, msgSrv);
+        // FileCacheSrv fileCacheSrv = new FileCacheSrvImpl(appState, exec, msgSrv);
+        viewCache.put(ViewType.MAIN_VIEW, buildView(ViewType.MAIN_VIEW, t->new MainCtl(appState, mainSrv, fileCache, msgSrv)));
 
         return viewCache;
     }

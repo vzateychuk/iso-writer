@@ -71,7 +71,7 @@ public class SettingsCtl implements Initializable {
     @FXML public void onSave(ActionEvent ev) {
         logger.debug("");
 
-        AppSettings curSettings = ((AppStateData<AppSettings>)appState.get(AppStateType.SETTINGS)).getValue();
+        AppSettings currentSettings = ((AppStateData<AppSettings>)appState.get(AppStateType.SETTINGS)).getValue();
 
         int operDays = UtilsHelper.parseIntOrDefault(operationDays.getText(), SettingType.OPERATION_DAYS.getDefaultValue());
         int refreshMin = UtilsHelper.parseIntOrDefault(refreshPeriod.getText(), SettingType.REFRESH_PERIOD.getDefaultValue());
@@ -79,7 +79,7 @@ public class SettingsCtl implements Initializable {
         AppSettings newSetting = AppSettings.builder()
                 .abddAPI(abddAPI.getText())
                 .filterOpsDays(operDays)
-                .settingFile(curSettings.getSettingFile())
+                .settingFile(currentSettings.getSettingFile())
                 .isoCachePath(fileCache.getText())
                 .refreshMin(refreshMin)
                 .build();

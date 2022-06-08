@@ -6,14 +6,13 @@ import javafx.scene.control.ButtonType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -163,6 +162,16 @@ public class UtilsHelper {
         return "";
     }
 
+    public static Properties loadProperties(String filePath) {
+
+        Properties props = new Properties();
+        try(InputStream inputStream = Files.newInputStream(Paths.get(filePath))) {
+            props.load(inputStream);
+        } catch (IOException ex) {
+            logger.error( String.format("Unable to read settings from '%s'", filePath), ex );
+        }
+        return props;
+    }
     //endregion
 
 }

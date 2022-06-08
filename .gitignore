@@ -1,6 +1,7 @@
 # APP DIRS
 .temp/
 log/
+settings.properties
 
 # IDEA
 .idea/
