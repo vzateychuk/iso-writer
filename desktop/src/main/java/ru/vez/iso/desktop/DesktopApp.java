@@ -34,6 +34,7 @@ import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -55,6 +56,10 @@ public class DesktopApp extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
+
+        // Set UncaughtExceptionHandler logger (Runtime exception logging)
+        Thread.UncaughtExceptionHandler exceptionHandler = new ExceptionLog();
+        Thread.currentThread().setUncaughtExceptionHandler(exceptionHandler);
 
         // Create application state
         ObservableMap<AppStateType, AppStateData> appState = createAppStateMap();
@@ -110,6 +115,7 @@ public class DesktopApp extends Application {
 
         ObservableMap<AppStateType, AppStateData> appState = createDefaultAppState();
         appState.put(AppStateType.APP_RUN_MODE, AppStateData.builder().value(runMode).build());
+        appState.put(AppStateType.ISO_FILES_NAMES, AppStateData.builder().value(Collections.emptyList()).build());
         return appState;
     }
 
