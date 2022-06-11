@@ -239,7 +239,7 @@ public class MainCtl implements Initializable {
         } catch ( NumberFormatException ex) {
             logger.warn("can't parse value to int: " + operationDays.getText());
         }
-        mainSrv.readOpsDayAsync(days);
+        mainSrv.readDataAsync(days);
     }
 
     /**

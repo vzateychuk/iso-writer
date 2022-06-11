@@ -7,7 +7,7 @@ public interface MainSrv {
     /**
      * Загрузить список операционных дней и StorageUnits
      */
-    void readOpsDayAsync(int period);
+    void readDataAsync(int period);
 
     /**
      * Записать ISO на внешний диск

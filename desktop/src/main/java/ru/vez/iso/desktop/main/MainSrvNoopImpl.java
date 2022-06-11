@@ -46,7 +46,7 @@ public class MainSrvNoopImpl implements MainSrv {
      * Загрузка списков операционных дней и единиц хранения
      * */
     @Override
-    public void readOpsDayAsync(int period) {
+    public void readDataAsync(int period) {
 
         // Avoid multiply invocation
         if (!future.isDone()) {
@@ -85,7 +85,7 @@ public class MainSrvNoopImpl implements MainSrv {
             UtilsHelper.makeDelaySec(1);    // TODO send request for change EX status
             this.msgSrv.news("Записан диск: " + su.getNumberSu());
             return status;
-        }, exec).thenAccept(st -> readOpsDayAsync(20))
+        }, exec).thenAccept(st -> readDataAsync(20))
                 .exceptionally( ex -> {
                     logger.error(ex);
                     return null;
@@ -103,7 +103,7 @@ public class MainSrvNoopImpl implements MainSrv {
             this.msgSrv.news("Создан ISO образ: " + su.getNumberSu());
             return su;
         }, exec)
-                .thenAccept(st -> readOpsDayAsync(20))
+                .thenAccept(st -> readDataAsync(20))
                 .exceptionally((ex) -> {
                     logger.error(ex);
                     return null;
@@ -144,7 +144,7 @@ public class MainSrvNoopImpl implements MainSrv {
                 scheduledReload.cancel(true);
             }
             this.scheduledReload = exec.scheduleWithFixedDelay(
-                    ()-> readOpsDayAsync(filterDays),
+                    ()-> readDataAsync(filterDays),
                     1,
                     refreshMinutes *60,
                     TimeUnit.SECONDS

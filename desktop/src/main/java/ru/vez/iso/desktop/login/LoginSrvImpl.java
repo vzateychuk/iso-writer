@@ -26,6 +26,7 @@ import java.util.concurrent.Future;
 public class LoginSrvImpl implements LoginSrv {
 
     private static final Logger logger = LogManager.getLogger();
+    private static final String API_LOGIN = "/login";
 
     private final ObservableMap<AppStateType, AppStateData> appState;
     private final Executor exec;
@@ -54,7 +55,7 @@ public class LoginSrvImpl implements LoginSrv {
         }
 
         // Create multipart POST request
-        String api = ((AppStateData<AppSettings>) appState.get(AppStateType.SETTINGS)).getValue().getAbddAPI();
+        String api = ((AppStateData<AppSettings>) appState.get(AppStateType.SETTINGS)).getValue().getAbddAPI() + API_LOGIN;
         HttpPost httpPost = new HttpPost(api);
 
         HttpEntity multipart = MultipartEntityBuilder.create()
@@ -77,11 +78,12 @@ public class LoginSrvImpl implements LoginSrv {
                 }
                 Reader reader = new InputStreamReader(resEntity.getContent(), StandardCharsets.UTF_8);
                 JsonObject jsonObject  = new Gson().fromJson(reader, JsonObject.class);
+                EntityUtils.consume(resEntity);
+
                 String token = this.removeBearer(jsonObject.get("data").getAsString());
                 UserDetails user = jsonObject.get("ok").getAsBoolean()
                         ? new UserDetails(username, password, token)
                         : UserDetails.NOT_SIGNED_USER;
-                EntityUtils.consume(resEntity);
                 return user;
             } catch (IOException ex) {
                 throw new RuntimeException(ex);

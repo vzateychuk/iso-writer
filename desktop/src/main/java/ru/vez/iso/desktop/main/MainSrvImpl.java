@@ -3,6 +3,7 @@ package ru.vez.iso.desktop.main;
 import javafx.collections.ObservableMap;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.shared.*;
@@ -23,6 +24,7 @@ import java.util.stream.IntStream;
 public class MainSrvImpl implements MainSrv {
 
   private static final Logger logger = LogManager.getLogger();
+  private static final String API_OP_DAYS = "/abdd/operating-day/page";
 
   private final ObservableMap<AppStateType, AppStateData> appState;
   private final ScheduledExecutorService exec;
@@ -46,7 +48,7 @@ public class MainSrvImpl implements MainSrv {
    * Загрузка списков операционных дней и единиц хранения
    */
   @Override
-  public void readOpsDayAsync(int period) {
+  public void readDataAsync(int period) {
 
     // Avoid multiply invocation
     if (!future.isDone()) {
@@ -56,7 +58,7 @@ public class MainSrvImpl implements MainSrv {
 
     logger.debug("period: " + period);
     CompletableFuture<List<OperatingDayFX>> opsDaysFut = CompletableFuture.supplyAsync(
-        () -> getOpsDaysWithDelay(period), exec);
+        () -> loadOperationDays(period), exec);
     CompletableFuture<List<StorageUnitFX>> storeUnitsFut = CompletableFuture.supplyAsync(
         () -> getStorageUnitsWithDelay(period), exec);
 
@@ -88,7 +90,7 @@ public class MainSrvImpl implements MainSrv {
           UtilsHelper.makeDelaySec(1);    // TODO send request for change EX status
           this.msgSrv.news("Записан диск: " + su.getNumberSu());
           return status;
-        }, exec).thenAccept(st -> readOpsDayAsync(20))
+        }, exec).thenAccept(st -> readDataAsync(20))
         .exceptionally(ex -> {
           logger.error(ex);
           return null;
@@ -106,7 +108,7 @@ public class MainSrvImpl implements MainSrv {
           this.msgSrv.news("Создан ISO образ: " + su.getNumberSu());
           return su;
         }, exec)
-        .thenAccept(st -> readOpsDayAsync(20))
+        .thenAccept(st -> readDataAsync(20))
         .exceptionally((ex) -> {
           logger.error(ex);
           return null;
@@ -147,7 +149,7 @@ public class MainSrvImpl implements MainSrv {
         scheduledReload.cancel(true);
       }
       this.scheduledReload = exec.scheduleWithFixedDelay(
-          () -> readOpsDayAsync(filterDays),
+          () -> readDataAsync(filterDays),
           1,
           refreshMinutes * 60,
           TimeUnit.SECONDS
@@ -160,9 +162,12 @@ public class MainSrvImpl implements MainSrv {
 
   //region PRIVATE
 
-  List<OperatingDayFX> getOpsDaysWithDelay(int period) {
+  List<OperatingDayFX> loadOperationDays(int period) {
 
-    UtilsHelper.makeDelaySec(1);    // TODO send request for Operation Days
+    // Create multipart POST request
+    String api = ((AppStateData<AppSettings>) appState.get(AppStateType.SETTINGS)).getValue().getAbddAPI() + API_OP_DAYS;
+    HttpPost httpPost = new HttpPost(api);
+
     return IntStream.rangeClosed(0, period)
         .mapToObj(i -> {
           LocalDate date = LocalDate.of(1900 + i, i % 12 + 1, i % 12 + 1);
