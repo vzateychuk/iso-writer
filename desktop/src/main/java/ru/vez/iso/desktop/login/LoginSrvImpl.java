@@ -78,11 +78,11 @@ public class LoginSrvImpl implements LoginSrv {
                 Reader reader = new InputStreamReader(resEntity.getContent(), StandardCharsets.UTF_8);
                 JsonObject jsonObject  = new Gson().fromJson(reader, JsonObject.class);
                 String token = this.removeBearer(jsonObject.get("data").getAsString());
-                UserDetails result = jsonObject.get("ok").getAsBoolean()
+                UserDetails user = jsonObject.get("ok").getAsBoolean()
                         ? new UserDetails(username, password, token)
                         : UserDetails.NOT_SIGNED_USER;
                 EntityUtils.consume(resEntity);
-                return result;
+                return user;
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }

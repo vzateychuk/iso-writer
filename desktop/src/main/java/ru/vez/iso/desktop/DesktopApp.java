@@ -77,8 +77,15 @@ public class DesktopApp extends Application {
         }
         FileCacheSrv fileCache = new FileCacheSrvImpl(appState, exec, msgSrv);
 
+        LoginSrv loginSrv = runMode != RunMode.NOOP
+                ? new LoginSrvImpl(appState, exec, msgSrv)
+                : new LoginSrvNoopImpl(appState, exec, msgSrv);
+        MainSrv mainSrv  = runMode != RunMode.NOOP
+                ? new MainSrvImpl(appState, exec, msgSrv)
+                : new MainSrvNoopImpl(appState, exec, msgSrv);
+
         // Build ViewCache with all views
-        Map<ViewType, Parent> viewCache = buildViewCache(appState, exec, msgSrv, settingsSrv, fileCache, runMode);
+        Map<ViewType, Parent> viewCache = buildViewCache(appState,exec,msgSrv,settingsSrv,loginSrv,mainSrv,fileCache);
         settingsSrv.loadAsync(SettingType.SETTING_FILE.getDefaultValue());
 
         // create filecache directory and readAsync
@@ -178,8 +185,9 @@ public class DesktopApp extends Application {
             ScheduledExecutorService exec,
             MessageSrv msgSrv,
             SettingsSrv settingsSrv,
-            FileCacheSrv fileCache,
-            RunMode runMode) throws IOException {
+            LoginSrv loginSrv,
+            MainSrv mainSrv,
+            FileCacheSrv fileCache) throws IOException {
 
         Map<ViewType, Parent> viewCache = new HashMap<>();
 
@@ -187,9 +195,6 @@ public class DesktopApp extends Application {
         viewCache.put(ViewType.SETTINGS, buildView( ViewType.SETTINGS, t -> new SettingsCtl(appState, settingsSrv) ));
 
         // LoginView + LoginService
-        LoginSrv loginSrv = runMode != RunMode.NOOP
-                ? new LoginSrvImpl(appState, exec, msgSrv)
-                : new LoginSrvNoopImpl(appState, exec, msgSrv);
         viewCache.put(ViewType.LOGIN, buildView(ViewType.LOGIN,t->new LoginCtl(appState, loginSrv)));
 
         // DocumentView + DocumentService
@@ -198,8 +203,6 @@ public class DesktopApp extends Application {
         viewCache.put(ViewType.DOCUMENTS, buildView(ViewType.DOCUMENTS,t->new DocumentCtl(appState, docSrv, msgSrv)));
 
         // MainView + MainService
-        MainSrv mainSrv = new MainSrvImpl(appState, exec, msgSrv);
-        // FileCacheSrv fileCacheSrv = new FileCacheSrvImpl(appState, exec, msgSrv);
         viewCache.put(ViewType.MAIN_VIEW, buildView(ViewType.MAIN_VIEW, t->new MainCtl(appState, mainSrv, fileCache, msgSrv)));
 
         return viewCache;
