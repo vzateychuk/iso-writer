@@ -77,7 +77,7 @@ public class SettingsCtl implements Initializable {
         int refreshMin = UtilsHelper.parseIntOrDefault(refreshPeriod.getText(), SettingType.REFRESH_PERIOD.getDefaultValue());
 
         AppSettings newSetting = AppSettings.builder()
-                .abddAPI(abddAPI.getText())
+                .backendAPI(abddAPI.getText())
                 .filterOpsDays(operDays)
                 .settingFile(currentSettings.getSettingFile())
                 .isoCachePath(fileCache.getText())
@@ -139,7 +139,7 @@ public class SettingsCtl implements Initializable {
         operationDays.setText( String.valueOf(operDays) );
         refreshPeriod.setText( String.valueOf(sets.getRefreshMin()) );
         fileCache.setText( sets.getIsoCachePath() );
-        abddAPI.setText( sets.getAbddAPI() );
+        abddAPI.setText( sets.getBackendAPI() );
     }
 
     //endregion

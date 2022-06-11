@@ -5,13 +5,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.shared.*;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Properties;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
-import java.util.concurrent.Future;
 
 public class SettingsSrvImpl implements SettingsSrv {
 
@@ -47,7 +47,7 @@ public class SettingsSrvImpl implements SettingsSrv {
                 .isoCachePath(
                         props.getProperty(SettingType.ISO_CACHE_PATH.name(), SettingType.ISO_CACHE_PATH.getDefaultValue())
                 )
-                .abddAPI(
+                .backendAPI(
                         props.getProperty(SettingType.BACKEND_API.name(), SettingType.BACKEND_API.getDefaultValue())
                 )
                 .build();

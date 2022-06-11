@@ -10,15 +10,13 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.apache.commons.cli.*;
-import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.docs.*;
+import ru.vez.iso.desktop.login.HttpClientLoginNoopImpl;
 import ru.vez.iso.desktop.login.LoginCtl;
 import ru.vez.iso.desktop.login.LoginSrv;
 import ru.vez.iso.desktop.login.LoginSrvImpl;
-import ru.vez.iso.desktop.login.LoginSrvNoopImpl;
 import ru.vez.iso.desktop.main.*;
 import ru.vez.iso.desktop.nav.NavigationCtl;
 import ru.vez.iso.desktop.nav.NavigationSrv;
@@ -70,18 +68,29 @@ public class DesktopApp extends Application {
 
         // Create services
         MessageSrv msgSrv = new MessageSrvImpl();
+
         SettingsSrv settingsSrv = new SettingsSrvImpl(appState, exec, msgSrv);
-        AppSettings settings = settingsSrv.load( SettingType.SETTING_FILE.getDefaultValue() );
-        if ( !Files.exists( Paths.get(SettingType.SETTING_FILE.getDefaultValue())) ) {
-            settingsSrv.save( SettingType.SETTING_FILE.getDefaultValue(), settings );
+        String settingsFileName = SettingType.SETTING_FILE.getDefaultValue();
+        AppSettings sets;
+        if ( Files.exists( Paths.get(settingsFileName) ) ) {
+            sets = settingsSrv.load(settingsFileName);
+        } else {
+            sets = AppSettings.builder()
+                    .settingFile( SettingType.SETTING_FILE.getDefaultValue() )
+                    .backendAPI( SettingType.BACKEND_API.getDefaultValue() )
+                    .filterOpsDays( Integer.parseUnsignedInt(SettingType.OPERATION_DAYS.getDefaultValue()) )
+                    .refreshMin( Integer.parseInt(SettingType.REFRESH_PERIOD.getDefaultValue()) )
+                    .isoCachePath( SettingType.ISO_CACHE_PATH.getDefaultValue() )
+                    .build();
+            settingsSrv.save(settingsFileName, sets);
         }
+
         FileCacheSrv fileCache = new FileCacheSrvImpl(appState, exec, msgSrv);
 
-        LoginSrv loginSrv = runMode != RunMode.NOOP
-                ? new LoginSrvImpl(appState, exec, msgSrv)
-                : new LoginSrvNoopImpl(appState, exec, msgSrv);
+        HttpClientWrap httpLoginClient = runMode != RunMode.NOOP ? new HttpClientWrapImpl() : new HttpClientLoginNoopImpl();
+        LoginSrv loginSrv = new LoginSrvImpl(appState, exec, msgSrv, httpLoginClient);
         MainSrv mainSrv  = runMode != RunMode.NOOP
-                ? new MainSrvImpl(appState, exec, msgSrv)
+                ? new MainSrvImpl(appState, exec, msgSrv, httpLoginClient)
                 : new MainSrvNoopImpl(appState, exec, msgSrv);
 
         // Build ViewCache with all views
@@ -89,8 +98,8 @@ public class DesktopApp extends Application {
         settingsSrv.loadAsync(SettingType.SETTING_FILE.getDefaultValue());
 
         // create filecache directory and readAsync
-        createFileCacheIfNotExists( settings.getIsoCachePath() );
-        fileCache.readFileCacheAsync( settings.getSettingFile() );
+        createFileCacheIfNotExists( sets.getIsoCachePath() );
+        fileCache.readFileCacheAsync( sets.getSettingFile() );
 
         // Set OnClose confirmation hook
         stage.setOnCloseRequest(e -> {
@@ -206,10 +215,6 @@ public class DesktopApp extends Application {
         viewCache.put(ViewType.MAIN_VIEW, buildView(ViewType.MAIN_VIEW, t->new MainCtl(appState, mainSrv, fileCache, msgSrv)));
 
         return viewCache;
-    }
-
-    private HttpClient newHttpClient() {
-        return HttpClients.createDefault();
     }
 
     private Parent buildView(ViewType view, Callback<Class<?>, Object> controllerFactory) throws IOException {

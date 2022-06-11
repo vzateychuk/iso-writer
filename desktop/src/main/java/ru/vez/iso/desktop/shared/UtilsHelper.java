@@ -169,6 +169,7 @@ public class UtilsHelper {
             props.load(inputStream);
         } catch (IOException ex) {
             logger.error( String.format("Unable to read settings from '%s'", filePath), ex );
+            throw new RuntimeException(ex);
         }
         return props;
     }

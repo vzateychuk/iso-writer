@@ -1,24 +1,14 @@
 package ru.vez.iso.desktop.login;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import javafx.collections.ObservableMap;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.util.Strings;
 import ru.vez.iso.desktop.shared.*;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
@@ -31,68 +21,41 @@ public class LoginSrvImpl implements LoginSrv {
     private final ObservableMap<AppStateType, AppStateData> appState;
     private final Executor exec;
     private final MessageSrv msgSrv;
+    private final HttpClientWrap httpClient;
 
     private Future<Void> future = CompletableFuture.allOf();
 
     public LoginSrvImpl(
             ObservableMap<AppStateType, AppStateData> appState,
             Executor exec,
-            MessageSrv msgSrv
-    ) {
+            MessageSrv msgSrv,
+            HttpClientWrap httpClient) {
         this.appState = appState;
         this.exec = exec;
         this.msgSrv = msgSrv;
-        logger.debug("Created");
+        this.httpClient = httpClient;
     }
 
     @Override
     public void loginAsync(String username, String password) {
 
-        // Avoid multiply pressing
+        logger.debug("user: '{}'", username);
+
+        // Avoid multiply invocation
         if (!future.isDone()) {
             this.msgSrv.news("Операция выполняется");
             return;
         }
-
-        // Create multipart POST request
-        String api = ((AppStateData<AppSettings>) appState.get(AppStateType.SETTINGS)).getValue().getAbddAPI() + API_LOGIN;
-        HttpPost httpPost = new HttpPost(api);
-
-        HttpEntity multipart = MultipartEntityBuilder.create()
-                .addTextBody("username", username)
-                .addTextBody("password", password)
-                .build();
-        httpPost.setEntity(multipart);
-
+        // Trying to login async
         future = CompletableFuture.supplyAsync(() -> {
-            logger.debug("user: '{}'", username);
             this.msgSrv.news("Подключение: " + username);
-
-            try (CloseableHttpClient httpClient = HttpClients.createDefault();
-                 CloseableHttpResponse response = httpClient.execute(httpPost)) {
-                // Create response handler
-                int code = response.getStatusLine().getStatusCode();
-                final HttpEntity resEntity = response.getEntity();
-                if (code != HttpStatus.SC_OK || resEntity == null) {
-                    throw new RuntimeException("Server sent bad response: " + code);
-                }
-                Reader reader = new InputStreamReader(resEntity.getContent(), StandardCharsets.UTF_8);
-                JsonObject jsonObject  = new Gson().fromJson(reader, JsonObject.class);
-                EntityUtils.consume(resEntity);
-
-                String token = this.removeBearer(jsonObject.get("data").getAsString());
-                UserDetails user = jsonObject.get("ok").getAsBoolean()
-                        ? new UserDetails(username, password, token)
-                        : UserDetails.NOT_SIGNED_USER;
-                return user;
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
+            return this.login(username, password);
         }, exec).thenAccept(usr -> {
-            appState.put(AppStateType.USER_DETAILS, AppStateData.<UserDetails>builder().value(usr).build());
             this.msgSrv.news("Выполнен " + (usr.isLogged() ? String.format("вход: %s", usr.getUsername()) : "выход"));
+            logger.debug("logged in: {}", username);
+            appState.put(AppStateType.USER_DETAILS, AppStateData.<UserDetails>builder().value(usr).build());
         }).exceptionally(ex -> {
-            this.msgSrv.news("Неуспешно, ошибка: " + ex.getLocalizedMessage());
+            this.msgSrv.news("Подключение не удалось, ошибка: " + ex.getLocalizedMessage());
             logger.error(ex);
             return null;
         } );
@@ -106,7 +69,27 @@ public class LoginSrvImpl implements LoginSrv {
 
     //region PRIVATE
 
-    private String removeBearer(String source) {
+    UserDetails login(String username, String password) {
+
+        // Create multipart POST request
+        final String api = ((AppStateData<AppSettings>)appState.get(AppStateType.SETTINGS)).getValue().getBackendAPI()
+                + API_LOGIN;
+        final HttpPost httpPost = new HttpPost(api);
+        final HttpEntity multipart = MultipartEntityBuilder.create()
+                .addTextBody("username", username)
+                .addTextBody("password", password)
+                .build();
+        httpPost.setEntity(multipart);
+
+        String resp = this.httpClient.postDataRequest(httpPost);
+
+        String token = this.removeBearer(resp);
+        return !Strings.isBlank(token)
+                ? new UserDetails(username, password, token)
+                : UserDetails.NOT_SIGNED_USER;
+    }
+
+    String removeBearer(String source) {
         return source.contains("Bearer ") ? source.substring("Bearer ".length()) : source;
     }
 

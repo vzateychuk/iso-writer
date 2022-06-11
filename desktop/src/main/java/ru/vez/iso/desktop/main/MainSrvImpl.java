@@ -4,11 +4,13 @@ import javafx.collections.ObservableMap;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.shared.*;
 
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
@@ -29,19 +31,21 @@ public class MainSrvImpl implements MainSrv {
   private final ObservableMap<AppStateType, AppStateData> appState;
   private final ScheduledExecutorService exec;
   private final MessageSrv msgSrv;
+  private final HttpClientWrap httpClient;
 
   private Future<Void> future;
   private ScheduledFuture<?> scheduledReload;
 
   public MainSrvImpl(
-      ObservableMap<AppStateType, AppStateData> appState,
-      ScheduledExecutorService exec,
-      MessageSrv msgSrv
-  ) {
+          ObservableMap<AppStateType, AppStateData> appState,
+          ScheduledExecutorService exec,
+          MessageSrv msgSrv,
+          HttpClientWrap httpClient) {
     this.appState = appState;
     this.exec = exec;
     this.msgSrv = msgSrv;
     this.future = CompletableFuture.allOf();
+    this.httpClient = httpClient;
   }
 
   /**
@@ -162,20 +166,38 @@ public class MainSrvImpl implements MainSrv {
 
   //region PRIVATE
 
-  List<OperatingDayFX> loadOperationDays(int period) {
+    List<OperatingDayFX> loadOperationDays(int period) {
 
-    // Create multipart POST request
-    String api = ((AppStateData<AppSettings>) appState.get(AppStateType.SETTINGS)).getValue().getAbddAPI() + API_OP_DAYS;
-    HttpPost httpPost = new HttpPost(api);
+        // Create multipart POST request
+        String api = ((AppStateData<AppSettings>) appState.get(AppStateType.SETTINGS)).getValue().getBackendAPI() + API_OP_DAYS;
+        String token = ((AppStateData<UserDetails>) appState.get(AppStateType.USER_DETAILS)).getValue().getToken();
+        HttpPost httpPost = new HttpPost(api);
+        // TODO jsonRequest should be from RequestBuilder
+        String jsonRequest = "{\"page\":1,\"rowsPerPage\":100,\"criterias\":[{\"fields\":[\"operatingDayDate\"],\"operator\":\"GREATER_OR_EQUALS\",\"value\":\"2022-04-01\"}]}";
 
-    return IntStream.rangeClosed(0, period)
-        .mapToObj(i -> {
-          LocalDate date = LocalDate.of(1900 + i, i % 12 + 1, i % 12 + 1);
-          return new OperatingDayFX(String.valueOf(i), date, TypeSu.CD, OpsDayStatus.READY_TO_RECORDING, date,
-              i % 2 == 0);
-        })
-        .collect(Collectors.toList());
-  }
+        StringEntity entity = null;
+        try {
+            entity = new StringEntity(jsonRequest);
+        } catch (UnsupportedEncodingException ex) {
+            logger.error(ex);
+            throw new RuntimeException(ex);
+        }
+        httpPost.setEntity(entity);
+        httpPost.setHeader("Accept", "application/json");
+        httpPost.setHeader("Content-type", "application/json");
+        httpPost.setHeader("Authorization", token);
+
+
+        String resp = this.httpClient.postDataRequest(httpPost);
+
+        return IntStream.rangeClosed(0, period)
+                .mapToObj(i -> {
+                    LocalDate date = LocalDate.of(1900 + i, i % 12 + 1, i % 12 + 1);
+                    return new OperatingDayFX(String.valueOf(i), date, TypeSu.CD, OpsDayStatus.READY_TO_RECORDING, date,
+                            i % 2 == 0);
+                })
+                .collect(Collectors.toList());
+    }
 
   List<StorageUnitFX> getStorageUnitsWithDelay(int period) {
 

@@ -16,7 +16,7 @@ public class AppSettings {
     private final int refreshMin;
     private final int filterOpsDays;
     private final String isoCachePath;
-    private final String abddAPI;
+    private final String backendAPI;
 
     public Properties getProperties() {
 
@@ -25,7 +25,7 @@ public class AppSettings {
         p.setProperty(SettingType.SETTING_FILE.name(), this.settingFile);
         p.setProperty(SettingType.OPERATION_DAYS.name(), String.valueOf(this.filterOpsDays));
         p.setProperty(SettingType.ISO_CACHE_PATH.name(), this.isoCachePath);
-        p.setProperty(SettingType.BACKEND_API.name(), this.abddAPI);
+        p.setProperty(SettingType.BACKEND_API.name(), this.backendAPI);
         return p;
     }
 }
