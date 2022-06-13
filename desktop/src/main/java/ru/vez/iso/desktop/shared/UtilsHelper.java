@@ -7,12 +7,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -122,8 +124,6 @@ public class UtilsHelper {
         return option.isPresent() && option.get() == ButtonType.OK;
     }
 
-    //region PRIVATE
-
     private static File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
         File destFile = new File(destinationDir, zipEntry.getName());
 
@@ -173,6 +173,12 @@ public class UtilsHelper {
         }
         return props;
     }
-    //endregion
 
+    public static String readJsonFromFile(String fileName) {
+
+        InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName);
+        assert is != null;
+        BufferedReader readr = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
+        return readr.lines().collect(Collectors.joining(System.getProperty("line.separator")));
+    }
 }

@@ -1,6 +1,8 @@
-package ru.vez.iso.desktop.main;
+package ru.vez.iso.desktop.main.operdays;
 
 import javafx.beans.property.*;
+import ru.vez.iso.desktop.main.StorageUnitFX;
+import ru.vez.iso.desktop.main.TypeSu;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -20,7 +22,7 @@ public class OperatingDayFX {
     private final String objectId;
     private final ObjectProperty<LocalDate> operatingDay = new SimpleObjectProperty<>();
     private final ObjectProperty<TypeSu> typeSu = new SimpleObjectProperty<>();
-    private final ObjectProperty<OpsDayStatus> status = new SimpleObjectProperty<>();
+    private final ObjectProperty<OperDayStatus> status = new SimpleObjectProperty<>();
     private final ObjectProperty<LocalDate> createdAt = new SimpleObjectProperty<>();
     private final SimpleBooleanProperty edited = new SimpleBooleanProperty();
     private List<StorageUnitFX> storageUnits = Collections.emptyList();
@@ -28,7 +30,7 @@ public class OperatingDayFX {
     public OperatingDayFX(String objectId,
                           LocalDate operatingDay,
                           TypeSu typeSu,
-                          OpsDayStatus status,
+                          OperDayStatus status,
                           LocalDate createdAt,
                           boolean edited) {
         this.objectId = objectId;
@@ -57,7 +59,7 @@ public class OperatingDayFX {
         return typeSu;
     }
 
-    public OpsDayStatus getStatus() {
+    public OperDayStatus getStatus() {
         return status.get();
     }
     public StringProperty statusProperty() {

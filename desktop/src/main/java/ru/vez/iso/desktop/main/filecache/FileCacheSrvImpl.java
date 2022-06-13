@@ -1,4 +1,4 @@
-package ru.vez.iso.desktop.main;
+package ru.vez.iso.desktop.main.filecache;
 
 import javafx.collections.ObservableMap;
 import org.apache.logging.log4j.LogManager;

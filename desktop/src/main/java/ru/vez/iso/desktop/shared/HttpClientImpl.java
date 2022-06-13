@@ -20,7 +20,7 @@ import java.nio.charset.StandardCharsets;
 /**
  * HttpClient wrapper real implementation
  * */
-public class HttpClientWrapImpl implements HttpClientWrap {
+public class HttpClientImpl implements HttpClientWrap {
 
     private static final Logger logger = LogManager.getLogger();
 

@@ -17,7 +17,15 @@ import ru.vez.iso.desktop.login.HttpClientLoginNoopImpl;
 import ru.vez.iso.desktop.login.LoginCtl;
 import ru.vez.iso.desktop.login.LoginSrv;
 import ru.vez.iso.desktop.login.LoginSrvImpl;
-import ru.vez.iso.desktop.main.*;
+import ru.vez.iso.desktop.main.MainCtl;
+import ru.vez.iso.desktop.main.MainSrv;
+import ru.vez.iso.desktop.main.MainSrvImpl;
+import ru.vez.iso.desktop.main.filecache.FileCacheSrv;
+import ru.vez.iso.desktop.main.filecache.FileCacheSrvImpl;
+import ru.vez.iso.desktop.main.noop.HttpClientOperationDaysNoopImpl;
+import ru.vez.iso.desktop.main.operdays.OperationDayMapper;
+import ru.vez.iso.desktop.main.operdays.OperationDaysSrv;
+import ru.vez.iso.desktop.main.operdays.OperationDaysSrvImpl;
 import ru.vez.iso.desktop.nav.NavigationCtl;
 import ru.vez.iso.desktop.nav.NavigationSrv;
 import ru.vez.iso.desktop.nav.NavigationSrvImpl;
@@ -66,9 +74,12 @@ public class DesktopApp extends Application {
         int numOfCores = Runtime.getRuntime().availableProcessors();
         ScheduledExecutorService exec = Executors.newScheduledThreadPool(numOfCores * 4);
 
-        // Create services
+        //region BUILD SERVICES
+
+        // MessageService
         MessageSrv msgSrv = new MessageSrvImpl();
 
+        // SettingService
         SettingsSrv settingsSrv = new SettingsSrvImpl(appState, exec, msgSrv);
         String settingsFileName = SettingType.SETTING_FILE.getDefaultValue();
         AppSettings sets;
@@ -85,17 +96,24 @@ public class DesktopApp extends Application {
             settingsSrv.save(settingsFileName, sets);
         }
 
+        // FileCacheSrv
         FileCacheSrv fileCache = new FileCacheSrvImpl(appState, exec, msgSrv);
 
-        HttpClientWrap httpLoginClient = runMode != RunMode.NOOP ? new HttpClientWrapImpl() : new HttpClientLoginNoopImpl();
-        LoginSrv loginSrv = new LoginSrvImpl(appState, exec, msgSrv, httpLoginClient);
-        MainSrv mainSrv  = runMode != RunMode.NOOP
-                ? new MainSrvImpl(appState, exec, msgSrv, httpLoginClient)
-                : new MainSrvNoopImpl(appState, exec, msgSrv);
+        // OperationDaysSrv - сервис загрузки операционных дней
+        HttpClientWrap httpLoginOperationDays = runMode != RunMode.NOOP ? new HttpClientImpl() : new HttpClientOperationDaysNoopImpl();
+        OperationDayMapper operationDayMapper = new OperationDayMapper();
+        OperationDaysSrv operDaysSrv = new OperationDaysSrvImpl(appState, httpLoginOperationDays, operationDayMapper);
+        MainSrv mainSrv  = new MainSrvImpl(appState, exec, msgSrv, operDaysSrv);
 
-        // Build ViewCache with all views
+        // LoginService
+        HttpClientWrap httpClientLogin = runMode != RunMode.NOOP ? new HttpClientImpl() : new HttpClientLoginNoopImpl();
+        LoginSrv loginSrv = new LoginSrvImpl(appState, exec, msgSrv, httpClientLogin);
+
+        // ViewCache with views
         Map<ViewType, Parent> viewCache = buildViewCache(appState,exec,msgSrv,settingsSrv,loginSrv,mainSrv,fileCache);
         settingsSrv.loadAsync(SettingType.SETTING_FILE.getDefaultValue());
+
+        //endregion
 
         // create filecache directory and readAsync
         createFileCacheIfNotExists( sets.getIsoCachePath() );

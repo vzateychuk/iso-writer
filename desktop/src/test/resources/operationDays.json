@@ -1,0 +1,125 @@
+{
+    "objects": [
+      {
+        "objectId": "18f17937-bd4e-4b69-9a12-10ad447e6fbe",
+        "objectName": "Операционный день АБДД",
+        "versionId": null,
+        "creator": "admin",
+        "modifier": "admin",
+        "creationDate": "2022-05-27T13:57:15.899726",
+        "modifyDate": "2022-05-27T13:57:15.899903",
+        "objectState": null,
+        "acl": {},
+        "deleted": false,
+        "typeName": "OperatingDayAbdd",
+        "hasFile": false,
+        "timeStamp": null,
+        "uploadingOperationId": null,
+        "numberSu": "2022-05-27",
+        "operatingDayDate": "2022-05-27",
+        "typeSu": {
+          "elementId": "e806dd0f-e563-460f-8d66-1f2350b6e6f1",
+          "code": "CD",
+          "elementName": "CD/DVD Диск"
+        },
+        "operatingDayStatus": "NEW"
+      },
+      {
+        "objectId": "f0489fab-1708-498a-9f2b-7480cb87ecb1",
+        "objectName": "Операционный день АБДД",
+        "versionId": null,
+        "creator": "admin",
+        "modifier": "admin",
+        "creationDate": "2022-05-25T10:40:45.739907",
+        "modifyDate": "2022-05-25T10:40:45.739926",
+        "objectState": null,
+        "acl": {},
+        "deleted": false,
+        "typeName": "OperatingDayAbdd",
+        "hasFile": false,
+        "timeStamp": null,
+        "uploadingOperationId": null,
+        "numberSu": "2022-05-25_new1",
+        "operatingDayDate": "2022-05-25",
+        "typeSu": {
+          "elementId": "e806dd0f-e563-460f-8d66-1f2350b6e6f1",
+          "code": "CD",
+          "elementName": "CD/DVD Диск"
+        },
+        "operatingDayStatus": "RECORDED"
+      },
+      {
+        "objectId": "ce4cf065-8881-47d1-b853-5a62027bf516",
+        "objectName": "Операционный день АБДД",
+        "versionId": null,
+        "creator": "admin",
+        "modifier": "admin",
+        "creationDate": "2022-06-03T17:57:56.586351",
+        "modifyDate": "2022-06-03T17:59:38.577684",
+        "objectState": null,
+        "acl": {},
+        "deleted": false,
+        "typeName": "OperatingDayAbdd",
+        "hasFile": false,
+        "timeStamp": null,
+        "uploadingOperationId": null,
+        "numberSu": "6",
+        "operatingDayDate": "2022-06-03",
+        "typeSu": {
+          "elementId": "e806dd0f-e563-460f-8d66-1f2350b6e6f1",
+          "code": "CD",
+          "elementName": "CD/DVD Диск"
+        },
+        "operatingDayStatus": "SIGNING"
+      },
+      {
+        "objectId": "14aa2fda-019a-410e-b6f8-dbe214880100",
+        "objectName": "Операционный день АБДД",
+        "versionId": null,
+        "creator": "admin",
+        "modifier": "admin",
+        "creationDate": "2022-05-11T08:06:30.955294",
+        "modifyDate": "2022-05-11T08:06:30.95532",
+        "objectState": null,
+        "acl": {},
+        "deleted": false,
+        "typeName": "OperatingDayAbdd",
+        "hasFile": false,
+        "timeStamp": null,
+        "uploadingOperationId": null,
+        "numberSu": "2022-05-10_new1",
+        "operatingDayDate": "2022-05-10",
+        "typeSu": {
+          "elementId": "e806dd0f-e563-460f-8d66-1f2350b6e6f1",
+          "code": "CD",
+          "elementName": "CD/DVD Диск"
+        },
+        "operatingDayStatus": "READY_TO_SIGN"
+      },
+      {
+        "objectId": "56f7756d-e263-43af-9ffe-9b8d1f3f02cd",
+        "objectName": "Операционный день АБДД",
+        "versionId": null,
+        "creator": "admin",
+        "modifier": "admin",
+        "creationDate": "2022-05-16T15:25:23.880351",
+        "modifyDate": "2022-05-16T15:25:23.88056",
+        "objectState": null,
+        "acl": {},
+        "deleted": false,
+        "typeName": "OperatingDayAbdd",
+        "hasFile": false,
+        "timeStamp": null,
+        "uploadingOperationId": null,
+        "numberSu": "2022-05-16",
+        "operatingDayDate": "2022-05-16",
+        "typeSu": {
+          "elementId": "e806dd0f-e563-460f-8d66-1f2350b6e6f1",
+          "code": "CD",
+          "elementName": "CD/DVD Диск"
+        },
+        "operatingDayStatus": "READY_TO_RECORDING"
+      }
+    ],
+    "count": 5
+}

@@ -1,4 +1,4 @@
-package ru.vez.iso.desktop.main;
+package ru.vez.iso.desktop.main.filecache;
 
 /**
  * Read/Write/Check operation with CD/DVD disks
