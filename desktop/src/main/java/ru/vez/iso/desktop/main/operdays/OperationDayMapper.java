@@ -25,8 +25,7 @@ public class OperationDayMapper implements DataMapper<OperDayDto, OperatingDayFX
                 date,
                 typeSu,
                 status,
-                createdAt,
-                dto.isHasFile()
+                createdAt
         );
     }
 }

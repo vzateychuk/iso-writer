@@ -1,6 +1,9 @@
 package ru.vez.iso.desktop.main.operdays;
 
-import javafx.beans.property.*;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import ru.vez.iso.desktop.main.StorageUnitFX;
 import ru.vez.iso.desktop.main.TypeSu;
 
@@ -24,21 +27,18 @@ public class OperatingDayFX {
     private final ObjectProperty<TypeSu> typeSu = new SimpleObjectProperty<>();
     private final ObjectProperty<OperDayStatus> status = new SimpleObjectProperty<>();
     private final ObjectProperty<LocalDate> createdAt = new SimpleObjectProperty<>();
-    private final SimpleBooleanProperty edited = new SimpleBooleanProperty();
     private List<StorageUnitFX> storageUnits = Collections.emptyList();
 
     public OperatingDayFX(String objectId,
                           LocalDate operatingDay,
                           TypeSu typeSu,
                           OperDayStatus status,
-                          LocalDate createdAt,
-                          boolean edited) {
+                          LocalDate createdAt) {
         this.objectId = objectId;
         this.operatingDay.set(operatingDay);
         this.typeSu.set(typeSu);
         this.status.set(status);
         this.createdAt.set(createdAt);
-        this.edited.set(edited);
     }
 
     public String getObjectId() {
@@ -73,13 +73,6 @@ public class OperatingDayFX {
         return new SimpleStringProperty(createdAt.get().format(formatter));
     }
 
-    public boolean isEdited() {
-        return edited.get();
-    }
-    public SimpleStringProperty editedProperty() {
-        return new SimpleStringProperty(edited.get() ? "Да" : "");
-    }
-
     public List<StorageUnitFX> getStorageUnits() {
         return storageUnits;
     }
@@ -95,8 +88,7 @@ public class OperatingDayFX {
         return getOperatingDay().equals(dayFX.getOperatingDay()) &&
                 getTypeSu().equals(dayFX.getTypeSu()) &&
                 getStatus().equals(dayFX.getStatus()) &&
-                getCreatedAt().equals(dayFX.getCreatedAt()) &&
-                isEdited() == dayFX.isEdited();
+                getCreatedAt().equals(dayFX.getCreatedAt());
     }
 
     @Override
@@ -111,7 +103,6 @@ public class OperatingDayFX {
                 ", typeSU=" + getTypeSu() +
                 ", status=" + getStatus() +
                 ", created=" + getCreatedAt().format(formatter) +
-                ", isEdited=" + isEdited() +
                 '}';
     }
 }

@@ -10,6 +10,7 @@ import ru.vez.iso.desktop.main.operdays.dto.OperationDaysResponse;
 import ru.vez.iso.desktop.shared.*;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,7 +41,11 @@ public class OperationDaysSrvImpl implements OperationDaysSrv {
 
         // Create multipart POST request
         String api = ((AppStateData<AppSettings>) appState.get(AppStateType.SETTINGS)).getValue().getBackendAPI() + API_OP_DAYS;
-        String token = ((AppStateData<UserDetails>) appState.get(AppStateType.USER_DETAILS)).getValue().getToken();
+        AppStateData<UserDetails> userData = (AppStateData<UserDetails>) appState.get(AppStateType.USER_DETAILS);
+        if (userData == null) {
+            return Collections.emptyList();
+        }
+        String token = userData.getValue().getToken();
         HttpPost httpPost = new HttpPost(api);
         // TODO jsonRequest should be from RequestBuilder
         String jsonRequest = "{\"page\":1,\"rowsPerPage\":100,\"criterias\":[{\"fields\":[\"operatingDayDate\"],\"operator\":\"GREATER_OR_EQUALS\",\"value\":\"2022-04-01\"}]}";

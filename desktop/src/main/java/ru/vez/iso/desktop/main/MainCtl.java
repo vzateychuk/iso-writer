@@ -46,7 +46,6 @@ public class MainCtl implements Initializable {
     @FXML private TableColumn<OperatingDayFX, TypeSu> typeSu;
     @FXML private TableColumn<OperatingDayFX, String> status;
     @FXML private TableColumn<OperatingDayFX, String> createdAt;
-    @FXML private TableColumn<OperatingDayFX, String> edited;
 
     // Таблица "Список единиц хранения"
     @FXML private TableView<StorageUnitFX> tblStorageUnits;
@@ -116,7 +115,6 @@ public class MainCtl implements Initializable {
         typeSu.setCellValueFactory(cell -> cell.getValue().typeSuProperty());
         status.setCellValueFactory(cell -> cell.getValue().statusProperty());
         createdAt.setCellValueFactory(cell -> cell.getValue().createdAtProperty());
-        edited.setCellValueFactory(cell -> cell.getValue().editedProperty());
 
         // Таблица "Список единиц хранения"
         storageUnits = FXCollections.emptyObservableList();

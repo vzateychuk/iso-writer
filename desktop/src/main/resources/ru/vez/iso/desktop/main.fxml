@@ -63,8 +63,6 @@
                                      text="Дата опер.дня"/>
                         <TableColumn fx:id="typeSu" editable="false" maxWidth="80.0" minWidth="40.0" prefWidth="40.0"
                                      text="Вид EX"/>
-                        <TableColumn fx:id="edited" editable="false" maxWidth="80.0" minWidth="40.0" prefWidth="40.0"
-                                     text="Исправлен?"/>
                         <TableColumn fx:id="status" editable="false" minWidth="80.0" text="Статус"/>
                         <TableColumn fx:id="createdAt" editable="false" maxWidth="100.0" minWidth="80.0" text="Создан"/>
                     </columns>
