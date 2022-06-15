@@ -1,17 +1,18 @@
 package ru.vez.iso.desktop.main.storeunits;
 
 import com.google.gson.Gson;
-import javafx.collections.ObservableMap;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.vez.iso.desktop.main.storeunits.dto.StorageUnitDto;
 import ru.vez.iso.desktop.main.storeunits.dto.StorageUnitsResponse;
 import ru.vez.iso.desktop.shared.*;
 
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -22,14 +23,14 @@ public class StorageUnitsSrvImpl implements StorageUnitsSrv {
     private static final Logger logger = LogManager.getLogger();
     private static final String API_STORAGE_UNITS = "/abdd/storageunits/page";
 
-    private final ObservableMap<AppStateType, AppStateData> appState;
+    private final Map<AppStateType, AppStateData> appState;
     private final HttpClientWrap httpClient;
-    private final StorageUnitMapper mapper;
+    private final DataMapper<StorageUnitDto, StorageUnitFX> mapper;
 
     public StorageUnitsSrvImpl(
-            ObservableMap<AppStateType, AppStateData> appState,
+            Map<AppStateType, AppStateData> appState,
             HttpClientWrap httpClient,
-            StorageUnitMapper mapper
+            DataMapper<StorageUnitDto, StorageUnitFX> mapper
     ) {
         this.appState = appState;
         this.httpClient = httpClient;

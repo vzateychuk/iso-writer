@@ -1,17 +1,18 @@
 package ru.vez.iso.desktop.main.operdays;
 
 import com.google.gson.Gson;
-import javafx.collections.ObservableMap;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.vez.iso.desktop.main.operdays.dto.OperDayDto;
 import ru.vez.iso.desktop.main.operdays.dto.OperationDaysResponse;
 import ru.vez.iso.desktop.shared.*;
 
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -22,14 +23,14 @@ public class OperationDaysSrvImpl implements OperationDaysSrv {
     private static final Logger logger = LogManager.getLogger();
     private static final String API_OP_DAYS = "/abdd/operating-day/page";
 
-    private final ObservableMap<AppStateType, AppStateData> appState;
+    private final Map<AppStateType, AppStateData> appState;
     private final HttpClientWrap httpClient;
-    private final OperationDayMapper mapper;
+    private final DataMapper<OperDayDto, OperatingDayFX> mapper;
 
     public OperationDaysSrvImpl(
-            ObservableMap<AppStateType, AppStateData> appState,
+            Map<AppStateType, AppStateData> appState,
             HttpClientWrap httpClient,
-            OperationDayMapper mapper
+            DataMapper<OperDayDto, OperatingDayFX> mapper
     ) {
         this.appState = appState;
         this.httpClient = httpClient;

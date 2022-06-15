@@ -1,6 +1,5 @@
 package ru.vez.iso.desktop.main;
 
-import javafx.collections.ObservableMap;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.logging.log4j.LogManager;
@@ -18,6 +17,7 @@ import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
@@ -25,7 +25,7 @@ public class MainSrvImpl implements MainSrv {
 
   private static final Logger logger = LogManager.getLogger();
 
-  private final ObservableMap<AppStateType, AppStateData> appState;
+  private final Map<AppStateType, AppStateData> appState;
   private final ScheduledExecutorService exec;
   private final MessageSrv msgSrv;
   private final OperationDaysSrv operDaysSrv;
@@ -35,7 +35,7 @@ public class MainSrvImpl implements MainSrv {
   private ScheduledFuture<?> scheduledReload;
 
   public MainSrvImpl(
-          ObservableMap<AppStateType, AppStateData> appState,
+          Map<AppStateType, AppStateData> appState,
           ScheduledExecutorService exec,
           MessageSrv msgSrv,
           OperationDaysSrv operDaysSrv,
