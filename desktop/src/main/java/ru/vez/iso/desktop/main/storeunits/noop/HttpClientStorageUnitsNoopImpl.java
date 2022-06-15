@@ -1,4 +1,4 @@
-package ru.vez.iso.desktop.main.noop;
+package ru.vez.iso.desktop.main.storeunits.noop;
 
 import org.apache.http.client.methods.HttpPost;
 import org.apache.logging.log4j.LogManager;
@@ -9,7 +9,7 @@ import ru.vez.iso.desktop.shared.UtilsHelper;
 /**
  * HttpClient wrapper NOOP implementation
  * */
-public class HttpClientOperationDaysNoopImpl implements HttpClientWrap {
+public class HttpClientStorageUnitsNoopImpl implements HttpClientWrap {
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -20,6 +20,6 @@ public class HttpClientOperationDaysNoopImpl implements HttpClientWrap {
 
         UtilsHelper.makeDelaySec(1);
 
-        return UtilsHelper.readJsonFromFile("noop/data/operationDays.json");
+        return UtilsHelper.readJsonFromFile("noop/data/storageUnits.json");
     }
 }

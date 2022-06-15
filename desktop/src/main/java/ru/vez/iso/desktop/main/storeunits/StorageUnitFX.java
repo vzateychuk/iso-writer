@@ -1,4 +1,4 @@
-package ru.vez.iso.desktop.main;
+package ru.vez.iso.desktop.main.storeunits;
 
 import javafx.beans.property.*;
 import javafx.beans.value.ObservableValue;
@@ -17,10 +17,10 @@ public class StorageUnitFX {
 
     private final String objectId;
     private final String operatingDayId;     // ID операционного дня
-    private final StringProperty numberSu;   // Отображаемый бизнес-идентификатор
+    private final StringProperty numberSu;
     private final ObjectProperty<LocalDate> creationDate;
-    private final IntegerProperty dataSize;
-    private final ObjectProperty<LocalDate> storageDate;
+    private final LongProperty dataSize;
+    private final StringProperty storageDate;
     private final ObjectProperty<StorageUnitStatus> storageUnitStatus;
     private final ObjectProperty<LocalDate> savingDate;
     private final StringProperty isoFileName;
@@ -31,8 +31,8 @@ public class StorageUnitFX {
             String operatingDayId,
             String numberSu,
             LocalDate creationDate,
-            Integer dataSize,
-            LocalDate storageDate,
+            Long dataSize,
+            String storageDate,
             StorageUnitStatus storageUnitStatus,
             LocalDate savingDate,
             String isoFileName,
@@ -41,8 +41,8 @@ public class StorageUnitFX {
         this.operatingDayId = operatingDayId;
         this.numberSu = new SimpleStringProperty(numberSu);
         this.creationDate = new SimpleObjectProperty<>(creationDate);
-        this.dataSize = new SimpleIntegerProperty(dataSize);
-        this.storageDate = new SimpleObjectProperty<>(storageDate);
+        this.dataSize = new SimpleLongProperty(dataSize);
+        this.storageDate = new SimpleStringProperty(storageDate);
         this.storageUnitStatus = new SimpleObjectProperty<>(storageUnitStatus);
         this.savingDate = new SimpleObjectProperty<>(savingDate);
         this.isoFileName = new SimpleStringProperty(isoFileName);
@@ -68,21 +68,22 @@ public class StorageUnitFX {
         return creationDate.get();
     }
     public StringProperty creationDateProperty() {
-        return new SimpleStringProperty(creationDate.get().format(fmt));
+        String result = creationDate.get() != null ? creationDate.get().format(fmt) : "";
+        return new SimpleStringProperty(result);
     }
 
-    public Integer getDataSize() {
+    public Long getDataSize() {
         return dataSize.get();
     }
-    public ObservableValue<Integer> dataSizeProperty() {
+    public ObservableValue<Long> dataSizeProperty() {
         return dataSize.asObject();
     }
 
-    public LocalDate getStorageDate() {
+    public String getStorageDate() {
         return storageDate.get();
     }
     public StringProperty storageDateProperty() {
-        return new SimpleStringProperty(storageDate.get().format(fmt));
+        return storageDate;
     }
 
     public StorageUnitStatus getStorageUnitStatus() {
@@ -96,7 +97,8 @@ public class StorageUnitFX {
         return savingDate.get();
     }
     public StringProperty savingDateProperty() {
-        return new SimpleStringProperty(savingDate.get().format(fmt));
+        String result = savingDate.get() != null ? savingDate.get().format(fmt) : "";
+        return new SimpleStringProperty(result);
     }
 
     public String getIsoFileName() {

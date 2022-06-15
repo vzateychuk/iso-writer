@@ -7,6 +7,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.main.operdays.OperatingDayFX;
 import ru.vez.iso.desktop.main.operdays.OperationDaysSrv;
+import ru.vez.iso.desktop.main.storeunits.StorageUnitFX;
+import ru.vez.iso.desktop.main.storeunits.StorageUnitStatus;
+import ru.vez.iso.desktop.main.storeunits.StorageUnitsSrv;
 import ru.vez.iso.desktop.shared.*;
 
 import java.io.InputStream;
@@ -14,13 +17,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class MainSrvImpl implements MainSrv {
 
@@ -30,6 +29,7 @@ public class MainSrvImpl implements MainSrv {
   private final ScheduledExecutorService exec;
   private final MessageSrv msgSrv;
   private final OperationDaysSrv operDaysSrv;
+  private final StorageUnitsSrv storageUnitsSrv;
 
   private Future<Void> future;
   private ScheduledFuture<?> scheduledReload;
@@ -38,11 +38,14 @@ public class MainSrvImpl implements MainSrv {
           ObservableMap<AppStateType, AppStateData> appState,
           ScheduledExecutorService exec,
           MessageSrv msgSrv,
-          OperationDaysSrv operDaysSrv) {
+          OperationDaysSrv operDaysSrv,
+          StorageUnitsSrv storageUnitsSrv
+  ) {
     this.appState = appState;
     this.exec = exec;
     this.msgSrv = msgSrv;
     this.operDaysSrv = operDaysSrv;
+    this.storageUnitsSrv = storageUnitsSrv;
     this.future = CompletableFuture.allOf();
   }
 
@@ -61,9 +64,8 @@ public class MainSrvImpl implements MainSrv {
     logger.debug("period: " + period);
 
     LocalDate from = LocalDate.now().minusDays(period);
-    CompletableFuture<List<OperatingDayFX>> operationDaysFuture = CompletableFuture.supplyAsync( () -> this.operDaysSrv.loadOperationDays(from), exec );
-    CompletableFuture<List<StorageUnitFX>> storeUnitsFuture = CompletableFuture.supplyAsync(
-        () -> getStorageUnitsWithDelay(period), exec);
+    CompletableFuture<List<OperatingDayFX>> operationDaysFuture = CompletableFuture.supplyAsync( ()->this.operDaysSrv.loadOperationDays(from), exec );
+    CompletableFuture<List<StorageUnitFX>> storeUnitsFuture = CompletableFuture.supplyAsync( ()->storageUnitsSrv.loadStorageUnits(from), exec );
 
     future = operationDaysFuture.thenCombine(
         storeUnitsFuture,
@@ -164,21 +166,6 @@ public class MainSrvImpl implements MainSrv {
   }
 
   //region PRIVATE
-
-  List<StorageUnitFX> getStorageUnitsWithDelay(int period) {
-
-    UtilsHelper.makeDelaySec(1);    // TODO send request for StorageUnits
-    Random rnd = new Random();
-    List<StorageUnitStatus> statuses = Collections.unmodifiableList(Arrays.asList(StorageUnitStatus.values()));
-    return IntStream.rangeClosed(0, period * 10)
-        .mapToObj(i -> {
-          LocalDate date = LocalDate.of(1900 + i, i % 12 + 1, i % 12 + 1);
-          String opsDayId = String.valueOf(i % period);
-          return new StorageUnitFX(String.valueOf(i), opsDayId, "numberSu-" + i,
-              date, i, date, statuses.get(rnd.nextInt(statuses.size())), date, "", i % 3 == 0);
-        })
-        .collect(Collectors.toList());
-  }
 
   //endregion
 }

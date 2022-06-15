@@ -1,5 +1,8 @@
 package ru.vez.iso.desktop.main;
 
+import ru.vez.iso.desktop.main.storeunits.StorageUnitFX;
+import ru.vez.iso.desktop.main.storeunits.StorageUnitStatus;
+
 import java.nio.file.Path;
 
 public interface MainSrv {

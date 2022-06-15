@@ -1,16 +1,11 @@
-package ru.vez.iso.desktop.main.filecache;
+package ru.vez.iso.desktop.main.operdays;
 
 import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.vez.iso.desktop.main.operdays.OperatingDayFX;
-import ru.vez.iso.desktop.main.operdays.OperationDayMapper;
 import ru.vez.iso.desktop.main.operdays.dto.OperationDaysResponse;
+import ru.vez.iso.desktop.shared.UtilsHelper;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,17 +20,14 @@ class OperationDayMapperTest {
     @BeforeEach
     void setUp() {
         // read JSON
-        InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("operationDays.json");
-        assert is != null;
-        BufferedReader readr = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
-        json = readr.lines().collect(Collectors.joining(System.getProperty("line.separator")));
+        json = UtilsHelper.readJsonFromFile("operationDays.json");
 
         // create Mapper
         mapper = new OperationDayMapper();
     }
 
     @Test
-    void map_thenResponse() {
+    void whenMapOperationDayDto_thenReturnOperatingDayFX() {
 
         // Arrange
         OperationDaysResponse response = new Gson().fromJson(json, OperationDaysResponse.class);

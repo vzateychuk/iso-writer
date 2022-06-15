@@ -1,6 +1,5 @@
 package ru.vez.iso.desktop.main.operdays;
 
-import ru.vez.iso.desktop.main.TypeSu;
 import ru.vez.iso.desktop.main.operdays.dto.OperDayDto;
 import ru.vez.iso.desktop.shared.DataMapper;
 

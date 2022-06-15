@@ -17,6 +17,9 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
 import ru.vez.iso.desktop.main.filecache.FileCacheSrv;
 import ru.vez.iso.desktop.main.operdays.OperatingDayFX;
+import ru.vez.iso.desktop.main.operdays.TypeSu;
+import ru.vez.iso.desktop.main.storeunits.StorageUnitFX;
+import ru.vez.iso.desktop.main.storeunits.StorageUnitStatus;
 import ru.vez.iso.desktop.shared.*;
 
 import java.net.URL;
@@ -51,7 +54,7 @@ public class MainCtl implements Initializable {
     @FXML private TableView<StorageUnitFX> tblStorageUnits;
     @FXML private TableColumn<StorageUnitFX, String> numberSu;
     @FXML private TableColumn<StorageUnitFX, String> creationDate;
-    @FXML private TableColumn<StorageUnitFX, Integer> dataSize;
+    @FXML private TableColumn<StorageUnitFX, Long> dataSize;
     @FXML private TableColumn<StorageUnitFX, String> storageDate;
     @FXML private TableColumn<StorageUnitFX, String> storageUnitStatus;
     @FXML private TableColumn<StorageUnitFX, String> savingDate;
@@ -224,7 +227,7 @@ public class MainCtl implements Initializable {
     @FXML public void onStatusShowPrepChoice(ActionEvent ev) {
         logger.debug("");
         this.radioButtonsToggle.setActive(radioStatusPrepared);
-        this.statusesFilter = Collections.singletonList(StorageUnitStatus.PREPARING_RECORDING);
+        this.statusesFilter = Collections.singletonList(StorageUnitStatus.PREPARATION_FOR_RECORDING);
         this.filterAndDisplayStorageUnits(storageUnits, this.statusesFilter);
     }
 

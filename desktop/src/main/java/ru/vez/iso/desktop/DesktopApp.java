@@ -26,6 +26,10 @@ import ru.vez.iso.desktop.main.noop.HttpClientOperationDaysNoopImpl;
 import ru.vez.iso.desktop.main.operdays.OperationDayMapper;
 import ru.vez.iso.desktop.main.operdays.OperationDaysSrv;
 import ru.vez.iso.desktop.main.operdays.OperationDaysSrvImpl;
+import ru.vez.iso.desktop.main.storeunits.StorageUnitMapper;
+import ru.vez.iso.desktop.main.storeunits.StorageUnitsSrv;
+import ru.vez.iso.desktop.main.storeunits.StorageUnitsSrvImpl;
+import ru.vez.iso.desktop.main.storeunits.noop.HttpClientStorageUnitsNoopImpl;
 import ru.vez.iso.desktop.nav.NavigationCtl;
 import ru.vez.iso.desktop.nav.NavigationSrv;
 import ru.vez.iso.desktop.nav.NavigationSrvImpl;
@@ -99,11 +103,17 @@ public class DesktopApp extends Application {
         // FileCacheSrv
         FileCacheSrv fileCache = new FileCacheSrvImpl(appState, exec, msgSrv);
 
-        // OperationDaysSrv - сервис загрузки операционных дней
-        HttpClientWrap httpLoginOperationDays = runMode != RunMode.NOOP ? new HttpClientImpl() : new HttpClientOperationDaysNoopImpl();
+        // OperationDaysService - сервис загрузки операционных дней
+        HttpClientWrap httpClientOperDays = runMode != RunMode.NOOP ? new HttpClientImpl() : new HttpClientOperationDaysNoopImpl();
         OperationDayMapper operationDayMapper = new OperationDayMapper();
-        OperationDaysSrv operDaysSrv = new OperationDaysSrvImpl(appState, httpLoginOperationDays, operationDayMapper);
-        MainSrv mainSrv  = new MainSrvImpl(appState, exec, msgSrv, operDaysSrv);
+        OperationDaysSrv operDaysSrv = new OperationDaysSrvImpl(appState, httpClientOperDays, operationDayMapper);
+
+        // StorageUnitsService - сервис загрузки StorageUnits
+        HttpClientWrap httpClientStorageUnits = runMode != RunMode.NOOP ? new HttpClientImpl() : new HttpClientStorageUnitsNoopImpl();
+        StorageUnitMapper storageUnitMapper = new StorageUnitMapper();
+        StorageUnitsSrv storageUnitsSrv = new StorageUnitsSrvImpl(appState, httpClientStorageUnits, storageUnitMapper);
+
+        MainSrv mainSrv  = new MainSrvImpl(appState, exec, msgSrv, operDaysSrv, storageUnitsSrv);
 
         // LoginService
         HttpClientWrap httpClientLogin = runMode != RunMode.NOOP ? new HttpClientImpl() : new HttpClientLoginNoopImpl();

@@ -4,8 +4,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import ru.vez.iso.desktop.main.StorageUnitFX;
-import ru.vez.iso.desktop.main.TypeSu;
+import ru.vez.iso.desktop.main.storeunits.StorageUnitFX;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

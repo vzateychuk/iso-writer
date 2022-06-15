@@ -1,4 +1,4 @@
-package ru.vez.iso.desktop.main.operdays;
+package ru.vez.iso.desktop.main.storeunits;
 
 import com.google.gson.Gson;
 import javafx.collections.ObservableMap;
@@ -6,7 +6,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.vez.iso.desktop.main.operdays.dto.OperationDaysResponse;
+import ru.vez.iso.desktop.main.storeunits.dto.StorageUnitsResponse;
 import ru.vez.iso.desktop.shared.*;
 
 import java.time.LocalDate;
@@ -15,21 +15,21 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Service to load Operation Days
+ * Service to get StorageUnits from backend
  * */
-public class OperationDaysSrvImpl implements OperationDaysSrv {
+public class StorageUnitsSrvImpl implements StorageUnitsSrv {
 
     private static final Logger logger = LogManager.getLogger();
-    private static final String API_OP_DAYS = "/abdd/operating-day/page";
+    private static final String API_STORAGE_UNITS = "/abdd/storageunits/page";
 
     private final ObservableMap<AppStateType, AppStateData> appState;
     private final HttpClientWrap httpClient;
-    private final OperationDayMapper mapper;
+    private final StorageUnitMapper mapper;
 
-    public OperationDaysSrvImpl(
+    public StorageUnitsSrvImpl(
             ObservableMap<AppStateType, AppStateData> appState,
             HttpClientWrap httpClient,
-            OperationDayMapper mapper
+            StorageUnitMapper mapper
     ) {
         this.appState = appState;
         this.httpClient = httpClient;
@@ -37,18 +37,20 @@ public class OperationDaysSrvImpl implements OperationDaysSrv {
     }
 
     @Override
-    public List<OperatingDayFX> loadOperationDays(LocalDate from) {
+    public List<StorageUnitFX> loadStorageUnits(LocalDate from) {
 
+        UtilsHelper.makeDelaySec(1);    // TODO send request for StorageUnits
         // Create POST request
-        String api = ((AppStateData<AppSettings>) appState.get(AppStateType.SETTINGS)).getValue().getBackendAPI() + API_OP_DAYS;
+        String api = ((AppStateData<AppSettings>) appState.get(AppStateType.SETTINGS)).getValue().getBackendAPI() + API_STORAGE_UNITS;
         AppStateData<UserDetails> userData = (AppStateData<UserDetails>) appState.get(AppStateType.USER_DETAILS);
         if (userData == null) {
             return Collections.emptyList();
         }
         String token = userData.getValue().getToken();
         HttpPost httpPost = new HttpPost(api);
+
         // TODO jsonRequest should be from RequestBuilder
-        String jsonRequest = "{\"page\":1,\"rowsPerPage\":100,\"criterias\":[{\"fields\":[\"operatingDayDate\"],\"operator\":\"GREATER_OR_EQUALS\",\"value\":\"2022-04-01\"}]}";
+        String jsonRequest = "{\"page\":1,\"rowsPerPage\":10,\"criterias\":[{\"fields\":[\"operatingDay.operatingDayDate\"],\"operator\":\"GREATER_OR_EQUALS\",\"value\":\"2022-03-24\"}]}";
 
         try {
             StringEntity entity = new StringEntity(jsonRequest);
@@ -57,7 +59,7 @@ public class OperationDaysSrvImpl implements OperationDaysSrv {
             httpPost.setHeader("Content-type", "application/json");
             httpPost.setHeader("Authorization", token);
             String json = this.httpClient.postDataRequest(httpPost);
-            OperationDaysResponse response = new Gson().fromJson(json, OperationDaysResponse.class);
+            StorageUnitsResponse response = new Gson().fromJson(json, StorageUnitsResponse.class);
             return response.getObjects().stream().map(mapper::map).collect(Collectors.toList());
         } catch (Exception ex) {
             logger.error(ex);

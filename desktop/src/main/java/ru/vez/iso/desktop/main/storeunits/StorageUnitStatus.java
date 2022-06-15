@@ -1,4 +1,4 @@
-package ru.vez.iso.desktop.main;
+package ru.vez.iso.desktop.main.storeunits;
 
 /**
  * Статус ЕХ.
@@ -8,7 +8,7 @@ package ru.vez.iso.desktop.main;
 public enum StorageUnitStatus {
 
     DRAFT("Черновик"),				// Черновик
-    PREPARING_RECORDING("Готовятся для записи"),
+    PREPARATION_FOR_RECORDING("Готовятся для записи"),
     READY_TO_RECORDING("Готово для записи на внешний носитель"),
     RECORDED("Записано на внешний носитель");
 
