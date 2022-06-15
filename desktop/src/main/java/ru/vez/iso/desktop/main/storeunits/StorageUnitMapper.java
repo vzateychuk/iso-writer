@@ -25,7 +25,7 @@ public class StorageUnitMapper implements DataMapper<StorageUnitDto, StorageUnit
                 ? LocalDate.parse( dto.getSavingDate(), DateTimeFormatter.ISO_LOCAL_DATE_TIME )
                 : null;
 
-        Long dataSize = Optional.ofNullable(dto.getTypeSu().getCapacity()).orElse(0L);
+        Long dataSize = Optional.ofNullable(dto.getCapacity()).orElse(0L);
 
         return new StorageUnitFX (
                 dto.getObjectId(),

@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
  *                 "timeStamp": null,
  *                 "operatingDayId": "03f8fae4-5057-4195-866d-19704e37c9c7",
  *                 "numberSu": "2",
- *                 "capacity": null,
+ *                 "capacity": 512000,
  *                 "branchId": "aec7e48b-b1e8-4720-8e46-db3d3c1a6398",
  *                 "storageDate": "100",
  *                 "savingDate": "2022-05-20T18:54:02.06887",
@@ -67,5 +67,6 @@ public class StorageUnitDto {
     private String savingDate;
     private boolean deleted;        //
     private String storageDate;
+    private Long capacity;
     private TypeStorUnitDto typeSu; // object
 }
