@@ -1,8 +1,6 @@
 package ru.vez.iso.desktop;
 
 import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableMap;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -37,6 +35,8 @@ import ru.vez.iso.desktop.settings.SettingsCtl;
 import ru.vez.iso.desktop.settings.SettingsSrv;
 import ru.vez.iso.desktop.settings.SettingsSrvImpl;
 import ru.vez.iso.desktop.shared.*;
+import ru.vez.iso.desktop.state.ApplicationState;
+import ru.vez.iso.desktop.state.RunMode;
 
 import java.io.IOException;
 import java.net.URL;
@@ -44,10 +44,8 @@ import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.jar.Manifest;
@@ -71,12 +69,13 @@ public class DesktopApp extends Application {
         Thread.UncaughtExceptionHandler exceptionHandler = new ExceptionLog();
         Thread.currentThread().setUncaughtExceptionHandler(exceptionHandler);
 
-        // Create application state
-        ObservableMap<AppStateType, AppStateData> appState = createAppStateMap();
-
-        // Create executor where all background tasks will be executed
+        // Executor where all background tasks will be executed
         int numOfCores = Runtime.getRuntime().availableProcessors();
         ScheduledExecutorService exec = Executors.newScheduledThreadPool(numOfCores * 4);
+
+        // ApplicationState
+        ApplicationState state = new ApplicationState();
+        state.setRunMode(runMode);
 
         //region BUILD SERVICES
 
@@ -84,7 +83,7 @@ public class DesktopApp extends Application {
         MessageSrv msgSrv = new MessageSrvImpl();
 
         // SettingService
-        SettingsSrv settingsSrv = new SettingsSrvImpl(appState, exec, msgSrv);
+        SettingsSrv settingsSrv = new SettingsSrvImpl(state, exec, msgSrv);
         String settingsFileName = SettingType.SETTING_FILE.getDefaultValue();
         AppSettings sets;
         if ( Files.exists( Paths.get(settingsFileName) ) ) {
@@ -99,28 +98,29 @@ public class DesktopApp extends Application {
                     .build();
             settingsSrv.save(settingsFileName, sets);
         }
+        state.setSettings(sets);
 
         // FileCacheSrv
-        FileCacheSrv fileCache = new FileCacheSrvImpl(appState, exec, msgSrv);
+        FileCacheSrv fileCache = new FileCacheSrvImpl(state, exec, msgSrv);
 
         // OperationDaysService - сервис загрузки операционных дней
         HttpClientWrap httpClientOperDays = runMode != RunMode.NOOP ? new HttpClientImpl() : new HttpClientOperationDaysNoopImpl();
         OperationDayMapper operationDayMapper = new OperationDayMapper();
-        OperationDaysSrv operDaysSrv = new OperationDaysSrvImpl(appState, httpClientOperDays, operationDayMapper);
+        OperationDaysSrv operDaysSrv = new OperationDaysSrvImpl(state, httpClientOperDays, operationDayMapper);
 
         // StorageUnitsService - сервис загрузки StorageUnits
         HttpClientWrap httpClientStorageUnits = runMode != RunMode.NOOP ? new HttpClientImpl() : new HttpClientStorageUnitsNoopImpl();
         StorageUnitMapper storageUnitMapper = new StorageUnitMapper();
-        StorageUnitsSrv storageUnitsSrv = new StorageUnitsSrvImpl(appState, httpClientStorageUnits, storageUnitMapper);
+        StorageUnitsSrv storageUnitsSrv = new StorageUnitsSrvImpl(state, httpClientStorageUnits, storageUnitMapper);
 
-        MainSrv mainSrv  = new MainSrvImpl(appState, exec, msgSrv, operDaysSrv, storageUnitsSrv);
+        MainSrv mainSrv  = new MainSrvImpl(state, exec, msgSrv, operDaysSrv, storageUnitsSrv);
 
         // LoginService
         HttpClientWrap httpClientLogin = runMode != RunMode.NOOP ? new HttpClientImpl() : new HttpClientLoginNoopImpl();
-        LoginSrv loginSrv = new LoginSrvImpl(appState, exec, msgSrv, httpClientLogin);
+        LoginSrv loginSrv = new LoginSrvImpl(state, exec, msgSrv, httpClientLogin);
 
         // ViewCache with views
-        Map<ViewType, Parent> viewCache = buildViewCache(appState,exec,msgSrv,settingsSrv,loginSrv,mainSrv,fileCache);
+        Map<ViewType, Parent> viewCache = buildViewCache(state,exec,msgSrv,settingsSrv,loginSrv,mainSrv,fileCache);
         settingsSrv.loadAsync(SettingType.SETTING_FILE.getDefaultValue());
 
         //endregion
@@ -143,7 +143,7 @@ public class DesktopApp extends Application {
         stage.getIcons().add(new Image(DesktopApp.class.getResourceAsStream("image/iso.png")));
         NavigationSrv navSrv = new NavigationSrvImpl();
         Parent navigation = buildView(
-                ViewType.NAVIGATION, t->new NavigationCtl(appState, navSrv, viewCache, msgSrv)
+                ViewType.NAVIGATION, t->new NavigationCtl(state, navSrv, viewCache, msgSrv)
         );
         stage.setScene(new Scene(navigation));
         String appVersion = this.getVersion();
@@ -161,17 +161,6 @@ public class DesktopApp extends Application {
     }
 
     //region PRIVATE
-
-    /**
-     * Created ApplicationState Map with initial values
-     * */
-    private ObservableMap<AppStateType, AppStateData> createAppStateMap() {
-
-        ObservableMap<AppStateType, AppStateData> appState = createDefaultAppState();
-        appState.put(AppStateType.APP_RUN_MODE, AppStateData.builder().value(runMode).build());
-        appState.put(AppStateType.ISO_FILES_NAMES, AppStateData.builder().value(Collections.emptyList()).build());
-        return appState;
-    }
 
     /**
      * Parse args for Application run-mode
@@ -204,21 +193,11 @@ public class DesktopApp extends Application {
     }
 
     /**
-     * Create Listenable application state Map just to to keep UI consistent by listening state change events.
-     * */
-    private ObservableMap<AppStateType, AppStateData> createDefaultAppState() {
-
-        Map<AppStateType, AppStateData> appState = new ConcurrentHashMap<>();
-        appState.put(AppStateType.ZIP_DIR, AppStateData.builder().value("").build());
-        return FXCollections.observableMap(appState);
-    }
-
-    /**
      * Create viewCache Map just to switch between views
      * Application state and services created and injected
      * */
     private Map<ViewType, Parent> buildViewCache(
-            ObservableMap<AppStateType, AppStateData> appState,
+            ApplicationState state,
             ScheduledExecutorService exec,
             MessageSrv msgSrv,
             SettingsSrv settingsSrv,
@@ -229,18 +208,18 @@ public class DesktopApp extends Application {
         Map<ViewType, Parent> viewCache = new HashMap<>();
 
         // SettingsView + SettingService
-        viewCache.put(ViewType.SETTINGS, buildView( ViewType.SETTINGS, t -> new SettingsCtl(appState, settingsSrv) ));
+        viewCache.put(ViewType.SETTINGS, buildView( ViewType.SETTINGS, t->new SettingsCtl(state, settingsSrv) ));
 
         // LoginView + LoginService
-        viewCache.put(ViewType.LOGIN, buildView(ViewType.LOGIN,t->new LoginCtl(appState, loginSrv)));
+        viewCache.put(ViewType.LOGIN, buildView( ViewType.LOGIN, t->new LoginCtl(state, loginSrv)) );
 
         // DocumentView + DocumentService
         DocMapper mapper = new DocMapperImpl();
-        DocSrv docSrv = new DocSrvImpl(appState, exec, mapper, msgSrv);
-        viewCache.put(ViewType.DOCUMENTS, buildView(ViewType.DOCUMENTS,t->new DocumentCtl(appState, docSrv, msgSrv)));
+        DocSrv docSrv = new DocSrvImpl(state, exec, mapper, msgSrv);
+        viewCache.put(ViewType.DOCUMENTS, buildView( ViewType.DOCUMENTS, t->new DocumentCtl(state, docSrv, msgSrv)) );
 
         // MainView + MainService
-        viewCache.put(ViewType.MAIN_VIEW, buildView(ViewType.MAIN_VIEW, t->new MainCtl(appState, mainSrv, fileCache, msgSrv)));
+        viewCache.put(ViewType.MAIN_VIEW, buildView(ViewType.MAIN_VIEW, t->new MainCtl(state, mainSrv, fileCache, msgSrv)));
 
         return viewCache;
     }

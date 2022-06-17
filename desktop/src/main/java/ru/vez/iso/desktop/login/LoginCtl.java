@@ -1,8 +1,6 @@
 package ru.vez.iso.desktop.login;
 
 import javafx.application.Platform;
-import javafx.collections.MapChangeListener;
-import javafx.collections.ObservableMap;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -13,9 +11,7 @@ import javafx.scene.input.KeyEvent;
 import lombok.extern.java.Log;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.vez.iso.desktop.shared.AppStateData;
-import ru.vez.iso.desktop.shared.AppStateType;
-import ru.vez.iso.desktop.shared.UserDetails;
+import ru.vez.iso.desktop.state.ApplicationState;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -33,24 +29,20 @@ public class LoginCtl implements Initializable {
     @FXML private Button butLogin;
     @FXML public Button butLogout;
 
-    private final ObservableMap<AppStateType, AppStateData> appState;
+    private final ApplicationState state;
     private final LoginSrv service;
 
-    public LoginCtl(ObservableMap<AppStateType, AppStateData> appState, LoginSrv service) {
+    public LoginCtl(ApplicationState state, LoginSrv service) {
+        this.state = state;
         this.service = service;
-        this.appState = appState;
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        this.appState.addListener(
-                (MapChangeListener<AppStateType, AppStateData>) change -> {
-                    if (AppStateType.USER_DETAILS.equals(change.getKey())) {
-                                UserDetails userDetails = (UserDetails) change.getValueAdded().getValue();
-                        Platform.runLater(()-> changeControls(userDetails.isLogged()));
-                    }
-                });
+        this.state.userDetailsProperty().addListener(
+                (o, oldVal, newVal) -> Platform.runLater( ()->changeControls(newVal.isLogged()) )
+        );
     }
 
     @FXML public void onPressLogin(ActionEvent ev) {

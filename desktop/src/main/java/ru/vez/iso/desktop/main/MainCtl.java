@@ -2,9 +2,7 @@ package ru.vez.iso.desktop.main;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
-import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
-import javafx.collections.ObservableMap;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -21,6 +19,7 @@ import ru.vez.iso.desktop.main.operdays.TypeSu;
 import ru.vez.iso.desktop.main.storeunits.StorageUnitFX;
 import ru.vez.iso.desktop.main.storeunits.StorageUnitStatus;
 import ru.vez.iso.desktop.shared.*;
+import ru.vez.iso.desktop.state.ApplicationState;
 
 import java.net.URL;
 import java.nio.file.Path;
@@ -79,7 +78,7 @@ public class MainCtl implements Initializable {
     private final RadioButtonsToggle radioButtonsToggle;
 
     // Internal state
-    private final ObservableMap<AppStateType, AppStateData> appState;
+    private final ApplicationState state;
     private final MainSrv mainSrv;
     private final FileCacheSrv fileCacheSrv;
     private final MessageSrv msgSrv;
@@ -90,12 +89,12 @@ public class MainCtl implements Initializable {
 
     //endregion
 
-    public MainCtl(ObservableMap<AppStateType,
-                   AppStateData> appState,
+    public MainCtl(ApplicationState state,
                    MainSrv mainSrv,
                    FileCacheSrv fileCacheSrv,
-                   MessageSrv msgSrv) {
-        this.appState = appState;
+                   MessageSrv msgSrv
+    ) {
+        this.state = state;
         this.mainSrv = mainSrv;
         this.fileCacheSrv = fileCacheSrv;
         this.msgSrv = msgSrv;
@@ -135,20 +134,16 @@ public class MainCtl implements Initializable {
         deleted.setCellValueFactory(cell -> cell.getValue().deletedProperty());
 
         // Operation Days table listener
-        this.appState.addListener(
-                (MapChangeListener<AppStateType, AppStateData>) change -> {
-                    if (AppStateType.OPERATION_DAYS.equals(change.getKey())) {
-                        List<OperatingDayFX> data = (List<OperatingDayFX>) change.getValueAdded().getValue();
-                        Platform.runLater(()-> displayOperatingDays(data));
-                    }
-                });
+        this.state.operatingDaysProperty().addListener(
+                (ob, oldVal, newVal) -> Platform.runLater(()-> displayOperatingDays(newVal))
+        );
 
         // OperationDays: when select row should refresh StorageUnits table
         tblOperatingDays.getSelectionModel().selectedItemProperty().addListener(
                 (o, old, newValue) -> {
                     if (newValue != null) {
                         // need to update storage units with isoFileName, stored in local file-cache
-                        final List<IsoFileFX> fileCache = ((AppStateData<List<IsoFileFX>>)appState.get(AppStateType.ISO_FILES_NAMES)).getValue();
+                        final List<IsoFileFX> fileCache = this.state.getFileNames();
                         List<StorageUnitFX> withFileNames = this.getWithFileName(newValue.getStorageUnits(), fileCache);
                         // filter and display a storage Units
                         Platform.runLater(()-> this.filterAndDisplayStorageUnits(withFileNames, statusesFilter));
@@ -166,33 +161,25 @@ public class MainCtl implements Initializable {
         });
 
         // Operation Days period's filter (when settings changes)
-        this.appState.addListener(
-                (MapChangeListener<AppStateType, AppStateData>) change -> {
-                    if (AppStateType.SETTINGS.equals(change.getKey())) {
-                        AppSettings sets = ((AppStateData<AppSettings>)appState.get(AppStateType.SETTINGS)).getValue();
-                        int filterDays = sets.getFilterOpsDays();
-                        Platform.runLater( ()-> {
-                            operationDays.setText(String.valueOf(filterDays));
-                            this.onReload(null);
-                        } );
+        this.state.settingsProperty().addListener((o, old, newVal) -> {
+            int filterDays = newVal.getFilterOpsDays();
+            Platform.runLater( ()-> {
+                operationDays.setText(String.valueOf(filterDays));
+                this.onReload(null);
+            } );
 
-                        // reschedule "reload" with the new param time
-                        int refreshPeriod = sets.getRefreshMin();
-                        mainSrv.scheduleReadInterval(refreshPeriod, filterDays);
-                    }
-                });
+            // reschedule "reload" with the new param time
+            int refreshPeriod = newVal.getRefreshMin();
+            mainSrv.scheduleReadInterval(refreshPeriod, filterDays);
+        });
 
 
         // ISO_FILES in cache changed
-        this.appState.addListener(
-                (MapChangeListener<AppStateType, AppStateData>) change -> {
-                    if (AppStateType.ISO_FILES_NAMES.equals(change.getKey())) {
-                        List<IsoFileFX> fileCache = (List<IsoFileFX>) change.getValueAdded().getValue();
-                        List<StorageUnitFX> withFileNames = this.getWithFileName(this.storageUnits, fileCache);
-                        // filter and display a storage Units with fileNames
-                        Platform.runLater( ()-> this.filterAndDisplayStorageUnits(withFileNames, statusesFilter) );
-                    }
-                });
+        this.state.fileNamesProperty().addListener((o, old, newVal) -> {
+            List<StorageUnitFX> withFileNames = this.getWithFileName(this.storageUnits, newVal);
+            // filter and display a storage Units with fileNames
+            Platform.runLater( ()-> this.filterAndDisplayStorageUnits(withFileNames, statusesFilter) );
+        });
 
         // StoreUnitsStatus status filter (RadioButtons)
         this.radioButtonsToggle.add(radioStatusAll, radioStatusAllInner);
@@ -302,7 +289,7 @@ public class MainCtl implements Initializable {
      * */
     @FXML public void onCheckSum(ActionEvent ev) {
 
-        String currentPath = (String)appState.get(AppStateType.ZIP_DIR).getValue();
+        String currentPath = this.state.getZipDir();
         if (Strings.isBlank(currentPath)) {
             this.msgSrv.news("Невозможно выполнить проверку контрольной суммы. DIR.zip не открыт");
             logger.warn("DIR.zip path not defined, exit");

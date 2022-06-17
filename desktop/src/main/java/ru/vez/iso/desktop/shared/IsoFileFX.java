@@ -3,9 +3,6 @@ package ru.vez.iso.desktop.shared;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-/**
- * DataModel for Disks View
- * */
 public class IsoFileFX {
 
     private final StringProperty fileName;

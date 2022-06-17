@@ -1,4 +1,4 @@
-package ru.vez.iso.desktop.shared;
+package ru.vez.iso.desktop.state;
 
 /**
  * This value indicates which mode the application is running

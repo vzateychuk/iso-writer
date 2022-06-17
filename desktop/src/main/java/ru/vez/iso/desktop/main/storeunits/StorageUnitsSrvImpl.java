@@ -7,12 +7,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.main.storeunits.dto.StorageUnitDto;
 import ru.vez.iso.desktop.main.storeunits.dto.StorageUnitsResponse;
-import ru.vez.iso.desktop.shared.*;
+import ru.vez.iso.desktop.shared.DataMapper;
+import ru.vez.iso.desktop.shared.HttpClientWrap;
+import ru.vez.iso.desktop.shared.UserDetails;
+import ru.vez.iso.desktop.shared.UtilsHelper;
+import ru.vez.iso.desktop.state.ApplicationState;
 
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -23,16 +26,16 @@ public class StorageUnitsSrvImpl implements StorageUnitsSrv {
     private static final Logger logger = LogManager.getLogger();
     private static final String API_STORAGE_UNITS = "/abdd/storageunits/page";
 
-    private final Map<AppStateType, AppStateData> appState;
+    private final ApplicationState state;
     private final HttpClientWrap httpClient;
     private final DataMapper<StorageUnitDto, StorageUnitFX> mapper;
 
     public StorageUnitsSrvImpl(
-            Map<AppStateType, AppStateData> appState,
+            ApplicationState state,
             HttpClientWrap httpClient,
             DataMapper<StorageUnitDto, StorageUnitFX> mapper
     ) {
-        this.appState = appState;
+        this.state = state;
         this.httpClient = httpClient;
         this.mapper = mapper;
     }
@@ -42,12 +45,12 @@ public class StorageUnitsSrvImpl implements StorageUnitsSrv {
 
         UtilsHelper.makeDelaySec(1);    // TODO send request for StorageUnits
         // Create POST request
-        String api = ((AppStateData<AppSettings>) appState.get(AppStateType.SETTINGS)).getValue().getBackendAPI() + API_STORAGE_UNITS;
-        AppStateData<UserDetails> userData = (AppStateData<UserDetails>) appState.get(AppStateType.USER_DETAILS);
-        if (userData == null) {
+        String api = state.getSettings().getBackendAPI() + API_STORAGE_UNITS;
+        UserDetails userData = state.getUserDetails();
+        if (userData == UserDetails.NOT_SIGNED_USER) {
             return Collections.emptyList();
         }
-        String token = userData.getValue().getToken();
+        String token = userData.getToken();
         HttpPost httpPost = new HttpPost(api);
 
         // TODO jsonRequest should be from RequestBuilder

@@ -1,14 +1,16 @@
 package ru.vez.iso.desktop.docs;
 
 import com.google.gson.Gson;
-import javafx.collections.ObservableMap;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import ru.vez.iso.desktop.docs.reestr.Reestr;
-import ru.vez.iso.desktop.shared.*;
+import ru.vez.iso.desktop.shared.MessageSrv;
+import ru.vez.iso.desktop.shared.MyConst;
+import ru.vez.iso.desktop.shared.UtilsHelper;
+import ru.vez.iso.desktop.state.ApplicationState;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -18,7 +20,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.Security;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
@@ -28,19 +29,18 @@ public class DocSrvImpl implements DocSrv {
 
     private static final Logger logger = LogManager.getLogger();
 
-    private final ObservableMap<AppStateType, AppStateData> appState;
+    private final ApplicationState state;
     private final Executor exec;
     private final DocMapper mapper;
     private final MessageSrv msgSrv;
 
     private Future<Void> future = CompletableFuture.allOf();
 
-    public DocSrvImpl(ObservableMap<AppStateType,
-                           AppStateData> appState,
+    public DocSrvImpl(ApplicationState appState,
                       Executor exec,
                       DocMapper mapper,
                       MessageSrv msgSrv) {
-        this.appState = appState;
+        this.state = appState;
         this.exec = exec;
         this.mapper = mapper;
         this.msgSrv = msgSrv;
@@ -63,7 +63,7 @@ public class DocSrvImpl implements DocSrv {
         future = CompletableFuture.supplyAsync(() -> {
 
             // Clear unzipped files: delete path where unzip files will be stored
-            String cachePath = ((AppStateData<AppSettings>)appState.get(AppStateType.SETTINGS)).getValue().getIsoCachePath();
+            String cachePath = state.getSettings().getIsoCachePath();
             Path unzippedPath = Paths.get(cachePath, MyConst.UNZIP_FOLDER);
             UtilsHelper.clearFolder(unzippedPath);
             UtilsHelper.unzipToFolder(unzippedPath, dirZip);
@@ -71,18 +71,18 @@ public class DocSrvImpl implements DocSrv {
             // Read REESTR and save application state
             Path reestrPath = Paths.get(unzippedPath.toString(), MyConst.REESTR_FILE);
             Reestr reestr = readReestrFrom(reestrPath);
-            appState.put(AppStateType.REESTR, AppStateData.<Reestr>builder().value(reestr).build());
+            state.setReestr(reestr);
 
             // REESTR Map and return list of DocumentFX
             return reestr.getDocs().stream().map(mapper::mapToDocFX).collect(Collectors.toList());
 
-        }, exec).thenAccept(docs ->
-                appState.put(AppStateType.DOCUMENTS, AppStateData.<List<DocumentFX>>builder().value(docs).build())
-        ).exceptionally((ex) -> {
-            logger.error("unable to create Reestr object: " + dirZip, ex);
-            this.msgSrv.news("Ошибка чтения DIR.zip");
-            return null;
-        } );
+        }, exec)
+            .thenAccept(state::setDocumentFXs)
+            .exceptionally( (ex) -> {
+                logger.error("unable to create Reestr object: " + dirZip, ex);
+                this.msgSrv.news("Ошибка чтения DIR.zip");
+                return null;
+        });
     }
 
     @Override

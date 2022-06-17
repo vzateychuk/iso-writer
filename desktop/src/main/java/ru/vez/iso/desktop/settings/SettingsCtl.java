@@ -1,8 +1,6 @@
 package ru.vez.iso.desktop.settings;
 
 import javafx.application.Platform;
-import javafx.collections.MapChangeListener;
-import javafx.collections.ObservableMap;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -10,7 +8,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.vez.iso.desktop.shared.*;
+import ru.vez.iso.desktop.shared.AppSettings;
+import ru.vez.iso.desktop.shared.RadioButtonsToggle;
+import ru.vez.iso.desktop.shared.SettingType;
+import ru.vez.iso.desktop.shared.UtilsHelper;
+import ru.vez.iso.desktop.state.ApplicationState;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -38,13 +40,12 @@ public class SettingsCtl implements Initializable {
     @FXML public Button radioCustomInner;
     private final RadioButtonsToggle radioButtonsToggle;
 
-    private final ObservableMap<AppStateType, AppStateData> appState;
+    private final ApplicationState state;
     private final SettingsSrv service;
 
-    public SettingsCtl(ObservableMap<AppStateType, AppStateData> appState, SettingsSrv service) {
-        this.appState = appState;
+    public SettingsCtl(ApplicationState appState, SettingsSrv service) {
+        this.state = appState;
         this.service = service;
-
         this.radioButtonsToggle = new RadioButtonsToggle();
     }
 
@@ -52,14 +53,9 @@ public class SettingsCtl implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         logger.debug(location);
-
-        this.appState.addListener(
-                (MapChangeListener<AppStateType, AppStateData>) change -> {
-                    if (AppStateType.SETTINGS.equals(change.getKey())) {
-                        AppSettings sets = ((AppStateData<AppSettings>)appState.get(AppStateType.SETTINGS)).getValue();
-                        Platform.runLater( ()->displaySettings(sets) );
-                    }
-                });
+        this.state.settingsProperty().addListener(
+                (ob,oldVal,newVal) -> Platform.runLater( ()->displaySettings(newVal) )
+        );
 
         // RadioButtons
         this.radioButtonsToggle.add(radioQuarter, radioQuarterInner);
@@ -71,7 +67,7 @@ public class SettingsCtl implements Initializable {
     @FXML public void onSave(ActionEvent ev) {
         logger.debug("");
 
-        AppSettings currentSettings = ((AppStateData<AppSettings>)appState.get(AppStateType.SETTINGS)).getValue();
+        AppSettings currentSettings = state.getSettings();
 
         int operDays = UtilsHelper.parseIntOrDefault(operationDays.getText(), SettingType.OPERATION_DAYS.getDefaultValue());
         int refreshMin = UtilsHelper.parseIntOrDefault(refreshPeriod.getText(), SettingType.REFRESH_PERIOD.getDefaultValue());

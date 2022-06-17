@@ -1,9 +1,12 @@
 package ru.vez.iso.desktop.settings;
 
-import javafx.collections.ObservableMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.vez.iso.desktop.shared.*;
+import ru.vez.iso.desktop.shared.AppSettings;
+import ru.vez.iso.desktop.shared.MessageSrv;
+import ru.vez.iso.desktop.shared.SettingType;
+import ru.vez.iso.desktop.shared.UtilsHelper;
+import ru.vez.iso.desktop.state.ApplicationState;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -17,12 +20,12 @@ public class SettingsSrvImpl implements SettingsSrv {
 
     private static final Logger logger = LogManager.getLogger();
 
-    private final ObservableMap<AppStateType, AppStateData> appState;
+    private final ApplicationState state;
     private final Executor exec;
     private final MessageSrv msgSrv;
 
-    public SettingsSrvImpl(ObservableMap<AppStateType, AppStateData> appState, Executor exec, MessageSrv msgSrv) {
-        this.appState = appState;
+    public SettingsSrvImpl(ApplicationState appState, Executor exec, MessageSrv msgSrv) {
+        this.state = appState;
         this.exec = exec;
         this.msgSrv = msgSrv;
     }
@@ -73,10 +76,8 @@ public class SettingsSrvImpl implements SettingsSrv {
     public void saveAsync(AppSettings sets) {
 
         String filePath = sets.getSettingFile();
-        CompletableFuture.supplyAsync( () -> this.save(filePath, sets), exec)
-                .thenAccept(
-                        settings -> appState.put(AppStateType.SETTINGS, AppStateData.builder().value(settings).build())
-                )
+        CompletableFuture.supplyAsync( () -> this.save(filePath, sets), exec )
+                .thenAccept( state::setSettings )
                 .exceptionally( (ex) -> {
                     this.msgSrv.news("Не удалось сохранить настройки");
                     logger.error("Unable to save settings: ", ex);
@@ -91,10 +92,13 @@ public class SettingsSrvImpl implements SettingsSrv {
     @Override
     public void loadAsync(String filePath) {
 
-        CompletableFuture.supplyAsync( () -> this.load(filePath), exec )
-                .thenAccept(
-                        settings -> appState.put(AppStateType.SETTINGS, AppStateData.builder().value(settings).build())
-                );
+        CompletableFuture.supplyAsync(() -> this.load(filePath), exec)
+                .thenAccept(state::setSettings)
+                .exceptionally((ex) -> {
+                    this.msgSrv.news("Не удалось загрузить настройки");
+                    logger.error("Unable to load settings: ", ex);
+                    return null;
+                });
     }
 
 }

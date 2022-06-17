@@ -1,8 +1,6 @@
 package ru.vez.iso.desktop.nav;
 
 import javafx.application.Platform;
-import javafx.collections.MapChangeListener;
-import javafx.collections.ObservableMap;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -14,10 +12,9 @@ import javafx.scene.layout.BorderPane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.ViewType;
-import ru.vez.iso.desktop.shared.AppStateData;
-import ru.vez.iso.desktop.shared.AppStateType;
 import ru.vez.iso.desktop.shared.MessageSrv;
 import ru.vez.iso.desktop.shared.UserDetails;
+import ru.vez.iso.desktop.state.ApplicationState;
 
 import java.net.URL;
 import java.util.Map;
@@ -44,29 +41,25 @@ public class NavigationCtl implements Initializable, Observer {
 
     private final NavigationSrv service;
     private final Map<ViewType, Parent> viewCache;
-    private final ObservableMap<AppStateType, AppStateData> appState;
+    private final ApplicationState state;
     private final MessageSrv msgSrv;
     private ViewType currView = ViewType.WELCOME;
 
     public NavigationCtl(
-            ObservableMap<AppStateType, AppStateData> appState,
+            ApplicationState state,
             NavigationSrv service,
             Map<ViewType, Parent> viewCache,
             MessageSrv msgSrv) {
         this.service = service;
         this.viewCache = viewCache;
-        this.appState = appState;
+        this.state = state;
         this.msgSrv = msgSrv;
         this.msgSrv.addObserver(this);
 
         // Login listener: Enable controls on login
-        this.appState.addListener(
-                (MapChangeListener<AppStateType, AppStateData>) change -> {
-                    if (AppStateType.USER_DETAILS.equals(change.getKey())) {
-                        UserDetails userDetails = (UserDetails) change.getValueAdded().getValue();
-                        Platform.runLater(()->lockControls(userDetails == UserDetails.NOT_SIGNED_USER));
-                    }
-                });
+        this.state.userDetailsProperty().addListener( (o, old, newVal) ->
+            Platform.runLater(()->lockControls(newVal == UserDetails.NOT_SIGNED_USER))
+        );
     }
 
     @Override

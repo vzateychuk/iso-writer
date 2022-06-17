@@ -7,12 +7,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.main.operdays.dto.OperDayDto;
 import ru.vez.iso.desktop.main.operdays.dto.OperationDaysResponse;
-import ru.vez.iso.desktop.shared.*;
+import ru.vez.iso.desktop.shared.DataMapper;
+import ru.vez.iso.desktop.shared.HttpClientWrap;
+import ru.vez.iso.desktop.shared.UserDetails;
+import ru.vez.iso.desktop.state.ApplicationState;
 
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -23,16 +25,16 @@ public class OperationDaysSrvImpl implements OperationDaysSrv {
     private static final Logger logger = LogManager.getLogger();
     private static final String API_OP_DAYS = "/abdd/operating-day/page";
 
-    private final Map<AppStateType, AppStateData> appState;
+    private final ApplicationState state;
     private final HttpClientWrap httpClient;
     private final DataMapper<OperDayDto, OperatingDayFX> mapper;
 
     public OperationDaysSrvImpl(
-            Map<AppStateType, AppStateData> appState,
+            ApplicationState appState,
             HttpClientWrap httpClient,
             DataMapper<OperDayDto, OperatingDayFX> mapper
     ) {
-        this.appState = appState;
+        this.state = appState;
         this.httpClient = httpClient;
         this.mapper = mapper;
     }
@@ -41,12 +43,12 @@ public class OperationDaysSrvImpl implements OperationDaysSrv {
     public List<OperatingDayFX> loadOperationDays(LocalDate from) {
 
         // Create POST request
-        String api = ((AppStateData<AppSettings>) appState.get(AppStateType.SETTINGS)).getValue().getBackendAPI() + API_OP_DAYS;
-        AppStateData<UserDetails> userData = (AppStateData<UserDetails>) appState.get(AppStateType.USER_DETAILS);
-        if (userData == null) {
+        String api = state.getSettings().getBackendAPI() + API_OP_DAYS;
+        UserDetails userData = state.getUserDetails();
+        if (userData == UserDetails.NOT_SIGNED_USER) {
             return Collections.emptyList();
         }
-        String token = userData.getValue().getToken();
+        String token = userData.getToken();
         HttpPost httpPost = new HttpPost(api);
         // TODO jsonRequest should be from RequestBuilder
         String jsonRequest = "{\"page\":1,\"rowsPerPage\":100,\"criterias\":[{\"fields\":[\"operatingDayDate\"],\"operator\":\"GREATER_OR_EQUALS\",\"value\":\"2022-04-01\"}]}";

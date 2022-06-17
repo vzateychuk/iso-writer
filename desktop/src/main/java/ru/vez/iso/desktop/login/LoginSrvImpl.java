@@ -1,13 +1,15 @@
 package ru.vez.iso.desktop.login;
 
-import javafx.collections.ObservableMap;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
-import ru.vez.iso.desktop.shared.*;
+import ru.vez.iso.desktop.shared.HttpClientWrap;
+import ru.vez.iso.desktop.shared.MessageSrv;
+import ru.vez.iso.desktop.shared.UserDetails;
+import ru.vez.iso.desktop.state.ApplicationState;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
@@ -18,7 +20,7 @@ public class LoginSrvImpl implements LoginSrv {
     private static final Logger logger = LogManager.getLogger();
     private static final String API_LOGIN = "/login";
 
-    private final ObservableMap<AppStateType, AppStateData> appState;
+    private final ApplicationState state;
     private final Executor exec;
     private final MessageSrv msgSrv;
     private final HttpClientWrap httpClient;
@@ -26,11 +28,12 @@ public class LoginSrvImpl implements LoginSrv {
     private Future<Void> future = CompletableFuture.allOf();
 
     public LoginSrvImpl(
-            ObservableMap<AppStateType, AppStateData> appState,
+            ApplicationState state,
             Executor exec,
             MessageSrv msgSrv,
-            HttpClientWrap httpClient) {
-        this.appState = appState;
+            HttpClientWrap httpClient
+    ) {
+        this.state = state;
         this.exec = exec;
         this.msgSrv = msgSrv;
         this.httpClient = httpClient;
@@ -50,10 +53,12 @@ public class LoginSrvImpl implements LoginSrv {
         future = CompletableFuture.supplyAsync(() -> {
             this.msgSrv.news("Подключение: " + username);
             return this.login(username, password);
-        }, exec).thenAccept(usr -> {
-            this.msgSrv.news("Выполнен " + (usr.isLogged() ? String.format("вход: %s", usr.getUsername()) : "выход"));
+        }, exec).thenAccept(userDetails -> {
+            this.state.setUserDetails(userDetails);
+            this.msgSrv.news(
+                    "Выполнен " + (userDetails.isLogged() ? String.format("вход: %s", userDetails.getUsername()) : "выход")
+            );
             logger.debug("logged in: {}", username);
-            appState.put(AppStateType.USER_DETAILS, AppStateData.<UserDetails>builder().value(usr).build());
         }).exceptionally(ex -> {
             this.msgSrv.news("Подключение не удалось, ошибка: " + ex.getLocalizedMessage());
             logger.error(ex);
@@ -63,7 +68,7 @@ public class LoginSrvImpl implements LoginSrv {
 
     @Override
     public void logout() {
-        appState.put(AppStateType.USER_DETAILS, AppStateData.<UserDetails>builder().value(UserDetails.NOT_SIGNED_USER).build());
+        this.state.setUserDetails(UserDetails.NOT_SIGNED_USER);
         this.msgSrv.news("Выполнен выход");
     }
 
@@ -72,8 +77,7 @@ public class LoginSrvImpl implements LoginSrv {
     UserDetails login(String username, String password) {
 
         // Create multipart POST request
-        final String api = ((AppStateData<AppSettings>)appState.get(AppStateType.SETTINGS)).getValue().getBackendAPI()
-                + API_LOGIN;
+        final String api = this.state.getSettings().getBackendAPI() + API_LOGIN;
         final HttpPost httpPost = new HttpPost(api);
         final HttpEntity multipart = MultipartEntityBuilder.create()
                 .addTextBody("username", username)

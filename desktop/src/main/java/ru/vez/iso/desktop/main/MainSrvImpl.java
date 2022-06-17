@@ -9,7 +9,10 @@ import ru.vez.iso.desktop.main.operdays.OperationDaysSrv;
 import ru.vez.iso.desktop.main.storeunits.StorageUnitFX;
 import ru.vez.iso.desktop.main.storeunits.StorageUnitStatus;
 import ru.vez.iso.desktop.main.storeunits.StorageUnitsSrv;
-import ru.vez.iso.desktop.shared.*;
+import ru.vez.iso.desktop.shared.MessageSrv;
+import ru.vez.iso.desktop.shared.MyConst;
+import ru.vez.iso.desktop.shared.UtilsHelper;
+import ru.vez.iso.desktop.state.ApplicationState;
 
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -17,7 +20,6 @@ import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
@@ -25,7 +27,7 @@ public class MainSrvImpl implements MainSrv {
 
   private static final Logger logger = LogManager.getLogger();
 
-  private final Map<AppStateType, AppStateData> appState;
+  private final ApplicationState state;
   private final ScheduledExecutorService exec;
   private final MessageSrv msgSrv;
   private final OperationDaysSrv operDaysSrv;
@@ -35,13 +37,13 @@ public class MainSrvImpl implements MainSrv {
   private ScheduledFuture<?> scheduledReload;
 
   public MainSrvImpl(
-          Map<AppStateType, AppStateData> appState,
+          ApplicationState state,
           ScheduledExecutorService exec,
           MessageSrv msgSrv,
           OperationDaysSrv operDaysSrv,
           StorageUnitsSrv storageUnitsSrv
   ) {
-    this.appState = appState;
+    this.state = state;
     this.exec = exec;
     this.msgSrv = msgSrv;
     this.operDaysSrv = operDaysSrv;
@@ -64,24 +66,29 @@ public class MainSrvImpl implements MainSrv {
     logger.debug("period: " + period);
 
     LocalDate from = LocalDate.now().minusDays(period);
-    CompletableFuture<List<OperatingDayFX>> operationDaysFuture = CompletableFuture.supplyAsync( ()->this.operDaysSrv.loadOperationDays(from), exec );
-    CompletableFuture<List<StorageUnitFX>> storeUnitsFuture = CompletableFuture.supplyAsync( ()->storageUnitsSrv.loadStorageUnits(from), exec );
+    CompletableFuture<List<OperatingDayFX>> operationDaysFuture = CompletableFuture.supplyAsync(
+            ()->this.operDaysSrv.loadOperationDays(from),
+            exec
+    );
+    CompletableFuture<List<StorageUnitFX>> storeUnitsFuture = CompletableFuture.supplyAsync(
+            ()->storageUnitsSrv.loadStorageUnits(from),
+            exec
+    );
 
     future = operationDaysFuture.thenCombine(
-        storeUnitsFuture,
-        (opsDaysList, storeUnitList) -> {
-          opsDaysList.forEach(day -> {
-            List<StorageUnitFX> units = storeUnitList.stream()
-                .filter(u -> u.getOperatingDayId().equals(day.getObjectId())).collect(Collectors.toList());
-            day.setStorageUnits(units);
-          });
-          return opsDaysList;
-        }).thenAccept(opsDay -> appState.put(
-        AppStateType.OPERATION_DAYS, AppStateData.builder().value(opsDay).build()
-    )).exceptionally((ex) -> {
-      logger.error(ex);
-      return null;
-    });
+              storeUnitsFuture,
+              (opsDaysList, storeUnitList) -> {
+                  opsDaysList.forEach(day -> {
+                      List<StorageUnitFX> units = storeUnitList.stream()
+                              .filter(u -> u.getOperatingDayId().equals(day.getObjectId())).collect(Collectors.toList());
+                      day.setStorageUnits(units);
+                  });
+                  return opsDaysList;
+              }).thenAccept(state::setOperatingDays)
+              .exceptionally((ex) -> {
+                  logger.error(ex);
+                  return null;
+              });
   }
 
   /**
@@ -95,10 +102,11 @@ public class MainSrvImpl implements MainSrv {
           UtilsHelper.makeDelaySec(1);    // TODO send request for change EX status
           this.msgSrv.news("Записан диск: " + su.getNumberSu());
           return status;
-        }, exec).thenAccept(st -> readDataAsync(20))
+        }, exec)
+        .thenAccept(st -> readDataAsync(20))
         .exceptionally(ex -> {
-          logger.error(ex);
-          return null;
+            logger.error(ex);
+            return null;
         });
   }
 

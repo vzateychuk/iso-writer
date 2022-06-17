@@ -2,9 +2,7 @@ package ru.vez.iso.desktop.docs;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
-import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
-import javafx.collections.ObservableMap;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -22,7 +20,10 @@ import ru.vez.iso.desktop.docs.reestr.RFileType;
 import ru.vez.iso.desktop.docs.reestr.Reestr;
 import ru.vez.iso.desktop.docs.reestr.ReestrDoc;
 import ru.vez.iso.desktop.docs.reestr.ReestrFile;
-import ru.vez.iso.desktop.shared.*;
+import ru.vez.iso.desktop.shared.AppSettings;
+import ru.vez.iso.desktop.shared.MessageSrv;
+import ru.vez.iso.desktop.shared.MyConst;
+import ru.vez.iso.desktop.state.ApplicationState;
 
 import java.awt.*;
 import java.io.File;
@@ -59,13 +60,13 @@ public class DocumentCtl implements Initializable {
     @FXML public Button butExploreDoc;
     @FXML private TextField txtFilter;
 
-    private final ObservableMap<AppStateType, AppStateData> appState;
+    private final ApplicationState state;
     private ObservableList<DocumentFX> documents;
     private final DocSrv docSrv;
     private final MessageSrv msgSrv;
 
-    public DocumentCtl(ObservableMap<AppStateType, AppStateData> appState, DocSrv srv, MessageSrv msgSrv) {
-        this.appState = appState;
+    public DocumentCtl(ApplicationState appState, DocSrv srv, MessageSrv msgSrv) {
+        this.state = appState;
         this.docSrv = srv;
         this.msgSrv = msgSrv;
     }
@@ -89,14 +90,9 @@ public class DocumentCtl implements Initializable {
         sumDoc.setCellValueFactory(cell -> cell.getValue().sumDocProperty());
 
         // Add load data listener
-        this.appState.addListener(
-            (MapChangeListener<AppStateType, AppStateData>)
-                change -> {
-                  if (AppStateType.DOCUMENTS.equals(change.getKey())) {
-                    List<DocumentFX> docs = (List<DocumentFX>) change.getValueAdded().getValue();
-                    Platform.runLater(() -> filterAndDisplay(docs, txtFilter.getText()));
-                  }
-                });
+        this.state.documentFXsProperty().addListener(
+                (ob, oldVal, newVal) -> Platform.runLater(() -> filterAndDisplay(newVal, txtFilter.getText()))
+        );
 
         // disable buttons if no record selected
         butViewDoc.disableProperty().bind( tblDocuments.getSelectionModel().selectedItemProperty().isNull() );
@@ -120,7 +116,7 @@ public class DocumentCtl implements Initializable {
 
         txtFilter.setText("");
         Path dirZip = chosen.toPath();
-        appState.put(AppStateType.ZIP_DIR, AppStateData.builder().value(dirZip.getParent().toString()).build());
+        state.setZipDir( dirZip.getParent().toString() );
         logger.debug("Open: {}", dirZip);
         docSrv.loadAsync(dirZip);
     }
@@ -136,13 +132,13 @@ public class DocumentCtl implements Initializable {
         }
 
         DocumentFX doc = tblDocuments.getSelectionModel().getSelectedItem();
-        Reestr reestr = ((AppStateData<Reestr>) appState.get(AppStateType.REESTR)).getValue();
+        Reestr reestr = this.state.getReestr();
         ReestrDoc reestrDoc = reestr.getDocs().stream().filter(d -> d.getData().getObjectId().equals(doc.getObjectId())).findAny()
                     .orElseThrow(() -> new RuntimeException("not found in REESTR, exit: " + doc.getObjectId()));
         ReestrFile file = reestrDoc.getFiles().stream()
                     .filter(f -> f.getType().equals(RFileType.PF)).findAny()
                     .orElseThrow(() -> new RuntimeException(RFileType.PF.getTitle() + " not found in REESTR, exit"));
-        AppSettings sets = ((AppStateData<AppSettings>) appState.get(AppStateType.SETTINGS)).getValue();
+        AppSettings sets = this.state.getSettings();
         Path unzippedPath = Paths.get(sets.getIsoCachePath(), MyConst.UNZIP_FOLDER, doc.getObjectId(), file.getPath());
 
         logger.debug("open: {}", unzippedPath);
@@ -164,7 +160,7 @@ public class DocumentCtl implements Initializable {
         }
 
         DocumentFX doc = tblDocuments.getSelectionModel().getSelectedItem();
-        AppSettings sets = ((AppStateData<AppSettings>) appState.get(AppStateType.SETTINGS)).getValue();
+        AppSettings sets = this.state.getSettings();
         Path unzippedPath = Paths.get(sets.getIsoCachePath(), MyConst.UNZIP_FOLDER, doc.getObjectId());
 
         logger.debug("open: {}", unzippedPath);
@@ -179,9 +175,9 @@ public class DocumentCtl implements Initializable {
 
         logger.debug(txtFilter.getText());
 
-        AppStateData<List<DocumentFX>> data = (AppStateData<List<DocumentFX>>) appState.get(AppStateType.DOCUMENTS);
-        if (data != null) {
-            this.filterAndDisplay(data.getValue(), txtFilter.getText());
+        List<DocumentFX> docs = this.state.getDocumentFXs();
+        if (docs != null && docs.size() > 0 ) {
+            this.filterAndDisplay(docs, txtFilter.getText());
         }
     }
     @FXML public void onFilterEnter(KeyEvent ke) {
@@ -193,7 +189,7 @@ public class DocumentCtl implements Initializable {
     // check hashes for DIR.zip and checksum
     @FXML void onCheckSum(ActionEvent ev) {
 
-        String currentPath = (String)appState.get(AppStateType.ZIP_DIR).getValue();
+        String currentPath = this.state.getZipDir();
         if (Strings.isBlank(currentPath)) {
             this.msgSrv.news("Невозможно выполнить проверку контрольной суммы. Не открыт DIR.zip");
             logger.warn("DIR.zip path not defined, exit");

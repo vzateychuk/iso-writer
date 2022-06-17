@@ -1,9 +1,9 @@
 package ru.vez.iso.desktop.main.filecache;
 
-import javafx.collections.ObservableMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.shared.*;
+import ru.vez.iso.desktop.state.ApplicationState;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -24,16 +24,16 @@ public class FileCacheSrvImpl implements FileCacheSrv {
 
     private static final Logger logger = LogManager.getLogger();
 
-    private final ObservableMap<AppStateType, AppStateData> appState;
+    private final ApplicationState state;
     private final Executor exec;
     private final MessageSrv msgSrv;
 
     public FileCacheSrvImpl(
-            ObservableMap<AppStateType, AppStateData> appState,
+            ApplicationState state,
             Executor exec,
             MessageSrv msgSrv
     ) {
-        this.appState = appState;
+        this.state = state;
         this.exec = exec;
         this.msgSrv = msgSrv;
     }
@@ -42,10 +42,9 @@ public class FileCacheSrvImpl implements FileCacheSrv {
     public void readFileCacheAsync(String dir) {
 
         logger.debug("dir: {}", dir);
-        CompletableFuture.supplyAsync( () -> this.readIsoFileNames(dir), exec )
-                .thenAccept(isoFiles ->
-                    appState.put(AppStateType.ISO_FILES_NAMES, AppStateData.<List<IsoFileFX>>builder().value(isoFiles).build())
-                ).exceptionally((ex) -> {
+        CompletableFuture.supplyAsync( ()->this.readIsoFileNames(dir), exec )
+                .thenAccept(state::setFileNames)
+                .exceptionally( (ex) -> {
                     logger.error(ex);
                     return null;
                 });
@@ -59,7 +58,7 @@ public class FileCacheSrvImpl implements FileCacheSrv {
                 .thenApply(this::readIsoFileNames)
                 .thenAccept(isoFiles ->
                         {
-                            appState.put(AppStateType.ISO_FILES_NAMES, AppStateData.<List<IsoFileFX>>builder().value(isoFiles).build());
+                            state.setFileNames(isoFiles);
                             msgSrv.news("Удален " + fileName);
                         }
                 ).exceptionally((ex) -> {
@@ -76,8 +75,7 @@ public class FileCacheSrvImpl implements FileCacheSrv {
 
         logger.debug(name);
 
-        AppSettings sets = ((AppStateData<AppSettings>)appState.get(AppStateType.SETTINGS)).getValue();
-        String dir = sets.getIsoCachePath();
+        String dir = state.getSettings().getIsoCachePath();
 
         CompletableFuture.supplyAsync( () -> {
             UtilsHelper.makeDelaySec(1);    // TODO load from service
@@ -120,7 +118,7 @@ public class FileCacheSrvImpl implements FileCacheSrv {
 
     String deleteFile(String fileName) {
 
-        AppSettings sets = (AppSettings) appState.get(AppStateType.SETTINGS).getValue();
+        AppSettings sets = state.getSettings();
         Path filePath = Paths.get(sets.getIsoCachePath(), fileName);
         try {
             Files.delete(filePath);
