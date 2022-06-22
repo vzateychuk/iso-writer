@@ -1,4 +1,4 @@
-package ru.vez.iso.desktop.main.noop;
+package ru.vez.iso.desktop.main.operdays.noop;
 
 import org.apache.http.client.methods.HttpPost;
 import org.apache.logging.log4j.LogManager;
