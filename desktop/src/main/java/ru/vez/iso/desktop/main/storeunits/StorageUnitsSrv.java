@@ -9,4 +9,6 @@ import java.util.List;
 public interface StorageUnitsSrv {
 
     List<StorageUnitFX> loadStorageUnits(LocalDate from);
+
+    void loadFile(String objectId);
 }

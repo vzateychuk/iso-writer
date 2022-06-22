@@ -38,4 +38,20 @@ public interface MainSrv {
      */
     void scheduleReadInterval(int refreshPeriod, int filterDays);
 
+    /**
+     * Load ISO file async
+     *
+     * @param objectId - ISO file
+     * */
+    void loadISOAsync(String objectId);
+
+    /**
+     * Загрузить ISO файл в локальный файловый кэш. Async
+     * */
+    void readFileCacheAsync(String dir);
+
+    /**
+     * Delete the file and invoke reload
+     * */
+    void deleteFileAsync(String fileName);
 }

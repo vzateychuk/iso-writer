@@ -4,6 +4,7 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.vez.iso.desktop.main.filecache.FileCacheSrv;
 import ru.vez.iso.desktop.main.operdays.OperatingDayFX;
 import ru.vez.iso.desktop.main.operdays.OperationDaysSrv;
 import ru.vez.iso.desktop.main.storeunits.StorageUnitFX;
@@ -32,6 +33,7 @@ public class MainSrvImpl implements MainSrv {
   private final MessageSrv msgSrv;
   private final OperationDaysSrv operDaysSrv;
   private final StorageUnitsSrv storageUnitsSrv;
+  private final FileCacheSrv fileCacheSrv;
 
   private Future<Void> future;
   private ScheduledFuture<?> scheduledReload;
@@ -41,13 +43,14 @@ public class MainSrvImpl implements MainSrv {
           ScheduledExecutorService exec,
           MessageSrv msgSrv,
           OperationDaysSrv operDaysSrv,
-          StorageUnitsSrv storageUnitsSrv
-  ) {
+          StorageUnitsSrv storageUnitsSrv,
+          FileCacheSrv fileCacheSrv) {
     this.state = state;
     this.exec = exec;
     this.msgSrv = msgSrv;
     this.operDaysSrv = operDaysSrv;
     this.storageUnitsSrv = storageUnitsSrv;
+    this.fileCacheSrv = fileCacheSrv;
     this.future = CompletableFuture.allOf();
   }
 
@@ -64,6 +67,9 @@ public class MainSrvImpl implements MainSrv {
     }
 
     logger.debug("period: " + period);
+    if (period < 1) {
+        throw new IllegalArgumentException("Incorrect period: " + period);
+    }
 
     LocalDate from = LocalDate.now().minusDays(period);
     CompletableFuture<List<OperatingDayFX>> operationDaysFuture = CompletableFuture.supplyAsync(
@@ -173,7 +179,51 @@ public class MainSrvImpl implements MainSrv {
 
   }
 
-  //region PRIVATE
+    @Override
+    public void loadISOAsync(String objectId) {
+      // will trigger update of StorageUnits table
+        CompletableFuture.supplyAsync(() -> {
+                    this.storageUnitsSrv.loadFile(objectId);
+                    msgSrv.news("Загружен : '" + objectId + ".iso'");
+                    return null;
+                }, exec)
+                .thenAccept( nm -> this.readFileCacheAsync( state.getSettings().getIsoCachePath() ) )
+                .exceptionally((ex) -> {
+                    logger.error(ex);
+                    return null;
+                });
+    }
 
-  //endregion
+    @Override
+    public void readFileCacheAsync(String dir) {
+
+        logger.debug("dir: {}", dir);
+
+        CompletableFuture.supplyAsync( ()->fileCacheSrv.readFileCache(dir), exec )
+                .thenAccept(state::setFileNames)
+                .exceptionally( (ex) -> {
+                    logger.error(ex);
+                    return null;
+                });
+    }
+
+    @Override
+    public void deleteFileAsync(String fileName) {
+
+        logger.debug("file: {}", fileName);
+
+        CompletableFuture.supplyAsync(() -> this.fileCacheSrv.deleteFile(fileName), exec)
+                .thenApply(fileCacheSrv::readFileCache)
+                .thenAccept(isoFiles ->
+                        {
+                            state.setFileNames(isoFiles);
+                            msgSrv.news("Удален " + fileName);
+                        }
+                ).exceptionally((ex) -> {
+            logger.error(ex);
+            return null;
+        });
+
+    }
+
 }

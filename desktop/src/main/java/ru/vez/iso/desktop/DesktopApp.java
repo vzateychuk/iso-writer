@@ -27,6 +27,9 @@ import ru.vez.iso.desktop.main.operdays.OperationDaysSrvImpl;
 import ru.vez.iso.desktop.main.storeunits.StorageUnitMapper;
 import ru.vez.iso.desktop.main.storeunits.StorageUnitsSrv;
 import ru.vez.iso.desktop.main.storeunits.StorageUnitsSrvImpl;
+import ru.vez.iso.desktop.main.storeunits.fileload.FileDownloader;
+import ru.vez.iso.desktop.main.storeunits.fileload.FileDownloaderImpl;
+import ru.vez.iso.desktop.main.storeunits.fileload.FileDownloaderNoopImpl;
 import ru.vez.iso.desktop.main.storeunits.noop.HttpClientStorageUnitsNoopImpl;
 import ru.vez.iso.desktop.nav.NavigationCtl;
 import ru.vez.iso.desktop.nav.NavigationSrv;
@@ -85,23 +88,22 @@ public class DesktopApp extends Application {
         // SettingService
         SettingsSrv settingsSrv = new SettingsSrvImpl(state, exec, msgSrv);
         String settingsFileName = SettingType.SETTING_FILE.getDefaultValue();
-        AppSettings sets;
+        AppSettings settings;
         if ( Files.exists( Paths.get(settingsFileName) ) ) {
-            sets = settingsSrv.load(settingsFileName);
+            settings = settingsSrv.load(settingsFileName);
         } else {
-            sets = AppSettings.builder()
+            settings = AppSettings.builder()
                     .settingFile( SettingType.SETTING_FILE.getDefaultValue() )
                     .backendAPI( SettingType.BACKEND_API.getDefaultValue() )
                     .filterOpsDays( Integer.parseUnsignedInt(SettingType.OPERATION_DAYS.getDefaultValue()) )
                     .refreshMin( Integer.parseInt(SettingType.REFRESH_PERIOD.getDefaultValue()) )
                     .isoCachePath( SettingType.ISO_CACHE_PATH.getDefaultValue() )
                     .build();
-            settingsSrv.save(settingsFileName, sets);
+            settingsSrv.save(settingsFileName, settings);
         }
-        state.setSettings(sets);
 
         // FileCacheSrv
-        FileCacheSrv fileCache = new FileCacheSrvImpl(state, exec, msgSrv);
+        FileCacheSrv fileCache = new FileCacheSrvImpl(state);
 
         // OperationDaysService - сервис загрузки операционных дней
         HttpClientWrap httpClientOperDays = runMode != RunMode.NOOP ? new HttpClientImpl() : new HttpClientOperationDaysNoopImpl();
@@ -111,9 +113,10 @@ public class DesktopApp extends Application {
         // StorageUnitsService - сервис загрузки StorageUnits
         HttpClientWrap httpClientStorageUnits = runMode != RunMode.NOOP ? new HttpClientImpl() : new HttpClientStorageUnitsNoopImpl();
         StorageUnitMapper storageUnitMapper = new StorageUnitMapper();
-        StorageUnitsSrv storageUnitsSrv = new StorageUnitsSrvImpl(state, httpClientStorageUnits, storageUnitMapper);
+        FileDownloader downloader = runMode != RunMode.NOOP ? new FileDownloaderImpl() : new FileDownloaderNoopImpl();
+        StorageUnitsSrv storageUnitsSrv = new StorageUnitsSrvImpl(state, httpClientStorageUnits, downloader, storageUnitMapper);
 
-        MainSrv mainSrv  = new MainSrvImpl(state, exec, msgSrv, operDaysSrv, storageUnitsSrv);
+        MainSrv mainSrv  = new MainSrvImpl(state, exec, msgSrv, operDaysSrv, storageUnitsSrv, fileCache);
 
         // LoginService
         HttpClientWrap httpClientLogin = runMode != RunMode.NOOP ? new HttpClientImpl() : new HttpClientLoginNoopImpl();
@@ -126,8 +129,12 @@ public class DesktopApp extends Application {
         //endregion
 
         // create filecache directory and readAsync
-        createFileCacheIfNotExists( sets.getIsoCachePath() );
-        fileCache.readFileCacheAsync( sets.getSettingFile() );
+        createFileCacheIfNotExists( settings.getIsoCachePath() );
+
+        // PRE-SHOW ACTIONS
+        state.setSettings(settings);
+        state.setFileNames( fileCache.readFileCache( settings.getIsoCachePath() ) );
+        mainSrv.readDataAsync(state.getSettings().getFilterOpsDays());
 
         // Set OnClose confirmation hook
         stage.setOnCloseRequest(e -> {
@@ -145,9 +152,12 @@ public class DesktopApp extends Application {
         Parent navigation = buildView(
                 ViewType.NAVIGATION, t->new NavigationCtl(state, navSrv, viewCache, msgSrv)
         );
+
+        // Finally show stage
         stage.setScene(new Scene(navigation));
         String appVersion = this.getVersion();
         stage.setTitle(String.format("Desktop. Версия:%s; Режим:%s", appVersion, runMode.name()));
+
         logger.info("---> Application started! ver: {}, mode: {} <---", appVersion, runMode);
         stage.show();
     }
@@ -219,7 +229,7 @@ public class DesktopApp extends Application {
         viewCache.put(ViewType.DOCUMENTS, buildView( ViewType.DOCUMENTS, t->new DocumentCtl(state, docSrv, msgSrv)) );
 
         // MainView + MainService
-        viewCache.put(ViewType.MAIN_VIEW, buildView(ViewType.MAIN_VIEW, t->new MainCtl(state, mainSrv, fileCache, msgSrv)));
+        viewCache.put(ViewType.MAIN_VIEW, buildView(ViewType.MAIN_VIEW, t->new MainCtl(state, mainSrv, msgSrv)));
 
         return viewCache;
     }

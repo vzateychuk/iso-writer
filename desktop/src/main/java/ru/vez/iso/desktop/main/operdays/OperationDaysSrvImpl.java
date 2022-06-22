@@ -13,6 +13,7 @@ import ru.vez.iso.desktop.shared.UserDetails;
 import ru.vez.iso.desktop.state.ApplicationState;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,6 +25,7 @@ public class OperationDaysSrvImpl implements OperationDaysSrv {
 
     private static final Logger logger = LogManager.getLogger();
     private static final String API_OP_DAYS = "/abdd/operating-day/page";
+    private static final DateTimeFormatter YYYY_MM_DD = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     private final ApplicationState state;
     private final HttpClientWrap httpClient;
@@ -43,15 +45,14 @@ public class OperationDaysSrvImpl implements OperationDaysSrv {
     public List<OperatingDayFX> loadOperationDays(LocalDate from) {
 
         // Create POST request
-        String api = state.getSettings().getBackendAPI() + API_OP_DAYS;
+        final String operDaysAPI = state.getSettings().getBackendAPI() + API_OP_DAYS;
         UserDetails userData = state.getUserDetails();
         if (userData == UserDetails.NOT_SIGNED_USER) {
             return Collections.emptyList();
         }
         String token = userData.getToken();
-        HttpPost httpPost = new HttpPost(api);
-        // TODO jsonRequest should be from RequestBuilder
-        String jsonRequest = "{\"page\":1,\"rowsPerPage\":100,\"criterias\":[{\"fields\":[\"operatingDayDate\"],\"operator\":\"GREATER_OR_EQUALS\",\"value\":\"2022-04-01\"}]}";
+        HttpPost httpPost = new HttpPost(operDaysAPI);
+        String jsonRequest = this.buildJsonRequest(from);
 
         try {
             StringEntity entity = new StringEntity(jsonRequest);
@@ -61,11 +62,26 @@ public class OperationDaysSrvImpl implements OperationDaysSrv {
             httpPost.setHeader("Authorization", token);
             String json = this.httpClient.postDataRequest(httpPost);
             OperationDaysResponse response = new Gson().fromJson(json, OperationDaysResponse.class);
-            return response.getObjects().stream().map(mapper::map).collect(Collectors.toList());
+
+            return response.getObjects().stream()
+                    .map(mapper::map)
+                    .collect(Collectors.toList());
+
         } catch (Exception ex) {
             logger.error(ex);
             throw new RuntimeException(ex);
         }
     }
 
+    //region PRIVATE
+
+    String buildJsonRequest(LocalDate from) {
+
+        return String.format(
+                "{\"page\":1,\"rowsPerPage\":500,\"criterias\":[{\"fields\":[\"operatingDayDate\"],\"operator\":\"GREATER_OR_EQUALS\",\"value\":\"%s\"}]}",
+                from.format(YYYY_MM_DD)
+        );
+    }
+
+    //endregion
 }

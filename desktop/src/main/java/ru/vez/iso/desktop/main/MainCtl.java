@@ -13,7 +13,6 @@ import lombok.extern.java.Log;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
-import ru.vez.iso.desktop.main.filecache.FileCacheSrv;
 import ru.vez.iso.desktop.main.operdays.OperatingDayFX;
 import ru.vez.iso.desktop.main.operdays.TypeSu;
 import ru.vez.iso.desktop.main.storeunits.StorageUnitFX;
@@ -80,7 +79,6 @@ public class MainCtl implements Initializable {
     // Internal state
     private final ApplicationState state;
     private final MainSrv mainSrv;
-    private final FileCacheSrv fileCacheSrv;
     private final MessageSrv msgSrv;
 
     private ObservableList<OperatingDayFX> operatingDays;
@@ -91,12 +89,10 @@ public class MainCtl implements Initializable {
 
     public MainCtl(ApplicationState state,
                    MainSrv mainSrv,
-                   FileCacheSrv fileCacheSrv,
                    MessageSrv msgSrv
     ) {
         this.state = state;
         this.mainSrv = mainSrv;
-        this.fileCacheSrv = fileCacheSrv;
         this.msgSrv = msgSrv;
         this.radioButtonsToggle = new RadioButtonsToggle();
     }
@@ -256,7 +252,7 @@ public class MainCtl implements Initializable {
     @FXML void onStartIsoLoad(ActionEvent ev) {
         StorageUnitFX selected = tblStorageUnits.getSelectionModel().getSelectedItem();
         logger.debug("{}", selected.getNumberSu());
-        fileCacheSrv.loadISOAsync(selected.getNumberSu());
+        mainSrv.loadISOAsync( selected.getObjectId() );
     }
 
     /**
@@ -281,7 +277,7 @@ public class MainCtl implements Initializable {
             this.msgSrv.news("Файл не выбран : " + fileName);
             return;
         }
-        fileCacheSrv.deleteFileAndReload(su.getIsoFileName());
+        mainSrv.deleteFileAsync(su.getIsoFileName());
     }
 
     /**
@@ -311,8 +307,8 @@ public class MainCtl implements Initializable {
         return storageUnits.stream()
                 .map(su -> {
                     StorageUnitFX updated = su;
-                    if ( !Strings.isBlank(su.getNumberSu()) ) {
-                        String fullName = su.getNumberSu() + ".iso";
+                    if ( !Strings.isBlank(su.getObjectId()) ) {
+                        String fullName = su.getObjectId() + ".iso";
                         final String fileName = fileCache.stream().anyMatch(f -> f.getFileName().equals(fullName)) ? fullName : "";
                         updated = new StorageUnitFX(
                                     su.getObjectId(),
