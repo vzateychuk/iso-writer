@@ -27,10 +27,9 @@ import ru.vez.iso.desktop.main.operdays.noop.HttpClientOperationDaysNoopImpl;
 import ru.vez.iso.desktop.main.storeunits.StorageUnitMapper;
 import ru.vez.iso.desktop.main.storeunits.StorageUnitsSrv;
 import ru.vez.iso.desktop.main.storeunits.StorageUnitsSrvImpl;
-import ru.vez.iso.desktop.main.storeunits.fileload.FileDownloader;
-import ru.vez.iso.desktop.main.storeunits.fileload.FileDownloaderImpl;
-import ru.vez.iso.desktop.main.storeunits.fileload.FileDownloaderNoopImpl;
-import ru.vez.iso.desktop.main.storeunits.noop.HttpClientStorageUnitsNoopImpl;
+import ru.vez.iso.desktop.main.storeunits.http.StorageUnitsHttpClient;
+import ru.vez.iso.desktop.main.storeunits.http.StorageUnitsHttpClientImpl;
+import ru.vez.iso.desktop.main.storeunits.http.StorageUnitsHttpClientNoopImpl;
 import ru.vez.iso.desktop.nav.NavigationCtl;
 import ru.vez.iso.desktop.nav.NavigationSrv;
 import ru.vez.iso.desktop.nav.NavigationSrvImpl;
@@ -111,10 +110,9 @@ public class DesktopApp extends Application {
         OperationDaysSrv operDaysSrv = new OperationDaysSrvImpl(state, httpClientOperDays, operationDayMapper);
 
         // StorageUnitsService - сервис загрузки StorageUnits
-        HttpClientWrap httpClientStorageUnits = runMode != RunMode.NOOP ? new HttpClientImpl() : new HttpClientStorageUnitsNoopImpl();
         StorageUnitMapper storageUnitMapper = new StorageUnitMapper();
-        FileDownloader downloader = runMode != RunMode.NOOP ? new FileDownloaderImpl() : new FileDownloaderNoopImpl();
-        StorageUnitsSrv storageUnitsSrv = new StorageUnitsSrvImpl(state, httpClientStorageUnits, downloader, storageUnitMapper);
+        StorageUnitsHttpClient httpClientSU = runMode != RunMode.NOOP ? new StorageUnitsHttpClientImpl() : new StorageUnitsHttpClientNoopImpl();
+        StorageUnitsSrv storageUnitsSrv = new StorageUnitsSrvImpl(state, httpClientSU, storageUnitMapper);
 
         MainSrv mainSrv  = new MainSrvImpl(state, exec, msgSrv, operDaysSrv, storageUnitsSrv, fileCache);
 

@@ -12,7 +12,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class StorageUnitsResponse {
+public class StorageUnitsDto {
 
     private int count;
     private List<StorageUnitDto> objects;

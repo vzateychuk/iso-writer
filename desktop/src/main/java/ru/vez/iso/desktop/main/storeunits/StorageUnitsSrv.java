@@ -8,7 +8,18 @@ import java.util.List;
  * */
 public interface StorageUnitsSrv {
 
+    /**
+     * Получить список Единиц хранения
+     * */
     List<StorageUnitFX> loadStorageUnits(LocalDate from);
 
+    /**
+     * Получить образ ЕХ по коду (ISO file)
+     * */
     void loadFile(String objectId);
+
+    /**
+     * Request backend API to create a storageUnit (ISO file)
+     * */
+    void requestCreateISO(String objectId);
 }

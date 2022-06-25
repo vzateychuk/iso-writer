@@ -121,17 +121,15 @@ public class MainSrvImpl implements MainSrv {
    */
   @Override
   public void isoCreateAsync(StorageUnitFX su) {
-    CompletableFuture.supplyAsync(() -> {
-          logger.debug("id: {}:{}", su.getObjectId(), su.getNumberSu());
-          UtilsHelper.makeDelaySec(1);    // TODO send request for Create ISO
-          this.msgSrv.news("Создан ISO образ: " + su.getNumberSu());
-          return su;
-        }, exec)
-        .thenAccept(st -> readDataAsync(20))
-        .exceptionally((ex) -> {
-          logger.error(ex);
-          return null;
-        });
+
+      CompletableFuture.runAsync( () -> {
+          this.storageUnitsSrv.requestCreateISO(su.getObjectId());
+          this.msgSrv.news("Сформирован запрос на создание ISO образа: " + su.getNumberSu());
+      }, exec)
+              .exceptionally((ex) -> {
+                  logger.error(ex);
+                  return null;
+              });
   }
 
   @Override

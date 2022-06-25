@@ -8,8 +8,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 /**
- * Data model StorageUnitFX
- * used "Список операционных дней"
+ * Data model StorageUnitFX used in MainForm
  * */
 public class StorageUnitFX {
 

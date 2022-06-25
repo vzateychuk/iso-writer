@@ -3,7 +3,8 @@ package ru.vez.iso.desktop.main.storeunits;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.vez.iso.desktop.main.storeunits.dto.StorageUnitsResponse;
+import ru.vez.iso.desktop.main.storeunits.dto.StorageUnitHttpResponse;
+import ru.vez.iso.desktop.main.storeunits.dto.StorageUnitsDto;
 import ru.vez.iso.desktop.shared.UtilsHelper;
 
 import java.util.List;
@@ -30,16 +31,19 @@ class StorageUnitMapperTest {
     void whenMapStorageUnitDto_thenReturnStorageUnitFX() {
 
         // Arrange
-        StorageUnitsResponse response = new Gson().fromJson(json, StorageUnitsResponse.class);
+        String json = UtilsHelper.readJsonFromFile("noop/data/storageUnits.json");
+        StorageUnitHttpResponse response = new Gson().fromJson(json, StorageUnitHttpResponse.class);
+
+        StorageUnitsDto dto = response.getData();
 
         // Act
-        List<StorageUnitFX> listDays = response.getObjects().stream()
+        List<StorageUnitFX> listDays = dto.getObjects().stream()
                 .peek(su -> System.out.println(su.getObjectId()))
                 .map(mapper::map)
                 .collect(Collectors.toList());
 
         // Assert
-        assertEquals(response.getCount(), listDays.size());
+        assertEquals(dto.getCount(), listDays.size());
         listDays.forEach(su -> {
             assertNotNull(su.getObjectId());
             assertNotNull(su.getOperatingDayId());
