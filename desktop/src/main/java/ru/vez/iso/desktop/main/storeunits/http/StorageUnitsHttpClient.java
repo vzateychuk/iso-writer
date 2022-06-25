@@ -4,6 +4,9 @@ import ru.vez.iso.desktop.main.storeunits.dto.StorageUnitHttpResponse;
 
 import java.time.LocalDate;
 
+/**
+ * HttpClientWrapper for StorageUnits to work with backend API
+ * */
 public interface StorageUnitsHttpClient {
 
     /**

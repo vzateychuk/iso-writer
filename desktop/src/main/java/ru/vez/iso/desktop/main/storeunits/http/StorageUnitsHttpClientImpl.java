@@ -22,8 +22,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 /**
- * Downloading file using Apache HttpClient (>= v4.2) with support to HTTP REDIRECT 301 and 302 when using HTTP method GET
- * @See https://gist.github.com/rponte/09ddc1aa7b9918b52029
+ * StorageUnits HttpClient wrapper
  * */
 public class StorageUnitsHttpClientImpl implements StorageUnitsHttpClient {
 
@@ -93,6 +92,10 @@ public class StorageUnitsHttpClientImpl implements StorageUnitsHttpClient {
         }
     }
 
+    /**
+     * Downloading file using Apache HttpClient (>= v4.2) with support to HTTP REDIRECT 301 and 302 when using HTTP method GET
+     * @See https://gist.github.com/rponte/09ddc1aa7b9918b52029
+     */
     @Override
     public void downloadISO(String url, String token, String fileName) {
 

@@ -13,6 +13,9 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * StorageUnitsHttpClient NOOP implementation
+ * */
 public class StorageUnitsHttpClientNoopImpl implements StorageUnitsHttpClient {
 
     private static final Logger logger = LogManager.getLogger();
@@ -20,7 +23,7 @@ public class StorageUnitsHttpClientNoopImpl implements StorageUnitsHttpClient {
     @Override
     public StorageUnitHttpResponse requestISOList(String url, String token, LocalDate from) {
 
-        logger.debug("URL: {}, token: {}, date from: {}", url, token, from.format(DateTimeFormatter.ISO_LOCAL_DATE));
+        logger.debug("API: {}, date from: {}, token: {}", url, from.format(DateTimeFormatter.ISO_LOCAL_DATE), token);
 
         UtilsHelper.makeDelaySec(1);
 

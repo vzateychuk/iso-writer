@@ -72,11 +72,13 @@ public class StorageUnitsSrvImpl implements StorageUnitsSrv {
         // Getting backend API
         final String API = state.getSettings().getBackendAPI() + API_STORAGE_UNITS + "/" + objectId + "/iso";
 
+        // Build destination file full path
         String dir = state.getSettings().getIsoCachePath();
         String fileName = objectId + ".iso";
-        Path path = Paths.get(dir, fileName);
+        Path destination = Paths.get(dir, fileName);
 
-        this.httpClient.downloadISO(API, token, path.toString());
+        // request file and save to destination
+        this.httpClient.downloadISO(API, token, destination.toString());
     }
 
     /**
