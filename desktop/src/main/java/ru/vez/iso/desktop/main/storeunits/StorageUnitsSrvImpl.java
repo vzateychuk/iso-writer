@@ -6,7 +6,6 @@ import ru.vez.iso.desktop.main.storeunits.dto.StorageUnitDto;
 import ru.vez.iso.desktop.main.storeunits.dto.StorageUnitHttpResponse;
 import ru.vez.iso.desktop.main.storeunits.http.StorageUnitsHttpClient;
 import ru.vez.iso.desktop.shared.DataMapper;
-import ru.vez.iso.desktop.shared.UserDetails;
 import ru.vez.iso.desktop.state.ApplicationState;
 
 import java.nio.file.Path;
@@ -37,18 +36,20 @@ public class StorageUnitsSrvImpl implements StorageUnitsSrv {
         this.mapper = mapper;
     }
 
-    /** Получить список Единиц хранения */
+    /**
+     * Получить список Единиц Хранения с backend
+     */
     @Override
     public List<StorageUnitFX> loadStorageUnits(LocalDate from) {
 
         // get Authentication token or raise exception
-        final String token = this.getAuthTokenOrException();
+        final String token = this.getAuthTokenOrException(this.state);
 
         // Getting backend API
         final String API = state.getSettings().getBackendAPI() + API_STORAGE_UNITS + "/page";
 
         // Create HTTP request
-        StorageUnitHttpResponse resp = this.httpClient.requestISOList(API, token, from);
+        StorageUnitHttpResponse resp = this.httpClient.loadISOList(API, token, from);
         if (!resp.isOk()) {
             throw new IllegalStateException("Server response: " + resp.isOk());
         }
@@ -67,7 +68,7 @@ public class StorageUnitsSrvImpl implements StorageUnitsSrv {
         logger.debug("objectId: {}", objectId);
 
         // Get Authentication token or raise exception
-        final String token = this.getAuthTokenOrException();
+        final String token = this.getAuthTokenOrException(this.state);
 
         // Getting backend API
         final String API = state.getSettings().getBackendAPI() + API_STORAGE_UNITS + "/" + objectId + "/iso";
@@ -87,20 +88,10 @@ public class StorageUnitsSrvImpl implements StorageUnitsSrv {
     @Override
     public void requestCreateISO(String objectId) {
         // Get Authentication token or raise exception
-        final String token = this.getAuthTokenOrException();
+        final String token = this.getAuthTokenOrException(this.state);
+        // API
         final String API = state.getSettings().getBackendAPI() + API_STORAGE_UNITS + "/" + objectId + "/iso";
+        // request
         this.httpClient.requestCreateISO(API, token);
     }
-
-    //region PRIVATE
-
-    String getAuthTokenOrException() {
-        UserDetails userData = state.getUserDetails();
-        if (userData == UserDetails.NOT_SIGNED_USER) {
-            throw new IllegalStateException("Not authenticated");
-        }
-        return userData.getToken();
-    }
-
-    //endregion
 }

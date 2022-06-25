@@ -4,11 +4,8 @@ import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.vez.iso.desktop.docs.reestr.Reestr;
+import ru.vez.iso.desktop.shared.UtilsHelper;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,16 +19,14 @@ class DocMapperTest {
     @BeforeEach
     void setUp() {
         // read JSON
-        InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("REESTR.json");
-        BufferedReader readr = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
-        json = readr.lines().collect(Collectors.joining(System.getProperty("line.separator")));
+        this.json = UtilsHelper.readJsonFromFile("REESTR.json");
 
         // create Mapper
-        mapper = new DocMapperImpl();
+        this.mapper = new DocMapperImpl();
     }
 
     @Test
-    void ToDocumentFX() {
+    void whenMapReestr_thenReturnDocumentFX() {
 
         // Arrange
         Reestr reestr = new Gson().fromJson(json, Reestr.class);

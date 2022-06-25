@@ -1,20 +1,15 @@
 package ru.vez.iso.desktop.main.operdays;
 
-import com.google.gson.Gson;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.vez.iso.desktop.main.operdays.dto.OperDayDto;
-import ru.vez.iso.desktop.main.operdays.dto.OperationDaysResponse;
+import ru.vez.iso.desktop.main.operdays.dto.OperationDayDto;
+import ru.vez.iso.desktop.main.operdays.dto.OperationDaysHttpResponse;
+import ru.vez.iso.desktop.main.operdays.http.OperationDayHttpClient;
 import ru.vez.iso.desktop.shared.DataMapper;
-import ru.vez.iso.desktop.shared.HttpClientWrap;
-import ru.vez.iso.desktop.shared.UserDetails;
 import ru.vez.iso.desktop.state.ApplicationState;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,13 +23,13 @@ public class OperationDaysSrvImpl implements OperationDaysSrv {
     private static final DateTimeFormatter YYYY_MM_DD = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     private final ApplicationState state;
-    private final HttpClientWrap httpClient;
-    private final DataMapper<OperDayDto, OperatingDayFX> mapper;
+    private final OperationDayHttpClient httpClient;
+    private final DataMapper<OperationDayDto, OperatingDayFX> mapper;
 
     public OperationDaysSrvImpl(
             ApplicationState appState,
-            HttpClientWrap httpClient,
-            DataMapper<OperDayDto, OperatingDayFX> mapper
+            OperationDayHttpClient httpClient,
+            DataMapper<OperationDayDto, OperatingDayFX> mapper
     ) {
         this.state = appState;
         this.httpClient = httpClient;
@@ -44,44 +39,22 @@ public class OperationDaysSrvImpl implements OperationDaysSrv {
     @Override
     public List<OperatingDayFX> loadOperationDays(LocalDate from) {
 
-        // Create POST request
-        final String operDaysAPI = state.getSettings().getBackendAPI() + API_OP_DAYS;
-        UserDetails userData = state.getUserDetails();
-        if (userData == UserDetails.NOT_SIGNED_USER) {
-            return Collections.emptyList();
+        // get Authentication token or raise exception
+        final String token = this.getAuthTokenOrException(this.state);
+
+        // Getting backend API
+        final String API = state.getSettings().getBackendAPI() + API_OP_DAYS;
+
+        // Create HTTP request
+        OperationDaysHttpResponse resp = this.httpClient.loadOperationDays(API, token, from);
+        if (!resp.isOk()) {
+            throw new IllegalStateException("Server response: " + resp.isOk());
         }
-        String token = userData.getToken();
-        HttpPost httpPost = new HttpPost(operDaysAPI);
-        String jsonRequest = this.buildJsonRequest(from);
 
-        try {
-            StringEntity entity = new StringEntity(jsonRequest);
-            httpPost.setEntity(entity);
-            httpPost.setHeader("Accept", "application/json");
-            httpPost.setHeader("Content-type", "application/json");
-            httpPost.setHeader("Authorization", token);
-            String json = this.httpClient.postDataRequest(httpPost);
-            OperationDaysResponse response = new Gson().fromJson(json, OperationDaysResponse.class);
-
-            return response.getObjects().stream()
-                    .map(mapper::map)
-                    .collect(Collectors.toList());
-
-        } catch (Exception ex) {
-            logger.error(ex);
-            throw new RuntimeException(ex);
-        }
+        return resp.getData()
+                .getObjects()
+                .stream()
+                .map(mapper::map)
+                .collect(Collectors.toList());
     }
-
-    //region PRIVATE
-
-    String buildJsonRequest(LocalDate from) {
-
-        return String.format(
-                "{\"page\":1,\"rowsPerPage\":500,\"criterias\":[{\"fields\":[\"operatingDayDate\"],\"operator\":\"GREATER_OR_EQUALS\",\"value\":\"%s\"}]}",
-                from.format(YYYY_MM_DD)
-        );
-    }
-
-    //endregion
 }

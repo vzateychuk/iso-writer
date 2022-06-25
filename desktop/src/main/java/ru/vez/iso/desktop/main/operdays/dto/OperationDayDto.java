@@ -35,7 +35,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class OperDayDto {
+public class OperationDayDto {
 
     private String objectId;        // "45352fba-8818-4fbe-8ee1-04c47a1c9f75",
     private String objectName;      // "Операционный день АБДД",

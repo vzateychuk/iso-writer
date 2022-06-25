@@ -23,13 +23,15 @@ import ru.vez.iso.desktop.main.filecache.FileCacheSrvImpl;
 import ru.vez.iso.desktop.main.operdays.OperationDayMapper;
 import ru.vez.iso.desktop.main.operdays.OperationDaysSrv;
 import ru.vez.iso.desktop.main.operdays.OperationDaysSrvImpl;
-import ru.vez.iso.desktop.main.operdays.noop.HttpClientOperationDaysNoopImpl;
+import ru.vez.iso.desktop.main.operdays.http.OperationDayHttpClient;
+import ru.vez.iso.desktop.main.operdays.http.OperationDayHttpClientImpl;
+import ru.vez.iso.desktop.main.operdays.http.OperationDayHttpClientNoop;
 import ru.vez.iso.desktop.main.storeunits.StorageUnitMapper;
 import ru.vez.iso.desktop.main.storeunits.StorageUnitsSrv;
 import ru.vez.iso.desktop.main.storeunits.StorageUnitsSrvImpl;
 import ru.vez.iso.desktop.main.storeunits.http.StorageUnitsHttpClient;
 import ru.vez.iso.desktop.main.storeunits.http.StorageUnitsHttpClientImpl;
-import ru.vez.iso.desktop.main.storeunits.http.StorageUnitsHttpClientNoopImpl;
+import ru.vez.iso.desktop.main.storeunits.http.StorageUnitsHttpClientNoop;
 import ru.vez.iso.desktop.nav.NavigationCtl;
 import ru.vez.iso.desktop.nav.NavigationSrv;
 import ru.vez.iso.desktop.nav.NavigationSrvImpl;
@@ -105,13 +107,17 @@ public class DesktopApp extends Application {
         FileCacheSrv fileCache = new FileCacheSrvImpl(state);
 
         // OperationDaysService - сервис загрузки операционных дней
-        HttpClientWrap httpClientOperDays = runMode != RunMode.NOOP ? new HttpClientImpl() : new HttpClientOperationDaysNoopImpl();
+        OperationDayHttpClient httpClient = runMode != RunMode.NOOP
+                ? new OperationDayHttpClientImpl()
+                : new OperationDayHttpClientNoop();
         OperationDayMapper operationDayMapper = new OperationDayMapper();
-        OperationDaysSrv operDaysSrv = new OperationDaysSrvImpl(state, httpClientOperDays, operationDayMapper);
+        OperationDaysSrv operDaysSrv = new OperationDaysSrvImpl(state, httpClient, operationDayMapper);
 
         // StorageUnitsService - сервис загрузки StorageUnits
         StorageUnitMapper storageUnitMapper = new StorageUnitMapper();
-        StorageUnitsHttpClient httpClientSU = runMode != RunMode.NOOP ? new StorageUnitsHttpClientImpl() : new StorageUnitsHttpClientNoopImpl();
+        StorageUnitsHttpClient httpClientSU = runMode != RunMode.NOOP
+                ? new StorageUnitsHttpClientImpl()
+                : new StorageUnitsHttpClientNoop();
         StorageUnitsSrv storageUnitsSrv = new StorageUnitsSrvImpl(state, httpClientSU, storageUnitMapper);
 
         MainSrv mainSrv  = new MainSrvImpl(state, exec, msgSrv, operDaysSrv, storageUnitsSrv, fileCache);
@@ -140,6 +146,7 @@ public class DesktopApp extends Application {
             if (runMode == RunMode.PROD && !UtilsHelper.getConfirmation("Вы уверены?")) {
                 return;
             }
+            logger.info("Exit by user request");
             exec.shutdownNow();
             stage.close();
         });

@@ -12,8 +12,8 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class OperationDaysResponse {
+public class OperationDaysDto {
 
     private int count;
-    private List<OperDayDto> objects;
+    private List<OperationDayDto> objects;
 }

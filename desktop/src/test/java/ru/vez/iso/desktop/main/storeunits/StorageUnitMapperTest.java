@@ -15,14 +15,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class StorageUnitMapperTest {
 
-    private String json;
     private StorageUnitMapper mapper;
 
     @BeforeEach
     void setUp() {
-        // read JSON
-        json = UtilsHelper.readJsonFromFile("storageUnits.json");
-
         // create Mapper
         mapper = new StorageUnitMapper();
     }

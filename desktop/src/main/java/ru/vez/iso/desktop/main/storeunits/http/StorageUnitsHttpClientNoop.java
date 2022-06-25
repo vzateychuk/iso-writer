@@ -16,12 +16,12 @@ import java.time.format.DateTimeFormatter;
 /**
  * StorageUnitsHttpClient NOOP implementation
  * */
-public class StorageUnitsHttpClientNoopImpl implements StorageUnitsHttpClient {
+public class StorageUnitsHttpClientNoop implements StorageUnitsHttpClient {
 
     private static final Logger logger = LogManager.getLogger();
 
     @Override
-    public StorageUnitHttpResponse requestISOList(String url, String token, LocalDate from) {
+    public StorageUnitHttpResponse loadISOList(String url, String token, LocalDate from) {
 
         logger.debug("API: {}, date from: {}, token: {}", url, from.format(DateTimeFormatter.ISO_LOCAL_DATE), token);
 
@@ -30,7 +30,6 @@ public class StorageUnitsHttpClientNoopImpl implements StorageUnitsHttpClient {
         String json = UtilsHelper.readJsonFromFile("noop/data/storageUnits.json");
         StorageUnitHttpResponse response = new Gson().fromJson(json, StorageUnitHttpResponse.class);
         return response;
-
     }
 
     @Override

@@ -30,7 +30,7 @@ public class StorageUnitsHttpClientImpl implements StorageUnitsHttpClient {
     private static final DateTimeFormatter YYYY_MM_DD = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @Override
-    public StorageUnitHttpResponse requestISOList(String url, String token, LocalDate from) {
+    public StorageUnitHttpResponse loadISOList(String url, String token, LocalDate from) {
 
         // Create HTTP request
         HttpPost httpPost = new HttpPost(url);

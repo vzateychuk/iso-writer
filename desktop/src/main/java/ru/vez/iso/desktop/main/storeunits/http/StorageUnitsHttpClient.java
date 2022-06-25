@@ -12,7 +12,7 @@ public interface StorageUnitsHttpClient {
     /**
      * Получить список Единиц хранения
      * */
-    StorageUnitHttpResponse requestISOList(String url, String token, LocalDate from);
+    StorageUnitHttpResponse loadISOList(String url, String token, LocalDate from);
 
     /**
      * Create a storageUnit (ISO file) on backend server
