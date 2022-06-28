@@ -18,6 +18,8 @@ import ru.vez.iso.desktop.login.LoginSrvImpl;
 import ru.vez.iso.desktop.main.MainCtl;
 import ru.vez.iso.desktop.main.MainSrv;
 import ru.vez.iso.desktop.main.MainSrvImpl;
+import ru.vez.iso.desktop.main.burner.Burner;
+import ru.vez.iso.desktop.main.burner.BurnerNoop;
 import ru.vez.iso.desktop.main.filecache.FileCacheSrv;
 import ru.vez.iso.desktop.main.filecache.FileCacheSrvImpl;
 import ru.vez.iso.desktop.main.operdays.OperationDayMapper;
@@ -120,7 +122,8 @@ public class DesktopApp extends Application {
                 : new StorageUnitsHttpClientNoop();
         StorageUnitsSrv storageUnitsSrv = new StorageUnitsSrvImpl(state, httpClientSU, storageUnitMapper);
 
-        MainSrv mainSrv  = new MainSrvImpl(state, exec, msgSrv, operDaysSrv, storageUnitsSrv, fileCache);
+        Burner burner = new BurnerNoop(); // TODO Replace burner by realone
+        MainSrv mainSrv  = new MainSrvImpl(state, exec, msgSrv, operDaysSrv, storageUnitsSrv, fileCache, burner);
 
         // LoginService
         HttpClientWrap httpClientLogin = runMode != RunMode.NOOP ? new HttpClientImpl() : new HttpClientLoginNoopImpl();

@@ -28,13 +28,12 @@ public class StorageUnitsHttpClientNoop implements StorageUnitsHttpClient {
         UtilsHelper.makeDelaySec(1);
 
         String json = UtilsHelper.readJsonFromFile("noop/data/storageUnits.json");
-        StorageUnitHttpResponse response = new Gson().fromJson(json, StorageUnitHttpResponse.class);
-        return response;
+        return new Gson().fromJson(json, StorageUnitHttpResponse.class);
     }
 
     @Override
-    public void requestCreateISO(String url, String token) {
-        logger.debug("URL: {}, token: {}", url, token);
+    public void post(String url, String token, String body) {
+        logger.debug("URL: {}, token: {}, body: {}", url, token, body);
     }
 
     @Override
@@ -52,4 +51,13 @@ public class StorageUnitsHttpClientNoop implements StorageUnitsHttpClient {
             throw new IllegalStateException(ex);
         }
     }
+
+    @Override
+    public String getHashCode(String API, String token) {
+
+        logger.debug("URL: {}, token: {}", API, token);
+
+        return "bab45fc670a14bf3e292470c6eaa8f133f2c70b3672c7da2cb077372dc9f98308af2fcc78ac5405bb28854225126f15c49e3f26021f100c0d24672a18e71abc4";
+    }
+
 }

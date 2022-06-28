@@ -264,7 +264,9 @@ public class MainCtl implements Initializable {
         if (Strings.isBlank(diskLabel)) {
             return;
         }
-        logger.debug(diskLabel);
+        StorageUnitFX su = tblStorageUnits.getSelectionModel().selectedItemProperty().getValue();
+        logger.debug("Burn {} with label: {}", su.getNumberSu(), diskLabel);
+        mainSrv.burnISOAsync(su);
     }
 
     /**
@@ -294,7 +296,10 @@ public class MainCtl implements Initializable {
         logger.debug(currentPath);
 
         Path dirZip = Paths.get(currentPath, MyConst.DIR_ZIP);
-        mainSrv.checkSumAsync(dirZip);
+
+        StorageUnitFX current = tblStorageUnits.getSelectionModel().selectedItemProperty().getValue();
+
+        mainSrv.checkSumAsync(current.getObjectId(), dirZip);
     }
 
     //region PRIVATE

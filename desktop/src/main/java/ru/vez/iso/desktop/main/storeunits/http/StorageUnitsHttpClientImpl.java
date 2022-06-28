@@ -20,6 +20,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.stream.Collectors;
 
 /**
  * StorageUnits HttpClient wrapper
@@ -70,12 +71,22 @@ public class StorageUnitsHttpClientImpl implements StorageUnitsHttpClient {
     }
 
     @Override
-    public void requestCreateISO(String url, String token) {
+    public void post(String API, String token, String body) {
 
-        logger.debug("URL: {}", url);
+        logger.debug("URL: {}", API);
 
-        HttpPost post = new HttpPost(url);
+        HttpPost post = new HttpPost(API);
         post.setHeader("Authorization", token);
+
+        if (body != null) {
+            try {
+                StringEntity entity = new StringEntity(body);
+                post.setEntity(entity);
+            } catch (UnsupportedEncodingException ex) {
+                logger.error(ex);
+                throw new RuntimeException(ex);
+            }
+        }
 
         try (
                 CloseableHttpClient httpClient = HttpClients.custom() // CloseableHttpClient httpClient = HttpClients.createDefault();
@@ -97,10 +108,10 @@ public class StorageUnitsHttpClientImpl implements StorageUnitsHttpClient {
      * @See https://gist.github.com/rponte/09ddc1aa7b9918b52029
      */
     @Override
-    public void downloadISO(String url, String token, String fileName) {
+    public void downloadISO(String API, String token, String fileName) {
 
-        logger.debug("URL: {}, fileName: {}", url, fileName);
-        HttpGet get = new HttpGet(url);
+        logger.debug("URL: {}, fileName: {}", API, fileName);
+        HttpGet get = new HttpGet(API);
         get.setHeader("Authorization", token);
 
         try (
@@ -116,6 +127,34 @@ public class StorageUnitsHttpClientImpl implements StorageUnitsHttpClient {
             }
             InputStream source = response.getEntity().getContent();
             FileUtils.copyInputStreamToFile(source, new File(fileName));
+        } catch (IOException ex) {
+            throw new IllegalStateException(ex);
+        }
+    }
+
+    @Override
+    public String getHashCode(String API, String token) {
+
+        logger.debug("URL: {}", API);
+
+        HttpPost httpPost = new HttpPost(API);
+        httpPost.setHeader("Authorization", token);
+
+        try (
+                CloseableHttpClient httpClient = HttpClients.custom() // CloseableHttpClient httpClient = HttpClients.createDefault();
+                        .setRedirectStrategy(new LaxRedirectStrategy()) // adds HTTP REDIRECT support to GET and POST methods
+                        .build();
+                CloseableHttpResponse response = httpClient.execute(httpPost);
+        ) {
+            int code = response.getStatusLine().getStatusCode();
+            if (code != HttpStatus.SC_OK) {
+                throw new IllegalStateException("Server response: " + code);
+            }
+            InputStream is = response.getEntity().getContent();
+            return new BufferedReader(
+                    new InputStreamReader(is, StandardCharsets.UTF_8))
+                    .lines()
+                    .collect( Collectors.joining(System.lineSeparator()) );
         } catch (IOException ex) {
             throw new IllegalStateException(ex);
         }

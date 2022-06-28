@@ -92,6 +92,27 @@ public class StorageUnitsSrvImpl implements StorageUnitsSrv {
         // API
         final String API = state.getSettings().getBackendAPI() + API_STORAGE_UNITS + "/" + objectId + "/iso";
         // request
-        this.httpClient.requestCreateISO(API, token);
+        this.httpClient.post(API, token, null);
+    }
+
+    @Override
+    public String getHashCode(String objectId) {
+        // Get Authentication token or raise exception
+        final String token = this.getAuthTokenOrException(this.state);
+        // API
+        final String API = state.getSettings().getBackendAPI() + API_STORAGE_UNITS + "/" + objectId + "/iso";
+        // Act
+        return this.httpClient.getHashCode(API, token);
+    }
+
+    @Override
+    public void sendBurnComplete(String objectId, Throwable ex) {
+
+        String msg = ex != null ? "{\"errorMessage\":\"" + ex.getMessage() + "\"}" : null;
+        // Get Authentication token or raise exception
+        final String token = this.getAuthTokenOrException(this.state);
+        // API
+        final String API = state.getSettings().getBackendAPI() + API_STORAGE_UNITS + "/" + objectId + "/iso";
+        this.httpClient.post(API, token, msg);
     }
 }

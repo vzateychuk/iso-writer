@@ -33,4 +33,14 @@ public interface StorageUnitsSrv {
      * Request backend API to create a storageUnit (ISO file)
      * */
     void requestCreateISO(String objectId);
+
+    /**
+     * Get storage-unit's hash code from backend
+     * */
+    String getHashCode(String objectId);
+
+    /**
+     * Send HttpPost about complete status
+     * */
+    void sendBurnComplete(String objectId, Throwable ex);
 }

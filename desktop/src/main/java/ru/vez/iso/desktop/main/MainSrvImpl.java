@@ -4,11 +4,11 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.vez.iso.desktop.main.burner.Burner;
 import ru.vez.iso.desktop.main.filecache.FileCacheSrv;
 import ru.vez.iso.desktop.main.operdays.OperatingDayFX;
 import ru.vez.iso.desktop.main.operdays.OperationDaysSrv;
 import ru.vez.iso.desktop.main.storeunits.StorageUnitFX;
-import ru.vez.iso.desktop.main.storeunits.StorageUnitStatus;
 import ru.vez.iso.desktop.main.storeunits.StorageUnitsSrv;
 import ru.vez.iso.desktop.shared.MessageSrv;
 import ru.vez.iso.desktop.shared.MyConst;
@@ -34,6 +34,7 @@ public class MainSrvImpl implements MainSrv {
   private final OperationDaysSrv operDaysSrv;
   private final StorageUnitsSrv storageUnitsSrv;
   private final FileCacheSrv fileCacheSrv;
+  private final Burner burner;
 
   private Future<Void> future;
   private ScheduledFuture<?> scheduledReload;
@@ -44,13 +45,15 @@ public class MainSrvImpl implements MainSrv {
           MessageSrv msgSrv,
           OperationDaysSrv operDaysSrv,
           StorageUnitsSrv storageUnitsSrv,
-          FileCacheSrv fileCacheSrv) {
+          FileCacheSrv fileCacheSrv,
+          Burner burner) {
     this.state = state;
     this.exec = exec;
     this.msgSrv = msgSrv;
     this.operDaysSrv = operDaysSrv;
     this.storageUnitsSrv = storageUnitsSrv;
     this.fileCacheSrv = fileCacheSrv;
+    this.burner = burner;
     this.future = CompletableFuture.allOf();
   }
 
@@ -101,19 +104,26 @@ public class MainSrvImpl implements MainSrv {
    * Стартует прожиг диска
    */
   @Override
-  public void burnISOAsync(StorageUnitFX su, StorageUnitStatus status) {
+  public void burnISOAsync(StorageUnitFX su) {
 
-    CompletableFuture.supplyAsync(() -> {
+      this.msgSrv.news("Старт записи на диск: " + su.getNumberSu());
+
+      CompletableFuture.supplyAsync(() -> {
           logger.debug("id: {}:{}", su.getObjectId(), su.getNumberSu());
-          UtilsHelper.makeDelaySec(1);    // TODO send request for change EX status
-          this.msgSrv.news("Записан диск: " + su.getNumberSu());
-          return status;
-        }, exec)
-        .thenAccept(st -> readDataAsync(20))
-        .exceptionally(ex -> {
-            logger.error(ex);
-            return null;
-        });
+
+          burner.startBurn(su.getObjectId());
+          return su;
+      }, exec)
+              .thenAccept(st -> readDataAsync(20))
+              .whenComplete( (v,ex) -> {
+                  this.storageUnitsSrv.sendBurnComplete(su.getObjectId(), ex);
+                  if (ex == null) {
+                      this.msgSrv.news("Записан диск: " + su.getNumberSu());
+                  } else {
+                      this.msgSrv.news("Запись на диск не удалась: " + su.getNumberSu());
+                      logger.error(ex);
+                  }
+              });
   }
 
   /**
@@ -133,14 +143,14 @@ public class MainSrvImpl implements MainSrv {
   }
 
   @Override
-  public void checkSumAsync(Path dirZip) {
+  public void checkSumAsync(String objectId, Path dirZip) {
 
     CompletableFuture.supplyAsync(() -> {
           UtilsHelper.makeDelaySec(1);
           final MessageDigest gostDigest = DigestUtils.getDigest(MyConst.ALGO_GOST);
           try (InputStream dirZipFis = Files.newInputStream(dirZip)) {
             String actualHash = Hex.encodeHexString(DigestUtils.digest(gostDigest, dirZipFis));
-            String expectedHash = actualHash; // TODO read from ABDD server response
+            String expectedHash = this.storageUnitsSrv.getHashCode(objectId);
             logger.debug("Compare Hash\nexpect:\t'{}'\nactual:\t'{}'", expectedHash, actualHash);
             String result = expectedHash.equals(actualHash) ? "УСПЕШНО" : "НЕУСПЕШНО";
             this.msgSrv.news("Проверка ключа: " + result + " (" + dirZip + ")");
@@ -168,7 +178,7 @@ public class MainSrvImpl implements MainSrv {
       this.scheduledReload = exec.scheduleWithFixedDelay(
           () -> readDataAsync(filterDays),
           1,
-          refreshMinutes * 60,
+          refreshMinutes * 60L,
           TimeUnit.SECONDS
       );
     } else {
