@@ -1,5 +1,11 @@
 package ru.vez.iso.desktop.main.storeunits;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.main.storeunits.dto.StorageUnitDto;
@@ -7,12 +13,6 @@ import ru.vez.iso.desktop.main.storeunits.dto.StorageUnitHttpResponse;
 import ru.vez.iso.desktop.main.storeunits.http.StorageUnitsHttpClient;
 import ru.vez.iso.desktop.shared.DataMapper;
 import ru.vez.iso.desktop.state.ApplicationState;
-
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Service to get StorageUnits from backend
@@ -41,6 +41,8 @@ public class StorageUnitsSrvImpl implements StorageUnitsSrv {
      */
     @Override
     public List<StorageUnitFX> loadStorageUnits(LocalDate from) {
+
+        logger.debug(from.format(DateTimeFormatter.ISO_LOCAL_DATE));
 
         // get Authentication token or raise exception
         final String token = this.getAuthTokenOrException(this.state);

@@ -1,5 +1,8 @@
 package ru.vez.iso.desktop.login;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Future;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
@@ -10,10 +13,6 @@ import ru.vez.iso.desktop.shared.HttpClientWrap;
 import ru.vez.iso.desktop.shared.MessageSrv;
 import ru.vez.iso.desktop.shared.UserDetails;
 import ru.vez.iso.desktop.state.ApplicationState;
-
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Future;
 
 public class LoginSrvImpl implements LoginSrv {
 
@@ -85,9 +84,9 @@ public class LoginSrvImpl implements LoginSrv {
                 .build();
         httpPost.setEntity(multipart);
 
-        String resp = this.httpClient.postDataRequest(httpPost);
+        String token = this.httpClient.postDataRequest(httpPost);
 
-        String token = this.removeBearer(resp);
+        // String token = this.removeBearer(resp);
         return !Strings.isBlank(token)
                 ? new UserDetails(username, password, token)
                 : UserDetails.NOT_SIGNED_USER;

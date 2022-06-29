@@ -1,5 +1,9 @@
 package ru.vez.iso.desktop.main.operdays;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.main.operdays.dto.OperationDayDto;
@@ -7,11 +11,6 @@ import ru.vez.iso.desktop.main.operdays.dto.OperationDaysHttpResponse;
 import ru.vez.iso.desktop.main.operdays.http.OperationDayHttpClient;
 import ru.vez.iso.desktop.shared.DataMapper;
 import ru.vez.iso.desktop.state.ApplicationState;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Service to load Operation Days
@@ -38,6 +37,8 @@ public class OperationDaysSrvImpl implements OperationDaysSrv {
 
     @Override
     public List<OperatingDayFX> loadOperationDays(LocalDate from) {
+
+        logger.debug(from.format(DateTimeFormatter.ISO_LOCAL_DATE));
 
         // get Authentication token or raise exception
         final String token = this.getAuthTokenOrException(this.state);

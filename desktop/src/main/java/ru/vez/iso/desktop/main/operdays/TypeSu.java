@@ -5,5 +5,5 @@ package ru.vez.iso.desktop.main.operdays;
  * used "Список операционных дней"
  * */
 public enum TypeSu {
-    CD, DVD
+    CD, DVD, UNKNOWN
 }

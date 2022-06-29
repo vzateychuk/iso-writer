@@ -1,6 +1,17 @@
 package ru.vez.iso.desktop.main.storeunits.http;
 
 import com.google.gson.Gson;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.stream.Collectors;
 import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
@@ -15,12 +26,6 @@ import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.main.storeunits.dto.StorageUnitHttpResponse;
-
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.stream.Collectors;
 
 /**
  * StorageUnits HttpClient wrapper
@@ -39,7 +44,7 @@ public class StorageUnitsHttpClientImpl implements StorageUnitsHttpClient {
         httpPost.setHeader("Content-type", "application/json");
         httpPost.setHeader("Authorization", token);
         String jsonRequest = String.format(
-                "{\"page\":1,\"rowsPerPage\":500,\"criterias\":[{\"fields\":[\"operatingDayDate\"],\"operator\":\"GREATER_OR_EQUALS\",\"value\":\"%s\"}]}",
+                "{\"page\":1,\"rowsPerPage\":500,\"criterias\":[{\"fields\":[\"operatingDay.operatingDayDate\"],\"operator\":\"GREATER_OR_EQUALS\",\"value\":\"%s\"}]}",
                 from.format(YYYY_MM_DD)
         );
         try {
@@ -122,6 +127,7 @@ public class StorageUnitsHttpClientImpl implements StorageUnitsHttpClient {
         ) {
             // response handler
             int code = response.getStatusLine().getStatusCode();
+            // TODO HttpStatus.SC_NOT_FOUND need to be reported
             if (code != HttpStatus.SC_OK) {
                 throw new IllegalStateException("Server response: " + code);
             }

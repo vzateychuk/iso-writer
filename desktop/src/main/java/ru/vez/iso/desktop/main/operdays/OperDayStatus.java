@@ -9,6 +9,7 @@ public enum OperDayStatus {
     RECORDED("Записан"),
     READY_TO_SIGN("Готов к подписанию"),
     SIGNING("На подписании"),
+    SIGNED("Подписан"),
     READY_TO_RECORDING("Готов для записи на EX"),
     UNKNOWN("Неопределен");
 
