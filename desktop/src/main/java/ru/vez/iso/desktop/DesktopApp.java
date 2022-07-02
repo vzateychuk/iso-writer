@@ -131,7 +131,7 @@ public class DesktopApp extends Application {
 
         // ViewCache with views
         Map<ViewType, Parent> viewCache = buildViewCache(state,exec,msgSrv,settingsSrv,loginSrv,mainSrv,fileCache);
-        settingsSrv.loadAsync(SettingType.SETTING_FILE.getDefaultValue());
+        // settingsSrv.loadAsync(SettingType.SETTING_FILE.getDefaultValue());
 
         //endregion
 
@@ -141,7 +141,7 @@ public class DesktopApp extends Application {
         // PRE-SHOW ACTIONS
         state.setSettings(settings);
         state.setFileNames( fileCache.readFileCache( settings.getIsoCachePath() ) );
-        mainSrv.readDataAsync(state.getSettings().getFilterOpsDays());
+        // mainSrv.readDataAsync(state.getSettings().getFilterOpsDays());
 
         // Set OnClose confirmation hook
         stage.setOnCloseRequest(e -> {

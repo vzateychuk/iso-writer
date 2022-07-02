@@ -1,6 +1,8 @@
 package ru.vez.iso.desktop.main;
 
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -85,6 +87,10 @@ public class MainCtl implements Initializable {
     private ObservableList<StorageUnitFX> storageUnits;
     private List<StorageUnitStatus> statusesFilter;
 
+    // Operation Days period's filter (settings changed listener)
+    private final ChangeListener<AppSettings> settingsChangeListener;
+    // ISO_FILES in cache changed
+    private final ChangeListener<List<IsoFileFX>> isoFilesChangeListener;
     //endregion
 
     public MainCtl(ApplicationState state,
@@ -95,6 +101,21 @@ public class MainCtl implements Initializable {
         this.mainSrv = mainSrv;
         this.msgSrv = msgSrv;
         this.radioButtonsToggle = new RadioButtonsToggle();
+
+        this.settingsChangeListener = (o, old, newVal) -> {
+                int filterDays = newVal.getFilterOpsDays();
+                Platform.runLater( ()-> {
+                    operationDays.setText(String.valueOf(filterDays));
+                    this.onReload(null);
+                }  );
+            };
+
+        this.isoFilesChangeListener = (o, old, newVal) -> {
+            List<StorageUnitFX> withFileNames = this.getWithFileName(this.storageUnits, newVal);
+            // filter and display a storage Units with fileNames
+            Platform.runLater( ()-> this.filterAndDisplayStorageUnits(withFileNames, statusesFilter) );
+        };
+
     }
 
     @Override
@@ -156,32 +177,25 @@ public class MainCtl implements Initializable {
             butCheckSum.setDisable(newVal == null);
         });
 
-        // Operation Days period's filter (when settings changes)
-        this.state.settingsProperty().addListener((o, old, newVal) -> {
-            int filterDays = newVal.getFilterOpsDays();
-            Platform.runLater( ()-> {
-                operationDays.setText(String.valueOf(filterDays));
-                this.onReload(null);
-            } );
-
-            // reschedule "reload" with the new param time
-            int refreshPeriod = newVal.getRefreshMin();
-            mainSrv.scheduleReadInterval(refreshPeriod, filterDays);
-        });
-
-
-        // ISO_FILES in cache changed
-        this.state.fileNamesProperty().addListener((o, old, newVal) -> {
-            List<StorageUnitFX> withFileNames = this.getWithFileName(this.storageUnits, newVal);
-            // filter and display a storage Units with fileNames
-            Platform.runLater( ()-> this.filterAndDisplayStorageUnits(withFileNames, statusesFilter) );
-        });
-
         // StoreUnitsStatus status filter (RadioButtons)
         this.radioButtonsToggle.add(radioStatusAll, radioStatusAllInner);
         this.radioButtonsToggle.add(radioStatusAvailable, radioStatusAvailableInner);
         this.radioButtonsToggle.add(radioStatusPrepared, radioStatusPreparedInner);
         this.radioButtonsToggle.setActive(radioStatusAll);
+
+        // When user logged, binding listeners and unbinding otherwise
+        this.state.userDetailsProperty().addListener(
+            (o, old, newVal) -> {
+                if (newVal.isLogged()) {
+                    this.state.settingsProperty().addListener(settingsChangeListener); // Operation Days period's filter (settings changed)
+                    this.state.fileNamesProperty().addListener(isoFilesChangeListener); // ISO_FILES in cache changed;
+                } else {
+                    this.state.settingsProperty().removeListener(settingsChangeListener); // Operation Days period's filter (settings changed)
+                    this.state.fileNamesProperty().removeListener(isoFilesChangeListener); // ISO_FILES in cache changed;
+                }
+            }
+        );
+
     }
 
     /**
@@ -219,13 +233,12 @@ public class MainCtl implements Initializable {
      * */
     @FXML public void onReload(ActionEvent ev) {
         logger.debug("");
-        int days = 1;
         try {
-            days = Integer.parseUnsignedInt(operationDays.getText());
+            int days = Integer.parseUnsignedInt(operationDays.getText());
+            mainSrv.readDataAsync(days);
         } catch ( NumberFormatException ex) {
-            logger.warn("can't parse value to int: " + operationDays.getText());
+            logger.error("can't parse value to int: {}", operationDays.getText(), ex);
         }
-        mainSrv.readDataAsync(days);
     }
 
     /**
