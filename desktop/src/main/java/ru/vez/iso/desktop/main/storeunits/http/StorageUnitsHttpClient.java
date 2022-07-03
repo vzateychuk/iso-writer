@@ -27,7 +27,7 @@ public interface StorageUnitsHttpClient {
      * @param token - authentication token
      * @param destFile - downloaded file destination
      * */
-    void downloadISO(String API, String token, String destFile);
+    void downloadAndSaveFile(String API, String token, String destFile);
 
     /**
      * Get storage-unit's hash code from backend

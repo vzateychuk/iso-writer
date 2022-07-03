@@ -10,6 +10,7 @@ import ru.vez.iso.desktop.main.operdays.OperatingDayFX;
 import ru.vez.iso.desktop.main.operdays.OperationDaysSrv;
 import ru.vez.iso.desktop.main.storeunits.StorageUnitFX;
 import ru.vez.iso.desktop.main.storeunits.StorageUnitsSrv;
+import ru.vez.iso.desktop.main.storeunits.exceptions.Http404Exception;
 import ru.vez.iso.desktop.shared.MessageSrv;
 import ru.vez.iso.desktop.shared.MyConst;
 import ru.vez.iso.desktop.shared.UtilsHelper;
@@ -197,8 +198,11 @@ public class MainSrvImpl implements MainSrv {
                 }, exec)
                 .thenAccept( nm -> this.readFileCacheAsync( state.getSettings().getIsoCachePath() ) )
                 .exceptionally((ex) -> {
-                    logger.error(ex);
-                    return null;
+                  String msg = "Загрузка не удалась : '" + objectId + ".iso'. ";
+                  msg += ex instanceof Http404Exception ? "Файл не сформирован на сервере." : "Неизвестная ошибка";
+                  msgSrv.news(msg);
+                  logger.error(ex);
+                  return null;
                 });
     }
 

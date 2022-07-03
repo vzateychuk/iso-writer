@@ -132,7 +132,7 @@ public class MainCtl implements Initializable {
         };
         this.selectStorageUnitListener = (o, oldVal, newVal) -> {
             butIsoLoad.setDisable(newVal == null || newVal.isDeleted());
-            butIsoCreate.setDisable(newVal == null || !newVal.isDeleted());
+            butIsoCreate.setDisable(newVal == null);
             butBurn.setDisable(newVal == null || Strings.isBlank(newVal.getIsoFileName())
                     || !Collections.unmodifiableList(Arrays.asList(StorageUnitStatus.READY_TO_RECORDING, StorageUnitStatus.RECORDED)).contains(newVal.getStorageUnitStatus()));
             butDelete.setDisable(newVal == null || Strings.isBlank(newVal.getIsoFileName()));

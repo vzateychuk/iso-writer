@@ -10,6 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.main.storeunits.dto.StorageUnitDto;
 import ru.vez.iso.desktop.main.storeunits.dto.StorageUnitHttpResponse;
+import ru.vez.iso.desktop.main.storeunits.exceptions.Http404Exception;
 import ru.vez.iso.desktop.main.storeunits.http.StorageUnitsHttpClient;
 import ru.vez.iso.desktop.shared.DataMapper;
 import ru.vez.iso.desktop.state.ApplicationState;
@@ -81,7 +82,7 @@ public class StorageUnitsSrvImpl implements StorageUnitsSrv {
         Path destination = Paths.get(dir, fileName);
 
         // request file and save to destination
-        this.httpClient.downloadISO(API, token, destination.toString());
+        this.httpClient.downloadAndSaveFile(API, token, destination.toString());
     }
 
     /**

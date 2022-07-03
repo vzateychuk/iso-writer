@@ -37,7 +37,7 @@ public class StorageUnitsHttpClientNoop implements StorageUnitsHttpClient {
     }
 
     @Override
-    public void downloadISO(String url, String token, String fileName) {
+    public void downloadAndSaveFile(String url, String token, String fileName) {
 
         logger.debug("URL: {}, token: {}, destination: {}", url, token, fileName);
 

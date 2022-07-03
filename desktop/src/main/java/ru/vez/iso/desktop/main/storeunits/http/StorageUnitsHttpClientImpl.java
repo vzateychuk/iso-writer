@@ -26,6 +26,7 @@ import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.main.storeunits.dto.StorageUnitHttpResponse;
+import ru.vez.iso.desktop.main.storeunits.exceptions.Http404Exception;
 
 /**
  * StorageUnits HttpClient wrapper
@@ -113,7 +114,7 @@ public class StorageUnitsHttpClientImpl implements StorageUnitsHttpClient {
      * @See https://gist.github.com/rponte/09ddc1aa7b9918b52029
      */
     @Override
-    public void downloadISO(String API, String token, String fileName) {
+    public void downloadAndSaveFile(String API, String token, String fileName) {
 
         logger.debug("URL: {}, fileName: {}", API, fileName);
         HttpGet get = new HttpGet(API);
@@ -127,14 +128,16 @@ public class StorageUnitsHttpClientImpl implements StorageUnitsHttpClient {
         ) {
             // response handler
             int code = response.getStatusLine().getStatusCode();
-            // TODO HttpStatus.SC_NOT_FOUND need to be reported
-            if (code != HttpStatus.SC_OK) {
-                throw new IllegalStateException("Server response: " + code);
+            // Since
+            if (code == HttpStatus.SC_NOT_FOUND) {
+                throw new Http404Exception();
+            } else if (code != HttpStatus.SC_OK) {
+                throw new IllegalStateException("Wrong response: " + code);
             }
             InputStream source = response.getEntity().getContent();
             FileUtils.copyInputStreamToFile(source, new File(fileName));
         } catch (IOException ex) {
-            throw new IllegalStateException(ex);
+            throw new RuntimeException("Unable to save ISO file",  ex);
         }
     }
 
