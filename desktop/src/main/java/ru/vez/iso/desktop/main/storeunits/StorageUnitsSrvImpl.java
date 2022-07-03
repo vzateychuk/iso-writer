@@ -1,19 +1,20 @@
 package ru.vez.iso.desktop.main.storeunits;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import ru.vez.iso.desktop.main.storeunits.dto.StorageUnitDto;
+import ru.vez.iso.desktop.main.storeunits.dto.StorageUnitListResponse;
+import ru.vez.iso.desktop.main.storeunits.http.StorageUnitsHttpClient;
+import ru.vez.iso.desktop.shared.DataMapper;
+import ru.vez.iso.desktop.state.ApplicationState;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import ru.vez.iso.desktop.main.storeunits.dto.StorageUnitDto;
-import ru.vez.iso.desktop.main.storeunits.dto.StorageUnitHttpResponse;
-import ru.vez.iso.desktop.main.storeunits.exceptions.Http404Exception;
-import ru.vez.iso.desktop.main.storeunits.http.StorageUnitsHttpClient;
-import ru.vez.iso.desktop.shared.DataMapper;
-import ru.vez.iso.desktop.state.ApplicationState;
 
 /**
  * Service to get StorageUnits from backend
@@ -43,7 +44,7 @@ public class StorageUnitsSrvImpl implements StorageUnitsSrv {
     @Override
     public List<StorageUnitFX> loadStorageUnits(LocalDate from) {
 
-        logger.debug(from.format(DateTimeFormatter.ISO_LOCAL_DATE));
+        logger.debug("Start load from: {}", from.format(DateTimeFormatter.ISO_LOCAL_DATE));
 
         // get Authentication token or raise exception
         final String token = this.getAuthTokenOrException(this.state);
@@ -52,16 +53,19 @@ public class StorageUnitsSrvImpl implements StorageUnitsSrv {
         final String API = state.getSettings().getBackendAPI() + API_STORAGE_UNITS + "/page";
 
         // Create HTTP request
-        StorageUnitHttpResponse resp = this.httpClient.loadISOList(API, token, from);
+        StorageUnitListResponse resp = this.httpClient.loadISOList(API, token, from);
         if (!resp.isOk()) {
             throw new IllegalStateException("Server response: " + resp.isOk());
         }
 
-        return resp.getData()
+        List<StorageUnitFX> loaded = resp.getData()
                 .getObjects()
                 .stream()
                 .map(mapper::map)
                 .collect(Collectors.toList());
+
+        logger.debug("Loaded: {}", loaded.size());
+        return loaded;
     }
 
     /** Получить образ ЕХ по коду (ISO file) */
@@ -103,9 +107,10 @@ public class StorageUnitsSrvImpl implements StorageUnitsSrv {
         // Get Authentication token or raise exception
         final String token = this.getAuthTokenOrException(this.state);
         // API
-        final String API = state.getSettings().getBackendAPI() + API_STORAGE_UNITS + "/" + objectId + "/iso";
+        final String API = state.getSettings().getBackendAPI() + API_STORAGE_UNITS + "/" + objectId;
         // Act
-        return this.httpClient.getHashCode(API, token);
+        StorageUnitDto dto = this.httpClient.getHashCode(API, token).getData();
+        return Optional.ofNullable(dto.getHashSum()).orElse("");
     }
 
     @Override

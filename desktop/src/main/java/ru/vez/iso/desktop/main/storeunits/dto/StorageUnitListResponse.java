@@ -4,4 +4,4 @@ import lombok.Data;
 import ru.vez.iso.desktop.shared.HttpResponseDto;
 
 @Data
-public class StorageUnitHttpResponse extends HttpResponseDto<StorageUnitsDto> { }
+public class StorageUnitListResponse extends HttpResponseDto<StorageUnitsDto> { }

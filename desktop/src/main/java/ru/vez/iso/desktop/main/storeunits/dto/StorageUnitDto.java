@@ -68,5 +68,6 @@ public class StorageUnitDto {
     private boolean deleted;        //
     private String storageDate;
     private Long capacity;
+    private String hashSum;
     private TypeStorUnitDto typeSu; // object
 }

@@ -1,6 +1,7 @@
 package ru.vez.iso.desktop.main.storeunits.http;
 
-import ru.vez.iso.desktop.main.storeunits.dto.StorageUnitHttpResponse;
+import ru.vez.iso.desktop.main.storeunits.dto.StorageUnitDetailResponse;
+import ru.vez.iso.desktop.main.storeunits.dto.StorageUnitListResponse;
 
 import java.time.LocalDate;
 
@@ -12,7 +13,7 @@ public interface StorageUnitsHttpClient {
     /**
      * Получить список Единиц хранения
      * */
-    StorageUnitHttpResponse loadISOList(String API, String token, LocalDate from);
+    StorageUnitListResponse loadISOList(String API, String token, LocalDate from);
 
     /**
      * Send simple post request to backend
@@ -32,5 +33,5 @@ public interface StorageUnitsHttpClient {
     /**
      * Get storage-unit's hash code from backend
      * */
-    String getHashCode(String API, String token);
+    StorageUnitDetailResponse getHashCode(String API, String token);
 }

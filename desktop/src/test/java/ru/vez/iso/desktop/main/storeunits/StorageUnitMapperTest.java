@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.vez.iso.desktop.main.storeunits.dto.StorageUnitHttpResponse;
+import ru.vez.iso.desktop.main.storeunits.dto.StorageUnitListResponse;
 import ru.vez.iso.desktop.main.storeunits.dto.StorageUnitsDto;
 import ru.vez.iso.desktop.shared.UtilsHelper;
 
@@ -27,7 +27,7 @@ class StorageUnitMapperTest {
 
         // Arrange
         String json = UtilsHelper.readJsonFromFile("noop/data/storageUnits-missed-enum-values.json");
-        StorageUnitHttpResponse response = new Gson().fromJson(json, StorageUnitHttpResponse.class);
+        StorageUnitListResponse response = new Gson().fromJson(json, StorageUnitListResponse.class);
 
         StorageUnitsDto dto = response.getData();
 

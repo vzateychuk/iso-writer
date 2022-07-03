@@ -3,7 +3,8 @@ package ru.vez.iso.desktop.main.storeunits.http;
 import com.google.gson.Gson;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.vez.iso.desktop.main.storeunits.dto.StorageUnitHttpResponse;
+import ru.vez.iso.desktop.main.storeunits.dto.StorageUnitDetailResponse;
+import ru.vez.iso.desktop.main.storeunits.dto.StorageUnitListResponse;
 import ru.vez.iso.desktop.shared.UtilsHelper;
 
 import java.io.IOException;
@@ -21,14 +22,14 @@ public class StorageUnitsHttpClientNoop implements StorageUnitsHttpClient {
     private static final Logger logger = LogManager.getLogger();
 
     @Override
-    public StorageUnitHttpResponse loadISOList(String url, String token, LocalDate from) {
+    public StorageUnitListResponse loadISOList(String url, String token, LocalDate from) {
 
         logger.debug("API: {}, date from: {}, token: {}", url, from.format(DateTimeFormatter.ISO_LOCAL_DATE), token);
 
         UtilsHelper.makeDelaySec(1);
 
         String json = UtilsHelper.readJsonFromFile("noop/data/storageUnits.json");
-        return new Gson().fromJson(json, StorageUnitHttpResponse.class);
+        return new Gson().fromJson(json, StorageUnitListResponse.class);
     }
 
     @Override
@@ -53,11 +54,15 @@ public class StorageUnitsHttpClientNoop implements StorageUnitsHttpClient {
     }
 
     @Override
-    public String getHashCode(String API, String token) {
+    public StorageUnitDetailResponse getHashCode(String API, String token) {
 
         logger.debug("URL: {}, token: {}", API, token);
 
-        return "bab45fc670a14bf3e292470c6eaa8f133f2c70b3672c7da2cb077372dc9f98308af2fcc78ac5405bb28854225126f15c49e3f26021f100c0d24672a18e71abc4";
+        UtilsHelper.makeDelaySec(1);
+
+        String json = UtilsHelper.readJsonFromFile("noop/data/storageUnit.json");
+        StorageUnitDetailResponse response = new Gson().fromJson(json, StorageUnitDetailResponse.class);
+        return response;
     }
 
 }

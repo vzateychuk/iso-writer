@@ -264,7 +264,7 @@ public class MainCtl implements Initializable {
      * */
     @FXML public void onIsoCreate(ActionEvent ev) {
         StorageUnitFX selected = tblStorageUnits.getSelectionModel().getSelectedItem();
-        logger.debug("{}", selected.getNumberSu());
+        logger.debug("SU: {}, objectId: {}", selected.getNumberSu(), selected.getObjectId());
         mainSrv.isoCreateAsync(selected);
     }
 
@@ -273,7 +273,7 @@ public class MainCtl implements Initializable {
      * */
     @FXML void onStartIsoLoad(ActionEvent ev) {
         StorageUnitFX selected = tblStorageUnits.getSelectionModel().getSelectedItem();
-        logger.debug("{}", selected.getNumberSu());
+        logger.debug("SU: {}, objectId: {}", selected.getNumberSu(), selected.getObjectId());
         mainSrv.loadISOAsync( selected.getObjectId() );
     }
 

@@ -1,17 +1,6 @@
 package ru.vez.iso.desktop.main.storeunits.http;
 
 import com.google.gson.Gson;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.stream.Collectors;
 import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
@@ -25,8 +14,14 @@ import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.vez.iso.desktop.main.storeunits.dto.StorageUnitHttpResponse;
+import ru.vez.iso.desktop.main.storeunits.dto.StorageUnitDetailResponse;
+import ru.vez.iso.desktop.main.storeunits.dto.StorageUnitListResponse;
 import ru.vez.iso.desktop.main.storeunits.exceptions.Http404Exception;
+
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 /**
  * StorageUnits HttpClient wrapper
@@ -37,10 +32,10 @@ public class StorageUnitsHttpClientImpl implements StorageUnitsHttpClient {
     private static final DateTimeFormatter YYYY_MM_DD = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @Override
-    public StorageUnitHttpResponse loadISOList(String url, String token, LocalDate from) {
+    public StorageUnitListResponse loadISOList(String API, String token, LocalDate from) {
 
         // Create HTTP request
-        HttpPost httpPost = new HttpPost(url);
+        HttpPost httpPost = new HttpPost(API);
         httpPost.setHeader("Accept", "application/json");
         httpPost.setHeader("Content-type", "application/json");
         httpPost.setHeader("Authorization", token);
@@ -48,6 +43,9 @@ public class StorageUnitsHttpClientImpl implements StorageUnitsHttpClient {
                 "{\"page\":1,\"rowsPerPage\":500,\"criterias\":[{\"fields\":[\"operatingDay.operatingDayDate\"],\"operator\":\"GREATER_OR_EQUALS\",\"value\":\"%s\"}]}",
                 from.format(YYYY_MM_DD)
         );
+
+        logger.debug("HttpPost: {}", httpPost);
+
         try {
             StringEntity entity = new StringEntity(jsonRequest);
             httpPost.setEntity(entity);
@@ -68,7 +66,7 @@ public class StorageUnitsHttpClientImpl implements StorageUnitsHttpClient {
             }
             final HttpEntity resEntity = response.getEntity();
             Reader reader = new InputStreamReader(resEntity.getContent(), StandardCharsets.UTF_8);
-            StorageUnitHttpResponse resp = new Gson().fromJson(reader, StorageUnitHttpResponse.class);
+            StorageUnitListResponse resp = new Gson().fromJson(reader, StorageUnitListResponse.class);
             EntityUtils.consume(resEntity);
             return resp;
         } catch (IOException ex) {
@@ -79,15 +77,15 @@ public class StorageUnitsHttpClientImpl implements StorageUnitsHttpClient {
     @Override
     public void post(String API, String token, String body) {
 
-        logger.debug("URL: {}", API);
+        HttpPost httpPost = new HttpPost(API);
+        httpPost.setHeader("Authorization", token);
 
-        HttpPost post = new HttpPost(API);
-        post.setHeader("Authorization", token);
+        logger.debug("HttpPost: {}", httpPost);
 
         if (body != null) {
             try {
                 StringEntity entity = new StringEntity(body);
-                post.setEntity(entity);
+                httpPost.setEntity(entity);
             } catch (UnsupportedEncodingException ex) {
                 logger.error(ex);
                 throw new RuntimeException(ex);
@@ -98,7 +96,7 @@ public class StorageUnitsHttpClientImpl implements StorageUnitsHttpClient {
                 CloseableHttpClient httpClient = HttpClients.custom() // CloseableHttpClient httpClient = HttpClients.createDefault();
                         .setRedirectStrategy(new LaxRedirectStrategy()) // adds HTTP REDIRECT support to GET and POST methods
                         .build();
-                CloseableHttpResponse response = httpClient.execute(post);
+                CloseableHttpResponse response = httpClient.execute(httpPost);
         ) {
             int code = response.getStatusLine().getStatusCode();
             if (code != HttpStatus.SC_OK) {
@@ -116,15 +114,16 @@ public class StorageUnitsHttpClientImpl implements StorageUnitsHttpClient {
     @Override
     public void downloadAndSaveFile(String API, String token, String fileName) {
 
-        logger.debug("URL: {}, fileName: {}", API, fileName);
-        HttpGet get = new HttpGet(API);
-        get.setHeader("Authorization", token);
+        HttpGet httpGet = new HttpGet(API);
+        httpGet.setHeader("Authorization", token);
+
+        logger.debug("HttpGet: {}", httpGet);
 
         try (
             CloseableHttpClient httpClient = HttpClients.custom() // CloseableHttpClient httpClient = HttpClients.createDefault();
                     .setRedirectStrategy(new LaxRedirectStrategy()) // adds HTTP REDIRECT support to GET and POST methods
                     .build();
-            CloseableHttpResponse response = httpClient.execute(get);
+            CloseableHttpResponse response = httpClient.execute(httpGet);
         ) {
             // response handler
             int code = response.getStatusLine().getStatusCode();
@@ -142,28 +141,28 @@ public class StorageUnitsHttpClientImpl implements StorageUnitsHttpClient {
     }
 
     @Override
-    public String getHashCode(String API, String token) {
+    public StorageUnitDetailResponse getHashCode(String API, String token) {
 
-        logger.debug("URL: {}", API);
+        HttpGet httpGet = new HttpGet(API);
+        httpGet.setHeader("Authorization", token);
 
-        HttpPost httpPost = new HttpPost(API);
-        httpPost.setHeader("Authorization", token);
+        logger.debug("HttpGet: {}", httpGet);
 
         try (
-                CloseableHttpClient httpClient = HttpClients.custom() // CloseableHttpClient httpClient = HttpClients.createDefault();
-                        .setRedirectStrategy(new LaxRedirectStrategy()) // adds HTTP REDIRECT support to GET and POST methods
+                CloseableHttpClient httpClient = HttpClients.custom()
+                        .setRedirectStrategy(new LaxRedirectStrategy())
                         .build();
-                CloseableHttpResponse response = httpClient.execute(httpPost);
+                CloseableHttpResponse response = httpClient.execute(httpGet);
         ) {
             int code = response.getStatusLine().getStatusCode();
             if (code != HttpStatus.SC_OK) {
                 throw new IllegalStateException("Server response: " + code);
             }
-            InputStream is = response.getEntity().getContent();
-            return new BufferedReader(
-                    new InputStreamReader(is, StandardCharsets.UTF_8))
-                    .lines()
-                    .collect( Collectors.joining(System.lineSeparator()) );
+            final HttpEntity resEntity = response.getEntity();
+            Reader reader = new InputStreamReader(resEntity.getContent(), StandardCharsets.UTF_8);
+            StorageUnitDetailResponse resp = new Gson().fromJson(reader, StorageUnitDetailResponse.class);
+            EntityUtils.consume(resEntity);
+            return resp;
         } catch (IOException ex) {
             throw new IllegalStateException(ex);
         }
