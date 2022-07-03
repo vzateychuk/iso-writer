@@ -177,7 +177,7 @@ public class MainSrvImpl implements MainSrv {
       }
       this.scheduledReload = exec.scheduleWithFixedDelay(
           () -> readDataAsync(filterDays),
-          1,
+          0,
           refreshMinutes * 60L,
           TimeUnit.SECONDS
       );

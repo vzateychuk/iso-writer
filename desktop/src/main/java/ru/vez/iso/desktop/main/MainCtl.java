@@ -2,7 +2,6 @@ package ru.vez.iso.desktop.main;
 
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -41,7 +40,7 @@ public class MainCtl implements Initializable {
     private static final Logger logger = LogManager.getLogger();
 
     // Фильтр "Список операционных дней"
-    @FXML private TextField operationDays;
+    @FXML private TextField operDaysFilter;
 
     // Таблица "Список операционных дней"
     @FXML private TableView<OperatingDayFX> tblOperatingDays;
@@ -87,10 +86,13 @@ public class MainCtl implements Initializable {
     private ObservableList<StorageUnitFX> storageUnits;
     private List<StorageUnitStatus> statusesFilter;
 
-    // Operation Days period's filter (settings changed listener)
-    private final ChangeListener<AppSettings> settingsChangeListener;
-    // ISO_FILES in cache changed
-    private final ChangeListener<List<IsoFileFX>> isoFilesChangeListener;
+    // Listeners
+    private final ChangeListener<AppSettings> settingsChangeListener; // settings changed listener (change OperationDays period filter)
+    private final ChangeListener<List<OperatingDayFX>> operationDaysListener; // Operation Days table listener
+    private final ChangeListener<OperatingDayFX> selectOperationDayListener; // Select row in OperationDays table
+    private final ChangeListener<List<IsoFileFX>> isoFilesChangeListener; // ISO_FILES in cache changed
+    private final ChangeListener<StorageUnitFX> selectStorageUnitListener; // select row in StorageUnits table
+
     //endregion
 
     public MainCtl(ApplicationState state,
@@ -103,37 +105,58 @@ public class MainCtl implements Initializable {
         this.radioButtonsToggle = new RadioButtonsToggle();
 
         this.settingsChangeListener = (o, old, newVal) -> {
-                int filterDays = newVal.getFilterOpsDays();
-                Platform.runLater( ()-> {
-                    operationDays.setText(String.valueOf(filterDays));
+            // change operation days filter
+            int filterDays = newVal.getFilterOpsDays();
+            Platform.runLater( ()-> {
+                    operDaysFilter.setText(String.valueOf(filterDays));
                     this.onReload(null);
-                }  );
-            };
-
+            }  );
+            // re-schedule data operationDays load
+            int refreshIntervalMin = state.getSettings().getRefreshMin();
+            this.mainSrv.scheduleReadInterval( refreshIntervalMin, filterDays);
+        };
         this.isoFilesChangeListener = (o, old, newVal) -> {
             List<StorageUnitFX> withFileNames = this.getWithFileName(this.storageUnits, newVal);
             // filter and display a storage Units with fileNames
             Platform.runLater( ()-> this.filterAndDisplayStorageUnits(withFileNames, statusesFilter) );
         };
-
+        this.operationDaysListener = (ob, oldVal, newVal) -> Platform.runLater(()-> displayOperatingDays(newVal));
+        this.selectOperationDayListener = (o, old, newValue) -> {
+            if (newValue != null) {
+                // need to update storage units with isoFileName, stored in local file-cache
+                final List<IsoFileFX> fileCache = this.state.getFileNames();
+                List<StorageUnitFX> withFileNames = this.getWithFileName(newValue.getStorageUnits(), fileCache);
+                // filter and display a storage Units
+                Platform.runLater(()-> this.filterAndDisplayStorageUnits(withFileNames, statusesFilter));
+            }
+        };
+        this.selectStorageUnitListener = (o, oldVal, newVal) -> {
+            butIsoLoad.setDisable(newVal == null || newVal.isDeleted());
+            butIsoCreate.setDisable(newVal == null || !newVal.isDeleted());
+            butBurn.setDisable(newVal == null || Strings.isBlank(newVal.getIsoFileName())
+                    || !Collections.unmodifiableList(Arrays.asList(StorageUnitStatus.READY_TO_RECORDING, StorageUnitStatus.RECORDED)).contains(newVal.getStorageUnitStatus()));
+            butDelete.setDisable(newVal == null || Strings.isBlank(newVal.getIsoFileName()));
+            butCheckSum.setDisable(newVal == null);
+        };
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
         logger.debug(location);
 
         // Setting table Operation Days
-        operatingDays = FXCollections.emptyObservableList();
-        tblOperatingDays.setItems(operatingDays);
-        tblOperatingDays.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        this.operatingDays = FXCollections.emptyObservableList();
+        this.tblOperatingDays.setItems(operatingDays);
+        this.tblOperatingDays.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         // set selection mode to only 1 row
-        tblOperatingDays.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        this.tblOperatingDays.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
         // Таблица "Список операционных дней"
-        operatingDay.setCellValueFactory(cell -> cell.getValue().operatingDayProperty());
-        typeSu.setCellValueFactory(cell -> cell.getValue().typeSuProperty());
-        status.setCellValueFactory(cell -> cell.getValue().statusProperty());
-        createdAt.setCellValueFactory(cell -> cell.getValue().createdAtProperty());
+        this.operatingDay.setCellValueFactory(cell -> cell.getValue().operatingDayProperty());
+        this.typeSu.setCellValueFactory(cell -> cell.getValue().typeSuProperty());
+        this.status.setCellValueFactory(cell -> cell.getValue().statusProperty());
+        this.createdAt.setCellValueFactory(cell -> cell.getValue().createdAtProperty());
 
         // Таблица "Список единиц хранения"
         storageUnits = FXCollections.emptyObservableList();
@@ -150,33 +173,6 @@ public class MainCtl implements Initializable {
         fileName.setCellValueFactory(cell -> cell.getValue().isoFileNameProperty());
         deleted.setCellValueFactory(cell -> cell.getValue().deletedProperty());
 
-        // Operation Days table listener
-        this.state.operatingDaysProperty().addListener(
-                (ob, oldVal, newVal) -> Platform.runLater(()-> displayOperatingDays(newVal))
-        );
-
-        // OperationDays: when select row should refresh StorageUnits table
-        tblOperatingDays.getSelectionModel().selectedItemProperty().addListener(
-                (o, old, newValue) -> {
-                    if (newValue != null) {
-                        // need to update storage units with isoFileName, stored in local file-cache
-                        final List<IsoFileFX> fileCache = this.state.getFileNames();
-                        List<StorageUnitFX> withFileNames = this.getWithFileName(newValue.getStorageUnits(), fileCache);
-                        // filter and display a storage Units
-                        Platform.runLater(()-> this.filterAndDisplayStorageUnits(withFileNames, statusesFilter));
-                    }
-                });
-
-        // disable buttons if no record selected
-        tblStorageUnits.getSelectionModel().selectedItemProperty().addListener((o, oldVal, newVal) -> {
-            butIsoLoad.setDisable(newVal == null || newVal.isDeleted());
-            butIsoCreate.setDisable(newVal == null || !newVal.isDeleted());
-            butBurn.setDisable(newVal == null || Strings.isBlank(newVal.getIsoFileName())
-                    || !Collections.unmodifiableList(Arrays.asList(StorageUnitStatus.READY_TO_RECORDING, StorageUnitStatus.RECORDED)).contains(newVal.getStorageUnitStatus()));
-            butDelete.setDisable(newVal == null || Strings.isBlank(newVal.getIsoFileName()));
-            butCheckSum.setDisable(newVal == null);
-        });
-
         // StoreUnitsStatus status filter (RadioButtons)
         this.radioButtonsToggle.add(radioStatusAll, radioStatusAllInner);
         this.radioButtonsToggle.add(radioStatusAvailable, radioStatusAvailableInner);
@@ -187,11 +183,24 @@ public class MainCtl implements Initializable {
         this.state.userDetailsProperty().addListener(
             (o, old, newVal) -> {
                 if (newVal.isLogged()) {
+                    // bind listeners
+                    this.state.operatingDaysProperty().addListener(operationDaysListener); // Operation Days table listener
+                    this.tblOperatingDays.getSelectionModel().selectedItemProperty().addListener( selectOperationDayListener ); // OperationDays: when select row should refresh StorageUnits table
                     this.state.settingsProperty().addListener(settingsChangeListener); // Operation Days period's filter (settings changed)
                     this.state.fileNamesProperty().addListener(isoFilesChangeListener); // ISO_FILES in cache changed;
+                    this.tblStorageUnits.getSelectionModel().selectedItemProperty().addListener( selectStorageUnitListener );
+                    // set filter data
+                    this.operDaysFilter.setText( String.valueOf(state.getSettings().getFilterOpsDays()) );
+                    // schedule data operationDays load
+                    int filterDays = state.getSettings().getFilterOpsDays();
+                    int refreshIntervalMin = state.getSettings().getRefreshMin();
+                    this.mainSrv.scheduleReadInterval( refreshIntervalMin, filterDays);
                 } else {
+                    this.state.operatingDaysProperty().removeListener(operationDaysListener); // Operation Days table listener
+                    this.tblOperatingDays.getSelectionModel().selectedItemProperty().removeListener( selectOperationDayListener ); // OperationDays: when select row should refresh StorageUnits table
                     this.state.settingsProperty().removeListener(settingsChangeListener); // Operation Days period's filter (settings changed)
                     this.state.fileNamesProperty().removeListener(isoFilesChangeListener); // ISO_FILES in cache changed;
+                    this.tblStorageUnits.getSelectionModel().selectedItemProperty().removeListener( selectStorageUnitListener );
                 }
             }
         );
@@ -234,10 +243,10 @@ public class MainCtl implements Initializable {
     @FXML public void onReload(ActionEvent ev) {
         logger.debug("");
         try {
-            int days = Integer.parseUnsignedInt(operationDays.getText());
+            int days = Integer.parseUnsignedInt(operDaysFilter.getText());
             mainSrv.readDataAsync(days);
         } catch ( NumberFormatException ex) {
-            logger.error("can't parse value to int: {}", operationDays.getText(), ex);
+            logger.error("can't parse value to int: {}", operDaysFilter.getText(), ex);
         }
     }
 

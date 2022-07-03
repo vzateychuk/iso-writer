@@ -1,5 +1,7 @@
 package ru.vez.iso.desktop.main.storeunits;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.main.storeunits.dto.StorageUnitDto;
 import ru.vez.iso.desktop.shared.DataMapper;
 
@@ -12,10 +14,18 @@ import java.util.Optional;
  * */
 public class StorageUnitMapper implements DataMapper<StorageUnitDto, StorageUnitFX> {
 
+    private static final Logger logger = LogManager.getLogger();
+
     @Override
     public StorageUnitFX map(StorageUnitDto dto) {
 
-        StorageUnitStatus storageUnitStatus = StorageUnitStatus.valueOf( dto.getStorageUnitStatus() );
+        StorageUnitStatus storageUnitStatus;
+        try {
+            storageUnitStatus = StorageUnitStatus.valueOf( dto.getStorageUnitStatus() );
+        } catch (IllegalArgumentException ex) {
+            storageUnitStatus = StorageUnitStatus.UNKNOWN_STATUS;
+            logger.warn("Bad storageUnitStatus: {}", dto.getStorageUnitStatus(), ex);
+        }
 
         LocalDate creationDate = dto.getCreationDate() != null
                 ? LocalDate.parse( dto.getCreationDate(), DateTimeFormatter.ISO_LOCAL_DATE_TIME )

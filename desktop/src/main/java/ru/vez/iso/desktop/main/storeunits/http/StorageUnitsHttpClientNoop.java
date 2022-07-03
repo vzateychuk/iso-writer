@@ -1,16 +1,17 @@
 package ru.vez.iso.desktop.main.storeunits.http;
 
 import com.google.gson.Gson;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import ru.vez.iso.desktop.main.storeunits.dto.StorageUnitHttpResponse;
+import ru.vez.iso.desktop.shared.UtilsHelper;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import ru.vez.iso.desktop.main.storeunits.dto.StorageUnitHttpResponse;
-import ru.vez.iso.desktop.shared.UtilsHelper;
 
 /**
  * StorageUnitsHttpClient NOOP implementation
@@ -26,7 +27,7 @@ public class StorageUnitsHttpClientNoop implements StorageUnitsHttpClient {
 
         UtilsHelper.makeDelaySec(1);
 
-        String json = UtilsHelper.readJsonFromFile("noop/data/storageUnits-missed-enum-values.json");
+        String json = UtilsHelper.readJsonFromFile("noop/data/storageUnits.json");
         return new Gson().fromJson(json, StorageUnitHttpResponse.class);
     }
 

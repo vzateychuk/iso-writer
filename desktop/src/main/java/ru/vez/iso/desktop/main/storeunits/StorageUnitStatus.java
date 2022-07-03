@@ -10,7 +10,8 @@ public enum StorageUnitStatus {
     DRAFT("Черновик"),				// Черновик
     PREPARATION_FOR_RECORDING("Готовятся для записи"),
     READY_TO_RECORDING("Готово для записи на внешний носитель"),
-    RECORDED("Записано на внешний носитель");
+    RECORDED("Записано на внешний носитель"),
+    UNKNOWN_STATUS("Неизвестный");
 
     private final String title;
 

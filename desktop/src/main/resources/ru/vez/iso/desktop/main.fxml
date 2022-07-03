@@ -30,7 +30,7 @@
                                styleClass="desktop-label" text="Показать:" GridPane.columnIndex="1"
                                GridPane.rowIndex="1">
                         </Label>
-                        <TextField fx:id="operationDays" onKeyPressed="#onFilterEnter" promptText="30"
+                        <TextField fx:id="operDaysFilter" onKeyPressed="#onFilterEnter" promptText="30"
                                    GridPane.columnIndex="2" GridPane.rowIndex="1">
                             <styleClass>
                                 <String fx:value="desktop-input"/>
