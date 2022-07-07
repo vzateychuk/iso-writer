@@ -24,10 +24,9 @@ import ru.vez.iso.desktop.state.ApplicationState;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -37,7 +36,22 @@ import java.util.stream.Collectors;
 public class MainCtl implements Initializable {
 
     //region Properties
+
     private static final Logger logger = LogManager.getLogger();
+    private final DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+    // Sort string representation of LocalDateTime columns
+    private final Comparator<String> sortDateStrings = (s1, s2) -> {
+        if (!Strings.isBlank(s1) && !Strings.isBlank(s2)) {
+            LocalDate d1 = LocalDate.parse(s1, fmt);
+            LocalDate d2 = LocalDate.parse(s2, fmt);
+            return d1.compareTo(d2);
+        } else if (Strings.isBlank(s1)) {
+            return 1;
+        } else {
+            return -1;
+        }
+    };
 
     // Фильтр "Список операционных дней"
     @FXML private TextField operDaysFilter;
@@ -154,24 +168,30 @@ public class MainCtl implements Initializable {
 
         // Таблица "Список операционных дней"
         this.operatingDay.setCellValueFactory(cell -> cell.getValue().operatingDayProperty());
+        this.operatingDay.setComparator( this.sortDateStrings );
         this.typeSu.setCellValueFactory(cell -> cell.getValue().typeSuProperty());
         this.status.setCellValueFactory(cell -> cell.getValue().statusProperty());
         this.createdAt.setCellValueFactory(cell -> cell.getValue().createdAtProperty());
+        this.createdAt.setComparator( this.sortDateStrings );
 
         // Таблица "Список единиц хранения"
-        storageUnits = FXCollections.emptyObservableList();
-        tblStorageUnits.setItems(storageUnits);
-        tblStorageUnits.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        this.storageUnits = FXCollections.emptyObservableList();
+        this.tblStorageUnits.setItems(storageUnits);
+        this.tblStorageUnits.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         // set selection mode to only 1 row
-        tblStorageUnits.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        numberSu.setCellValueFactory(cell -> cell.getValue().numberSuProperty());
-        creationDate.setCellValueFactory(cell -> cell.getValue().creationDateProperty());
-        dataSize.setCellValueFactory(cell -> cell.getValue().dataSizeProperty());
-        storageDate.setCellValueFactory(cell -> cell.getValue().storageDateProperty());
-        storageUnitStatus.setCellValueFactory(cell -> cell.getValue().storageUnitStatusProperty());
-        savingDate.setCellValueFactory(cell -> cell.getValue().savingDateProperty());
-        fileName.setCellValueFactory(cell -> cell.getValue().isoFileNameProperty());
-        deleted.setCellValueFactory(cell -> cell.getValue().deletedProperty());
+        this.tblStorageUnits.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        this.numberSu.setCellValueFactory(cell -> cell.getValue().numberSuProperty());
+        this.creationDate.setCellValueFactory(cell -> cell.getValue().creationDateProperty());
+        this.creationDate.setComparator( this.sortDateStrings );
+
+        this.dataSize.setCellValueFactory(cell -> cell.getValue().dataSizeProperty());
+        this.storageDate.setCellValueFactory(cell -> cell.getValue().storageDateProperty());
+        this.storageUnitStatus.setCellValueFactory(cell -> cell.getValue().storageUnitStatusProperty());
+        this.savingDate.setCellValueFactory(cell -> cell.getValue().savingDateProperty());
+        this.savingDate.setComparator( this.sortDateStrings );
+
+        this.fileName.setCellValueFactory(cell -> cell.getValue().isoFileNameProperty());
+        this.deleted.setCellValueFactory(cell -> cell.getValue().deletedProperty());
 
         // StoreUnitsStatus status filter (RadioButtons)
         this.radioButtonsToggle.add(radioStatusAll, radioStatusAllInner);
@@ -348,7 +368,7 @@ public class MainCtl implements Initializable {
                                     su.getSavingDate(),
                                     fileName,
                                     su.isDeleted());
-                    };
+                    }
                     return updated;
                 })
                 .collect(Collectors.toList());
