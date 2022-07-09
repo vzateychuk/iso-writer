@@ -1,16 +1,17 @@
 package ru.vez.iso.desktop.main.operdays;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 import com.google.gson.Gson;
-import java.util.List;
-import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.vez.iso.desktop.main.operdays.dto.OperationDaysDto;
 import ru.vez.iso.desktop.main.operdays.dto.OperationDaysHttpResponse;
 import ru.vez.iso.desktop.shared.UtilsHelper;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class OperationDayMapperTest {
 
@@ -49,7 +50,7 @@ class OperationDayMapperTest {
     }
 
     @Test
-    void givenMissedEnumValues_whenMap_thenReturnValue() {
+    void givenIncorrectOperationDayStatus_whenMap_thenReturnValueUnknown() {
 
         // Arrange
         String json = UtilsHelper.readJsonFromFile("operationDays-missed-enum-values.json");
@@ -66,7 +67,6 @@ class OperationDayMapperTest {
         // Assert
         assertEquals(dtos.getCount(), listDays.size());
         listDays.forEach(d ->{
-            assertEquals(TypeSu.UNKNOWN, d.getTypeSu());
             assertEquals(OperDayStatus.UNKNOWN, d.getStatus());
         });
     }

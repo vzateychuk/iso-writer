@@ -23,14 +23,14 @@ public class OperatingDayFX {
 
     private final String objectId;
     private final ObjectProperty<LocalDate> operatingDay = new SimpleObjectProperty<>();
-    private final ObjectProperty<TypeSu> typeSu = new SimpleObjectProperty<>();
+    private final StringProperty typeSu = new SimpleStringProperty();
     private final ObjectProperty<OperDayStatus> status = new SimpleObjectProperty<>();
     private final ObjectProperty<LocalDate> createdAt = new SimpleObjectProperty<>();
     private List<StorageUnitFX> storageUnits = Collections.emptyList();
 
     public OperatingDayFX(String objectId,
                           LocalDate operatingDay,
-                          TypeSu typeSu,
+                          String typeSu,
                           OperDayStatus status,
                           LocalDate createdAt) {
         this.objectId = objectId;
@@ -51,10 +51,10 @@ public class OperatingDayFX {
         return new SimpleStringProperty(operatingDay.get().format(formatter));
     }
 
-    public TypeSu getTypeSu() {
+    public String getTypeSu() {
         return typeSu.get();
     }
-    public ObjectProperty<TypeSu> typeSuProperty() {
+    public StringProperty typeSuProperty() {
         return typeSu;
     }
 

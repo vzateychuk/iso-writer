@@ -1,11 +1,12 @@
 package ru.vez.iso.desktop.main.operdays;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.main.operdays.dto.OperationDayDto;
 import ru.vez.iso.desktop.shared.DataMapper;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 /**
  * OperationDayMapper used to map OperationDays service response to OperationDayFX list
@@ -15,14 +16,6 @@ public class OperationDayMapper implements DataMapper<OperationDayDto, Operating
     private static final Logger logger = LogManager.getLogger();
     @Override
     public OperatingDayFX map(OperationDayDto dto) {
-
-        TypeSu typeSu;
-        try {
-            typeSu = TypeSu.valueOf( dto.getTypeSu().getCode() );
-        } catch (IllegalArgumentException ex) {
-            typeSu = TypeSu.UNKNOWN;
-            logger.warn("Bad storageUnit type: {}", dto.getTypeSu().getCode(), ex);
-        }
 
         OperDayStatus status;
         try {
@@ -38,7 +31,7 @@ public class OperationDayMapper implements DataMapper<OperationDayDto, Operating
         return new OperatingDayFX(
                 dto.getObjectId(),
                 date,
-                typeSu,
+                dto.getTypeSu().getElementName(),
                 status,
                 createdAt
         );

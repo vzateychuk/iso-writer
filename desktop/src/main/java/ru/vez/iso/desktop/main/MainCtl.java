@@ -15,7 +15,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
 import ru.vez.iso.desktop.main.operdays.OperatingDayFX;
-import ru.vez.iso.desktop.main.operdays.TypeSu;
 import ru.vez.iso.desktop.main.storeunits.StorageUnitFX;
 import ru.vez.iso.desktop.main.storeunits.StorageUnitStatus;
 import ru.vez.iso.desktop.shared.*;
@@ -59,7 +58,7 @@ public class MainCtl implements Initializable {
     // Таблица "Список операционных дней"
     @FXML private TableView<OperatingDayFX> tblOperatingDays;
     @FXML private TableColumn<OperatingDayFX, String> operatingDay;
-    @FXML private TableColumn<OperatingDayFX, TypeSu> typeSu;
+    @FXML private TableColumn<OperatingDayFX, String> typeSu;
     @FXML private TableColumn<OperatingDayFX, String> status;
     @FXML private TableColumn<OperatingDayFX, String> createdAt;
 
