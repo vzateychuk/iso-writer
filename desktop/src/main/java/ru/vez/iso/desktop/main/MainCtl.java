@@ -51,7 +51,6 @@ public class MainCtl implements Initializable {
             return -1;
         }
     };
-
     // Фильтр "Список операционных дней"
     @FXML private TextField operDaysFilter;
 
@@ -66,12 +65,10 @@ public class MainCtl implements Initializable {
     @FXML private TableView<StorageUnitFX> tblStorageUnits;
     @FXML private TableColumn<StorageUnitFX, String> numberSu;
     @FXML private TableColumn<StorageUnitFX, String> creationDate;
-    @FXML private TableColumn<StorageUnitFX, Long> dataSize;
-    @FXML private TableColumn<StorageUnitFX, String> storageDate;
     @FXML private TableColumn<StorageUnitFX, String> storageUnitStatus;
     @FXML private TableColumn<StorageUnitFX, String> savingDate;
-    @FXML private TableColumn<StorageUnitFX, String> fileName;
-    @FXML public TableColumn <StorageUnitFX, String> deleted;
+    @FXML private TableColumn <StorageUnitFX, String> formed;
+    @FXML private TableColumn <StorageUnitFX, String> downloaded;
 
     // Кнопки
     @FXML private Button butIsoLoad;
@@ -183,14 +180,11 @@ public class MainCtl implements Initializable {
         this.creationDate.setCellValueFactory(cell -> cell.getValue().creationDateProperty());
         this.creationDate.setComparator( this.sortDateStrings );
 
-        this.dataSize.setCellValueFactory(cell -> cell.getValue().dataSizeProperty());
-        this.storageDate.setCellValueFactory(cell -> cell.getValue().storageDateProperty());
         this.storageUnitStatus.setCellValueFactory(cell -> cell.getValue().storageUnitStatusProperty());
         this.savingDate.setCellValueFactory(cell -> cell.getValue().savingDateProperty());
         this.savingDate.setComparator( this.sortDateStrings );
-
-        this.fileName.setCellValueFactory(cell -> cell.getValue().isoFileNameProperty());
-        this.deleted.setCellValueFactory(cell -> cell.getValue().deletedProperty());
+        this.downloaded.setCellValueFactory(cell -> cell.getValue().downloadedProperty());
+        this.formed.setCellValueFactory(cell -> cell.getValue().formedProperty());
 
         // StoreUnitsStatus status filter (RadioButtons)
         this.radioButtonsToggle.add(radioStatusAll, radioStatusAllInner);
@@ -316,10 +310,6 @@ public class MainCtl implements Initializable {
     @FXML public void onDeleteIso(ActionEvent ev) {
         StorageUnitFX su = tblStorageUnits.getSelectionModel().selectedItemProperty().getValue();
         logger.debug(su.getIsoFileName());
-        if (Strings.isBlank(su.getIsoFileName())) {
-            this.msgSrv.news("Файл не выбран : " + fileName);
-            return;
-        }
         mainSrv.deleteFileAsync(su.getIsoFileName());
     }
 
@@ -380,6 +370,12 @@ public class MainCtl implements Initializable {
     private void displayOperatingDays(List<OperatingDayFX> operatingDays) {
         this.operatingDays = FXCollections.observableList(operatingDays);
         tblOperatingDays.setItems(this.operatingDays);
+        // select first row
+        if (operatingDays.size()>0) {
+            tblOperatingDays.requestFocus();
+            tblOperatingDays.getSelectionModel().select(0);
+            tblOperatingDays.getFocusModel().focus(0);
+        }
     }
 
     /**

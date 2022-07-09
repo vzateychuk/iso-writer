@@ -24,7 +24,7 @@ public class StorageUnitMapper implements DataMapper<StorageUnitDto, StorageUnit
             storageUnitStatus = StorageUnitStatus.valueOf( dto.getStorageUnitStatus() );
         } catch (IllegalArgumentException ex) {
             storageUnitStatus = StorageUnitStatus.UNKNOWN_STATUS;
-            logger.warn("Bad storageUnitStatus: {}", dto.getStorageUnitStatus(), ex);
+            logger.warn("Bad storageUnit status: {}", dto.getStorageUnitStatus(), ex);
         }
 
         LocalDate creationDate = dto.getCreationDate() != null

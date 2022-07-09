@@ -29,4 +29,5 @@ public class TypeStorUnitDto {
 
     private String elementId;
     private Long capacity;
+    private String elementName;
 }

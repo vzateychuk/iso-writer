@@ -61,10 +61,10 @@
                     <columns>
                         <TableColumn fx:id="operatingDay" editable="false" maxWidth="120.0" minWidth="80.0"
                                      text="Дата опер.дня"/>
-                        <TableColumn fx:id="typeSu" editable="false" maxWidth="160.0" minWidth="80.0" prefWidth="100.0"
+                        <TableColumn fx:id="typeSu" editable="false" maxWidth="160.0" minWidth="80.0" prefWidth="120.0"
                                      text="Вид EX"/>
                         <TableColumn fx:id="status" editable="false" minWidth="80.0" text="Статус"/>
-                        <TableColumn fx:id="createdAt" editable="false" maxWidth="120.0" minWidth="80.0" text="Создан"/>
+                        <TableColumn fx:id="createdAt" editable="false" maxWidth="120.0" minWidth="80.0" text="Дата создания"/>
                     </columns>
                 </TableView>
             </children>
@@ -239,14 +239,11 @@
                     <columns>
                         <TableColumn fx:id="numberSu" maxWidth="200.0" minWidth="80.0" prefWidth="100.0"
                                      text="Номер EX"/>
-                        <TableColumn fx:id="creationDate" maxWidth="100.0" minWidth="80.0" text="Создан"/>
-                        <TableColumn fx:id="dataSize" editable="false" maxWidth="100.0" minWidth="40.0"
-                                     text="Размер ISO"/>
-                        <TableColumn fx:id="storageDate" maxWidth="120.0" minWidth="80.0" text="Срок хранения"/>
-                        <TableColumn fx:id="storageUnitStatus" minWidth="80.0" text="Статус EX"/>
+                        <TableColumn fx:id="creationDate" maxWidth="120.0" minWidth="80.0" text="Дата создания"/>
                         <TableColumn fx:id="savingDate" maxWidth="120.0" minWidth="80.0" text="Дата записи"/>
-                        <TableColumn fx:id="fileName" minWidth="80.0" text="Имя ISO файла (если загружен)"/>
-                        <TableColumn fx:id="deleted" maxWidth="60.0" minWidth="60.0" text="Удален"/>
+                        <TableColumn fx:id="storageUnitStatus" minWidth="100.0" text="Статус EX"/>
+                        <TableColumn fx:id="formed" minWidth="80.0" maxWidth="120.0" text="Сформирован"/>
+                        <TableColumn fx:id="downloaded" minWidth="80.0" maxWidth="120.0" text="Скачан"/>
                     </columns>
                 </TableView>
             </children>

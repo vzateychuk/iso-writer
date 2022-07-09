@@ -2,6 +2,7 @@ package ru.vez.iso.desktop.main.storeunits;
 
 import javafx.beans.property.*;
 import javafx.beans.value.ObservableValue;
+import org.apache.logging.log4j.util.Strings;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -105,6 +106,16 @@ public class StorageUnitFX {
     }
     public StringProperty isoFileNameProperty() {
         return isoFileName;
+    }
+
+    public StringProperty downloadedProperty() {
+        String dowloaded = Strings.isBlank(isoFileName.get()) ? "Нет" : "Да";
+        return new SimpleStringProperty(dowloaded);
+
+    }
+    // TODO implementation the formed property is waiting backend implementation
+    public StringProperty formedProperty() {
+        return new SimpleStringProperty("Нет");
     }
 
     public boolean isDeleted() {
