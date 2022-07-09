@@ -59,12 +59,12 @@
                 </GridPane>
                 <TableView fx:id="tblOperatingDays" maxHeight="1.7976931348623157E308" VBox.vgrow="ALWAYS">
                     <columns>
-                        <TableColumn fx:id="operatingDay" editable="false" maxWidth="100.0" minWidth="80.0"
+                        <TableColumn fx:id="operatingDay" editable="false" maxWidth="120.0" minWidth="80.0"
                                      text="Дата опер.дня"/>
-                        <TableColumn fx:id="typeSu" editable="false" maxWidth="80.0" minWidth="40.0" prefWidth="40.0"
+                        <TableColumn fx:id="typeSu" editable="false" maxWidth="120.0" minWidth="40.0" prefWidth="60.0"
                                      text="Вид EX"/>
                         <TableColumn fx:id="status" editable="false" minWidth="80.0" text="Статус"/>
-                        <TableColumn fx:id="createdAt" editable="false" maxWidth="100.0" minWidth="80.0" text="Создан"/>
+                        <TableColumn fx:id="createdAt" editable="false" maxWidth="120.0" minWidth="80.0" text="Создан"/>
                     </columns>
                 </TableView>
             </children>
@@ -237,14 +237,14 @@
                 </GridPane>
                 <TableView fx:id="tblStorageUnits" maxHeight="1.7976931348623157E308" VBox.vgrow="ALWAYS">
                     <columns>
-                        <TableColumn fx:id="numberSu" maxWidth="200.0" minWidth="100.0" prefWidth="100.0"
+                        <TableColumn fx:id="numberSu" maxWidth="200.0" minWidth="80.0" prefWidth="100.0"
                                      text="Номер EX"/>
                         <TableColumn fx:id="creationDate" maxWidth="100.0" minWidth="80.0" text="Создан"/>
-                        <TableColumn fx:id="dataSize" editable="false" maxWidth="80.0" minWidth="40.0"
+                        <TableColumn fx:id="dataSize" editable="false" maxWidth="100.0" minWidth="40.0"
                                      text="Размер ISO"/>
-                        <TableColumn fx:id="storageDate" maxWidth="100.0" minWidth="80.0" text="Срок хранения"/>
+                        <TableColumn fx:id="storageDate" maxWidth="120.0" minWidth="80.0" text="Срок хранения"/>
                         <TableColumn fx:id="storageUnitStatus" minWidth="80.0" text="Статус EX"/>
-                        <TableColumn fx:id="savingDate" maxWidth="100.0" minWidth="80.0" text="Дата записи"/>
+                        <TableColumn fx:id="savingDate" maxWidth="120.0" minWidth="80.0" text="Дата записи"/>
                         <TableColumn fx:id="fileName" minWidth="80.0" text="Имя ISO файла (если загружен)"/>
                         <TableColumn fx:id="deleted" maxWidth="60.0" minWidth="60.0" text="Удален"/>
                     </columns>
