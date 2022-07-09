@@ -118,7 +118,7 @@ public class MainCtl implements Initializable {
             // change operation days filter
             int filterDays = newVal.getFilterOpsDays();
             Platform.runLater( ()-> {
-                    operDaysFilter.setText(String.valueOf(filterDays));
+                    this.operDaysFilter.setText(String.valueOf(filterDays));
                     this.onReload(null);
             }  );
             // re-schedule data operationDays load
@@ -217,6 +217,13 @@ public class MainCtl implements Initializable {
                 }
             }
         );
+
+        // force the field to be numeric only
+        this.operDaysFilter.textProperty().addListener((o, old, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                operDaysFilter.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+        });
 
     }
 

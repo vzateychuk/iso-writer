@@ -62,6 +62,20 @@ public class SettingsCtl implements Initializable {
         this.radioButtonsToggle.add(radioMonth, radioMonthInner);
         this.radioButtonsToggle.add(radioWeek, radioWeekInner);
         this.radioButtonsToggle.add(radioCustom, radioCustomInner);
+
+        // force the field to be numeric only
+        this.operationDays.textProperty().addListener((o, old, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                operationDays.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+        });
+
+        // force the field to be numeric only
+        this.refreshPeriod.textProperty().addListener((o, old, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                refreshPeriod.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+        });
     }
 
     @FXML public void onSave(ActionEvent ev) {
