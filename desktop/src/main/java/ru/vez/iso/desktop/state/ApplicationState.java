@@ -8,7 +8,7 @@ import ru.vez.iso.desktop.docs.DocumentFX;
 import ru.vez.iso.desktop.docs.reestr.Reestr;
 import ru.vez.iso.desktop.main.operdays.OperatingDayFX;
 import ru.vez.iso.desktop.shared.AppSettings;
-import ru.vez.iso.desktop.shared.IsoFileFX;
+import ru.vez.iso.desktop.shared.FileISO;
 import ru.vez.iso.desktop.shared.UserDetails;
 
 import java.util.Collections;
@@ -21,7 +21,7 @@ public class ApplicationState {
     private final StringProperty zipDir;            // Путь к файлу DIR.zip открытый пользователем в форме "Документы"
     private final ObjectProperty<UserDetails> userDetails;              // Режим запуска приложения: Enum RunMode
     private final ObjectProperty<List<OperatingDayFX>> operatingDays;   // Операционные дни
-    private final ObjectProperty<List<IsoFileFX>>  fileNames; // Список ISO файлов, загруженных из backend и хранящихся в cache
+    private final ObjectProperty<List<FileISO>>  fileNames; // Список ISO файлов, загруженных из backend и хранящихся в cache
     private final ObjectProperty<List<DocumentFX>> documentFXs; // Список документов загруженных из REESTR файла
     private final ObjectProperty<Reestr>  reestr; // Загруженный реестр документов (из DirZip.zip)
 
@@ -90,14 +90,14 @@ public class ApplicationState {
         this.documentFXs.set(documentFXs);
     }
 
-    public List<IsoFileFX> getFileNames() {
+    public List<FileISO> getIsoFiles() {
         return fileNames.get();
     }
-    public ObjectProperty<List<IsoFileFX>> fileNamesProperty() {
+    public ObjectProperty<List<FileISO>> fileNamesProperty() {
         return fileNames;
     }
-    public void setFileNames(List<IsoFileFX> fileNames) {
-        this.fileNames.set(fileNames);
+    public void setFileNames(List<FileISO> isoList) {
+        this.fileNames.set(isoList);
     }
 
     public AppSettings getSettings() {

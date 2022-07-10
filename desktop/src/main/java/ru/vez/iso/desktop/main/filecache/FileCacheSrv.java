@@ -1,6 +1,6 @@
 package ru.vez.iso.desktop.main.filecache;
 
-import ru.vez.iso.desktop.shared.IsoFileFX;
+import ru.vez.iso.desktop.shared.FileISO;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ public interface FileCacheSrv {
     /**
      * Загрузить ISO файл в локальный файловый кэш.
      * */
-    List<IsoFileFX> readFileCache(String dir);
+    List<FileISO> readFileCache(String dir);
 
     /**
      * Delete the file

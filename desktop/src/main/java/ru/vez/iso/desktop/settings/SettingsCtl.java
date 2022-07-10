@@ -28,6 +28,7 @@ public class SettingsCtl implements Initializable {
     @FXML private TextField refreshPeriod;
     @FXML private TextField abddAPI;
     @FXML private TextField fileCache;
+    @FXML private TextField evictCacheDays; // Days, period of cache eviction
 
     // radio-buttons group
     @FXML public Button radioQuarter;
@@ -76,6 +77,13 @@ public class SettingsCtl implements Initializable {
                 refreshPeriod.setText(newValue.replaceAll("[^\\d]", ""));
             }
         });
+
+        // force the field to be numeric only
+        this.evictCacheDays.textProperty().addListener((o, old, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                evictCacheDays.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+        });
     }
 
     @FXML public void onSave(ActionEvent ev) {
@@ -85,6 +93,7 @@ public class SettingsCtl implements Initializable {
 
         int operDays = UtilsHelper.parseIntOrDefault(operationDays.getText(), SettingType.OPERATION_DAYS.getDefaultValue());
         int refreshMin = UtilsHelper.parseIntOrDefault(refreshPeriod.getText(), SettingType.REFRESH_PERIOD.getDefaultValue());
+        int evictDays = UtilsHelper.parseIntOrDefault(evictCacheDays.getText(), SettingType.EVICT_CACHE_DAYS.getDefaultValue());
 
         AppSettings newSetting = AppSettings.builder()
                 .backendAPI(abddAPI.getText())
@@ -92,6 +101,7 @@ public class SettingsCtl implements Initializable {
                 .settingFile(currentSettings.getSettingFile())
                 .isoCachePath(fileCache.getText())
                 .refreshMin(refreshMin)
+                .evictCacheDays(evictDays)
                 .build();
 
         service.saveAsync(newSetting);
@@ -150,6 +160,7 @@ public class SettingsCtl implements Initializable {
         refreshPeriod.setText( String.valueOf(sets.getRefreshMin()) );
         fileCache.setText( sets.getIsoCachePath() );
         abddAPI.setText( sets.getBackendAPI() );
+        evictCacheDays.setText( String.valueOf(sets.getEvictCacheDays()) );
     }
 
     //endregion

@@ -7,7 +7,8 @@ public enum SettingType {
     OPERATION_DAYS("30"),
     ISO_CACHE_PATH("./temp"),
     REFRESH_PERIOD("5"),
-    BACKEND_API("http://localhost:8080/abdd/api");
+    BACKEND_API("http://localhost:8080/abdd/api"),
+    EVICT_CACHE_DAYS("30");
 
     private final String defaultValue;
 

@@ -98,12 +98,18 @@
                promptText="http://localhost:8080/api" styleClass="desktop-input" GridPane.columnIndex="2"
                GridPane.rowIndex="7"/>
 
+    <Label styleClass="desktop-label" text="Хранить iso-образы, дней:" textAlignment="RIGHT" GridPane.columnIndex="1" GridPane.rowIndex="8">
+    </Label>
+
+    <TextField fx:id="evictCacheDays" maxWidth="1.7976931348623157E308" prefHeight="26.0" promptText="Период хранения файлов в кэше"
+               styleClass="desktop-input" GridPane.columnIndex="2" GridPane.rowIndex="8"/>
+
     <Label disable="true" styleClass="desktop-label" text="Папка файловый кэш:" textAlignment="RIGHT"
-           GridPane.columnIndex="1" GridPane.rowIndex="8">
+           GridPane.columnIndex="1" GridPane.rowIndex="9">
     </Label>
 
     <TextField fx:id="fileCache" disable="true" editable="false" maxWidth="1.7976931348623157E308" prefHeight="26.0"
-               promptText="temp" styleClass="desktop-input" GridPane.columnIndex="2" GridPane.rowIndex="8"/>
+               promptText="temp" styleClass="desktop-input" GridPane.columnIndex="2" GridPane.rowIndex="9"/>
 
     <ButtonBar nodeOrientation="LEFT_TO_RIGHT" prefHeight="40.0" prefWidth="200.0" GridPane.columnIndex="1"
                GridPane.columnSpan="2" GridPane.rowIndex="9">

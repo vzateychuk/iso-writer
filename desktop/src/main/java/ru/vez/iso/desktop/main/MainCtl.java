@@ -100,7 +100,7 @@ public class MainCtl implements Initializable {
     private final ChangeListener<AppSettings> settingsChangeListener; // settings changed listener (change OperationDays period filter)
     private final ChangeListener<List<OperatingDayFX>> operationDaysListener; // Operation Days table listener
     private final ChangeListener<OperatingDayFX> selectOperationDayListener; // Select row in OperationDays table
-    private final ChangeListener<List<IsoFileFX>> isoFilesChangeListener; // ISO_FILES in cache changed
+    private final ChangeListener<List<FileISO>> isoFilesChangeListener; // ISO_FILES in cache changed
     private final ChangeListener<StorageUnitFX> selectStorageUnitListener; // select row in StorageUnits table
 
     //endregion
@@ -134,7 +134,7 @@ public class MainCtl implements Initializable {
         this.selectOperationDayListener = (o, old, newValue) -> {
             if (newValue != null) {
                 // need to update storage units with isoFileName, stored in local file-cache
-                final List<IsoFileFX> fileCache = this.state.getFileNames();
+                final List<FileISO> fileCache = this.state.getIsoFiles();
                 List<StorageUnitFX> withFileNames = this.getWithFileName(newValue.getStorageUnits(), fileCache);
                 // filter and display a storage Units
                 Platform.runLater(()-> this.filterAndDisplayStorageUnits(withFileNames, statusesFilter));
@@ -345,7 +345,7 @@ public class MainCtl implements Initializable {
     /**
      * Update storeUnit fileName property if there is a filename in fileCache found
      * */
-    List<StorageUnitFX> getWithFileName(List<StorageUnitFX> storageUnits, List<IsoFileFX> fileCache) {
+    List<StorageUnitFX> getWithFileName(List<StorageUnitFX> storageUnits, List<FileISO> fileCache) {
 
         return storageUnits.stream()
                 .map(su -> {

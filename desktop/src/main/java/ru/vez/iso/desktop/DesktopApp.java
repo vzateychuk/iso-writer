@@ -50,11 +50,14 @@ import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.jar.Manifest;
+import java.util.stream.Collectors;
 
 /**
  * Runnable Application class
@@ -101,6 +104,7 @@ public class DesktopApp extends Application {
                     .filterOpsDays( Integer.parseUnsignedInt(SettingType.OPERATION_DAYS.getDefaultValue()) )
                     .refreshMin( Integer.parseInt(SettingType.REFRESH_PERIOD.getDefaultValue()) )
                     .isoCachePath( SettingType.ISO_CACHE_PATH.getDefaultValue() )
+                    .evictCacheDays( Integer.parseUnsignedInt(SettingType.EVICT_CACHE_DAYS.getDefaultValue()) )
                     .build();
             settingsSrv.save(settingsFileName, settings);
         }
@@ -130,18 +134,26 @@ public class DesktopApp extends Application {
         LoginSrv loginSrv = new LoginSrvImpl(state, exec, msgSrv, httpClientLogin);
 
         // ViewCache with views
-        Map<ViewType, Parent> viewCache = buildViewCache(state,exec,msgSrv,settingsSrv,loginSrv,mainSrv,fileCache);
+        Map<ViewType, Parent> viewCache = buildViewCache(state,exec,msgSrv,settingsSrv,loginSrv,mainSrv);
         // settingsSrv.loadAsync(SettingType.SETTING_FILE.getDefaultValue());
 
         //endregion
 
+        // PRE-SHOW ACTIONS
+
         // create filecache directory and readAsync
         createFileCacheIfNotExists( settings.getIsoCachePath() );
 
-        // PRE-SHOW ACTIONS
         state.setSettings(settings);
-        state.setFileNames( fileCache.readFileCache( settings.getIsoCachePath() ) );
-        // mainSrv.readDataAsync(state.getSettings().getFilterOpsDays());
+
+        // evict old files from file cache
+        List<FileISO> isoList = fileCache.readFileCache(settings.getIsoCachePath());
+        List<FileISO> toEvict = isoList.stream()
+                .filter(f -> f.getCreatedAt().isBefore(LocalDate.now().minusDays(settings.getEvictCacheDays())))
+                .collect(Collectors.toList());
+        toEvict.forEach(f -> fileCache.deleteFile(f.getFileName()));
+        isoList.removeAll(toEvict);
+        state.setFileNames( isoList );
 
         // Set OnClose confirmation hook
         stage.setOnCloseRequest(e -> {
@@ -220,8 +232,7 @@ public class DesktopApp extends Application {
             MessageSrv msgSrv,
             SettingsSrv settingsSrv,
             LoginSrv loginSrv,
-            MainSrv mainSrv,
-            FileCacheSrv fileCache) throws IOException {
+            MainSrv mainSrv) throws IOException {
 
         Map<ViewType, Parent> viewCache = new HashMap<>();
 

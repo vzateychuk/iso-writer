@@ -53,6 +53,9 @@ public class SettingsSrvImpl implements SettingsSrv {
                 .backendAPI(
                         props.getProperty(SettingType.BACKEND_API.name(), SettingType.BACKEND_API.getDefaultValue())
                 )
+                .evictCacheDays( Integer.parseInt(
+                        props.getProperty(SettingType.EVICT_CACHE_DAYS.name(), SettingType.EVICT_CACHE_DAYS.getDefaultValue())
+                ) )
                 .build();
     }
 
