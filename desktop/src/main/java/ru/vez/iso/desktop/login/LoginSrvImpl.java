@@ -1,8 +1,5 @@
 package ru.vez.iso.desktop.login;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Future;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
@@ -13,6 +10,10 @@ import ru.vez.iso.desktop.shared.HttpClientWrap;
 import ru.vez.iso.desktop.shared.MessageSrv;
 import ru.vez.iso.desktop.shared.UserDetails;
 import ru.vez.iso.desktop.state.ApplicationState;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Future;
 
 public class LoginSrvImpl implements LoginSrv {
 
@@ -59,7 +60,7 @@ public class LoginSrvImpl implements LoginSrv {
             );
             logger.debug("logged in: {}", username);
         }).exceptionally(ex -> {
-            this.msgSrv.news("Подключение не удалось, ошибка: " + ex.getLocalizedMessage());
+            this.msgSrv.news("Подключение не удалось: " + ex.getCause().getLocalizedMessage());
             logger.error(ex);
             return null;
         } );

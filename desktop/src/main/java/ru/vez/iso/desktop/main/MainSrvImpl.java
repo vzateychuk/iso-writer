@@ -136,7 +136,7 @@ public class MainSrvImpl implements MainSrv {
 
         CompletableFuture.runAsync(() -> {
             this.storageUnitsSrv.requestCreateISO(su.getObjectId());
-            this.msgSrv.news("Запрошено создание ISO образа: " + su.getNumberSu() + ", id: " + su.getObjectId());
+            this.msgSrv.news("Начат процесс формирования iso-образа для ЕХ: " + su.getNumberSu());
         }, exec)
                 .exceptionally((ex) -> {
                     logger.error(ex);

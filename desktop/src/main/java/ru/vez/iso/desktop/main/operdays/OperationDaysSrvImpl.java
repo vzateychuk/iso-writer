@@ -56,6 +56,7 @@ public class OperationDaysSrvImpl implements OperationDaysSrv {
                 .getObjects()
                 .stream()
                 .map(mapper::map)
+                .sorted((d1,d2)->d2.getOperatingDay().compareTo(d1.getOperatingDay()))
                 .collect(Collectors.toList());
 
         logger.debug("Loaded: {}", loaded.size());

@@ -17,7 +17,7 @@
            styleClass="desktop-label" text="Имя пользователя:" GridPane.columnIndex="1" GridPane.rowIndex="3">
     </Label>
 
-    <TextField fx:id="username" layoutX="133.0" layoutY="157.0" prefHeight="26.0" prefWidth="274.0" promptText="admin"
+    <TextField fx:id="username" layoutX="133.0" layoutY="157.0" prefHeight="26.0" prefWidth="274.0" promptText=""
                styleClass="desktop-input" GridPane.columnIndex="2" GridPane.rowIndex="3"/>
 
     <Label alignment="TOP_RIGHT" layoutX="37.0" layoutY="224.0" maxWidth="1.7976931348623157E308"
@@ -25,7 +25,7 @@
     </Label>
 
     <PasswordField fx:id="password" layoutX="133.0" layoutY="222.0" prefHeight="26.0" prefWidth="274.0"
-                   promptText="admin" styleClass="desktop-input" GridPane.columnIndex="2" GridPane.rowIndex="4"/>
+                   promptText="" styleClass="desktop-input" GridPane.columnIndex="2" GridPane.rowIndex="4"/>
 
     <ButtonBar nodeOrientation="LEFT_TO_RIGHT" prefHeight="40.0" prefWidth="200.0" GridPane.columnIndex="2"
                GridPane.rowIndex="5">

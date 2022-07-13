@@ -41,7 +41,7 @@
                         </graphic>
                     </Button>
                     <Button fx:id="butMain" disable="true" onAction="#onShowMain" styleClass="desktop-nav-button"
-                            text="Загрузка EX">
+                            text="Запись EX">
                         <tooltip>
                             <Tooltip text="Загрузить/Записать ЕХ"/>
                         </tooltip>

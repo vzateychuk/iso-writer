@@ -101,6 +101,9 @@
     </top>
     <center>
         <TableView fx:id="tblDocuments" maxHeight="1.7976931348623157E308">
+            <placeholder>
+                <Label text="Не выбран диск для просмотра списка документов"/>
+            </placeholder>
             <columns>
                 <TableColumn fx:id="docNumber" prefWidth="100.0" text="Номер документа"/>
                 <TableColumn fx:id="kindIdName" editable="false" minWidth="50.0" prefWidth="100.0"

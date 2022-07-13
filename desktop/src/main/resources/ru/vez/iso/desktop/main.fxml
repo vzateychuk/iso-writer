@@ -58,6 +58,9 @@
                     </children>
                 </GridPane>
                 <TableView fx:id="tblOperatingDays" maxHeight="1.7976931348623157E308" VBox.vgrow="ALWAYS">
+                    <placeholder>
+                        <Label text="Нет операционных дней"/>
+                    </placeholder>
                     <columns>
                         <TableColumn fx:id="operatingDay" editable="false" maxWidth="120.0" minWidth="80.0"
                                      text="Дата опер.дня"/>
@@ -236,6 +239,9 @@
                     </children>
                 </GridPane>
                 <TableView fx:id="tblStorageUnits" maxHeight="1.7976931348623157E308" VBox.vgrow="ALWAYS">
+                    <placeholder>
+                        <Label text="Нет единиц хранения"/>
+                    </placeholder>
                     <columns>
                         <TableColumn fx:id="numberSu" maxWidth="200.0" minWidth="80.0" prefWidth="100.0"
                                      text="Номер EX"/>
