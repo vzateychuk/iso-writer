@@ -13,6 +13,7 @@ import ru.vez.iso.desktop.shared.RadioButtonsToggle;
 import ru.vez.iso.desktop.shared.SettingType;
 import ru.vez.iso.desktop.shared.UtilsHelper;
 import ru.vez.iso.desktop.state.ApplicationState;
+import ru.vez.iso.desktop.state.RunMode;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -23,7 +24,9 @@ import java.util.ResourceBundle;
 public class SettingsCtl implements Initializable {
 
     private static final Logger logger = LogManager.getLogger();
+
     //
+    @FXML public Button driveInfo;
     @FXML private TextField operationDays;
     @FXML private TextField refreshPeriod;
     @FXML private TextField abddAPI;
@@ -53,7 +56,9 @@ public class SettingsCtl implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
         logger.debug(location);
+
         this.state.settingsProperty().addListener(
                 (ob,oldVal,newVal) -> Platform.runLater( ()->displaySettings(newVal) )
         );
@@ -84,6 +89,9 @@ public class SettingsCtl implements Initializable {
                 evictCacheDays.setText(newValue.replaceAll("[^\\d]", ""));
             }
         });
+
+        this.driveInfo.setDisable( this.state.getRunMode() == RunMode.PROD );
+        this.driveInfo.setVisible( this.state.getRunMode() != RunMode.PROD );
     }
 
     @FXML public void onSave(ActionEvent ev) {
@@ -129,6 +137,12 @@ public class SettingsCtl implements Initializable {
         radioButtonsToggle.setActive(radioCustom);
         operationDays.setDisable(false);
     }
+
+    @FXML  public void onDriveInfo(ActionEvent av) {
+        logger.debug("");
+
+    }
+
 
     //region PRIVATE
 

@@ -12,7 +12,7 @@
                 "modifyDate": "2022-05-30T19:04:40.345819",
                 "objectState": null,
                 "acl": {},
-                "deleted": false,
+                "deleted": true,
                 "typeName": "StorageUnitAbdd",
                 "hasFile": false,
                 "timeStamp": null,
@@ -43,7 +43,8 @@
                     "savingLocation": "initValue",
                     "savingLocationReserv": "initValue"
                 },
-                "errorMessage": "test"
+                "errorMessage": "test",
+                "isoPresent": true
             },
             {
                 "objectId": "1ee20c16-91d4-44e9-9ef4-72bc3bd7cde6",
@@ -86,7 +87,8 @@
                     "savingLocation": "initValue",
                     "savingLocationReserv": "initValue"
                 },
-                "errorMessage": null
+                "errorMessage": "test",
+                "isoPresent": true
             },
             {
                 "objectId": "ed6d90d9-963c-43df-ba99-ad94add4e334",
@@ -98,7 +100,7 @@
                 "modifyDate": "2022-04-08T15:08:06.826055",
                 "objectState": null,
                 "acl": {},
-                "deleted": false,
+                "deleted": true,
                 "typeName": "StorageUnitAbdd",
                 "hasFile": false,
                 "timeStamp": null,
@@ -129,7 +131,8 @@
                     "savingLocation": "initValue",
                     "savingLocationReserv": "initValue"
                 },
-                "errorMessage": null
+                "errorMessage": "test",
+                "isoPresent": true
             },
             {
                 "objectId": "1b48d922-a983-426f-bb9c-bccb16f8dfc7",
@@ -141,7 +144,7 @@
                 "modifyDate": "2022-04-29T06:44:48.010755",
                 "objectState": null,
                 "acl": {},
-                "deleted": false,
+                "deleted": true,
                 "typeName": "StorageUnitAbdd",
                 "hasFile": false,
                 "timeStamp": null,
@@ -172,7 +175,8 @@
                     "savingLocation": "initValue",
                     "savingLocationReserv": "initValue"
                 },
-                "errorMessage": null
+                "errorMessage": "test",
+                "isoPresent": true
             },
             {
                 "objectId": "625377d8-73b6-40c5-aefc-c58ccbbaf09a",
@@ -184,7 +188,7 @@
                 "modifyDate": "2022-04-29T10:33:47.495262",
                 "objectState": null,
                 "acl": {},
-                "deleted": false,
+                "deleted": true,
                 "typeName": "StorageUnitAbdd",
                 "hasFile": false,
                 "timeStamp": null,
@@ -215,7 +219,8 @@
                     "savingLocation": "initValue",
                     "savingLocationReserv": "initValue"
                 },
-                "errorMessage": null
+                "errorMessage": "test",
+                "isoPresent": true
             },
             {
                 "objectId": "da77c931-bb1c-496a-999f-f966b795b3e8",
@@ -227,7 +232,7 @@
                 "modifyDate": "2022-04-27T10:25:43.350419",
                 "objectState": null,
                 "acl": {},
-                "deleted": false,
+                "deleted": true,
                 "typeName": "StorageUnitAbdd",
                 "hasFile": false,
                 "timeStamp": null,
@@ -258,7 +263,8 @@
                     "savingLocation": "initValue",
                     "savingLocationReserv": "initValue"
                 },
-                "errorMessage": null
+                "errorMessage": "test",
+                "isoPresent": true
             },
             {
                 "objectId": "fac305be-5145-49fd-8079-9b95bbd581d6",
@@ -270,7 +276,7 @@
                 "modifyDate": "2022-04-27T10:25:47.425959",
                 "objectState": null,
                 "acl": {},
-                "deleted": false,
+                "deleted": true,
                 "typeName": "StorageUnitAbdd",
                 "hasFile": false,
                 "timeStamp": null,
@@ -301,7 +307,8 @@
                     "savingLocation": "initValue",
                     "savingLocationReserv": "initValue"
                 },
-                "errorMessage": null
+                "errorMessage": "test",
+                "isoPresent": true
             },
             {
                 "objectId": "fa1932f5-b352-4247-b3d5-4f10023b3237",
@@ -313,7 +320,7 @@
                 "modifyDate": "2022-04-27T10:26:00.320677",
                 "objectState": null,
                 "acl": {},
-                "deleted": false,
+                "deleted": true,
                 "typeName": "StorageUnitAbdd",
                 "hasFile": false,
                 "timeStamp": null,
@@ -344,7 +351,8 @@
                     "savingLocation": "initValue",
                     "savingLocationReserv": "initValue"
                 },
-                "errorMessage": null
+                "errorMessage": "test",
+                "isoPresent": true
             },
             {
                 "objectId": "938c4a27-5c99-4038-9f83-93cad247b07d",
@@ -356,7 +364,7 @@
                 "modifyDate": "2022-04-27T10:26:07.219809",
                 "objectState": null,
                 "acl": {},
-                "deleted": false,
+                "deleted": true,
                 "typeName": "StorageUnitAbdd",
                 "hasFile": false,
                 "timeStamp": null,
@@ -387,7 +395,8 @@
                     "savingLocation": "initValue",
                     "savingLocationReserv": "initValue"
                 },
-                "errorMessage": null
+                "errorMessage": "test",
+                "isoPresent": true
             },
             {
                 "objectId": "c74c3dd2-1a19-4c82-a6ae-2270b3f844a9",
@@ -399,7 +408,7 @@
                 "modifyDate": "2022-04-29T10:40:45.48871",
                 "objectState": null,
                 "acl": {},
-                "deleted": false,
+                "deleted": true,
                 "typeName": "StorageUnitAbdd",
                 "hasFile": false,
                 "timeStamp": null,
@@ -430,7 +439,8 @@
                     "savingLocation": "initValue",
                     "savingLocationReserv": "initValue"
                 },
-                "errorMessage": null
+                "errorMessage": "test",
+                "isoPresent": true
             },
             {
                 "objectId": "c373a1e4-a90f-4ea0-938d-38021fddcf3d",
@@ -442,7 +452,7 @@
                 "modifyDate": "2022-04-29T13:24:42.107155",
                 "objectState": null,
                 "acl": {},
-                "deleted": false,
+                "deleted": true,
                 "typeName": "StorageUnitAbdd",
                 "hasFile": false,
                 "timeStamp": null,
@@ -473,7 +483,8 @@
                     "savingLocation": "initValue",
                     "savingLocationReserv": "initValue"
                 },
-                "errorMessage": null
+                "errorMessage": "test",
+                "isoPresent": true
             }
         ],
         "count": 11

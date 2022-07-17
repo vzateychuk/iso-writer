@@ -196,7 +196,7 @@ public class MainSrvImpl implements MainSrv {
         // will trigger update of StorageUnits table
         CompletableFuture.supplyAsync(() -> {
             this.storageUnitsSrv.loadFile(objectId);
-            msgSrv.news("Загружен : '" + objectId + ".iso'");
+            msgSrv.news("Скачан : '" + objectId + ".iso'");
             return null;
         }, exec)
                 .thenAccept(nm -> this.readFileCacheAsync(state.getSettings().getIsoCachePath()))

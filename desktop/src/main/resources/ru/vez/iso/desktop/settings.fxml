@@ -112,8 +112,27 @@
                promptText="temp" styleClass="desktop-input" GridPane.columnIndex="2" GridPane.rowIndex="9"/>
 
     <ButtonBar nodeOrientation="LEFT_TO_RIGHT" prefHeight="40.0" prefWidth="200.0" GridPane.columnIndex="1"
-               GridPane.columnSpan="2" GridPane.rowIndex="9">
+               GridPane.columnSpan="2" GridPane.rowIndex="10">
         <buttons>
+            <Button fx:id="driveInfo" onAction="#onDriveInfo" text="DVD-ROM Info">
+                <tooltip>
+                    <Tooltip text="Системная информация о DVD-ROM"/>
+                </tooltip>
+                <graphic>
+                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                            <Image url="@image/disk.png"/>
+                        </image>
+                    </ImageView>
+                </graphic>
+                <styleClass>
+                    <String fx:value="desktop-btn"/>
+                    <String fx:value="dense"/>
+                    <String fx:value="filled"/>
+                    <String fx:value="primary"/>
+                </styleClass>
+            </Button>
+
             <Button defaultButton="true" onAction="#onSave" text="СОХРАНИТЬ">
                 <tooltip>
                     <Tooltip text="Сохранить настройки"/>

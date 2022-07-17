@@ -67,7 +67,7 @@ public class MainCtl implements Initializable {
     @FXML private TableColumn<StorageUnitFX, String> creationDate;
     @FXML private TableColumn<StorageUnitFX, String> storageUnitStatus;
     @FXML private TableColumn<StorageUnitFX, String> savingDate;
-    @FXML private TableColumn <StorageUnitFX, String> formed;
+    @FXML private TableColumn <StorageUnitFX, String> present;
     @FXML private TableColumn <StorageUnitFX, String> downloaded;
 
     // Кнопки
@@ -184,7 +184,7 @@ public class MainCtl implements Initializable {
         this.savingDate.setCellValueFactory(cell -> cell.getValue().savingDateProperty());
         this.savingDate.setComparator( this.sortDateStrings );
         this.downloaded.setCellValueFactory(cell -> cell.getValue().downloadedProperty());
-        this.formed.setCellValueFactory(cell -> cell.getValue().formedProperty());
+        this.present.setCellValueFactory(cell -> cell.getValue().presentProperty());
 
         // StoreUnitsStatus status filter (RadioButtons)
         this.radioButtonsToggle.add(radioStatusAll, radioStatusAllInner);
@@ -354,16 +354,18 @@ public class MainCtl implements Initializable {
                         String fullName = su.getObjectId() + ".iso";
                         final String fileName = fileCache.stream().anyMatch(f -> f.getFileName().equals(fullName)) ? fullName : "";
                         updated = new StorageUnitFX(
-                                    su.getObjectId(),
-                                    su.getOperatingDayId(),
-                                    su.getNumberSu(),
-                                    su.getCreationDate(),
-                                    su.getDataSize(),
-                                    su.getStorageDate(),
-                                    su.getStorageUnitStatus(),
-                                    su.getSavingDate(),
-                                    fileName,
-                                    su.isDeleted());
+                                        su.getObjectId(),
+                                        su.getOperatingDayId(),
+                                        su.getNumberSu(),
+                                        su.getCreationDate(),
+                                        su.getDataSize(),
+                                        su.getStorageDate(),
+                                        su.getStorageUnitStatus(),
+                                        su.getSavingDate(),
+                                        fileName,
+                                        su.isDeleted(),
+                                        su.isPresent()
+                                    );
                     }
                     return updated;
                 })

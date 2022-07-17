@@ -27,7 +27,7 @@ class OperationDayMapperTest {
     void whenMapOperationDayDto_thenReturnOperatingDayFX() {
 
         // Arrange
-        String json = UtilsHelper.readJsonFromFile("noop/data/operationDays.json");
+        String json = UtilsHelper.readJsonFromFile("./operationDays-missed-enum-values.json");
         OperationDaysHttpResponse response = new Gson().fromJson(json, OperationDaysHttpResponse.class);
 
         OperationDaysDto dtos = response.getData();

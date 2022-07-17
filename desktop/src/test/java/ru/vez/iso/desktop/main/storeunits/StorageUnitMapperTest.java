@@ -1,16 +1,16 @@
 package ru.vez.iso.desktop.main.storeunits;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 import com.google.gson.Gson;
-import java.util.List;
-import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.vez.iso.desktop.main.storeunits.dto.StorageUnitListResponse;
 import ru.vez.iso.desktop.main.storeunits.dto.StorageUnitsDto;
 import ru.vez.iso.desktop.shared.UtilsHelper;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class StorageUnitMapperTest {
 
@@ -26,14 +26,14 @@ class StorageUnitMapperTest {
     void whenMapStorageUnitDto_thenReturnStorageUnitFX() {
 
         // Arrange
-        String json = UtilsHelper.readJsonFromFile("noop/data/storageUnits-missed-enum-values.json");
+        String json = UtilsHelper.readJsonFromFile("./storageUnits-missed-enum-values.json");
         StorageUnitListResponse response = new Gson().fromJson(json, StorageUnitListResponse.class);
 
         StorageUnitsDto dto = response.getData();
 
         // Act
         List<StorageUnitFX> listDays = dto.getObjects().stream()
-                .peek(su -> System.out.println(su.getObjectId()))
+                .peek(su -> System.out.println(su.isDeleted()))
                 .map(mapper::map)
                 .collect(Collectors.toList());
 
@@ -45,6 +45,8 @@ class StorageUnitMapperTest {
             assertNotNull(su.getCreationDate());
             assertNotNull(su.getNumberSu());
             assertNotNull(su.getStorageUnitStatus());
+            assertTrue(su.isDeleted());
+            assertTrue(su.isPresent());
         });
     }
 }

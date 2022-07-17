@@ -21,7 +21,6 @@ public class DriveInfo {
         //Pick the first recorder on the system
         String recorderUniqueId = null;
         for (int i = 0; i < count; i++) {
-            // String cur = dm.item(i);
             recorderUniqueId = dm.item(i);
             System.out.println(i + ". recorderUniqueId: " + recorderUniqueId);
         }
@@ -45,37 +44,7 @@ public class DriveInfo {
         System.out.println( "   Can Load Media: " + recorder.deviceCanLoadMedia());
         System.out.println( "    Device Number: " + recorder.legacyDeviceNumber());
 
-/*
-        for (Object mountPoint : recorder.volumePathNames() ) {
-            System.out.println("      Mount Point: " + mountPoint);
-        }
-
-        System.out.println("Supported Features in _IMAPI_FEATURE_PAGE_TYPE");
-        for (Object supportedFeature : recorder.supportedFeaturePages() ) {
-            if (supportedFeature == IMAPI_FEATURE_PAGE_TYPE_DVD_DASH_WRITE) {
-                System.out.println("    Feature: " + supportedFeature + "  Drive supports DVD-RW.");
-            } else {
-                System.out.println("    Feature: " + supportedFeature);
-            }
-        }
-
-        System.out.println("Supported Profiles in _IMAPI_PROFILE_TYPE");
-        for (Object supportedProfile : recorder.supportedProfiles() ) {
-                System.out.println("    Profile: " + supportedProfile);
-        }
-
-        System.out.println("Current Profiles in 'in _IMAPI_PROFILE_TYPE");
-        for (Object currentProfile : recorder.currentProfiles() ) {
-            System.out.println("    Profile: " + currentProfile);
-        }
-
-        System.out.println("Current Mode Pages in 'in 'in  _IMAPI_MODE_PAGE_TYPE");
-        for (Object modePage : recorder.supportedModePages() ) {
-            System.out.println("    Mode Page: " + modePage);
-        }
-*/
         System.out.println("----- Finished content -----");
-        // recorder.ejectMedia();
     }
 
 }

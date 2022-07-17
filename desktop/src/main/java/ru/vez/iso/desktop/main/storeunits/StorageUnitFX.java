@@ -24,7 +24,8 @@ public class StorageUnitFX {
     private final ObjectProperty<StorageUnitStatus> storageUnitStatus;
     private final ObjectProperty<LocalDate> savingDate;
     private final StringProperty isoFileName;
-    private final BooleanProperty deleted;
+    private final boolean deleted;
+    private final boolean present;
 
     public StorageUnitFX(
             String objectId,
@@ -36,7 +37,8 @@ public class StorageUnitFX {
             StorageUnitStatus storageUnitStatus,
             LocalDate savingDate,
             String isoFileName,
-            boolean deleted) {
+            boolean deleted,
+            boolean present) {
         this.objectId = objectId;
         this.operatingDayId = operatingDayId;
         this.numberSu = new SimpleStringProperty(numberSu);
@@ -46,7 +48,8 @@ public class StorageUnitFX {
         this.storageUnitStatus = new SimpleObjectProperty<>(storageUnitStatus);
         this.savingDate = new SimpleObjectProperty<>(savingDate);
         this.isoFileName = new SimpleStringProperty(isoFileName);
-        this.deleted = new SimpleBooleanProperty(deleted);
+        this.deleted = deleted;
+        this.present = present;
     }
 
     public String getObjectId() {
@@ -107,22 +110,24 @@ public class StorageUnitFX {
     public StringProperty isoFileNameProperty() {
         return isoFileName;
     }
-
     public StringProperty downloadedProperty() {
         String dowloaded = Strings.isBlank(isoFileName.get()) ? "Нет" : "Да";
         return new SimpleStringProperty(dowloaded);
 
     }
-    // TODO implementation the formed property is waiting backend implementation
-    public StringProperty formedProperty() {
-        return new SimpleStringProperty("Нет");
-    }
 
     public boolean isDeleted() {
-        return deleted.get();
+        return deleted;
     }
     public StringProperty deletedProperty() {
-        return new SimpleStringProperty(deleted.get() ? "Да" : "");
+        return new SimpleStringProperty(deleted ? "Да" : "");
+    }
+
+    public boolean isPresent() {
+        return present;
+    }
+    public StringProperty presentProperty() {
+        return new SimpleStringProperty(present ? "Да" : "");
     }
 
     @Override

@@ -47,7 +47,8 @@ public class StorageUnitMapper implements DataMapper<StorageUnitDto, StorageUnit
                 storageUnitStatus,
                 savingDate,
                 "",
-                dto.isDeleted()
+                dto.isDeleted(),
+                dto.isIsoPresent()
         );
     }
 }
