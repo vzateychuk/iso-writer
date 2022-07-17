@@ -1,4 +1,4 @@
-package ru.vez.iso.desktop.imapi;
+package ru.vez.iso.desktop.burn.tools;
 
 import com.ms.imapi2.ClassFactory;
 import com.ms.imapi2.IDiscMaster2;
@@ -6,10 +6,8 @@ import com.ms.imapi2.IDiscRecorder2;
 
 /**
  * Checking Drive Support
-* The following example examines disc device characteristics that are independent of media inserted in the device.
- * More specifically, it retrieves lists of supported features, supported profiles, and supported mode pages,
- * as well as the current feature settings and profile.
- * @link https://docs.microsoft.com/en-gb/windows/win32/imapi/checking-drive-support
+* Examines disc device characteristics that are independent of media inserted in the device.
+* @link https://docs.microsoft.com/en-gb/windows/win32/imapi/checking-drive-support
 * */
 public class DriveInfo {
 

@@ -1,4 +1,4 @@
-package ru.vez.iso.desktop.imapi;
+package ru.vez.iso.desktop.burn.tools;
 
 import com.ms.imapi2.*;
 

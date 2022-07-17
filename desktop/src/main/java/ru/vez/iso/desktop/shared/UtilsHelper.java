@@ -24,6 +24,11 @@ public class UtilsHelper {
 
     private UtilsHelper() {}
 
+    /**
+     * Delay current thread on 'delay' sec
+     *
+     * @param delay sec
+     * */
     public static void makeDelaySec(int delay) {
         try {
             Thread.sleep(delay * 1000);

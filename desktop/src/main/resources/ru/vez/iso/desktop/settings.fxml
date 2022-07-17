@@ -32,7 +32,7 @@
                             alignment="CENTER" contentDisplay="CENTER" ellipsisString="" textAlignment="CENTER"/>
                 </graphic>
             </Button>
-            <Label text="Квартал" styleClass="desktop-radio-label"></Label>
+            <Label text="Квартал" styleClass="desktop-radio-label"/>
         </HBox>
         <HBox alignment="CENTER_LEFT">
             <HBox.margin>

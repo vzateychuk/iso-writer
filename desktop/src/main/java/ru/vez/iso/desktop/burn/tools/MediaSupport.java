@@ -1,4 +1,4 @@
-package ru.vez.iso.desktop.imapi;
+package ru.vez.iso.desktop.burn.tools;
 
 import com.ms.imapi2.*;
 
@@ -14,7 +14,7 @@ public class MediaSupport {
         IDiscMaster2 discMaster = ClassFactory.createMsftDiscMaster2();
         int count = discMaster.count();
 
-//Pick the first recorder on the system
+        //Pick the first recorder on the system
         String recorderUniqueId = null;
         for (int i = 0; i < count; i++)
         {

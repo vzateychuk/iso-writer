@@ -11,6 +11,8 @@ import org.apache.commons.cli.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.docs.*;
+import ru.vez.iso.desktop.burn.BurnSrv;
+import ru.vez.iso.desktop.burn.BurnSrvImpl;
 import ru.vez.iso.desktop.login.HttpClientLoginNoopImpl;
 import ru.vez.iso.desktop.login.LoginCtl;
 import ru.vez.iso.desktop.login.LoginSrv;
@@ -133,8 +135,11 @@ public class DesktopApp extends Application {
         HttpClientWrap httpClientLogin = runMode != RunMode.NOOP ? new HttpClientImpl() : new HttpClientLoginNoopImpl();
         LoginSrv loginSrv = new LoginSrvImpl(state, exec, msgSrv, httpClientLogin);
 
+        // Burning IMAPI2 service
+        BurnSrv burnSrv = new BurnSrvImpl();
+
         // ViewCache with views
-        Map<ViewType, Parent> viewCache = buildViewCache(state,exec,msgSrv,settingsSrv,loginSrv,mainSrv);
+        Map<ViewType, Parent> viewCache = buildViewCache(state,exec,msgSrv,settingsSrv, burnSrv,loginSrv,mainSrv);
         // settingsSrv.loadAsync(SettingType.SETTING_FILE.getDefaultValue());
 
         //endregion
@@ -231,13 +236,14 @@ public class DesktopApp extends Application {
             ScheduledExecutorService exec,
             MessageSrv msgSrv,
             SettingsSrv settingsSrv,
+            BurnSrv burnSrv,
             LoginSrv loginSrv,
             MainSrv mainSrv) throws IOException {
 
         Map<ViewType, Parent> viewCache = new HashMap<>();
 
         // SettingsView + SettingService
-        viewCache.put(ViewType.SETTINGS, buildView( ViewType.SETTINGS, t->new SettingsCtl(state, settingsSrv) ));
+        viewCache.put(ViewType.SETTINGS, buildView( ViewType.SETTINGS, t->new SettingsCtl(state, settingsSrv, burnSrv) ));
 
         // LoginView + LoginService
         viewCache.put(ViewType.LOGIN, buildView( ViewType.LOGIN, t->new LoginCtl(state, loginSrv)) );

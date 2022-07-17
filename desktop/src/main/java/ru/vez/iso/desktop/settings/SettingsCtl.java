@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.vez.iso.desktop.burn.BurnSrv;
 import ru.vez.iso.desktop.shared.AppSettings;
 import ru.vez.iso.desktop.shared.RadioButtonsToggle;
 import ru.vez.iso.desktop.shared.SettingType;
@@ -46,10 +47,12 @@ public class SettingsCtl implements Initializable {
 
     private final ApplicationState state;
     private final SettingsSrv service;
+    private final BurnSrv burnSrv;
 
-    public SettingsCtl(ApplicationState appState, SettingsSrv service) {
+    public SettingsCtl(ApplicationState appState, SettingsSrv service, BurnSrv burnSrv) {
         this.state = appState;
         this.service = service;
+        this.burnSrv = burnSrv;
         this.radioButtonsToggle = new RadioButtonsToggle();
     }
 
@@ -140,7 +143,7 @@ public class SettingsCtl implements Initializable {
 
     @FXML  public void onDriveInfo(ActionEvent av) {
         logger.debug("");
-
+        burnSrv.recorderInfo();
     }
 
 
