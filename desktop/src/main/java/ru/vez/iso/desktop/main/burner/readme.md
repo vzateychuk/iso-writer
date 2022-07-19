@@ -1,2 +1,0 @@
-# Burner - CD/DVD burn
-

@@ -9,6 +9,7 @@ import javafx.scene.control.TextField;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.burn.BurnSrv;
+import ru.vez.iso.desktop.burn.RecorderInfo;
 import ru.vez.iso.desktop.shared.AppSettings;
 import ru.vez.iso.desktop.shared.RadioButtonsToggle;
 import ru.vez.iso.desktop.shared.SettingType;
@@ -142,8 +143,9 @@ public class SettingsCtl implements Initializable {
     }
 
     @FXML  public void onDriveInfo(ActionEvent av) {
-        logger.debug("");
-        burnSrv.recorderInfo();
+        RecorderInfo info = burnSrv.recorderInfo(0);
+        logger.info(info.toString());
+        UtilsHelper.getConfirmation(info.toString());
     }
 
 

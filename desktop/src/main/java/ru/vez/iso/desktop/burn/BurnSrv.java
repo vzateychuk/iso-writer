@@ -1,9 +1,8 @@
 package ru.vez.iso.desktop.burn;
 
 /**
- * Manages IMAPI operations:
- * Burning Disks
- * DriveInfo
+ * Интерфейс для взаимодействия с библиотекой записи (burn) диска
+ * Manages IMAPI operations
  * */
 public interface BurnSrv {
 
@@ -12,6 +11,7 @@ public interface BurnSrv {
      * Uses Microsoft IMAPI2 interface
      * @link https://docs.microsoft.com/en-gb/windows/win32/imapi/checking-drive-support
      * */
-    void recorderInfo();
+    RecorderInfo recorderInfo(int recorderIndex);
 
+    void startBurn(String objectId);
 }

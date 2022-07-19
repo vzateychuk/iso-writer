@@ -10,9 +10,9 @@ import javafx.util.Callback;
 import org.apache.commons.cli.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.vez.iso.desktop.docs.*;
 import ru.vez.iso.desktop.burn.BurnSrv;
 import ru.vez.iso.desktop.burn.BurnSrvImpl;
+import ru.vez.iso.desktop.docs.*;
 import ru.vez.iso.desktop.login.HttpClientLoginNoopImpl;
 import ru.vez.iso.desktop.login.LoginCtl;
 import ru.vez.iso.desktop.login.LoginSrv;
@@ -20,8 +20,6 @@ import ru.vez.iso.desktop.login.LoginSrvImpl;
 import ru.vez.iso.desktop.main.MainCtl;
 import ru.vez.iso.desktop.main.MainSrv;
 import ru.vez.iso.desktop.main.MainSrvImpl;
-import ru.vez.iso.desktop.main.burner.Burner;
-import ru.vez.iso.desktop.main.burner.BurnerNoop;
 import ru.vez.iso.desktop.main.filecache.FileCacheSrv;
 import ru.vez.iso.desktop.main.filecache.FileCacheSrvImpl;
 import ru.vez.iso.desktop.main.operdays.OperationDayMapper;
@@ -128,19 +126,16 @@ public class DesktopApp extends Application {
                 : new StorageUnitsHttpClientNoop();
         StorageUnitsSrv storageUnitsSrv = new StorageUnitsSrvImpl(state, httpClientSU, storageUnitMapper);
 
-        Burner burner = new BurnerNoop(); // TODO Replace burner by realone
+        // Burning IMAPI2 service
+        BurnSrv burner = new BurnSrvImpl();
         MainSrv mainSrv  = new MainSrvImpl(state, exec, msgSrv, operDaysSrv, storageUnitsSrv, fileCache, burner);
 
         // LoginService
         HttpClientWrap httpClientLogin = runMode != RunMode.NOOP ? new HttpClientImpl() : new HttpClientLoginNoopImpl();
         LoginSrv loginSrv = new LoginSrvImpl(state, exec, msgSrv, httpClientLogin);
 
-        // Burning IMAPI2 service
-        BurnSrv burnSrv = new BurnSrvImpl();
-
         // ViewCache with views
-        Map<ViewType, Parent> viewCache = buildViewCache(state,exec,msgSrv,settingsSrv, burnSrv,loginSrv,mainSrv);
-        // settingsSrv.loadAsync(SettingType.SETTING_FILE.getDefaultValue());
+        Map<ViewType, Parent> viewCache = buildViewCache(state,exec,msgSrv,settingsSrv,burner,loginSrv,mainSrv);
 
         //endregion
 

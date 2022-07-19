@@ -4,7 +4,7 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.vez.iso.desktop.main.burner.Burner;
+import ru.vez.iso.desktop.burn.BurnSrv;
 import ru.vez.iso.desktop.main.filecache.FileCacheSrv;
 import ru.vez.iso.desktop.main.operdays.OperatingDayFX;
 import ru.vez.iso.desktop.main.operdays.OperationDaysSrv;
@@ -35,7 +35,7 @@ public class MainSrvImpl implements MainSrv {
     private final OperationDaysSrv operDaysSrv;
     private final StorageUnitsSrv storageUnitsSrv;
     private final FileCacheSrv fileCacheSrv;
-    private final Burner burner;
+    private final BurnSrv burner;
 
     private Future<Void> future;
     private ScheduledFuture<?> scheduledReload;
@@ -47,7 +47,7 @@ public class MainSrvImpl implements MainSrv {
             OperationDaysSrv operDaysSrv,
             StorageUnitsSrv storageUnitsSrv,
             FileCacheSrv fileCacheSrv,
-            Burner burner) {
+            BurnSrv burner) {
         this.state = state;
         this.exec = exec;
         this.msgSrv = msgSrv;

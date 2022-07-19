@@ -28,6 +28,11 @@ public enum IMAPI_FORMAT2_DATA_MEDIA_STATE implements ComEnum {
   IMAPI_FORMAT2_DATA_MEDIA_STATE_PROTECTED_AND_UNSUPPORTED(40960),
 
   /**
+   * Manually added
+   * */
+  IMAPI_FORMAT2_UNKNOWN(-1),
+
+  /**
    * <p>
    * Unknown
    * </p>
