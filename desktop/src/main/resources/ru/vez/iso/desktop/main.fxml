@@ -231,6 +231,25 @@
                                         <String fx:value="primary"/>
                                     </styleClass>
                                 </Button>
+
+                                <Button fx:id="butFileCacheRefresh" mnemonicParsing="false" onAction="#onFileCacheRefresh"
+                                        GridPane.columnIndex="3" GridPane.rowIndex="1">
+                                    <tooltip>
+                                        <Tooltip text="Обновить файловый кэш"/>
+                                    </tooltip>
+                                    <graphic>
+                                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                            <image>
+                                                <Image url="@image/refresh-primary.png"/>
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                    <styleClass>
+                                        <String fx:value="desktop-btn-round"/>
+                                        <String fx:value="primary"/>
+                                    </styleClass>
+                                </Button>
+
                             </children>
                             <padding>
                                 <Insets left="5.0" right="5.0"/>

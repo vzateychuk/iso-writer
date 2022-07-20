@@ -9,7 +9,7 @@ public interface MainSrv {
     /**
      * Загрузить список операционных дней и StorageUnits
      */
-    void readDataAsync(int period);
+    void refreshDataAsync(int period);
 
     /**
      * Записать ISO на внешний диск
@@ -46,7 +46,7 @@ public interface MainSrv {
     /**
      * Загрузить ISO файл в локальный файловый кэш. Async
      * */
-    void readFileCacheAsync(String dir);
+    void readFileCacheAsync();
 
     /**
      * Delete the file and invoke reload

@@ -1,5 +1,7 @@
 package ru.vez.iso.desktop.burn;
 
+import java.nio.file.Path;
+
 /**
  * Интерфейс для взаимодействия с библиотекой записи (burn) диска
  * Manages IMAPI operations
@@ -13,5 +15,5 @@ public interface BurnSrv {
      * */
     RecorderInfo recorderInfo(int recorderIndex);
 
-    void startBurn(String objectId);
+    void burn(int recorderIndex, Path filepath);
 }

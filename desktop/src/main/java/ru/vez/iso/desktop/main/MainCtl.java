@@ -19,6 +19,7 @@ import ru.vez.iso.desktop.main.storeunits.StorageUnitFX;
 import ru.vez.iso.desktop.main.storeunits.StorageUnitStatus;
 import ru.vez.iso.desktop.shared.*;
 import ru.vez.iso.desktop.state.ApplicationState;
+import ru.vez.iso.desktop.state.RunMode;
 
 import java.net.URL;
 import java.nio.file.Path;
@@ -72,7 +73,7 @@ public class MainCtl implements Initializable {
 
     // Кнопки
     @FXML private Button butIsoLoad;
-    @FXML private Button butReload;
+    @FXML private Button butFileCacheRefresh;
     @FXML private Button butBurn;
     @FXML private Button butDelete;
     @FXML private Button butCheckSum;
@@ -225,6 +226,9 @@ public class MainCtl implements Initializable {
             }
         });
 
+        this.butFileCacheRefresh.setDisable( this.state.getRunMode() == RunMode.PROD );
+        this.butFileCacheRefresh.setVisible( this.state.getRunMode() != RunMode.PROD );
+
     }
 
     /**
@@ -264,10 +268,18 @@ public class MainCtl implements Initializable {
         logger.debug("");
         try {
             int days = Integer.parseUnsignedInt(operDaysFilter.getText());
-            mainSrv.readDataAsync(days);
+            mainSrv.refreshDataAsync(days);
         } catch ( NumberFormatException ex) {
             logger.error("can't parse value to int: {}", operDaysFilter.getText(), ex);
         }
+    }
+
+    /**
+     * Refresh filecache
+     * visible only in DEV mode
+     * */
+    @FXML  public void onFileCacheRefresh(ActionEvent av) {
+        mainSrv.readFileCacheAsync();
     }
 
     /**
@@ -307,7 +319,7 @@ public class MainCtl implements Initializable {
             return;
         }
         StorageUnitFX su = tblStorageUnits.getSelectionModel().selectedItemProperty().getValue();
-        logger.debug("Burn {} with label: {}", su.getNumberSu(), diskLabel);
+        logger.debug("Burn '{}' with label: '{} диск'", su.getNumberSu(), diskLabel);
         mainSrv.burnISOAsync(su);
     }
 

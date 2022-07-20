@@ -19,6 +19,7 @@ import ru.vez.iso.desktop.state.ApplicationState;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.time.LocalDate;
 import java.util.List;
@@ -62,7 +63,7 @@ public class MainSrvImpl implements MainSrv {
      * Загрузка списков операционных дней и единиц хранения
      */
     @Override
-    public void readDataAsync(int period) {
+    public void refreshDataAsync(int period) {
 
         // Avoid multiply invocation
         if (!future.isDone()) {
@@ -110,13 +111,21 @@ public class MainSrvImpl implements MainSrv {
 
         this.msgSrv.news("Старт записи на диск: " + su.getNumberSu());
 
-        CompletableFuture.supplyAsync(() -> {
+        // Avoid multiply invocation
+        if (!future.isDone()) {
+            this.msgSrv.news("Операция выполняется, подождите...");
+            return;
+        }
+
+        future = CompletableFuture.supplyAsync(() -> {
             logger.debug("id: {}:{}", su.getObjectId(), su.getNumberSu());
 
-            burner.startBurn(su.getObjectId());
+            // su.getObjectId()
+            Path path = Paths.get(state.getSettings().getIsoCachePath(), su.getObjectId() + ".iso");
+            burner.burn(0, path);
             return su;
         }, exec)
-                .thenAccept(st -> readDataAsync(20))
+                .thenAccept(st -> refreshDataAsync(20))
                 .whenComplete((v, ex) -> {
                     this.storageUnitsSrv.sendBurnComplete(su.getObjectId(), ex);
                     if (ex == null) {
@@ -183,7 +192,7 @@ public class MainSrvImpl implements MainSrv {
         }
 
         this.scheduledReload = exec.scheduleWithFixedDelay(
-                () -> this.readDataAsync(filterDays),
+                () -> this.refreshDataAsync(filterDays),
                 0,
                 refreshMinutes * 60L,
                 TimeUnit.SECONDS
@@ -193,13 +202,16 @@ public class MainSrvImpl implements MainSrv {
 
     @Override
     public void loadISOAsync(String objectId) {
+
+        String dir = state.getSettings().getIsoCachePath();
+
         // will trigger update of StorageUnits table
         CompletableFuture.supplyAsync(() -> {
             this.storageUnitsSrv.loadFile(objectId);
             msgSrv.news("Скачан : '" + objectId + ".iso'");
             return null;
         }, exec)
-                .thenAccept(nm -> this.readFileCacheAsync(state.getSettings().getIsoCachePath()))
+                .thenAccept(nm -> state.setFileNames( fileCacheSrv.readFileCache(dir) ) )
                 .exceptionally((ex) -> {
                     logger.error(ex);
                     String msg = "Загрузка не удалась : '" + objectId + ".iso'. ";
@@ -210,12 +222,13 @@ public class MainSrvImpl implements MainSrv {
     }
 
     @Override
-    public void readFileCacheAsync(String dir) {
+    public void readFileCacheAsync() {
+
+        String dir = state.getSettings().getIsoCachePath();
 
         logger.debug("dir: {}", dir);
 
-        CompletableFuture.supplyAsync(() -> fileCacheSrv.readFileCache(dir), exec)
-                .thenAccept(state::setFileNames)
+        CompletableFuture.runAsync(() -> state.setFileNames( fileCacheSrv.readFileCache(dir) ), exec)
                 .exceptionally((ex) -> {
                     logger.error(ex);
                     return null;

@@ -4,6 +4,7 @@ import com.ms.imapi2.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,23 +79,22 @@ public class BurnSrvImpl implements BurnSrv {
     }
 
     /**
-     * Assume that writing will be done on recoder 0
+     * Burning file image on burner #recorderIndex
      * */
     @Override
-    public void startBurn(String objectId) {
+    public void burn(int recorderIndex, Path filepath) {
 
-        logger.debug("objectId: {}", objectId);
-
-        IDiscMaster2 dm = ClassFactory.createMsftDiscMaster2();
+        logger.info("recorder: {}: file: {}", recorderIndex, filepath);
 
         // Create a DiscRecorder object for the specified burning device.
         IDiscRecorder2 recorder = ClassFactory.createMsftDiscRecorder2();
-        String recorderUniqueId = dm.item(0);
+        String recorderUniqueId = this.dm.item(recorderIndex);
         recorder.initializeDiscRecorder(recorderUniqueId);
 
         //  Define the new disc format and set the recorder
         IDiscFormat2Data dataWriter = ClassFactory.createMsftDiscFormat2Data();
         dataWriter.recorder(recorder);
+        dataWriter.clientName("IMAPIv2");
 
         if (!dataWriter.isRecorderSupported(recorder)) {
             logger.warn("Recorder is not supported");
@@ -105,7 +105,26 @@ public class BurnSrvImpl implements BurnSrv {
             throw new IllegalStateException("CurrentMedia is not supported");
         }
 
-        logger.info("Writing disk");
+        logger.debug("Preparing burn fileSystemImage...");
 
+        // Create a new file system image and retrieve root directory
+        IFileSystemImage3 fileSystemImage = ClassFactory.createMsftFileSystemImage();
+        // fileSystemImage.root("C:\\Users\\vez\\tmp\\burndir");
+        IFsiDirectoryItem directoryItem = fileSystemImage.root();
+
+        // Create the new disc format and set the recorder
+        fileSystemImage.chooseImageDefaults(recorder);
+
+        // Add the contents to the file system
+        directoryItem.addTree(filepath.toString(), false);
+
+        // Create an image from the file system
+        IFileSystemImageResult fileSystemImageResult = fileSystemImage.createResultImage();
+        IStream stream = fileSystemImageResult.imageStream();
+
+        // Write stream to disc using the specified recorder.
+        logger.debug("Start writing content to disc...");
+        dataWriter.write(stream);
+        logger.debug("Finished writing content...");
     }
 }
