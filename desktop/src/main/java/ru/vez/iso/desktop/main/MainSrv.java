@@ -1,5 +1,6 @@
 package ru.vez.iso.desktop.main;
 
+import ru.vez.iso.desktop.burn.RecorderInfo;
 import ru.vez.iso.desktop.main.storeunits.StorageUnitFX;
 
 import java.nio.file.Path;
@@ -10,6 +11,16 @@ public interface MainSrv {
      * Загрузить список операционных дней и StorageUnits
      */
     void refreshDataAsync(int period);
+
+    /**
+     * Получить информацию о рекордере и о диске
+     * */
+    RecorderInfo getRecorderInfo(int recorderIndex);
+
+    /**
+     * Opening burner's tray
+     * */
+    void openTray(int recorderIndex);
 
     /**
      * Записать ISO на внешний диск
@@ -52,4 +63,5 @@ public interface MainSrv {
      * Delete the file and invoke reload
      * */
     void deleteFileAsync(String fileName);
+
 }

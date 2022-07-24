@@ -14,6 +14,7 @@ import lombok.extern.java.Log;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
+import ru.vez.iso.desktop.burn.RecorderInfo;
 import ru.vez.iso.desktop.main.operdays.OperatingDayFX;
 import ru.vez.iso.desktop.main.storeunits.StorageUnitFX;
 import ru.vez.iso.desktop.main.storeunits.StorageUnitStatus;
@@ -265,7 +266,9 @@ public class MainCtl implements Initializable {
      * Reload starts OperationDay's and StorageUnit's refresh
      * */
     @FXML public void onReload(ActionEvent ev) {
-        logger.debug("");
+
+        logger.info("days: {}", operDaysFilter.getText());
+
         try {
             int days = Integer.parseUnsignedInt(operDaysFilter.getText());
             mainSrv.refreshDataAsync(days);
@@ -295,8 +298,9 @@ public class MainCtl implements Initializable {
      * Request backend (ABDD system) to create the ISO
      * */
     @FXML public void onIsoCreate(ActionEvent ev) {
+
         StorageUnitFX selected = tblStorageUnits.getSelectionModel().getSelectedItem();
-        logger.debug("SU: {}, objectId: {}", selected.getNumberSu(), selected.getObjectId());
+        logger.info("SU: {}, objectId: {}", selected.getNumberSu(), selected.getObjectId());
         mainSrv.isoCreateAsync(selected);
     }
 
@@ -304,8 +308,9 @@ public class MainCtl implements Initializable {
      * Load ISO file from ABDD server
      * */
     @FXML void onStartIsoLoad(ActionEvent ev) {
+
         StorageUnitFX selected = tblStorageUnits.getSelectionModel().getSelectedItem();
-        logger.debug("SU: {}, objectId: {}", selected.getNumberSu(), selected.getObjectId());
+        logger.info("SU: {}, objectId: {}", selected.getNumberSu(), selected.getObjectId());
         mainSrv.loadISOAsync( selected.getObjectId() );
     }
 
@@ -314,12 +319,28 @@ public class MainCtl implements Initializable {
      * */
     @FXML public void onBurnIso(ActionEvent ev) {
 
+        // choose a disk label
         String diskLabel = UtilsHelper.getDiskLabel();
         if (Strings.isBlank(diskLabel)) {
             return;
         }
+
         StorageUnitFX su = tblStorageUnits.getSelectionModel().selectedItemProperty().getValue();
-        logger.debug("Burn '{}' with label: '{} диск'", su.getNumberSu(), diskLabel);
+        logger.info("Burn '{}' with label: '{}'", su.getNumberSu(), diskLabel);
+        final int recorderIndex = 0;
+
+        // check if the disk is ready
+        RecorderInfo info = mainSrv.getRecorderInfo(recorderIndex);
+        String msg = "Для продолжения записи вставьте новый диск в дисковод.";
+        while (!info.isReady()) {
+            if (!UtilsHelper.getConfirmation(msg)) {
+                mainSrv.openTray(recorderIndex);
+                return;
+            }
+            info = mainSrv.getRecorderInfo(recorderIndex);
+            msg = "Диск поврежден. Запись невозможна. Вставьте в дисковод новый диск.";
+        }
+
         mainSrv.burnISOAsync(su);
     }
 

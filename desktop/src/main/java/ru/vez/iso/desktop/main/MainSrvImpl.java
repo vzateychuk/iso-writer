@@ -5,6 +5,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.burn.BurnSrv;
+import ru.vez.iso.desktop.burn.RecorderInfo;
 import ru.vez.iso.desktop.main.filecache.FileCacheSrv;
 import ru.vez.iso.desktop.main.operdays.OperatingDayFX;
 import ru.vez.iso.desktop.main.operdays.OperationDaysSrv;
@@ -103,6 +104,19 @@ public class MainSrvImpl implements MainSrv {
                 });
     }
 
+    @Override
+    public RecorderInfo getRecorderInfo(int recorderIndex) {
+
+        logger.debug("recorderIndex: {}", recorderIndex);
+        return burner.recorderInfo(recorderIndex);
+    }
+
+    @Override
+    public void openTray(int recorderIndex) {
+        logger.debug("recorderIndex: {}", recorderIndex);
+        burner.openTray(recorderIndex);
+    }
+
     /**
      * Стартует прожиг диска
      */
@@ -127,13 +141,14 @@ public class MainSrvImpl implements MainSrv {
         }, exec)
                 .thenAccept(st -> refreshDataAsync(20))
                 .whenComplete((v, ex) -> {
-                    this.storageUnitsSrv.sendBurnComplete(su.getObjectId(), ex);
                     if (ex == null) {
-                        this.msgSrv.news("Записан диск: " + su.getNumberSu());
+                        this.msgSrv.news("Записан диск: '" + su.getNumberSu() + "'");
                     } else {
-                        this.msgSrv.news("Запись на диск не удалась: " + su.getNumberSu());
+                        String msg = String.format("Запись не удалась: '%s', ошибка: %s", su.getNumberSu(), ex.getCause().getMessage());
+                        this.msgSrv.news(msg);
                         logger.error(ex);
                     }
+                    this.storageUnitsSrv.sendBurnComplete(su.getObjectId(), ex);
                 });
     }
 
