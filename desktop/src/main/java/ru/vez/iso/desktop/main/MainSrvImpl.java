@@ -17,6 +17,7 @@ import ru.vez.iso.desktop.shared.MyConst;
 import ru.vez.iso.desktop.shared.UtilsHelper;
 import ru.vez.iso.desktop.state.ApplicationState;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -135,8 +136,18 @@ public class MainSrvImpl implements MainSrv {
             logger.debug("id: {}:{}", su.getObjectId(), su.getNumberSu());
 
             // su.getObjectId()
-            Path path = Paths.get(state.getSettings().getIsoCachePath(), su.getObjectId() + ".iso");
-            burner.burn(0, path);
+            Path isoPath = Paths.get(state.getSettings().getIsoCachePath(), su.getObjectId() + ".iso");
+            Path target = Paths.get(state.getSettings().getIsoCachePath(), "burn", su.getObjectId());
+            // unzip iso to local folder
+            try {
+                UtilsHelper.isoToFolder(isoPath, target);
+            } catch (IOException ioException) {
+                String msg = String.format("Unable to open ISO: %s, and copy to: %s", isoPath, target);
+                logger.error(msg, ioException);
+                throw new RuntimeException(msg, ioException);
+            }
+
+            burner.burn(0, target);
             return su;
         }, exec)
                 .thenAccept(st -> refreshDataAsync(20))

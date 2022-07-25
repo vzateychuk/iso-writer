@@ -1,5 +1,7 @@
 package ru.vez.iso.desktop.shared;
 
+import com.github.stephenc.javaisotools.loopfs.iso9660.Iso9660FileEntry;
+import com.github.stephenc.javaisotools.loopfs.iso9660.Iso9660FileSystem;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
@@ -17,6 +19,8 @@ import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 public class UtilsHelper {
 
@@ -80,7 +84,35 @@ public class UtilsHelper {
         }
     }
 
-    public static void unzipToFolder(Path destDir, Path zipPath) {
+    /**
+     * Un-ISO files from iso to destDir
+     * */
+    public static void isoToFolder(Path isoToRead, Path saveLocation) throws IOException {
+
+        //Give the file and mention if this is treated as a read only file.
+        Iso9660FileSystem discFs = new Iso9660FileSystem(isoToRead.toFile(), true);
+
+        if ( !Files.exists(saveLocation) ) {
+            logger.debug("not exists, creating: {}", saveLocation);
+            Files.createDirectories(saveLocation);
+        }
+
+        //Go through each file on the disc and save it.
+        for (Iso9660FileEntry singleFile : discFs) {
+            if (singleFile.isDirectory()) {
+                Path dir = Paths.get(saveLocation.toString(), singleFile.getName());
+                Files.createDirectories(dir);
+            } else {
+                Path tempFile = Paths.get(saveLocation.toString(), singleFile.getPath());
+                Files.copy(discFs.getInputStream(singleFile), tempFile, REPLACE_EXISTING);
+            }
+        }
+    }
+
+    /**
+     * Unzip files from zipPath to destDir
+     */
+    public static void unzipToFolder(Path zipPath, Path destDir) {
 
         try {
             byte[] buffer = new byte[1024];

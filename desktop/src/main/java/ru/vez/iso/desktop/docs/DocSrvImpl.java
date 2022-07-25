@@ -50,7 +50,7 @@ public class DocSrvImpl implements DocSrv {
     }
 
     @Override
-    public void loadAsync(Path dirZip) {
+    public void loadAsync(Path fromZipPath) {
 
         // Avoid multiply invocation
         if (!future.isDone()) {
@@ -58,7 +58,7 @@ public class DocSrvImpl implements DocSrv {
             return;
         }
 
-        logger.debug(dirZip);
+        logger.debug(fromZipPath);
 
         future = CompletableFuture.supplyAsync(() -> {
 
@@ -66,7 +66,7 @@ public class DocSrvImpl implements DocSrv {
             String cachePath = state.getSettings().getIsoCachePath();
             Path unzippedPath = Paths.get(cachePath, MyConst.UNZIP_FOLDER);
             UtilsHelper.clearFolder(unzippedPath);
-            UtilsHelper.unzipToFolder(unzippedPath, dirZip);
+            UtilsHelper.unzipToFolder(fromZipPath, unzippedPath);
 
             // Read REESTR and save application state
             Path reestrPath = Paths.get(unzippedPath.toString(), MyConst.REESTR_FILE);
@@ -79,7 +79,7 @@ public class DocSrvImpl implements DocSrv {
         }, exec)
             .thenAccept(state::setDocumentFXs)
             .exceptionally( (ex) -> {
-                logger.error("unable to create Reestr object: " + dirZip, ex);
+                logger.error("unable to create Reestr object: " + fromZipPath, ex);
                 this.msgSrv.news("Ошибка чтения DIR.zip");
                 return null;
         });

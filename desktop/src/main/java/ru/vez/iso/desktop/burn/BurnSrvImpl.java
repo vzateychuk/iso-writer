@@ -122,7 +122,7 @@ public class BurnSrvImpl implements BurnSrv {
         // Check if Media is write protected / not empty
         IDiscFormat2Data discData = ClassFactory.createMsftDiscFormat2Data();
         discData.recorder(recorder);
-        discData.clientName(IDiscMaster2.class.getSimpleName());
+        discData.clientName("IMAPIv2");
         IMAPI_FORMAT2_DATA_MEDIA_STATE mediaStatus = discData.currentMediaStatus();
         logger.debug("Media status: " + mediaStatus);
         if ((mediaStatus.comEnumValue() & IMAPI_FORMAT2_DATA_MEDIA_STATE.IMAPI_FORMAT2_DATA_MEDIA_STATE_WRITE_PROTECTED.comEnumValue()) != 0) {
@@ -155,6 +155,7 @@ public class BurnSrvImpl implements BurnSrv {
         IStream stream = fileSystemImageResult.imageStream();
 
         // Write stream to disc using the specified recorder.
+        dataWriter.setWriteSpeed(4568, false);
         logger.debug("Start writing content to disc with speed: {} ...", dataWriter.currentWriteSpeed());
         dataWriter.write(stream);
         logger.debug("Finished writing content...");
