@@ -4,6 +4,7 @@ import ru.vez.iso.desktop.burn.RecorderInfo;
 import ru.vez.iso.desktop.main.storeunits.StorageUnitFX;
 
 import java.nio.file.Path;
+import java.util.function.Consumer;
 
 public interface MainSrv {
 
@@ -25,12 +26,12 @@ public interface MainSrv {
     /**
      * Записать ISO на внешний диск
      * */
-    void burnISOAsync(StorageUnitFX selected);
+    void burnISOAsync(StorageUnitFX storageUnit, Consumer<StorageUnitFX> postAction);
 
     /**
      * Запрос на создание ISO файла (EX в статусе "Удален")
      * */
-    void isoCreateAsync(StorageUnitFX selected);
+    void isoCreateAsync(StorageUnitFX storageUnit);
 
     /**
      * Проверка checkSum с данными сервера

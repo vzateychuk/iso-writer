@@ -18,6 +18,7 @@ public class AppSettings {
     private final String isoCachePath;
     private final String backendAPI;
     private final int evictCacheDays;
+    private final int burnSpeed;
 
     public Properties getProperties() {
 
@@ -28,6 +29,7 @@ public class AppSettings {
         p.setProperty(SettingType.ISO_CACHE_PATH.name(), this.isoCachePath);
         p.setProperty(SettingType.BACKEND_API.name(), this.backendAPI);
         p.setProperty(SettingType.EVICT_CACHE_DAYS.name(), String.valueOf(this.evictCacheDays));
+        p.setProperty(SettingType.BURN_SPEED.name(), String.valueOf(this.burnSpeed));
         return p;
     }
 }

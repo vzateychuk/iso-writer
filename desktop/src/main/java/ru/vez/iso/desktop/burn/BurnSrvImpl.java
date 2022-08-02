@@ -17,6 +17,8 @@ import static com.ms.imapi2.IMAPI_MEDIA_PHYSICAL_TYPE.IMAPI_MEDIA_TYPE_UNKNOWN;
 public class BurnSrvImpl implements BurnSrv {
 
     private static final Logger logger = LogManager.getLogger();
+    // see https://stackoverflow.com/questions/5616986/how-to-retrieve-and-set-burn-speed-using-imapi2
+    private static final int IMAPI_SECTORS_PER_SECOND_AT_1X_DVD = 680;
 
     private IDiscMaster2 dm;
 
@@ -95,8 +97,9 @@ public class BurnSrvImpl implements BurnSrv {
      * Burning file image on burner #recorderIndex
      * */
     @Override
-    public void burn(int recorderIndex, Path isoFile) {
+    public void burn(int recorderIndex, int writeSpeed, Path isoFile) {
 
+        logger.debug("recorderIndex: {}, writeSpeed: {}, isoFile: {}", recorderIndex, writeSpeed, isoFile);
         IDiscRecorder2 recorder = ClassFactory.createMsftDiscRecorder2();
         String recorderUniqueId = dm.item(0);
 
@@ -130,6 +133,7 @@ public class BurnSrvImpl implements BurnSrv {
             throw new IllegalStateException("Media is write protected / not empty.");
         }
         discData.forceMediaToBeClosed(true);
+        discData.setName("discData2");
 
         //Check if disc is empty
         int addr = discData.nextWritableAddress();
@@ -152,11 +156,24 @@ public class BurnSrvImpl implements BurnSrv {
 
         // Create an image from the file system
         IFileSystemImageResult fileSystemImageResult = fileSystemImage.createResultImage();
+        fileSystemImageResult.setName("fileSystemImageResult");
         IStream stream = fileSystemImageResult.imageStream();
-
         // Write stream to disc using the specified recorder.
-        dataWriter.setWriteSpeed(4568, false);
+        /**
+         * https://stackoverflow.com/questions/5616986/how-to-retrieve-and-set-burn-speed-using-imapi2/55039084#55039084
+         * Unit = Disc sectors per second.
+         *         Values: -
+         *         -1 = "Default OR Fastest" as documented in IMAPI documentation.
+         *         [ANY VALUE] = Actual writing speed to set.
+         #define IMAPI_SECTORS_PER_SECOND_AT_1X_CD      75
+         #define IMAPI_SECTORS_PER_SECOND_AT_1X_DVD     680
+         * */
+        int sectorsPerSecSpeed = IMAPI_SECTORS_PER_SECOND_AT_1X_DVD * writeSpeed;
+        dataWriter.setWriteSpeed(sectorsPerSecSpeed, false);
         logger.debug("Start writing content to disc with speed: {} ...", dataWriter.currentWriteSpeed());
+
+        // DDiscFormat2DataEvents progress =
+
         dataWriter.write(stream);
         logger.debug("Finished writing content...");
     }

@@ -18,7 +18,7 @@ public interface BurnSrv {
     /**
      * Burn disk with directory path
      * */
-    void burn(int recorderIndex, Path filepath);
+    void burn(int recorderIndex, int speed, Path filepath);
 
     /**
      * Open burner's tray

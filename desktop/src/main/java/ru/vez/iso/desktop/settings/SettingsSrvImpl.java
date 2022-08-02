@@ -39,6 +39,15 @@ public class SettingsSrvImpl implements SettingsSrv {
         Properties props = UtilsHelper.loadProperties(filePath);
 
         // return new ApplicationSettings instance
+        int burnSpeed = Integer.parseInt(props.getProperty(SettingType.BURN_SPEED.name(), SettingType.BURN_SPEED.getDefaultValue()));
+        if (burnSpeed < 1 || burnSpeed > 16) {
+            logger.warn(
+                    "Incorrect write speed: {}. Value: ({}) will be used",
+                    props.getProperty(SettingType.BURN_SPEED.name()),
+                    SettingType.BURN_SPEED.getDefaultValue()
+            );
+            burnSpeed = Integer.parseInt( SettingType.BURN_SPEED.getDefaultValue() );
+        }
         return AppSettings.builder()
                 .settingFile( SettingType.SETTING_FILE.getDefaultValue() )
                 .refreshMin( Integer.parseInt(
@@ -56,6 +65,7 @@ public class SettingsSrvImpl implements SettingsSrv {
                 .evictCacheDays( Integer.parseInt(
                         props.getProperty(SettingType.EVICT_CACHE_DAYS.name(), SettingType.EVICT_CACHE_DAYS.getDefaultValue())
                 ) )
+                .burnSpeed( burnSpeed )
                 .build();
     }
 

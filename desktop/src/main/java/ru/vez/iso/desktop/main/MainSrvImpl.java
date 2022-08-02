@@ -26,6 +26,7 @@ import java.security.MessageDigest;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class MainSrvImpl implements MainSrv {
@@ -42,6 +43,7 @@ public class MainSrvImpl implements MainSrv {
 
     private Future<Void> future;
     private ScheduledFuture<?> scheduledReload;
+    private int period;
 
     public MainSrvImpl(
             ApplicationState state,
@@ -58,7 +60,6 @@ public class MainSrvImpl implements MainSrv {
         this.storageUnitsSrv = storageUnitsSrv;
         this.fileCacheSrv = fileCacheSrv;
         this.burner = burner;
-        this.future = CompletableFuture.allOf();
     }
 
     /**
@@ -68,7 +69,7 @@ public class MainSrvImpl implements MainSrv {
     public void refreshDataAsync(int period) {
 
         // Avoid multiply invocation
-        if (!future.isDone()) {
+        if (future != null && !future.isDone()) {
             logger.debug("Async operation in progress, skipping");
             return;
         }
@@ -78,6 +79,7 @@ public class MainSrvImpl implements MainSrv {
             throw new IllegalArgumentException("Incorrect period: " + period);
         }
 
+        this.period = period;
         LocalDate from = LocalDate.now().minusDays(period);
         CompletableFuture<List<OperatingDayFX>> operationDaysFuture = CompletableFuture.supplyAsync(
                 () -> this.operDaysSrv.loadOperationDays(from),
@@ -96,9 +98,10 @@ public class MainSrvImpl implements MainSrv {
                                 .filter(u -> u.getOperatingDayId().equals(day.getObjectId())).collect(Collectors.toList());
                         day.setStorageUnits(units);
                     });
+
+                    state.setOperatingDays(opsDaysList);
                     return opsDaysList;
-                })
-                .thenAccept(state::setOperatingDays)
+                }).thenAccept(list -> logger.debug("loaded: {}", list.size()))
                 .exceptionally((ex) -> {
                     logger.error(ex);
                     return null;
@@ -122,7 +125,7 @@ public class MainSrvImpl implements MainSrv {
      * Стартует прожиг диска
      */
     @Override
-    public void burnISOAsync(StorageUnitFX su) {
+    public void burnISOAsync(StorageUnitFX su, Consumer<StorageUnitFX> postAction) {
 
         this.msgSrv.news("Старт записи на диск: " + su.getNumberSu());
 
@@ -132,12 +135,12 @@ public class MainSrvImpl implements MainSrv {
             return;
         }
 
-        future = CompletableFuture.supplyAsync(() -> {
+        future = CompletableFuture.runAsync(() -> {
             logger.debug("id: {}:{}", su.getObjectId(), su.getNumberSu());
 
             // su.getObjectId()
-            Path isoPath = Paths.get(state.getSettings().getIsoCachePath(), su.getObjectId() + ".iso");
-            Path target = Paths.get(state.getSettings().getIsoCachePath(), "burn", su.getObjectId());
+            Path isoPath = Paths.get(state.getSettings().getIsoCachePath(), su.getObjectId() + ".iso").toAbsolutePath();
+            Path target = Paths.get(state.getSettings().getIsoCachePath(), "burn", su.getObjectId()).toAbsolutePath();
             // unzip iso to local folder
             try {
                 UtilsHelper.isoToFolder(isoPath, target);
@@ -146,11 +149,10 @@ public class MainSrvImpl implements MainSrv {
                 logger.error(msg, ioException);
                 throw new RuntimeException(msg, ioException);
             }
-
-            burner.burn(0, target);
-            return su;
+            // start burning ISO
+            burner.burn(0, state.getSettings().getBurnSpeed(), target);
+            this.refreshDataAsync(this.period);
         }, exec)
-                .thenAccept(st -> refreshDataAsync(20))
                 .whenComplete((v, ex) -> {
                     if (ex == null) {
                         this.msgSrv.news("Записан диск: '" + su.getNumberSu() + "'");
@@ -160,6 +162,7 @@ public class MainSrvImpl implements MainSrv {
                         logger.error(ex);
                     }
                     this.storageUnitsSrv.sendBurnComplete(su.getObjectId(), ex);
+                    postAction.accept(su);
                 });
     }
 

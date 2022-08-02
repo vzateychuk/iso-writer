@@ -105,6 +105,8 @@ public class MainCtl implements Initializable {
     private final ChangeListener<List<FileISO>> isoFilesChangeListener; // ISO_FILES in cache changed
     private final ChangeListener<StorageUnitFX> selectStorageUnitListener; // select row in StorageUnits table
 
+    private boolean isBurning;
+
     //endregion
 
     public MainCtl(ApplicationState state,
@@ -145,8 +147,12 @@ public class MainCtl implements Initializable {
         this.selectStorageUnitListener = (o, oldVal, newVal) -> {
             butIsoLoad.setDisable(newVal == null || newVal.isDeleted());
             butIsoCreate.setDisable(newVal == null);
-            butBurn.setDisable(newVal == null || Strings.isBlank(newVal.getIsoFileName())
-                    || !Collections.unmodifiableList(Arrays.asList(StorageUnitStatus.READY_TO_RECORDING, StorageUnitStatus.RECORDED)).contains(newVal.getStorageUnitStatus()));
+            butBurn.setDisable( newVal == null || Strings.isBlank( newVal.getIsoFileName() )
+                    || !Collections.unmodifiableList(
+                            Arrays.asList(StorageUnitStatus.READY_TO_RECORDING, StorageUnitStatus.RECORDED)
+                         ).contains( newVal.getStorageUnitStatus() )
+                    || this.isBurning
+            );
             butDelete.setDisable(newVal == null || Strings.isBlank(newVal.getIsoFileName()));
             butCheckSum.setDisable(newVal == null);
         };
@@ -317,11 +323,20 @@ public class MainCtl implements Initializable {
     /**
      * Burn ISO disk
      * */
-    @FXML public void onBurnIso(ActionEvent ev) {
+    @FXML public void onBurnIso(ActionEvent event) {
+
+        // check if previous burning session hasn't completed
+        if (this.isBurning) {
+            logger.warn("not expect call until burning complete");
+            this.msgSrv.news("Запись диска не окончена, подождите");
+            return;
+        }
 
         // choose a disk label
         String diskLabel = UtilsHelper.getDiskLabel();
         if (Strings.isBlank(diskLabel)) {
+            this.isBurning = false;
+            this.msgSrv.news("Запись диска отменена");
             return;
         }
 
@@ -341,7 +356,13 @@ public class MainCtl implements Initializable {
             msg = "Диск поврежден. Запись невозможна. Вставьте в дисковод новый диск.";
         }
 
-        mainSrv.burnISOAsync(su);
+        this.butBurn.setDisable(true);
+        this.isBurning = true;
+
+        mainSrv.burnISOAsync(
+                su,
+                iso -> Platform.runLater( () -> this.isBurning=false )
+        );
     }
 
     /**
