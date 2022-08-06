@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.ms.imapi2.IMAPI_FORMAT2_DATA_MEDIA_STATE.IMAPI_FORMAT2_DATA_MEDIA_STATE_RANDOMLY_WRITABLE;
 import static com.ms.imapi2.IMAPI_FORMAT2_DATA_MEDIA_STATE.IMAPI_FORMAT2_DATA_MEDIA_STATE_UNKNOWN;
 import static com.ms.imapi2.IMAPI_MEDIA_PHYSICAL_TYPE.IMAPI_MEDIA_TYPE_UNKNOWN;
 
@@ -97,9 +98,9 @@ public class BurnSrvImpl implements BurnSrv {
      * Burning file image on burner #recorderIndex
      * */
     @Override
-    public void burn(int recorderIndex, int writeSpeed, Path isoFile) {
+    public void burn(int recorderIndex, int burnSpeed, Path isoDir, String discTitle) {
 
-        logger.debug("recorderIndex: {}, writeSpeed: {}, isoFile: {}", recorderIndex, writeSpeed, isoFile);
+        logger.debug("recorder: {}, burnSpeed: {}, dir: {}, diskTitle: {}", recorderIndex, burnSpeed, isoDir, discTitle);
         IDiscRecorder2 recorder = ClassFactory.createMsftDiscRecorder2();
         String recorderUniqueId = dm.item(0);
 
@@ -109,8 +110,7 @@ public class BurnSrvImpl implements BurnSrv {
         IDiscFormat2Data dataWriter = ClassFactory.createMsftDiscFormat2Data();
         dataWriter.recorder(recorder);
         dataWriter.clientName("IMAPIv2");
-
-        logger.debug("Using recorder {}, file: {}", recorder.vendorId() + " " + recorder.productId(), isoFile);
+        logger.debug("Using recorder {}", recorder.vendorId() + " " + recorder.productId());
 
         // Validate recorder/media status
         if (!dataWriter.isRecorderSupported(recorder)) {
@@ -132,8 +132,10 @@ public class BurnSrvImpl implements BurnSrv {
             logger.error("Media is write protected / not empty.");
             throw new IllegalStateException("Media is write protected / not empty.");
         }
+        if ( mediaStatus == IMAPI_FORMAT2_DATA_MEDIA_STATE_RANDOMLY_WRITABLE) {
+            discData.forceOverwrite(true);
+        }
         discData.forceMediaToBeClosed(true);
-        discData.setName("discData2");
 
         //Check if disc is empty
         int addr = discData.nextWritableAddress();
@@ -142,21 +144,22 @@ public class BurnSrvImpl implements BurnSrv {
             throw new IllegalStateException("Disc is not empty, not writing.");
         }
 
-        logger.debug("Preparing burn fileSystemImage...");
-
+        logger.debug("Preparing burn fileSystemImage, forceOverwrite: {}...", discData.forceOverwrite());
         // Create a new file system image and retrieve root directory
         IFileSystemImage3 fileSystemImage = ClassFactory.createMsftFileSystemImage();
         IFsiDirectoryItem directoryItem = fileSystemImage.root();
 
         // Create the new disc format and set the recorder
         fileSystemImage.chooseImageDefaults(recorder);
+        // fileSystemImage.volumeName(discTitle);
+        fileSystemImage.volumeName(discTitle);
 
         // Add the contents to the file system
-        directoryItem.addTree(isoFile.toString(), false);
+        directoryItem.addTree(isoDir.toString(), false);
 
         // Create an image from the file system
         IFileSystemImageResult fileSystemImageResult = fileSystemImage.createResultImage();
-        fileSystemImageResult.setName("fileSystemImageResult");
+        // fileSystemImageResult.setName("IMAPIv2");
         IStream stream = fileSystemImageResult.imageStream();
         // Write stream to disc using the specified recorder.
         /**
@@ -168,14 +171,15 @@ public class BurnSrvImpl implements BurnSrv {
          #define IMAPI_SECTORS_PER_SECOND_AT_1X_CD      75
          #define IMAPI_SECTORS_PER_SECOND_AT_1X_DVD     680
          * */
+/*
         int sectorsPerSecSpeed = IMAPI_SECTORS_PER_SECOND_AT_1X_DVD * writeSpeed;
         dataWriter.setWriteSpeed(sectorsPerSecSpeed, false);
+*/
         logger.debug("Start writing content to disc with speed: {} ...", dataWriter.currentWriteSpeed());
-
-        // DDiscFormat2DataEvents progress =
-
         dataWriter.write(stream);
-        logger.debug("Finished writing content...");
+        logger.debug("Finished writing content, open tray...");
+
+        // recorder.ejectMedia();
     }
 
     /**

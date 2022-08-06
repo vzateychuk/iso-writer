@@ -333,15 +333,15 @@ public class MainCtl implements Initializable {
         }
 
         // choose a disk label
-        String diskLabel = UtilsHelper.getDiskLabel();
-        if (Strings.isBlank(diskLabel)) {
+        String diskTitle = UtilsHelper.getDiskLabel();
+        if (Strings.isBlank(diskTitle)) {
             this.isBurning = false;
             this.msgSrv.news("Запись диска отменена");
             return;
         }
 
         StorageUnitFX su = tblStorageUnits.getSelectionModel().selectedItemProperty().getValue();
-        logger.info("Burn '{}' with label: '{}'", su.getNumberSu(), diskLabel);
+        logger.info("Burn '{}' with label: '{}'", su.getNumberSu(), diskTitle);
         final int recorderIndex = 0;
 
         // check if the disk is ready
@@ -361,6 +361,7 @@ public class MainCtl implements Initializable {
 
         mainSrv.burnISOAsync(
                 su,
+                diskTitle,
                 iso -> Platform.runLater( () -> this.isBurning=false )
         );
     }

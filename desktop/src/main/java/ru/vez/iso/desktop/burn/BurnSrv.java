@@ -17,8 +17,13 @@ public interface BurnSrv {
 
     /**
      * Burn disk with directory path
+     *
+     * @param recorderIndex - this is index of the recorder
+     * @param speed - burning speed
+     * @param filepath - directory path for files
+     * @param discTitle - burned disk label
      * */
-    void burn(int recorderIndex, int speed, Path filepath);
+    void burn(int recorderIndex, int speed, Path filepath, String discTitle);
 
     /**
      * Open burner's tray

@@ -125,7 +125,7 @@ public class MainSrvImpl implements MainSrv {
      * Стартует прожиг диска
      */
     @Override
-    public void burnISOAsync(StorageUnitFX su, Consumer<StorageUnitFX> postAction) {
+    public void burnISOAsync(StorageUnitFX su, String diskTitle, Consumer<StorageUnitFX> postAction) {
 
         this.msgSrv.news("Старт записи на диск: " + su.getNumberSu());
 
@@ -140,17 +140,19 @@ public class MainSrvImpl implements MainSrv {
 
             // su.getObjectId()
             Path isoPath = Paths.get(state.getSettings().getIsoCachePath(), su.getObjectId() + ".iso").toAbsolutePath();
-            Path target = Paths.get(state.getSettings().getIsoCachePath(), "burn", su.getObjectId()).toAbsolutePath();
+            Path targetPath = Paths.get(state.getSettings().getIsoCachePath(), "burn", su.getObjectId()).toAbsolutePath();
             // unzip iso to local folder
             try {
-                UtilsHelper.isoToFolder(isoPath, target);
+                UtilsHelper.isoToFolder(isoPath, targetPath);
             } catch (IOException ioException) {
-                String msg = String.format("Unable to open ISO: %s, and copy to: %s", isoPath, target);
+                String msg = String.format("Unable to open ISO: %s, and copy to: %s", isoPath, targetPath);
                 logger.error(msg, ioException);
                 throw new RuntimeException(msg, ioException);
             }
             // start burning ISO
-            burner.burn(0, state.getSettings().getBurnSpeed(), target);
+            int burnSpeed = state.getSettings().getBurnSpeed();
+            int recorderIndex = 0;
+            burner.burn(recorderIndex, burnSpeed, targetPath, diskTitle);
             this.refreshDataAsync(this.period);
         }, exec)
                 .whenComplete((v, ex) -> {

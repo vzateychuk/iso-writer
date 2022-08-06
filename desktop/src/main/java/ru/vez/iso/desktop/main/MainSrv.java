@@ -25,8 +25,10 @@ public interface MainSrv {
 
     /**
      * Записать ISO на внешний диск
+     *
+     *
      * */
-    void burnISOAsync(StorageUnitFX storageUnit, Consumer<StorageUnitFX> postAction);
+    void burnISOAsync(StorageUnitFX storageUnit, String diskTitle, Consumer<StorageUnitFX> postAction);
 
     /**
      * Запрос на создание ISO файла (EX в статусе "Удален")
