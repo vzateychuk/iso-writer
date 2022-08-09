@@ -346,6 +346,7 @@ public class MainCtl implements Initializable {
 
         // check if the disk is ready
         RecorderInfo info = mainSrv.getRecorderInfo(recorderIndex);
+        logger.debug(info.toString());
         String msg = "Для продолжения записи вставьте новый диск в дисковод.";
         while (!info.isReady()) {
             if (!UtilsHelper.getConfirmation(msg)) {
