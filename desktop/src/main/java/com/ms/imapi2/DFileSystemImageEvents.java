@@ -18,6 +18,7 @@ public interface DFileSystemImageEvents extends Com4jObject {
    * @param totalSectors Mandatory int parameter.
    */
 
+  @DISPID(7)
   @VTID(7)
   void update(
     @MarshalAs(NativeType.Dispatch) com4j.Com4jObject object,

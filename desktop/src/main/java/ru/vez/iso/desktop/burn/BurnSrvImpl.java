@@ -121,6 +121,8 @@ public class BurnSrvImpl implements BurnSrv {
             logger.error("CurrentMedia is not supported");
             throw new IllegalStateException("CurrentMedia is not supported");
         }
+        // TODO get disk burn progress
+        // dataWriter.advise(DWriteEngine2Events.class, new DWriteEngine2EventsReceiver());
 
         // Check if Media is write protected / not empty
         IDiscFormat2Data discData = ClassFactory.createMsftDiscFormat2Data();
@@ -136,6 +138,7 @@ public class BurnSrvImpl implements BurnSrv {
             discData.forceOverwrite(true);
         }
         discData.forceMediaToBeClosed(true);
+        discData.advise(DDiscFormat2DataEvents.class, new DDiscFormat2DataEventsReceiver());
 
         //Check if disc is empty
         int addr = discData.nextWritableAddress();
@@ -153,6 +156,7 @@ public class BurnSrvImpl implements BurnSrv {
         fileSystemImage.chooseImageDefaults(recorder);
         // fileSystemImage.volumeName(discTitle);
         fileSystemImage.volumeName(discTitle);
+        fileSystemImage.advise(DFileSystemImageEvents.class, new DFileSystemImageEventsReceiver());
 
         // Add the contents to the file system
         directoryItem.addTree(isoDir.toString(), false);
@@ -176,6 +180,7 @@ public class BurnSrvImpl implements BurnSrv {
         dataWriter.setWriteSpeed(sectorsPerSecSpeed, false);
 */
         logger.debug("Start writing content to disc with speed: {} ...", dataWriter.currentWriteSpeed());
+        // dataWriter.
         dataWriter.write(stream);
         logger.debug("Finished writing content, open tray...");
 
