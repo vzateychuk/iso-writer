@@ -4,7 +4,6 @@ import ru.vez.iso.desktop.burn.RecorderInfo;
 import ru.vez.iso.desktop.main.storeunits.StorageUnitFX;
 
 import java.nio.file.Path;
-import java.util.function.Consumer;
 
 public interface MainSrv {
 
@@ -28,7 +27,7 @@ public interface MainSrv {
      *
      *
      * */
-    void burnISOAsync(StorageUnitFX storageUnit, String diskTitle, Consumer<StorageUnitFX> postAction);
+    void burnISOAsync(StorageUnitFX storageUnit, String diskTitle);
 
     /**
      * Запрос на создание ISO файла (EX в статусе "Удален")

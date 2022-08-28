@@ -1,9 +1,6 @@
 package ru.vez.iso.desktop.state;
 
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import ru.vez.iso.desktop.docs.DocumentFX;
 import ru.vez.iso.desktop.docs.reestr.Reestr;
 import ru.vez.iso.desktop.main.operdays.OperatingDayFX;
@@ -16,14 +13,15 @@ import java.util.List;
 
 public class ApplicationState {
 
-    private final ObjectProperty<RunMode> runMode;  // Режим запуска приложения: Enum RunMode
-    private final ObjectProperty<AppSettings> settings; // Настройки приложения
-    private final StringProperty zipDir;            // Путь к файлу DIR.zip открытый пользователем в форме "Документы"
-    private final ObjectProperty<UserDetails> userDetails;              // Режим запуска приложения: Enum RunMode
+    private final ObjectProperty<RunMode> runMode;              // Режим запуска приложения: Enum RunMode
+    private final ObjectProperty<AppSettings> settings;         // Настройки приложения
+    private final StringProperty zipDir;                        // Путь к файлу DIR.zip открытый пользователем в форме "Документы"
+    private final ObjectProperty<UserDetails> userDetails;      // Режим запуска приложения: Enum RunMode
     private final ObjectProperty<List<OperatingDayFX>> operatingDays;   // Операционные дни
-    private final ObjectProperty<List<FileISO>>  fileNames; // Список ISO файлов, загруженных из backend и хранящихся в cache
+    private final ObjectProperty<List<FileISO>>  fileNames;     // Список ISO файлов, загруженных из backend и хранящихся в cache
     private final ObjectProperty<List<DocumentFX>> documentFXs; // Список документов загруженных из REESTR файла
-    private final ObjectProperty<Reestr>  reestr; // Загруженный реестр документов (из DirZip.zip)
+    private final ObjectProperty<Reestr>  reestr;               // Загруженный реестр документов (из DirZip.zip)
+    private final BooleanProperty burning;                      // Флаг обозначающий что идет процесс записи на диск
 
     /**
      * Создает ApplicationState с пустыми значениями
@@ -38,6 +36,7 @@ public class ApplicationState {
         this.fileNames = new SimpleObjectProperty<>(Collections.emptyList());
         this.documentFXs = new SimpleObjectProperty<>(Collections.emptyList());
         this.reestr = new SimpleObjectProperty<>(new Reestr());
+        this.burning = new SimpleBooleanProperty(false);
     }
 
     public RunMode getRunMode() {
@@ -118,5 +117,15 @@ public class ApplicationState {
     }
     public void setReestr(Reestr reestr) {
         this.reestr.set(reestr);
+    }
+
+    public boolean isBurning() {
+        return burning.get();
+    }
+    public BooleanProperty burningProperty() {
+        return burning;
+    }
+    public void setBurning(boolean burning) {
+        this.burning.set(burning);
     }
 }

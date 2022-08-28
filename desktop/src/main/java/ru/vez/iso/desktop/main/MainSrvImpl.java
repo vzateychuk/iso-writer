@@ -26,7 +26,6 @@ import java.security.MessageDigest;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.*;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class MainSrvImpl implements MainSrv {
@@ -125,7 +124,7 @@ public class MainSrvImpl implements MainSrv {
      * Стартует прожиг диска
      */
     @Override
-    public void burnISOAsync(StorageUnitFX su, String diskTitle, Consumer<StorageUnitFX> postAction) {
+    public void burnISOAsync(StorageUnitFX su, String diskTitle) {
 
         this.msgSrv.news("Старт записи на диск: " + su.getNumberSu());
 
@@ -152,19 +151,20 @@ public class MainSrvImpl implements MainSrv {
             // start burning ISO
             int burnSpeed = state.getSettings().getBurnSpeed();
             int recorderIndex = 0;
+            this.state.setBurning(true);
             burner.burn(recorderIndex, burnSpeed, targetPath, diskTitle);
             this.refreshDataAsync(this.period);
         }, exec)
                 .whenComplete((v, ex) -> {
+                    this.state.setBurning(false);
                     if (ex == null) {
-                        this.msgSrv.news("Записан диск: '" + su.getNumberSu() + "'");
+                        this.msgSrv.news("Записана EX: '" + su.getNumberSu() + "'");
                     } else {
-                        String msg = String.format("Запись не удалась: '%s', ошибка: %s", su.getNumberSu(), ex.getCause().getMessage());
-                        this.msgSrv.news(msg);
                         logger.error(ex);
+                        String msg = String.format("При записи EX: '%s', возникли ошибки. Запись не завершена. Запустите запись снова", su.getNumberSu());
+                        this.msgSrv.news(msg);
                     }
                     this.storageUnitsSrv.sendBurnComplete(su.getObjectId(), ex);
-                    postAction.accept(su);
                 });
     }
 

@@ -27,6 +27,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -103,8 +104,13 @@ public class MainCtl implements Initializable {
     private final ChangeListener<OperatingDayFX> selectOperationDayListener; // Select row in OperationDays table
     private final ChangeListener<List<FileISO>> isoFilesChangeListener; // ISO_FILES in cache changed
     private final ChangeListener<StorageUnitFX> selectStorageUnitListener; // select row in StorageUnits table
+    private final ChangeListener<Boolean> burningListener; // if it's burning
 
-    private boolean isBurning;
+    Predicate<StorageUnitFX> disableBurn =
+            su -> su == null || Strings.isBlank( su.getIsoFileName() )
+                    || !Collections.unmodifiableList(
+                            Arrays.asList(StorageUnitStatus.READY_TO_RECORDING, StorageUnitStatus.RECORDED)
+                        ).contains( su.getStorageUnitStatus() );
 
     //endregion
 
@@ -133,33 +139,27 @@ public class MainCtl implements Initializable {
             // filter and display a storage Units with fileNames
             Platform.runLater( ()-> this.filterAndDisplayStorageUnits(withFileNames, statusesFilter) );
         };
-        this.operationDaysListener = (ob, oldVal, newVal) -> Platform.runLater(()-> displayOperatingDays(newVal));
+        this.operationDaysListener = (ob, old, newVal) -> Platform.runLater(()-> displayOperatingDays(newVal));
         this.selectOperationDayListener = (o, old, newValue) -> {
             if (newValue != null) {
                 // need to update storage units with isoFileName, stored in local file-cache
                 final List<FileISO> fileCache = this.state.getIsoFiles();
                 List<StorageUnitFX> withFileNames = this.getWithFileName(newValue.getStorageUnits(), fileCache);
                 // filter and display a storage Units
-                Platform.runLater(()-> this.filterAndDisplayStorageUnits(withFileNames, statusesFilter));
+                Platform.runLater(() -> this.filterAndDisplayStorageUnits(withFileNames, statusesFilter));
             }
         };
-        this.selectStorageUnitListener = (o, oldVal, newVal) -> {
-            butIsoLoad.setDisable(
-                    newVal == null || !newVal.isPresent()
-                    || !Collections.unmodifiableList(
-                            Arrays.asList(StorageUnitStatus.READY_TO_RECORDING, StorageUnitStatus.RECORDED)
-                        ).contains( newVal.getStorageUnitStatus() )
-                    );
-            butIsoCreate.setDisable(newVal == null || !newVal.isPresent());
-            butBurn.setDisable( newVal == null || Strings.isBlank( newVal.getIsoFileName() )
-                    || !Collections.unmodifiableList(
-                            Arrays.asList(StorageUnitStatus.READY_TO_RECORDING, StorageUnitStatus.RECORDED)
-                         ).contains( newVal.getStorageUnitStatus() )
-                    || this.isBurning
-            );
-            butDelete.setDisable(newVal == null || Strings.isBlank(newVal.getIsoFileName()));
-            butCheckSum.setDisable(newVal == null);
-        };
+        this.selectStorageUnitListener = (o, old, selectedSU) -> {
+                    butIsoLoad.setDisable( disableBurn.test(selectedSU));
+                    butIsoCreate.setDisable(selectedSU == null || !selectedSU.isPresent());
+                    butBurn.setDisable( disableBurn.test(selectedSU) || this.state.isBurning() );
+                    butDelete.setDisable(selectedSU == null || Strings.isBlank(selectedSU.getIsoFileName()));
+                    butCheckSum.setDisable(selectedSU == null);
+                };
+
+        this.burningListener = (o, old, isBurning) -> Platform.runLater( () -> {
+            butBurn.setDisable( isBurning || disableBurn.test(tblStorageUnits.getSelectionModel().getSelectedItem()) );
+        });
     }
 
     @Override
@@ -205,14 +205,15 @@ public class MainCtl implements Initializable {
 
         // When user logged, binding listeners and unbinding otherwise
         this.state.userDetailsProperty().addListener(
-            (o, old, newVal) -> {
-                if (newVal.isLogged()) {
+            (o, old, newUserDetails) -> {
+                if ( newUserDetails.isLogged() ) {
                     // bind listeners
                     this.state.operatingDaysProperty().addListener(operationDaysListener); // Operation Days table listener
                     this.tblOperatingDays.getSelectionModel().selectedItemProperty().addListener( selectOperationDayListener ); // OperationDays: when select row should refresh StorageUnits table
                     this.state.settingsProperty().addListener(settingsChangeListener); // Operation Days period's filter (settings changed)
                     this.state.fileNamesProperty().addListener(isoFilesChangeListener); // ISO_FILES in cache changed;
                     this.tblStorageUnits.getSelectionModel().selectedItemProperty().addListener( selectStorageUnitListener );
+                    this.state.burningProperty().addListener( this.burningListener );
                     // set filter data
                     this.operDaysFilter.setText( String.valueOf(state.getSettings().getFilterOpsDays()) );
                     // schedule data operationDays load
@@ -225,6 +226,7 @@ public class MainCtl implements Initializable {
                     this.state.settingsProperty().removeListener(settingsChangeListener); // Operation Days period's filter (settings changed)
                     this.state.fileNamesProperty().removeListener(isoFilesChangeListener); // ISO_FILES in cache changed;
                     this.tblStorageUnits.getSelectionModel().selectedItemProperty().removeListener( selectStorageUnitListener );
+                    this.state.burningProperty().removeListener( this.burningListener );
                 }
             }
         );
@@ -336,7 +338,7 @@ public class MainCtl implements Initializable {
 
         logger.debug("");
         // check if previous burning session hasn't completed
-        if (this.isBurning) {
+        if (this.state.isBurning()) {
             logger.warn("not expect call until burning complete");
             this.msgSrv.news("Запись диска не окончена, подождите");
             return;
@@ -345,7 +347,6 @@ public class MainCtl implements Initializable {
         // choose a disk label
         String labelMainOrReserve = UtilsHelper.getDiskLabel();
         if (Strings.isBlank(labelMainOrReserve)) {
-            this.isBurning = false;
             this.msgSrv.news("Запись диска отменена");
             return;
         }
@@ -367,14 +368,7 @@ public class MainCtl implements Initializable {
             msg = "Диск поврежден. Запись невозможна. Вставьте в дисковод новый диск.";
         }
 
-        this.butBurn.setDisable(true);
-        this.isBurning = true;
-
-        mainSrv.burnISOAsync(
-                su,
-                su.getNumberSu() + "_" + labelMainOrReserve + "_носитель",
-                iso -> Platform.runLater( () -> this.isBurning=false )
-        );
+        mainSrv.burnISOAsync(su, su.getNumberSu() + "_" + labelMainOrReserve + "_носитель");
     }
 
     /**
