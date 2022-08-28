@@ -24,8 +24,8 @@ public class StorageUnitFX {
     private final ObjectProperty<StorageUnitStatus> storageUnitStatus;
     private final ObjectProperty<LocalDate> savingDate;
     private final StringProperty isoFileName;
-    private final boolean deleted;
-    private final boolean present;
+    private final boolean deleted;          // Признак что ISO удален на сервере
+    private final boolean present;          // Признак что ISO "Сформирован" на сервере
 
     public StorageUnitFX(
             String objectId,

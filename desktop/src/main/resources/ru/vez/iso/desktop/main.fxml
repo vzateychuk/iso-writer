@@ -67,7 +67,7 @@
                         <TableColumn fx:id="typeSu" editable="false" maxWidth="180.0" minWidth="80.0" prefWidth="140.0"
                                      text="Вид EX"/>
                         <TableColumn fx:id="status" editable="false" minWidth="80.0" text="Статус"/>
-                        <TableColumn fx:id="createdAt" editable="false" maxWidth="120.0" minWidth="80.0" text="Дата создания"/>
+                        <TableColumn fx:id="numberSU" editable="false" maxWidth="120.0" minWidth="80.0" text="Номер EX"/>
                     </columns>
                 </TableView>
             </children>
@@ -139,6 +139,26 @@
                                     </Button>
                                     <Label styleClass="desktop-radio-label" text="Готовятся"/>
                                 </HBox>
+
+                                <Separator orientation="VERTICAL" prefHeight="32.0" prefWidth="11.0"/>
+
+                                <Button fx:id="butRefreshEX" mnemonicParsing="false" onAction="#onRefreshEX"
+                                        GridPane.columnIndex="3" GridPane.rowIndex="1">
+                                    <tooltip>
+                                        <Tooltip text="Обновить список EX"/>
+                                    </tooltip>
+                                    <graphic>
+                                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                            <image>
+                                                <Image url="@image/refresh-primary.png"/>
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                    <styleClass>
+                                        <String fx:value="desktop-btn-round"/>
+                                        <String fx:value="primary"/>
+                                    </styleClass>
+                                </Button>
 
                                 <Separator orientation="VERTICAL" prefHeight="32.0" prefWidth="11.0"/>
 
@@ -223,24 +243,6 @@
                                                    preserveRatio="true">
                                             <image>
                                                 <Image url="@image/check-primary.png"/>
-                                            </image>
-                                        </ImageView>
-                                    </graphic>
-                                    <styleClass>
-                                        <String fx:value="desktop-btn-round"/>
-                                        <String fx:value="primary"/>
-                                    </styleClass>
-                                </Button>
-
-                                <Button fx:id="butFileCacheRefresh" mnemonicParsing="false" onAction="#onFileCacheRefresh"
-                                        GridPane.columnIndex="3" GridPane.rowIndex="1">
-                                    <tooltip>
-                                        <Tooltip text="Обновить файловый кэш"/>
-                                    </tooltip>
-                                    <graphic>
-                                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                                            <image>
-                                                <Image url="@image/refresh-primary.png"/>
                                             </image>
                                         </ImageView>
                                     </graphic>

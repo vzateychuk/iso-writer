@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.util.Strings;
 import ru.vez.iso.desktop.burn.BurnSrv;
 import ru.vez.iso.desktop.burn.RecorderInfo;
 import ru.vez.iso.desktop.shared.AppSettings;
@@ -31,7 +32,7 @@ public class SettingsCtl implements Initializable {
     @FXML public Button driveInfo;
     @FXML private TextField operationDays;
     @FXML private TextField refreshPeriod;
-    @FXML private TextField abddAPI;
+    @FXML private TextField backendAPI;
     @FXML private TextField fileCache;
     @FXML private TextField evictCacheDays; // Days, period of cache eviction
 
@@ -99,16 +100,40 @@ public class SettingsCtl implements Initializable {
     }
 
     @FXML public void onSave(ActionEvent ev) {
-        logger.debug("");
 
         AppSettings currentSettings = state.getSettings();
 
+        // Validation for values
+        if (Strings.isBlank(operationDays.getText())) {
+            logger.warn("Empty operationDays: {}", operationDays.getText());
+            UtilsHelper.getConfirmation("Необходимо указать период отображения операционных дней.");
+            return;
+        }
         int operDays = UtilsHelper.parseIntOrDefault(operationDays.getText(), SettingType.OPERATION_DAYS.getDefaultValue());
+
+        if (Strings.isBlank(refreshPeriod.getText())) {
+            logger.warn("Empty refreshPeriod: {}", refreshPeriod.getText());
+            UtilsHelper.getConfirmation("Необходимо указать период обновления списка операционных дней.");
+            return;
+        }
         int refreshMin = UtilsHelper.parseIntOrDefault(refreshPeriod.getText(), SettingType.REFRESH_PERIOD.getDefaultValue());
+
+        if (Strings.isBlank(evictCacheDays.getText())) {
+            logger.warn("Empty evictCacheDays: {}", evictCacheDays.getText());
+            UtilsHelper.getConfirmation("Необходимо указать срок хранения iso-образов, дней.");
+            return;
+        }
         int evictDays = UtilsHelper.parseIntOrDefault(evictCacheDays.getText(), SettingType.EVICT_CACHE_DAYS.getDefaultValue());
 
+
+        if (Strings.isBlank(backendAPI.getText())) {
+            logger.warn("Empty backendAPI: {}", backendAPI.getText());
+            UtilsHelper.getConfirmation("Необходимо указать адрес сервера.");
+            return;
+        }
+
         AppSettings newSetting = AppSettings.builder()
-                .backendAPI(abddAPI.getText())
+                .backendAPI(backendAPI.getText())
                 .filterOpsDays(operDays)
                 .settingFile(currentSettings.getSettingFile())
                 .isoCachePath(fileCache.getText())
@@ -178,7 +203,7 @@ public class SettingsCtl implements Initializable {
         operationDays.setText( String.valueOf(operDays) );
         refreshPeriod.setText( String.valueOf(sets.getRefreshMin()) );
         fileCache.setText( sets.getIsoCachePath() );
-        abddAPI.setText( sets.getBackendAPI() );
+        backendAPI.setText( sets.getBackendAPI() );
         evictCacheDays.setText( String.valueOf(sets.getEvictCacheDays()) );
     }
 

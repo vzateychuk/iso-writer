@@ -27,17 +27,20 @@ public class OperatingDayFX {
     private final ObjectProperty<OperDayStatus> status = new SimpleObjectProperty<>();
     private final ObjectProperty<LocalDate> createdAt = new SimpleObjectProperty<>();
     private List<StorageUnitFX> storageUnits = Collections.emptyList();
+    private final StringProperty numberSu = new SimpleStringProperty();;
 
     public OperatingDayFX(String objectId,
                           LocalDate operatingDay,
                           String typeSu,
                           OperDayStatus status,
-                          LocalDate createdAt) {
+                          LocalDate createdAt,
+                          String numberSu) {
         this.objectId = objectId;
         this.operatingDay.set(operatingDay);
         this.typeSu.set(typeSu);
         this.status.set(status);
         this.createdAt.set(createdAt);
+        this.numberSu.set(numberSu);
     }
 
     public String getObjectId() {
@@ -79,15 +82,23 @@ public class OperatingDayFX {
         this.storageUnits = storageUnits == null ? Collections.emptyList() : storageUnits;
     }
 
+    public String getNumberSu() {
+        return numberSu.get();
+    }
+    public StringProperty numberSuProperty() {
+        return numberSu;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        OperatingDayFX dayFX = (OperatingDayFX) o;
-        return getOperatingDay().equals(dayFX.getOperatingDay()) &&
-                getTypeSu().equals(dayFX.getTypeSu()) &&
-                getStatus().equals(dayFX.getStatus()) &&
-                getCreatedAt().equals(dayFX.getCreatedAt());
+        OperatingDayFX that = (OperatingDayFX) o;
+        return getOperatingDay().equals(that.getOperatingDay()) &&
+                getTypeSu().equals(that.getTypeSu()) &&
+                getStatus().equals(that.getStatus()) &&
+                getCreatedAt().equals(that.getCreatedAt()) &&
+                getNumberSu().equals(that.getNumberSu());
     }
 
     @Override
@@ -98,10 +109,11 @@ public class OperatingDayFX {
     @Override
     public String toString() {
         return "OperatingDay{" +
-                "date=" + getOperatingDay().format(formatter) +
-                ", typeSU=" + getTypeSu() +
-                ", status=" + getStatus() +
-                ", created=" + getCreatedAt().format(formatter) +
+                "operationDate=" + this.getOperatingDay().format(formatter) +
+                ", typeSU=" + this.getTypeSu() +
+                ", status=" + this.getStatus() +
+                ", created=" + this.getCreatedAt().format(formatter) +
+                ", numberSU=" + this.getNumberSu() +
                 '}';
     }
 }

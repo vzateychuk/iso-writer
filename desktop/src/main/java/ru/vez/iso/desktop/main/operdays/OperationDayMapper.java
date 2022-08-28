@@ -21,8 +21,8 @@ public class OperationDayMapper implements DataMapper<OperationDayDto, Operating
         try {
             status = OperDayStatus.valueOf( dto.getOperatingDayStatus() );
         } catch (IllegalArgumentException ex) {
-            status = OperDayStatus.UNKNOWN;
             logger.warn("Bad OperDayStatus: {}", dto.getTypeSu().getCode(), ex);
+            status = OperDayStatus.UNKNOWN;
         }
 
         LocalDate createdAt = LocalDate.parse( dto.getCreationDate(), DateTimeFormatter.ISO_LOCAL_DATE_TIME );
@@ -33,7 +33,8 @@ public class OperationDayMapper implements DataMapper<OperationDayDto, Operating
                 date,
                 dto.getTypeSu().getElementName(),
                 status,
-                createdAt
+                createdAt,
+                dto.getNumberSu()
         );
     }
 }

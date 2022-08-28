@@ -1,7 +1,6 @@
 package ru.vez.iso.desktop.docs;
 
 import javafx.beans.property.*;
-import javafx.beans.value.ObservableValue;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -43,8 +42,8 @@ public class DocumentFX {
     public double getSumDoc() {
         return sumDoc.get();
     }
-    public ObservableValue<Double> sumDocProperty() {
-        return sumDoc.asObject();
+    public StringProperty sumDocProperty() {
+        return new SimpleStringProperty( String.format("%,.2f", sumDoc.get()) );
     }
 
     public String getDocNumber() {

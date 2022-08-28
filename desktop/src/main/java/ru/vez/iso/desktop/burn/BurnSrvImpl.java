@@ -121,8 +121,6 @@ public class BurnSrvImpl implements BurnSrv {
             logger.error("CurrentMedia is not supported");
             throw new IllegalStateException("CurrentMedia is not supported");
         }
-        // TODO get disk burn progress
-        // dataWriter.advise(DWriteEngine2Events.class, new DWriteEngine2EventsReceiver());
 
         // Check if Media is write protected / not empty
         IDiscFormat2Data discData = ClassFactory.createMsftDiscFormat2Data();

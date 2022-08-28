@@ -187,13 +187,15 @@ public class MainSrvImpl implements MainSrv {
     @Override
     public void checkSumAsync(String objectId, Path dirZip) {
 
+        this.msgSrv.news("Начинаю проверку ключа для EX:" + objectId + " (" + dirZip + ")");
+
         CompletableFuture.supplyAsync(() -> {
             UtilsHelper.makeDelaySec(1);
             final MessageDigest gostDigest = DigestUtils.getDigest(MyConst.ALGO_GOST);
             try (InputStream dirZipFis = Files.newInputStream(dirZip)) {
                 String actualHash = Hex.encodeHexString(DigestUtils.digest(gostDigest, dirZipFis));
                 String expectedHash = this.storageUnitsSrv.getHashCode(objectId);
-                logger.debug("Compare Hash\nexpect:\t'{}'\nactual:\t'{}'", expectedHash, actualHash);
+                logger.debug("Compare Hash\nexpect(on server):\t'{}'\nactual(on disk):\t'{}'", expectedHash, actualHash);
                 String result = expectedHash.equals(actualHash) ? "УСПЕШНО" : "НЕ УДАЛАСЬ";
                 this.msgSrv.news("Проверка ключа: " + result + " (" + dirZip + ")");
             } catch (Exception ex) {
@@ -232,21 +234,21 @@ public class MainSrvImpl implements MainSrv {
     }
 
     @Override
-    public void loadISOAsync(String objectId) {
+    public void loadISOAsync(StorageUnitFX su) {
 
         String dir = state.getSettings().getIsoCachePath();
 
         // will trigger update of StorageUnits table
         CompletableFuture.supplyAsync(() -> {
-            this.storageUnitsSrv.loadFile(objectId);
-            msgSrv.news("Скачан : '" + objectId + ".iso'");
+            this.storageUnitsSrv.loadFile(su.getObjectId());
+            msgSrv.news(String.format("ISO образ для EX: '%s' успешно скачан и готов для записи", su.getNumberSu()));
             return null;
         }, exec)
                 .thenAccept(nm -> state.setFileNames( fileCacheSrv.readFileCache(dir) ) )
                 .exceptionally((ex) -> {
                     logger.error(ex);
-                    String msg = "Загрузка не удалась : '" + objectId + ".iso'. ";
-                    msg += ex.getCause() instanceof Http404Exception ? "Файл не сформирован на сервере." : "Неизвестная ошибка";
+                    String msg = String.format("Загрузка ISO образа для EX: '%s' не удалась", su.getNumberSu());
+                    msg += ex.getCause() instanceof Http404Exception ? "ISO образ не сформирован на сервере." : "Неизвестная ошибка";
                     msgSrv.news(msg);
                     return null;
                 });

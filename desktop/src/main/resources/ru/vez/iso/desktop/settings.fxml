@@ -76,7 +76,7 @@
 
     </HBox>
 
-    <Label layoutX="92.0" layoutY="132.0" styleClass="desktop-label" text="Период, дней:" textAlignment="RIGHT"
+    <Label layoutX="92.0" layoutY="132.0" styleClass="desktop-label" text="Отображать опер.дни за:" textAlignment="RIGHT"
            GridPane.columnIndex="1" GridPane.rowIndex="5">
     </Label>
 
@@ -94,7 +94,7 @@
            GridPane.rowIndex="7">
     </Label>
 
-    <TextField fx:id="abddAPI" maxWidth="1.7976931348623157E308" prefHeight="26.0"
+    <TextField fx:id="backendAPI" maxWidth="1.7976931348623157E308" prefHeight="26.0"
                promptText="http://localhost:8080/api" styleClass="desktop-input" GridPane.columnIndex="2"
                GridPane.rowIndex="7"/>
 

@@ -52,10 +52,9 @@ public interface MainSrv {
 
     /**
      * Load ISO file async
-     *
-     * @param objectId - ISO file
+     *  @param objectId - ISO file
      * */
-    void loadISOAsync(String objectId);
+    void loadISOAsync(StorageUnitFX objectId);
 
     /**
      * Загрузить ISO файл в локальный файловый кэш. Async

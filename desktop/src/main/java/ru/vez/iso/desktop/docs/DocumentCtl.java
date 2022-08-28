@@ -37,6 +37,8 @@ import java.util.ResourceBundle;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static org.apache.logging.log4j.util.Strings.isBlank;
+
 /**
  * Controller for Document view
  * */
@@ -48,10 +50,10 @@ public class DocumentCtl implements Initializable {
     @FXML private TableColumn<DocumentFX, String> branch;
     @FXML private TableColumn<DocumentFX, String> docDate;
     @FXML private TableColumn<DocumentFX, String> docNumber;
-    @FXML private TableColumn<DocumentFX, String> docStatusName;
+    // @FXML private TableColumn<DocumentFX, String> docStatusName;
     @FXML private TableColumn<DocumentFX, String> kindIdName;
     @FXML private TableColumn<DocumentFX, String> operDayDate;
-    @FXML private TableColumn<DocumentFX, Double> sumDoc;
+    @FXML private TableColumn<DocumentFX, String> sumDoc;
 
     @FXML private Button butOpenZip;
     @FXML private Button butCheckSum;
@@ -84,7 +86,7 @@ public class DocumentCtl implements Initializable {
         branch.setCellValueFactory(cell -> cell.getValue().branchNameProperty());
         docDate.setCellValueFactory(cell -> cell.getValue().docDateProperty());
         docNumber.setCellValueFactory(cell -> cell.getValue().docNumberProperty());
-        docStatusName.setCellValueFactory(cell -> cell.getValue().docStatusNameProperty());
+        // docStatusName.setCellValueFactory(cell -> cell.getValue().docStatusNameProperty());
         kindIdName.setCellValueFactory(cell -> cell.getValue().kindNameProperty());
         operDayDate.setCellValueFactory(cell -> cell.getValue().operDayDateProperty());
         sumDoc.setCellValueFactory(cell -> cell.getValue().sumDocProperty());
@@ -173,11 +175,18 @@ public class DocumentCtl implements Initializable {
 
     @FXML void onFilter(ActionEvent ev) {
 
-        logger.debug(txtFilter.getText());
+        logger.debug(this.txtFilter.getText());
+
+        String filter = Strings.trimToNull(this.txtFilter.getText());
+
+        if (!Strings.isBlank(filter) && filter.length()<3) {
+            msgSrv.news("Для поиска необходимо ввести не менее 3 символов");
+            return;
+        }
 
         List<DocumentFX> docs = this.state.getDocumentFXs();
         if (docs != null && docs.size() > 0 ) {
-            this.filterAndDisplay(docs, txtFilter.getText());
+            this.filterAndDisplay(docs, filter);
         }
     }
     @FXML public void onFilterEnter(KeyEvent ke) {
@@ -190,7 +199,7 @@ public class DocumentCtl implements Initializable {
     @FXML void onCheckSum(ActionEvent ev) {
 
         String currentPath = this.state.getZipDir();
-        if (Strings.isBlank(currentPath)) {
+        if (isBlank(currentPath)) {
             this.msgSrv.news("Невозможно выполнить проверку контрольной суммы. Не открыт DIR.zip");
             logger.warn("DIR.zip path not defined, exit");
             return;
@@ -227,13 +236,18 @@ public class DocumentCtl implements Initializable {
             return;
         }
 
-        Predicate<DocumentFX> filterDoc = d ->
-                !Strings.isBlank(d.getDocNumber()) && d.getDocNumber().toLowerCase().contains(filter.toLowerCase())
-                  || d.getKindName().toLowerCase().contains(filter.toLowerCase())
-                  || d.getBranchName().toLowerCase().contains(filter.toLowerCase())
-                  || d.getDocStatusName().getTitle().toLowerCase().contains(filter.toLowerCase());
+        String filterLow = filter.toLowerCase();
+
+        Predicate<DocumentFX> filterDoc = doc ->
+                !isBlank(doc.getDocNumber()) && doc.getDocNumber().toLowerCase().contains(filterLow)
+                  || doc.getKindName().toLowerCase().contains(filterLow)
+                  || doc.getBranchName().toLowerCase().contains(filterLow)
+                  || doc.getDocStatusName().getTitle().toLowerCase().contains(filterLow)
+                  || Double.toString(doc.getSumDoc()).contains(filterLow)
+                  || doc.operDayDateProperty().get().contains(filterLow)
+                  || doc.docDateProperty().get().contains(filterLow);
         // Set items to the tableView
-        List<DocumentFX> filtered = Strings.isBlank(filter) ? docs : docs.stream().filter(filterDoc).collect(Collectors.toList());
+        List<DocumentFX> filtered = isBlank(filter) ? docs : docs.stream().filter(filterDoc).collect(Collectors.toList());
 
         this.documents = FXCollections.observableList(filtered);
         tblDocuments.setItems(this.documents);

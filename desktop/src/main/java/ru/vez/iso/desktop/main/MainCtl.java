@@ -20,7 +20,6 @@ import ru.vez.iso.desktop.main.storeunits.StorageUnitFX;
 import ru.vez.iso.desktop.main.storeunits.StorageUnitStatus;
 import ru.vez.iso.desktop.shared.*;
 import ru.vez.iso.desktop.state.ApplicationState;
-import ru.vez.iso.desktop.state.RunMode;
 
 import java.net.URL;
 import java.nio.file.Path;
@@ -61,7 +60,7 @@ public class MainCtl implements Initializable {
     @FXML private TableColumn<OperatingDayFX, String> operatingDay;
     @FXML private TableColumn<OperatingDayFX, String> typeSu;
     @FXML private TableColumn<OperatingDayFX, String> status;
-    @FXML private TableColumn<OperatingDayFX, String> createdAt;
+    @FXML private TableColumn<OperatingDayFX, String> numberSU;
 
     // Таблица "Список единиц хранения"
     @FXML private TableView<StorageUnitFX> tblStorageUnits;
@@ -74,7 +73,7 @@ public class MainCtl implements Initializable {
 
     // Кнопки
     @FXML private Button butIsoLoad;
-    @FXML private Button butFileCacheRefresh;
+    @FXML private Button butRefreshEX;
     @FXML private Button butBurn;
     @FXML private Button butDelete;
     @FXML private Button butCheckSum;
@@ -145,8 +144,13 @@ public class MainCtl implements Initializable {
             }
         };
         this.selectStorageUnitListener = (o, oldVal, newVal) -> {
-            butIsoLoad.setDisable(newVal == null || newVal.isDeleted());
-            butIsoCreate.setDisable(newVal == null);
+            butIsoLoad.setDisable(
+                    newVal == null || !newVal.isPresent()
+                    || !Collections.unmodifiableList(
+                            Arrays.asList(StorageUnitStatus.READY_TO_RECORDING, StorageUnitStatus.RECORDED)
+                        ).contains( newVal.getStorageUnitStatus() )
+                    );
+            butIsoCreate.setDisable(newVal == null || !newVal.isPresent());
             butBurn.setDisable( newVal == null || Strings.isBlank( newVal.getIsoFileName() )
                     || !Collections.unmodifiableList(
                             Arrays.asList(StorageUnitStatus.READY_TO_RECORDING, StorageUnitStatus.RECORDED)
@@ -175,8 +179,7 @@ public class MainCtl implements Initializable {
         this.operatingDay.setComparator( this.sortDateStrings );
         this.typeSu.setCellValueFactory(cell -> cell.getValue().typeSuProperty());
         this.status.setCellValueFactory(cell -> cell.getValue().statusProperty());
-        this.createdAt.setCellValueFactory(cell -> cell.getValue().createdAtProperty());
-        this.createdAt.setComparator( this.sortDateStrings );
+        this.numberSU.setCellValueFactory(cell -> cell.getValue().numberSuProperty());
 
         // Таблица "Список единиц хранения"
         this.storageUnits = FXCollections.emptyObservableList();
@@ -233,15 +236,13 @@ public class MainCtl implements Initializable {
             }
         });
 
-        this.butFileCacheRefresh.setDisable( this.state.getRunMode() == RunMode.PROD );
-        this.butFileCacheRefresh.setVisible( this.state.getRunMode() != RunMode.PROD );
-
     }
 
     /**
      * Choice filterStatusAll - Все
      * */
     @FXML public void onStatusAllChoice(ActionEvent ev) {
+
         logger.debug("");
         this.radioButtonsToggle.setActive(radioStatusAll);
         this.statusesFilter = null;
@@ -273,31 +274,37 @@ public class MainCtl implements Initializable {
      * */
     @FXML public void onReload(ActionEvent ev) {
 
-        logger.info("days: {}", operDaysFilter.getText());
+        logger.debug("days: {}", operDaysFilter.getText());
 
+        int days = this.state.getSettings().getFilterOpsDays();
         try {
-            int days = Integer.parseUnsignedInt(operDaysFilter.getText());
-            mainSrv.refreshDataAsync(days);
-        } catch ( NumberFormatException ex) {
-            logger.error("can't parse value to int: {}", operDaysFilter.getText(), ex);
+            days = Integer.parseUnsignedInt(operDaysFilter.getText());
+            if (days == 0) {
+                throw new IllegalArgumentException(operDaysFilter.getText());
+            }
+        } catch ( IllegalArgumentException ex) {
+            logger.error("Bad value: {}", operDaysFilter.getText(), ex);
         }
-    }
 
-    /**
-     * Refresh filecache
-     * visible only in DEV mode
-     * */
-    @FXML  public void onFileCacheRefresh(ActionEvent av) {
-        mainSrv.readFileCacheAsync();
+        mainSrv.refreshDataAsync(days);
     }
 
     /**
      * Fire Reload when user ENTER key on Filter button
      * */
     @FXML public void onFilterEnter(KeyEvent ke) {
+        logger.debug("");
         if( ke.getCode() == KeyCode.ENTER ) {
             onReload(null);
         }
+    }
+
+    /**
+     * Refresh filecache for EX list
+     * */
+    @FXML  public void onRefreshEX(ActionEvent av) {
+        logger.debug("");
+        mainSrv.readFileCacheAsync();
     }
 
     /**
@@ -305,6 +312,7 @@ public class MainCtl implements Initializable {
      * */
     @FXML public void onIsoCreate(ActionEvent ev) {
 
+        logger.debug("");
         StorageUnitFX selected = tblStorageUnits.getSelectionModel().getSelectedItem();
         logger.info("SU: {}, objectId: {}", selected.getNumberSu(), selected.getObjectId());
         mainSrv.isoCreateAsync(selected);
@@ -315,9 +323,10 @@ public class MainCtl implements Initializable {
      * */
     @FXML void onStartIsoLoad(ActionEvent ev) {
 
+        logger.debug("");
         StorageUnitFX selected = tblStorageUnits.getSelectionModel().getSelectedItem();
         logger.info("SU: {}, objectId: {}", selected.getNumberSu(), selected.getObjectId());
-        mainSrv.loadISOAsync( selected.getObjectId() );
+        mainSrv.loadISOAsync( selected );
     }
 
     /**
@@ -325,6 +334,7 @@ public class MainCtl implements Initializable {
      * */
     @FXML public void onBurnIso(ActionEvent event) {
 
+        logger.debug("");
         // check if previous burning session hasn't completed
         if (this.isBurning) {
             logger.warn("not expect call until burning complete");
@@ -371,6 +381,7 @@ public class MainCtl implements Initializable {
      * Delete ISO files from cache
      * */
     @FXML public void onDeleteIso(ActionEvent ev) {
+        logger.debug("");
         StorageUnitFX su = tblStorageUnits.getSelectionModel().selectedItemProperty().getValue();
         logger.debug(su.getIsoFileName());
         mainSrv.deleteFileAsync(su.getIsoFileName());
@@ -381,15 +392,17 @@ public class MainCtl implements Initializable {
      * */
     @FXML public void onCheckSum(ActionEvent ev) {
 
+        logger.debug("");
         String currentPath = this.state.getZipDir();
         if (Strings.isBlank(currentPath)) {
             this.msgSrv.news("Невозможно выполнить проверку контрольной суммы. DIR.zip не открыт");
             logger.warn("DIR.zip path not defined, exit");
             return;
         }
-        logger.debug(currentPath);
 
         Path dirZip = Paths.get(currentPath, MyConst.DIR_ZIP);
+
+        logger.debug(currentPath);
 
         StorageUnitFX current = tblStorageUnits.getSelectionModel().selectedItemProperty().getValue();
 
@@ -425,6 +438,7 @@ public class MainCtl implements Initializable {
                     }
                     return updated;
                 })
+                .sorted( Comparator.comparing(StorageUnitFX::getNumberSu) )
                 .collect(Collectors.toList());
     }
 
