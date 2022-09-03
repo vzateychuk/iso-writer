@@ -46,7 +46,7 @@
                             <graphic>
                                 <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                     <image>
-                                        <Image url="@image/refresh-primary.png"/>
+                                        <Image url="@image/refresh.png"/>
                                     </image>
                                 </ImageView>
                             </graphic>
@@ -150,7 +150,7 @@
                                     <graphic>
                                         <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                             <image>
-                                                <Image url="@image/refresh-primary.png"/>
+                                                <Image url="@image/refresh.png"/>
                                             </image>
                                         </ImageView>
                                     </graphic>

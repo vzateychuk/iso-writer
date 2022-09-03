@@ -12,7 +12,9 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
@@ -127,19 +129,24 @@ public class DocumentCtl implements Initializable {
     @FXML void onViewDoc(ActionEvent ev) {
 
         logger.debug("");
+
         final Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
         if (desktop == null || !desktop.isSupported(Desktop.Action.OPEN)) {
             logger.warn("action not supported");
             return;
         }
 
+        // Save document from the Reestr to file-cache first
         DocumentFX doc = tblDocuments.getSelectionModel().getSelectedItem();
         Reestr reestr = this.state.getReestr();
-        ReestrDoc reestrDoc = reestr.getDocs().stream().filter(d -> d.getData().getObjectId().equals(doc.getObjectId())).findAny()
-                    .orElseThrow(() -> new RuntimeException("not found in REESTR, exit: " + doc.getObjectId()));
+        ReestrDoc reestrDoc = reestr.getDocs().stream()
+                .filter(d -> d.getData().getObjectId().equals(doc.getObjectId()))
+                .findAny()
+                .orElseThrow(() -> new RuntimeException("not found in REESTR, exit: " + doc.getObjectId()));
         ReestrFile file = reestrDoc.getFiles().stream()
-                    .filter(f -> f.getType().equals(RFileType.PF)).findAny()
-                    .orElseThrow(() -> new RuntimeException(RFileType.PF.getTitle() + " not found in REESTR, exit"));
+                .filter(f -> f.getType().equals(RFileType.PF))
+                .findAny()
+                .orElseThrow(() -> new RuntimeException(RFileType.PF.getTitle() + " not found in REESTR, exit"));
         AppSettings sets = this.state.getSettings();
         Path unzippedPath = Paths.get(sets.getIsoCachePath(), MyConst.UNZIP_FOLDER, doc.getObjectId(), file.getPath());
 
@@ -161,15 +168,32 @@ public class DocumentCtl implements Initializable {
             return;
         }
 
+        // Choose a target directory
+        DirectoryChooser dirChooser = new DirectoryChooser();
+        dirChooser.setInitialDirectory(Paths.get(System.getProperty("user.home")).toFile());
+        dirChooser.setTitle("Скачать документ в папку");
+
+        File destFile = dirChooser.showDialog(null);
+        logger.debug("user chose dir: {}", destFile);
+
+        // if opened, save as current directory and launch service to read data
+        if (destFile == null) {
+            return;
+        }
+
+        // Get source directory (unzipped) from file-cache
         DocumentFX doc = tblDocuments.getSelectionModel().getSelectedItem();
         AppSettings sets = this.state.getSettings();
-        Path unzippedPath = Paths.get(sets.getIsoCachePath(), MyConst.UNZIP_FOLDER, doc.getObjectId());
+        Path unzippedDoc = Paths.get(sets.getIsoCachePath(), MyConst.UNZIP_FOLDER, doc.getObjectId());
+        Path dest = Paths.get(destFile.toString(), doc.getObjectId());
 
-        logger.debug("open: {}", unzippedPath);
         try {
-            desktop.open(unzippedPath.toFile());
+            FileUtils.copyDirectory(unzippedDoc.toFile(), dest.toFile());
+            desktop.open(dest.toFile());
+            logger.debug(String.format("Copied '%s' to and opened dir %s", doc.getDocNumber(), dest));
         } catch (IOException ex) {
-            logger.warn("unable to open {}", unzippedPath, ex);
+            logger.warn("Unable to copy and open {}", unzippedDoc, ex);
+            msgSrv.news(String.format("Ошибка копирования документа '%s' в %s", doc.getDocNumber(), dest));
         }
     }
 

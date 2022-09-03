@@ -190,7 +190,6 @@ public class MainSrvImpl implements MainSrv {
         this.msgSrv.news("Начинаю проверку ключа для EX:" + objectId + " (" + dirZip + ")");
 
         CompletableFuture.supplyAsync(() -> {
-            UtilsHelper.makeDelaySec(1);
             final MessageDigest gostDigest = DigestUtils.getDigest(MyConst.ALGO_GOST);
             try (InputStream dirZipFis = Files.newInputStream(dirZip)) {
                 String actualHash = Hex.encodeHexString(DigestUtils.digest(gostDigest, dirZipFis));
