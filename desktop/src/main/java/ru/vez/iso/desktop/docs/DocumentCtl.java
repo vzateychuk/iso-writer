@@ -260,18 +260,22 @@ public class DocumentCtl implements Initializable {
             return;
         }
 
-        String filterLow = filter.toLowerCase();
+        List<DocumentFX> filtered;
+        if (isBlank(filter)) {
+            filtered = docs;
+        } else {
+            String filterLow = filter.toLowerCase();
 
-        Predicate<DocumentFX> filterDoc = doc ->
-                !isBlank(doc.getDocNumber()) && doc.getDocNumber().toLowerCase().contains(filterLow)
-                  || doc.getKindName().toLowerCase().contains(filterLow)
-                  || doc.getBranchName().toLowerCase().contains(filterLow)
-                  || doc.getDocStatusName().getTitle().toLowerCase().contains(filterLow)
-                  || Double.toString(doc.getSumDoc()).contains(filterLow)
-                  || doc.operDayDateProperty().get().contains(filterLow)
-                  || doc.docDateProperty().get().contains(filterLow);
-        // Set items to the tableView
-        List<DocumentFX> filtered = isBlank(filter) ? docs : docs.stream().filter(filterDoc).collect(Collectors.toList());
+            Predicate<DocumentFX> filterDoc = doc ->
+                    !isBlank(doc.getDocNumber()) && doc.getDocNumber().toLowerCase().contains(filterLow)
+                            || doc.getKindName().toLowerCase().contains(filterLow)
+                            || doc.getBranchName().toLowerCase().contains(filterLow)
+                            || doc.getDocStatusName().getTitle().toLowerCase().contains(filterLow)
+                            || Double.toString(doc.getSumDoc()).contains(filterLow)
+                            || doc.operDayDateProperty().get().contains(filterLow)
+                            || doc.docDateProperty().get().contains(filterLow);
+            filtered = docs.stream().filter(filterDoc).collect(Collectors.toList());
+        }
 
         this.documents = FXCollections.observableList(filtered);
         tblDocuments.setItems(this.documents);
