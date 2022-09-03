@@ -106,11 +106,19 @@ public class MainCtl implements Initializable {
     private final ChangeListener<StorageUnitFX> selectStorageUnitListener; // select row in StorageUnits table
     private final ChangeListener<Boolean> burningListener; // if it's burning
 
-    Predicate<StorageUnitFX> disableBurn =
-            su -> su == null || Strings.isBlank( su.getIsoFileName() )
+    Predicate<StorageUnitFX> disableIsoLoad =
+            su -> su == null || !Strings.isBlank(su.getIsoFileName())
                     || !Collections.unmodifiableList(
                             Arrays.asList(StorageUnitStatus.READY_TO_RECORDING, StorageUnitStatus.RECORDED)
-                        ).contains( su.getStorageUnitStatus() );
+                        )
+                    .contains(su.getStorageUnitStatus());
+
+    Predicate<StorageUnitFX> disableBurn =
+            su -> su == null || Strings.isBlank(su.getIsoFileName())
+                    || !Collections.unmodifiableList(
+                        Arrays.asList(StorageUnitStatus.READY_TO_RECORDING, StorageUnitStatus.RECORDED)
+                        )
+                    .contains(su.getStorageUnitStatus());
 
     //endregion
 
@@ -150,7 +158,7 @@ public class MainCtl implements Initializable {
             }
         };
         this.selectStorageUnitListener = (o, old, selectedSU) -> {
-                    butIsoLoad.setDisable( disableBurn.test(selectedSU));
+                    butIsoLoad.setDisable( disableIsoLoad.test(selectedSU) );
                     butIsoCreate.setDisable(selectedSU == null || !selectedSU.isPresent());
                     butBurn.setDisable( disableBurn.test(selectedSU) || this.state.isBurning() );
                     butDelete.setDisable(selectedSU == null || Strings.isBlank(selectedSU.getIsoFileName()));
