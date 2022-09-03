@@ -74,7 +74,6 @@ public class MainCtl implements Initializable {
 
     // Кнопки
     @FXML private Button butIsoLoad;
-    @FXML private Button butRefreshEX;
     @FXML private Button butBurn;
     @FXML private Button butDelete;
     @FXML private Button butCheckSum;
@@ -159,7 +158,7 @@ public class MainCtl implements Initializable {
         };
         this.selectStorageUnitListener = (o, old, selectedSU) -> {
                     butIsoLoad.setDisable( disableIsoLoad.test(selectedSU) );
-                    butIsoCreate.setDisable(selectedSU == null || !selectedSU.isPresent());
+                    butIsoCreate.setDisable(selectedSU == null || selectedSU.isPresent());
                     butBurn.setDisable( disableBurn.test(selectedSU) || this.state.isBurning() );
                     butDelete.setDisable(selectedSU == null || Strings.isBlank(selectedSU.getIsoFileName()));
                     butCheckSum.setDisable(selectedSU == null);
@@ -307,14 +306,6 @@ public class MainCtl implements Initializable {
         if( ke.getCode() == KeyCode.ENTER ) {
             onReload(null);
         }
-    }
-
-    /**
-     * Refresh filecache for EX list
-     * */
-    @FXML  public void onRefreshEX(ActionEvent av) {
-        logger.debug("");
-        mainSrv.readFileCacheAsync();
     }
 
     /**

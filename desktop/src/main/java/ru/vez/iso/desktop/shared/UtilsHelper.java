@@ -181,20 +181,20 @@ public class UtilsHelper {
      * */
     public static String getDiskLabel() {
 
-        ButtonType btBase = new ButtonType("Основной");
-        ButtonType btReserve = new ButtonType("Запасной");
+        ButtonType btBase = new ButtonType("Основная копия");
+        ButtonType btReserve = new ButtonType("Резервная копия");
         ButtonType btCancel =  new ButtonType("Отмена", ButtonBar.ButtonData.CANCEL_CLOSE);
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
                 "Выбор типа носителя",
                 btBase, btReserve, btCancel);
         alert.setTitle("Внимание!");
-        alert.setHeaderText("Запись ISO-образа карточки ЕХ на диск");
+        alert.setHeaderText("Выберите метку, которая будет установлена на диск");
 
         ButtonType choice = alert.showAndWait().orElse(btCancel);
         if (btBase.equals(choice)) {
             return "Основной";
         } else if (btReserve.equals(choice)) {
-            return "Запасной";
+            return "Резервный";
         }
         return "";
     }
