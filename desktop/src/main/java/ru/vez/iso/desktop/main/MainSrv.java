@@ -3,8 +3,6 @@ package ru.vez.iso.desktop.main;
 import ru.vez.iso.desktop.burn.RecorderInfo;
 import ru.vez.iso.desktop.main.storeunits.StorageUnitFX;
 
-import java.nio.file.Path;
-
 public interface MainSrv {
 
     /**
@@ -33,13 +31,6 @@ public interface MainSrv {
      * Запрос на создание ISO файла (EX в статусе "Удален")
      * */
     void isoCreateAsync(StorageUnitFX storageUnit);
-
-    /**
-     * Проверка checkSum с данными сервера
-     * @throws RuntimeException если нет возможности прочитать данные checksum с диска или сервера
-     *@param objectId
-     * @param dirZip - путь к файлу DIR.zip  */
-    void checkSumAsync(String objectId, Path dirZip);
 
     /**
      * This method will reschedule "loadOpsDay" with the refreshPeriod

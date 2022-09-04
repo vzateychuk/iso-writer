@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 /**
  * Service to get StorageUnits from backend
  * */
-public class StorageUnitsSrvImpl implements StorageUnitsSrv {
+public class StorageUnitsServiceImpl implements StorageUnitsService {
 
     private static final Logger logger = LogManager.getLogger();
     private static final String API_STORAGE_UNITS = "/abdd/storageunits";
@@ -28,7 +28,7 @@ public class StorageUnitsSrvImpl implements StorageUnitsSrv {
     private final StorageUnitsHttpClient httpClient;
     private final DataMapper<StorageUnitDto, StorageUnitFX> mapper;
 
-    public StorageUnitsSrvImpl(
+    public StorageUnitsServiceImpl(
             ApplicationState state,
             StorageUnitsHttpClient httpClient,
             DataMapper<StorageUnitDto, StorageUnitFX> mapper
@@ -103,14 +103,15 @@ public class StorageUnitsSrvImpl implements StorageUnitsSrv {
     }
 
     @Override
-    public String getHashCode(String objectId) {
+    public String getHashValue(String storageUnitId) {
         // Get Authentication token or raise exception
         final String token = this.getAuthTokenOrException(this.state);
         // API
-        final String API = state.getSettings().getBackendAPI() + API_STORAGE_UNITS + "/" + objectId;
+        final String API = state.getSettings().getBackendAPI() + API_STORAGE_UNITS + "/" + storageUnitId;
         // Act
         StorageUnitDto dto = this.httpClient.getHashCode(API, token).getData();
-        return Optional.ofNullable(dto.getHashSum()).orElse("");
+        return Optional.ofNullable(dto.getHashSum())
+                .orElseThrow(()-> new RuntimeException("unable to get hash code for storageUnitId: " + storageUnitId));
     }
 
     @Override

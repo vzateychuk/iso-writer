@@ -13,8 +13,8 @@ import ru.vez.iso.desktop.shared.UtilsHelper;
 import ru.vez.iso.desktop.state.ApplicationState;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -86,18 +86,14 @@ public class DocSrvImpl implements DocSrv {
     }
 
     @Override
-    public boolean compareCheckSum(Path checksumFile, Path dirZip) {
+    public String getFileHash(Path dirZip) {
 
         final MessageDigest gostDigest = DigestUtils.getDigest(MyConst.ALGO_GOST);
 
         try ( InputStream dirZipFis = Files.newInputStream(dirZip) ) {
-            String expectedHash = new String(Files.readAllBytes(checksumFile), StandardCharsets.UTF_8);
-            String actualHash = Hex.encodeHexString(DigestUtils.digest(gostDigest, dirZipFis));
-            logger.debug("Compare Hash\nexpect:\t'{}'\nactual:\t'{}'", expectedHash, actualHash);
-            return actualHash.equals(expectedHash);
-        } catch (Exception ex) {
-            logger.error("Unable to compare checksums for: {}, {}", checksumFile, dirZip, ex);
-            throw new RuntimeException(ex);
+            return Hex.encodeHexString(DigestUtils.digest(gostDigest, dirZipFis));
+        } catch (IOException ex) {
+            throw new RuntimeException("Unable to calculate checksums for file: "+dirZip, ex);
         }
     }
 

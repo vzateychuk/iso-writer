@@ -22,8 +22,6 @@ import ru.vez.iso.desktop.shared.*;
 import ru.vez.iso.desktop.state.ApplicationState;
 
 import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -76,7 +74,6 @@ public class MainCtl implements Initializable {
     @FXML private Button butIsoLoad;
     @FXML private Button butBurn;
     @FXML private Button butDelete;
-    @FXML private Button butCheckSum;
     @FXML public Button butIsoCreate;
 
     // RadioButtons - filter StoreUnits
@@ -161,7 +158,6 @@ public class MainCtl implements Initializable {
                     butIsoCreate.setDisable(selectedSU == null || selectedSU.isPresent());
                     butBurn.setDisable( disableBurn.test(selectedSU) || this.state.isBurning() );
                     butDelete.setDisable(selectedSU == null || Strings.isBlank(selectedSU.getIsoFileName()));
-                    butCheckSum.setDisable(selectedSU == null);
                 };
 
         this.burningListener = (o, old, isBurning) -> Platform.runLater( () -> {
@@ -378,28 +374,6 @@ public class MainCtl implements Initializable {
         StorageUnitFX su = tblStorageUnits.getSelectionModel().selectedItemProperty().getValue();
         logger.debug(su.getIsoFileName());
         mainSrv.deleteFileAsync(su.getIsoFileName());
-    }
-
-    /**
-     * Checking the control sum of ISO files
-     * */
-    @FXML public void onCheckSum(ActionEvent ev) {
-
-        logger.debug("");
-        String currentPath = this.state.getZipDir();
-        if (Strings.isBlank(currentPath)) {
-            this.msgSrv.news("Невозможно выполнить проверку контрольной суммы. DIR.zip не открыт");
-            logger.warn("DIR.zip path not defined, exit");
-            return;
-        }
-
-        Path dirZip = Paths.get(currentPath, MyConst.DIR_ZIP);
-
-        logger.debug(currentPath);
-
-        StorageUnitFX current = tblStorageUnits.getSelectionModel().selectedItemProperty().getValue();
-
-        mainSrv.checkSumAsync(current.getObjectId(), dirZip);
     }
 
     //region PRIVATE

@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Service to get StorageUnits from backend
  * */
-public interface StorageUnitsSrv {
+public interface StorageUnitsService {
 
     default String getAuthTokenOrException(ApplicationState state) {
         UserDetails userData = state.getUserDetails();
@@ -37,7 +37,7 @@ public interface StorageUnitsSrv {
     /**
      * Get storage-unit's hash code from backend
      * */
-    String getHashCode(String objectId);
+    String getHashValue(String storageUnitId);
 
     /**
      * Send HttpPost about complete status

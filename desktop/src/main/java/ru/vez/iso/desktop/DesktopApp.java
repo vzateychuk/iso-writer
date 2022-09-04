@@ -29,8 +29,8 @@ import ru.vez.iso.desktop.main.operdays.http.OperationDayHttpClient;
 import ru.vez.iso.desktop.main.operdays.http.OperationDayHttpClientImpl;
 import ru.vez.iso.desktop.main.operdays.http.OperationDayHttpClientNoop;
 import ru.vez.iso.desktop.main.storeunits.StorageUnitMapper;
-import ru.vez.iso.desktop.main.storeunits.StorageUnitsSrv;
-import ru.vez.iso.desktop.main.storeunits.StorageUnitsSrvImpl;
+import ru.vez.iso.desktop.main.storeunits.StorageUnitsService;
+import ru.vez.iso.desktop.main.storeunits.StorageUnitsServiceImpl;
 import ru.vez.iso.desktop.main.storeunits.http.StorageUnitsHttpClient;
 import ru.vez.iso.desktop.main.storeunits.http.StorageUnitsHttpClientImpl;
 import ru.vez.iso.desktop.main.storeunits.http.StorageUnitsHttpClientNoop;
@@ -124,18 +124,18 @@ public class DesktopApp extends Application {
         StorageUnitsHttpClient httpClientSU = runMode != RunMode.NOOP
                 ? new StorageUnitsHttpClientImpl()
                 : new StorageUnitsHttpClientNoop();
-        StorageUnitsSrv storageUnitsSrv = new StorageUnitsSrvImpl(state, httpClientSU, storageUnitMapper);
+        StorageUnitsService storageUnitSrv = new StorageUnitsServiceImpl(state, httpClientSU, storageUnitMapper);
 
         // Burning IMAPI2 service
         BurnSrv burner = new BurnSrvImpl();
-        MainSrv mainSrv  = new MainSrvImpl(state, exec, msgSrv, operDaysSrv, storageUnitsSrv, fileCache, burner);
+        MainSrv mainSrv  = new MainSrvImpl(state, exec, msgSrv, operDaysSrv, storageUnitSrv, fileCache, burner);
 
         // LoginService
         HttpClientWrap httpClientLogin = runMode != RunMode.NOOP ? new HttpClientImpl() : new HttpClientLoginNoopImpl();
         LoginSrv loginSrv = new LoginSrvImpl(state, exec, msgSrv, httpClientLogin);
 
         // ViewCache with views
-        Map<ViewType, Parent> viewCache = buildViewCache(state,exec,msgSrv,settingsSrv,burner,loginSrv,mainSrv);
+        Map<ViewType, Parent> viewCache = buildViewCache(state,exec,msgSrv,settingsSrv,burner,loginSrv,mainSrv,storageUnitSrv);
 
         //endregion
 
@@ -233,7 +233,8 @@ public class DesktopApp extends Application {
             SettingsSrv settingsSrv,
             BurnSrv burnSrv,
             LoginSrv loginSrv,
-            MainSrv mainSrv) throws IOException {
+            MainSrv mainSrv,
+            StorageUnitsService suSrv) throws IOException {
 
         Map<ViewType, Parent> viewCache = new HashMap<>();
 
@@ -246,7 +247,7 @@ public class DesktopApp extends Application {
         // DocumentView + DocumentService
         DocMapper mapper = new DocMapperImpl();
         DocSrv docSrv = new DocSrvImpl(state, exec, mapper, msgSrv);
-        viewCache.put(ViewType.DOCUMENTS, buildView( ViewType.DOCUMENTS, t->new DocumentCtl(state, docSrv, msgSrv)) );
+        viewCache.put(ViewType.DOCUMENTS, buildView( ViewType.DOCUMENTS, t->new DocumentCtl(state, docSrv, msgSrv, suSrv)) );
 
         // MainView + MainService
         viewCache.put(ViewType.MAIN_VIEW, buildView(ViewType.MAIN_VIEW, t->new MainCtl(state, mainSrv, msgSrv)));

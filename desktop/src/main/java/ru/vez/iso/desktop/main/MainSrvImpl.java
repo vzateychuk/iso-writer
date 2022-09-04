@@ -1,7 +1,5 @@
 package ru.vez.iso.desktop.main;
 
-import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.burn.BurnSrv;
@@ -10,19 +8,15 @@ import ru.vez.iso.desktop.main.filecache.FileCacheSrv;
 import ru.vez.iso.desktop.main.operdays.OperatingDayFX;
 import ru.vez.iso.desktop.main.operdays.OperationDaysSrv;
 import ru.vez.iso.desktop.main.storeunits.StorageUnitFX;
-import ru.vez.iso.desktop.main.storeunits.StorageUnitsSrv;
+import ru.vez.iso.desktop.main.storeunits.StorageUnitsService;
 import ru.vez.iso.desktop.main.storeunits.exceptions.Http404Exception;
 import ru.vez.iso.desktop.shared.MessageSrv;
-import ru.vez.iso.desktop.shared.MyConst;
 import ru.vez.iso.desktop.shared.UtilsHelper;
 import ru.vez.iso.desktop.state.ApplicationState;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.MessageDigest;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.*;
@@ -36,7 +30,7 @@ public class MainSrvImpl implements MainSrv {
     private final ScheduledExecutorService exec;
     private final MessageSrv msgSrv;
     private final OperationDaysSrv operDaysSrv;
-    private final StorageUnitsSrv storageUnitsSrv;
+    private final StorageUnitsService storageUnitsSrv;
     private final FileCacheSrv fileCacheSrv;
     private final BurnSrv burner;
 
@@ -49,7 +43,7 @@ public class MainSrvImpl implements MainSrv {
             ScheduledExecutorService exec,
             MessageSrv msgSrv,
             OperationDaysSrv operDaysSrv,
-            StorageUnitsSrv storageUnitsSrv,
+            StorageUnitsService storageUnitsSrv,
             FileCacheSrv fileCacheSrv,
             BurnSrv burner) {
         this.state = state;
@@ -177,31 +171,6 @@ public class MainSrvImpl implements MainSrv {
         CompletableFuture.runAsync(() -> {
             this.storageUnitsSrv.requestCreateISO(su.getObjectId());
             this.msgSrv.news("Начат процесс формирования iso-образа для ЕХ: " + su.getNumberSu());
-        }, exec)
-                .exceptionally((ex) -> {
-                    logger.error(ex);
-                    return null;
-                });
-    }
-
-    @Override
-    public void checkSumAsync(String objectId, Path dirZip) {
-
-        this.msgSrv.news("Начинаю проверку ключа для EX:" + objectId + " (" + dirZip + ")");
-
-        CompletableFuture.supplyAsync(() -> {
-            final MessageDigest gostDigest = DigestUtils.getDigest(MyConst.ALGO_GOST);
-            try (InputStream dirZipFis = Files.newInputStream(dirZip)) {
-                String actualHash = Hex.encodeHexString(DigestUtils.digest(gostDigest, dirZipFis));
-                String expectedHash = this.storageUnitsSrv.getHashCode(objectId);
-                logger.debug("Compare Hash\nexpect(on server):\t'{}'\nactual(on disk):\t'{}'", expectedHash, actualHash);
-                String result = expectedHash.equals(actualHash) ? "УСПЕШНО" : "НЕ УДАЛАСЬ";
-                this.msgSrv.news("Проверка ключа: " + result + " (" + dirZip + ")");
-            } catch (Exception ex) {
-                logger.error("Unable to compare checksums for: {}", dirZip, ex);
-                throw new RuntimeException(ex);
-            }
-            return null;
         }, exec)
                 .exceptionally((ex) -> {
                     logger.error(ex);

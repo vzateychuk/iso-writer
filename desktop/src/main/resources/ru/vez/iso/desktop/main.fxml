@@ -234,24 +234,6 @@
                                         <String fx:value="primary"/>
                                     </styleClass>
                                 </Button>
-                                <Button fx:id="butCheckSum" disable="true" onAction="#onCheckSum">
-                                    <tooltip>
-                                        <Tooltip text="Выполнить проверку CheckSum со значением на ABDD сервере"/>
-                                    </tooltip>
-                                    <graphic>
-                                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true"
-                                                   preserveRatio="true">
-                                            <image>
-                                                <Image url="@image/check-primary.png"/>
-                                            </image>
-                                        </ImageView>
-                                    </graphic>
-                                    <styleClass>
-                                        <String fx:value="desktop-btn-round"/>
-                                        <String fx:value="primary"/>
-                                    </styleClass>
-                                </Button>
-
                             </children>
                             <padding>
                                 <Insets left="5.0" right="5.0"/>

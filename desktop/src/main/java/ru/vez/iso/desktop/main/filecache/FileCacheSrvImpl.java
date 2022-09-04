@@ -67,8 +67,8 @@ public class FileCacheSrvImpl implements FileCacheSrv {
         try {
             Files.delete(filePath);
         } catch (IOException ex) {
-            logger.warn("unable to delete file: {}", filePath, ex);
-            throw new RuntimeException("unable to delete file: " + filePath);
+            // logger.error("unable to delete file: {}", filePath, ex);
+            throw new RuntimeException("unable to delete file: " + filePath, ex);
         }
         return sets.getIsoCachePath();
     }

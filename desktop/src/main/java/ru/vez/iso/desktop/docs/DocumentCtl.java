@@ -22,15 +22,15 @@ import ru.vez.iso.desktop.docs.reestr.RFileType;
 import ru.vez.iso.desktop.docs.reestr.Reestr;
 import ru.vez.iso.desktop.docs.reestr.ReestrDoc;
 import ru.vez.iso.desktop.docs.reestr.ReestrFile;
-import ru.vez.iso.desktop.shared.AppSettings;
-import ru.vez.iso.desktop.shared.MessageSrv;
-import ru.vez.iso.desktop.shared.MyConst;
+import ru.vez.iso.desktop.main.storeunits.StorageUnitsService;
+import ru.vez.iso.desktop.shared.*;
 import ru.vez.iso.desktop.state.ApplicationState;
 
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -68,11 +68,13 @@ public class DocumentCtl implements Initializable {
     private ObservableList<DocumentFX> documents;
     private final DocSrv docSrv;
     private final MessageSrv msgSrv;
+    private final StorageUnitsService storageUnitsSrv;
 
-    public DocumentCtl(ApplicationState appState, DocSrv srv, MessageSrv msgSrv) {
+    public DocumentCtl(ApplicationState appState, DocSrv srv, MessageSrv msgSrv, StorageUnitsService suSrv) {
         this.state = appState;
         this.docSrv = srv;
         this.msgSrv = msgSrv;
+        this.storageUnitsSrv = suSrv;
     }
 
     @Override
@@ -109,7 +111,7 @@ public class DocumentCtl implements Initializable {
         FileChooser chooseFile = new FileChooser();
         chooseFile.setInitialDirectory(Paths.get(System.getProperty("user.home")).toFile());
         chooseFile.getExtensionFilters().clear();
-        chooseFile.getExtensionFilters().add(new FileChooser.ExtensionFilter(MyConst.DIR_ZIP, "*.zip"));
+        chooseFile.getExtensionFilters().add(new FileChooser.ExtensionFilter(MyConst.DIR_ZIP_FILE, "*.zip"));
 
         File chosen = chooseFile.showOpenDialog(null);
 
@@ -222,26 +224,52 @@ public class DocumentCtl implements Initializable {
     // check hashes for DIR.zip and checksum
     @FXML void onCheckSum(ActionEvent ev) {
 
-        String currentPath = this.state.getZipDir();
-        if (isBlank(currentPath)) {
+        // проверяем есть ли ZipDir с разархивированными документами
+        String curPath = this.state.getZipDir();
+        if (isBlank(curPath)) {
             this.msgSrv.news("Невозможно выполнить проверку контрольной суммы. Не открыт DIR.zip");
             logger.warn("DIR.zip path not defined, exit");
             return;
         }
 
-        Path checksum = Paths.get(currentPath, "checksum.txt");
-        Path dirZip = Paths.get(currentPath, MyConst.DIR_ZIP);
-        if (Files.exists(checksum) && Files.exists(dirZip)) {
-            logger.debug("Open: {}", checksum);
-            String msg = docSrv.compareCheckSum(checksum, dirZip)
-                        ? "HASH-суммы в checksum.txt и DIR.zip совпадают"
-                        : "HASH-суммы в checksum.txt и DIR.zip различаются";
-            this.msgSrv.news(msg);
-        } else {
-            logger.warn("Not found: '{}' or '{}'", checksum, dirZip);
-            this.msgSrv.news("Не найден: " + checksum);
+        // проверяем доступны ли файл checksum.txt и DIR.zip
+        Path checksumPath = Paths.get(curPath, MyConst.CHECKSUM_FILE);
+        Path dirZipPath = Paths.get(curPath, MyConst.DIR_ZIP_FILE);
+        if (!Files.exists(checksumPath) || !Files.exists(dirZipPath)) {
+            this.msgSrv.news("Невозможно прочитать файлы «checksum.txt», «DIR.zip». Файлы повреждены");
+            logger.warn(String.format("Not exists %s or %s, exit", MyConst.CHECKSUM_FILE, MyConst.DIR_ZIP_FILE) );
+            return;
         }
 
+        // проверяем есть ли подключение
+        boolean authenticated = this.state.getUserDetails() != UserDetails.NOT_SIGNED_USER;
+        String warn = "Авторизация в Подсистеме не выполнена. Проверка целостности диска будет произведена без обращения к Подсистеме";
+        if (!authenticated && !UtilsHelper.getConfirmation(warn)) {
+            this.msgSrv.news("Проверка контрольной суммы прервана.");
+            logger.debug("Operation cancelled by user");
+            return;
+        }
+
+        // проверяем совпадение значений HASH
+        try {
+            String checksumTxtHash = new String(Files.readAllBytes(checksumPath), StandardCharsets.UTF_8);
+            String dirZipHash = docSrv.getFileHash(dirZipPath);
+            String serverHash = authenticated ? storageUnitsSrv.getHashValue(this.state.getReestr().getStorageUnitId()) : "";
+
+            logger.debug("Checksum hash checking.\n" +
+                    "checksum.txt:\t{}\nDir.zip     :\t{}\nServer      :\t{}", checksumTxtHash, dirZipHash, serverHash);
+
+            String msg = "Проверка целостности диска выполнена";
+            if (dirZipHash.equals(checksumTxtHash) && (!authenticated || dirZipHash.equals(serverHash))) {
+                msg += "HASH-суммы единицы хранения совпадают.";
+            } else {
+                msg += "Обнаружены несовпадения хэш-сумм.";
+            }
+            UtilsHelper.getConfirmation(msg);
+        } catch (Exception ex) {
+            logger.error("unable to check hash", ex);
+            this.msgSrv.news("Ошибка при проверке контрольной суммы");
+        }
     }
 
     //region PRIVATE
