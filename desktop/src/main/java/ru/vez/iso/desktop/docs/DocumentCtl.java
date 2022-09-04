@@ -20,8 +20,8 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
 import ru.vez.iso.desktop.docs.reestr.RFileType;
 import ru.vez.iso.desktop.docs.reestr.Reestr;
-import ru.vez.iso.desktop.docs.reestr.ReestrDoc;
 import ru.vez.iso.desktop.docs.reestr.ReestrFile;
+import ru.vez.iso.desktop.helper.ReestrHelper;
 import ru.vez.iso.desktop.main.storeunits.StorageUnitsService;
 import ru.vez.iso.desktop.shared.*;
 import ru.vez.iso.desktop.state.ApplicationState;
@@ -58,7 +58,8 @@ public class DocumentCtl implements Initializable {
     @FXML private TableColumn<DocumentFX, String> sumDoc;
 
     @FXML private Button butOpenZip;
-    @FXML private Button butCheckSum;
+    @FXML private Button butCheckSumDisk;
+    @FXML private Button butCheckSumDoc;
     @FXML private Button butFilter;
     @FXML private Button butViewDoc;
     @FXML public Button butExploreDoc;
@@ -106,7 +107,7 @@ public class DocumentCtl implements Initializable {
     }
 
     // open ChooseFile dialog and fire service to load documents from ZIP
-    @FXML void onOpenZip(ActionEvent ev) {
+    @FXML public void onOpenZip(ActionEvent ev) {
 
         FileChooser chooseFile = new FileChooser();
         chooseFile.setInitialDirectory(Paths.get(System.getProperty("user.home")).toFile());
@@ -128,9 +129,7 @@ public class DocumentCtl implements Initializable {
     }
 
     // open a document's file natively
-    @FXML void onViewDoc(ActionEvent ev) {
-
-        logger.debug("");
+    @FXML public void onViewDoc(ActionEvent ev) {
 
         final Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
         if (desktop == null || !desktop.isSupported(Desktop.Action.OPEN)) {
@@ -140,19 +139,15 @@ public class DocumentCtl implements Initializable {
 
         // Save document from the Reestr to file-cache first
         DocumentFX doc = tblDocuments.getSelectionModel().getSelectedItem();
-        Reestr reestr = this.state.getReestr();
-        ReestrDoc reestrDoc = reestr.getDocs().stream()
-                .filter(d -> d.getData().getObjectId().equals(doc.getObjectId()))
-                .findAny()
-                .orElseThrow(() -> new RuntimeException("not found in REESTR, exit: " + doc.getObjectId()));
-        ReestrFile file = reestrDoc.getFiles().stream()
-                .filter(f -> f.getType().equals(RFileType.PF))
-                .findAny()
-                .orElseThrow(() -> new RuntimeException(RFileType.PF.getTitle() + " not found in REESTR, exit"));
-        AppSettings sets = this.state.getSettings();
-        Path unzippedPath = Paths.get(sets.getIsoCachePath(), MyConst.UNZIP_FOLDER, doc.getObjectId(), file.getPath());
+        logger.debug("opening doc: {}", doc.getDocNumber());
 
-        logger.debug("open: {}", unzippedPath);
+        Reestr reestr = this.state.getReestr();
+        ReestrFile pfFile = ReestrHelper.findFileInReestrOrException(reestr, doc.getObjectId(), RFileType.PF);
+        AppSettings sets = this.state.getSettings();
+        Path unzippedPath = Paths.get(sets.getIsoCachePath(), MyConst.UNZIP_FOLDER, doc.getObjectId(), pfFile.getPath());
+
+        logger.debug("open file: {}", unzippedPath);
+
         try {
             desktop.open(unzippedPath.toFile());
         } catch (IOException ex) {
@@ -199,7 +194,7 @@ public class DocumentCtl implements Initializable {
         }
     }
 
-    @FXML void onFilter(ActionEvent ev) {
+    @FXML public void onFilter(ActionEvent ev) {
 
         logger.debug(this.txtFilter.getText());
 
@@ -221,8 +216,8 @@ public class DocumentCtl implements Initializable {
         }
     }
 
-    // check hashes for DIR.zip and checksum
-    @FXML void onCheckSum(ActionEvent ev) {
+    // check hashes for: DIR.zip, checksum.txt and server
+    @FXML public void onCheckSumDisk(ActionEvent ev) {
 
         // проверяем есть ли ZipDir с разархивированными документами
         String curPath = this.state.getZipDir();
@@ -268,7 +263,45 @@ public class DocumentCtl implements Initializable {
             UtilsHelper.getConfirmation(msg);
         } catch (Exception ex) {
             logger.error("unable to check hash", ex);
-            this.msgSrv.news("Ошибка при проверке контрольной суммы");
+            this.msgSrv.news("Ошибка при проверке контрольной суммы диска.");
+        }
+    }
+
+    // check hashes for document and reestr value
+    @FXML public void onCheckSumDoc(ActionEvent ev) {
+
+        DocumentFX doc = tblDocuments.getSelectionModel().getSelectedItem();
+        String cachePath = state.getSettings().getIsoCachePath();
+        // find the document in reestr
+        Reestr reestr = this.state.getReestr();
+        ReestrFile jsonFile = ReestrHelper.findFileInReestrOrException(reestr, doc.getObjectId(), RFileType.JSON);
+        Path jsonFilePath = Paths.get(cachePath, MyConst.UNZIP_FOLDER, doc.getObjectId(), jsonFile.getPath());
+        logger.debug("jsonFilePath: " + jsonFilePath);
+
+        // проверяем есть ли json файл в кэш фактически
+        if (!Files.exists(jsonFilePath)) {
+            this.msgSrv.news("Невозможно выполнить проверку контрольной суммы документа. JSON файл не найден.");
+            logger.error("file not found, exit: " + jsonFilePath);
+            return;
+        }
+
+        try {
+            String expectedHash = jsonFile.getHash();
+            String jsonFileHash = docSrv.getFileHash(jsonFilePath);
+
+            logger.debug("Document #'{}'(id={}) hash checking.\nReestr   hash:\t{}\nJsonFile hash:\t{}",
+                    doc.getDocNumber(), doc.getObjectId(), expectedHash, jsonFileHash);
+
+            String msg = "Проверка целостности документа выполнена";
+            if (jsonFileHash.equals(expectedHash)) {
+                msg += " успешно.";
+            } else {
+                msg += ". Обнаружены несовпадения хэш-сумм.";
+            }
+            UtilsHelper.getConfirmation(msg);
+        } catch (Exception ex) {
+            logger.error("unable to check hash", ex);
+            this.msgSrv.news("Ошибка при проверке контрольной суммы документа.");
         }
     }
 
@@ -308,7 +341,8 @@ public class DocumentCtl implements Initializable {
         this.documents = FXCollections.observableList(filtered);
         tblDocuments.setItems(this.documents);
         // Enable/disable disk-related buttons
-        butCheckSum.setDisable(filtered.size()==0);
+        butCheckSumDisk.setDisable(filtered.size()==0);
+        butCheckSumDoc.setDisable(filtered.size()==0);
     }
 
     //endregion

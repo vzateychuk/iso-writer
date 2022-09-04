@@ -61,10 +61,27 @@
                         <String fx:value="primary"/>
                     </styleClass>
                 </Button>
-                <Button fx:id="butCheckSum" disable="true" layoutX="170.0" layoutY="12.0" mnemonicParsing="false"
-                        onAction="#onCheckSum">
+                <Button fx:id="butCheckSumDisk" disable="true" layoutX="170.0" layoutY="12.0" mnemonicParsing="false"
+                        onAction="#onCheckSumDisk">
                     <tooltip>
-                        <Tooltip text="Проверить контрольную сумму (hash)"/>
+                        <Tooltip text="Проверка целостности диска"/>
+                    </tooltip>
+                    <graphic>
+                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@image/check-primary.png"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                    <styleClass>
+                        <String fx:value="desktop-btn-round"/>
+                        <String fx:value="primary"/>
+                    </styleClass>
+                </Button>
+                <Button fx:id="butCheckSumDoc" disable="true" layoutX="170.0" layoutY="12.0" mnemonicParsing="false"
+                        onAction="#onCheckSumDoc">
+                    <tooltip>
+                        <Tooltip text="Проверка целостности документа"/>
                     </tooltip>
                     <graphic>
                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
