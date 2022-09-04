@@ -12,5 +12,5 @@ public class MyConst {
 
     // Название алгоритма получение HASH суммы по ГОСТ
     public static final String ALGO_GOST = "GOST3411-2012-512";
-
+    public static final String SHA256 = "SHA-256";
 }

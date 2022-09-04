@@ -13,11 +13,12 @@ public interface DocSrv {
     void loadAsync(Path dirZip);
 
     /**
-     * Расчитывает checkSum файла dirZip
+     * Расчитывает checkSum файла по алгоритму algo
      * @throws RuntimeException если нет возможности прочитать данные
      *
-     * @param dirZip - путь к файлу DIR.zip
+     * @param path - путь к файлу
+     * @param algo - алгоритм, например MyConst.ALGO_GOST
      * */
-    String getFileHash(Path dirZip) throws IOException;
+    String calculateFileHash(Path path, String algo) throws IOException;
 
 }

@@ -248,13 +248,13 @@ public class DocumentCtl implements Initializable {
         // проверяем совпадение значений HASH
         try {
             String checksumTxtHash = new String(Files.readAllBytes(checksumPath), StandardCharsets.UTF_8);
-            String dirZipHash = docSrv.getFileHash(dirZipPath);
+            String dirZipHash = docSrv.calculateFileHash(dirZipPath, MyConst.ALGO_GOST);
             String serverHash = authenticated ? storageUnitsSrv.getHashValue(this.state.getReestr().getStorageUnitId()) : "";
 
             logger.debug("Checksum hash checking.\n" +
                     "checksum.txt:\t{}\nDir.zip     :\t{}\nServer      :\t{}", checksumTxtHash, dirZipHash, serverHash);
 
-            String msg = "Проверка целостности диска выполнена";
+            String msg = "Проверка целостности диска выполнена. ";
             if (dirZipHash.equals(checksumTxtHash) && (!authenticated || dirZipHash.equals(serverHash))) {
                 msg += "HASH-суммы единицы хранения совпадают.";
             } else {
@@ -287,7 +287,7 @@ public class DocumentCtl implements Initializable {
 
         try {
             String expectedHash = jsonFile.getHash();
-            String jsonFileHash = docSrv.getFileHash(jsonFilePath);
+            String jsonFileHash = docSrv.calculateFileHash(jsonFilePath, MyConst.SHA256);
 
             logger.debug("Document #'{}'(id={}) hash checking.\nReestr   hash:\t{}\nJsonFile hash:\t{}",
                     doc.getDocNumber(), doc.getObjectId(), expectedHash, jsonFileHash);

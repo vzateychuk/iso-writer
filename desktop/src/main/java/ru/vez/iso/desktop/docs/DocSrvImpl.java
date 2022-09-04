@@ -86,14 +86,14 @@ public class DocSrvImpl implements DocSrv {
     }
 
     @Override
-    public String getFileHash(Path dirZip) {
+    public String calculateFileHash(Path filePath, String algorithm) {
 
-        final MessageDigest gostDigest = DigestUtils.getDigest(MyConst.ALGO_GOST);
+        final MessageDigest digest = DigestUtils.getDigest(algorithm);
 
-        try ( InputStream dirZipFis = Files.newInputStream(dirZip) ) {
-            return Hex.encodeHexString(DigestUtils.digest(gostDigest, dirZipFis));
+        try ( InputStream fis = Files.newInputStream(filePath) ) {
+            return Hex.encodeHexString(DigestUtils.digest(digest, fis));
         } catch (IOException ex) {
-            throw new RuntimeException("Unable to calculate checksums for file: "+dirZip, ex);
+            throw new RuntimeException("Unable to calculate checksums for file: " + filePath, ex);
         }
     }
 
