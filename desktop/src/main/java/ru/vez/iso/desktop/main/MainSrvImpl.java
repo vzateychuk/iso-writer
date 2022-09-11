@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.burn.BurnSrv;
 import ru.vez.iso.desktop.burn.RecorderInfo;
-import ru.vez.iso.desktop.main.exceptions.FileCacheException;
+import ru.vez.iso.desktop.exceptions.FileCacheException;
 import ru.vez.iso.desktop.main.filecache.FileCacheSrv;
 import ru.vez.iso.desktop.main.operdays.OperatingDayFX;
 import ru.vez.iso.desktop.main.operdays.OperationDaysSrv;

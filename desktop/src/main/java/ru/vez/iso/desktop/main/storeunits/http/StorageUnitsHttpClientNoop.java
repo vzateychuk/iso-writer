@@ -46,14 +46,6 @@ public class StorageUnitsHttpClientNoop implements StorageUnitsHttpClient {
         byte[] strToBytes = url.getBytes();
 
         try {
-            Thread.sleep(500L);
-        } catch (InterruptedException ex) {
-            logger.error(ex);
-            // Restore interrupted state...
-            Thread.currentThread().interrupt();
-        }
-
-        try {
             Files.write(path, strToBytes);
         } catch (IOException ex) {
             logger.error(ex);

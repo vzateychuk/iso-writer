@@ -1,4 +1,4 @@
-package ru.vez.iso.desktop.main.exceptions;
+package ru.vez.iso.desktop.exceptions;
 
 public class FileCacheException extends RuntimeException {
 

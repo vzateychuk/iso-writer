@@ -7,6 +7,7 @@ import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.vez.iso.desktop.exceptions.FileCacheException;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -17,6 +18,7 @@ import java.util.Comparator;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -35,9 +37,11 @@ public class UtilsHelper {
      * */
     public static void makeDelaySec(int delay) {
         try {
-            Thread.sleep(delay * 1000);
+            Thread.sleep(delay * 1000L);
         } catch (InterruptedException e) {
             e.printStackTrace();
+            // Restore interrupted state...
+            Thread.currentThread().interrupt();
         }
     }
 
@@ -50,27 +54,25 @@ public class UtilsHelper {
      * */
     public static int parseIntOrDefault(String text, String defaultVal) {
 
-        int val = 1;
         try{
-            val = Integer.parseInt(text);
-            if (val < 1 || val > 100) {
+            int val = Integer.parseInt(text);
+            if (val > 1 && val < 100) {
+                return val;
+            } else {
                 logger.warn("Incorrect value {}, default {} will be used", text, defaultVal);
-                val = Integer.parseInt(defaultVal);
             }
         } catch (NumberFormatException ex){
-            logger.warn("unable to convert to int, value: " + text);
-            val = Integer.parseInt(defaultVal);
+            logger.warn("unable to convert to int, value: {}", text);
         }
-        return val;
+        return Integer.parseInt(defaultVal);
     }
 
     /**
      * Clear folder with subfolders
      * */
     public static void clearFolder(Path unzippedPath) {
-        try {
-            Files.walk(unzippedPath)
-                    .sorted(Comparator.reverseOrder())
+        try ( Stream<Path> pathStream = Files.walk(unzippedPath) ) {
+            pathStream.sorted( Comparator.reverseOrder() )
                     .map(Path::toFile)
                     .forEach(File::delete);
         } catch (IOException ex) {
@@ -80,7 +82,7 @@ public class UtilsHelper {
         try {
             Files.createDirectories(unzippedPath);
         } catch (IOException ex) {
-            throw new RuntimeException("unable to create folder: " + unzippedPath, ex);
+            throw new FileCacheException("unable to create folder: " + unzippedPath, ex);
         }
     }
 
@@ -90,21 +92,22 @@ public class UtilsHelper {
     public static void isoToFolder(Path isoToRead, Path saveLocation) throws IOException {
 
         //Give the file and mention if this is treated as a read only file.
-        Iso9660FileSystem discFs = new Iso9660FileSystem(isoToRead.toFile(), true);
+        try (Iso9660FileSystem discFs = new Iso9660FileSystem(isoToRead.toFile(), true)) {
 
-        if ( !Files.exists(saveLocation) ) {
-            logger.debug("not exists, creating: {}", saveLocation);
-            Files.createDirectories(saveLocation);
-        }
+            if (!Files.exists(saveLocation)) {
+                logger.debug("not exists, creating: {}", saveLocation);
+                Files.createDirectories(saveLocation);
+            }
 
-        //Go through each file on the disc and save it.
-        for (Iso9660FileEntry singleFile : discFs) {
-            if (singleFile.isDirectory()) {
-                Path dir = Paths.get(saveLocation.toString(), singleFile.getName());
-                Files.createDirectories(dir);
-            } else {
-                Path tempFile = Paths.get(saveLocation.toString(), singleFile.getPath());
-                Files.copy(discFs.getInputStream(singleFile), tempFile, REPLACE_EXISTING);
+            //Go through each file on the disc and save it.
+            for (Iso9660FileEntry singleFile : discFs) {
+                if (singleFile.isDirectory()) {
+                    Path dir = Paths.get(saveLocation.toString(), singleFile.getName());
+                    Files.createDirectories(dir);
+                } else {
+                    Path tempFile = Paths.get(saveLocation.toString(), singleFile.getPath());
+                    Files.copy(discFs.getInputStream(singleFile), tempFile, REPLACE_EXISTING);
+                }
             }
         }
     }
@@ -132,24 +135,31 @@ public class UtilsHelper {
                     }
 
                     // write file content
-                    FileOutputStream fos = new FileOutputStream(newFile);
-                    int len;
-                    while ((len = zis.read(buffer)) > 0) {
-                        fos.write(buffer, 0, len);
-                    }
-                    fos.close();
+                    writeBufferToFile(buffer, zis, newFile);
                 }
                 zipEntry = zis.getNextEntry();
             }
             zis.closeEntry();
             zis.close();
         } catch (IOException ex) {
-            throw new RuntimeException("unable to unzip: " + zipPath, ex);
+            throw new FileCacheException("unable to unzip: " + zipPath, ex);
+        }
+    }
+
+    private static void writeBufferToFile(byte[] buffer, ZipInputStream zis, File newFile) throws IOException {
+
+        try (FileOutputStream fos = new FileOutputStream(newFile)) {
+            int len;
+            while ((len = zis.read(buffer)) > 0) {
+                fos.write(buffer, 0, len);
+            }
         }
     }
 
     /**
-     * @See https://betacode.net/11529/javafx-alert-dialog
+     * Show ConfirmationDialog and wait for user' input
+     *
+     * Link https://betacode.net/11529/javafx-alert-dialog
      * */
     public static boolean getConfirmation(String question) {
 
@@ -206,7 +216,7 @@ public class UtilsHelper {
             props.load(inputStream);
         } catch (IOException ex) {
             logger.error( String.format("Unable to read settings from '%s'", filePath), ex );
-            throw new RuntimeException(ex);
+            throw new FileCacheException(ex);
         }
         return props;
     }

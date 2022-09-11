@@ -7,6 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import ru.vez.iso.desktop.docs.reestr.Reestr;
+import ru.vez.iso.desktop.exceptions.FileCacheException;
 import ru.vez.iso.desktop.shared.MessageSrv;
 import ru.vez.iso.desktop.shared.MyConst;
 import ru.vez.iso.desktop.shared.UtilsHelper;
@@ -78,8 +79,8 @@ public class DocSrvImpl implements DocSrv {
 
         }, exec)
             .thenAccept(state::setDocumentFXs)
-            .exceptionally( (ex) -> {
-                logger.error("unable to create Reestr object: " + fromZipPath, ex);
+            .exceptionally( ex -> {
+                logger.error("unable to create Reestr object: {}", fromZipPath, ex);
                 this.msgSrv.news("Ошибка чтения DIR.zip");
                 return null;
         });
@@ -93,7 +94,7 @@ public class DocSrvImpl implements DocSrv {
         try ( InputStream fis = Files.newInputStream(filePath) ) {
             return Hex.encodeHexString(DigestUtils.digest(digest, fis));
         } catch (IOException ex) {
-            throw new RuntimeException("Unable to calculate checksums for file: " + filePath, ex);
+            throw new FileCacheException("Unable to calculate checksums for file: " + filePath, ex);
         }
     }
 
@@ -104,12 +105,11 @@ public class DocSrvImpl implements DocSrv {
      * */
     private Reestr readReestrFrom(Path path) {
 
-        try {
-            BufferedReader reader = Files.newBufferedReader(path);
+        try( BufferedReader reader = Files.newBufferedReader(path) ) {
             String fromFile = reader.readLine();
             return new Gson().fromJson(fromFile, Reestr.class);
         } catch (Exception ex) {
-            throw new RuntimeException("unable to load: " + path, ex);
+            throw new FileCacheException("unable to load: " + path, ex);
         }
     }
 

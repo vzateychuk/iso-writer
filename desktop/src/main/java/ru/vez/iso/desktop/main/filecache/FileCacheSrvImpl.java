@@ -2,7 +2,7 @@ package ru.vez.iso.desktop.main.filecache;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.vez.iso.desktop.main.exceptions.FileCacheException;
+import ru.vez.iso.desktop.exceptions.FileCacheException;
 import ru.vez.iso.desktop.shared.AppSettings;
 import ru.vez.iso.desktop.shared.FileISO;
 import ru.vez.iso.desktop.state.ApplicationState;
