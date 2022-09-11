@@ -10,6 +10,8 @@ import ru.vez.iso.desktop.shared.UserDetails;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ApplicationState {
 
@@ -22,6 +24,7 @@ public class ApplicationState {
     private final ObjectProperty<List<DocumentFX>> documentFXs; // Список документов загруженных из REESTR файла
     private final ObjectProperty<Reestr>  reestr;               // Загруженный реестр документов (из DirZip.zip)
     private final BooleanProperty burning;                      // Флаг обозначающий что идет процесс записи на диск
+    private final Set<String> loadNotCompleted;            // Список загружаемых в текущий момент (еще не загруженных) ISO файлов
 
     /**
      * Создает ApplicationState с пустыми значениями
@@ -37,6 +40,8 @@ public class ApplicationState {
         this.documentFXs = new SimpleObjectProperty<>(Collections.emptyList());
         this.reestr = new SimpleObjectProperty<>(new Reestr());
         this.burning = new SimpleBooleanProperty(false);
+        ConcurrentHashMap<String,String> filesMap = new ConcurrentHashMap<>();
+        this.loadNotCompleted = filesMap.keySet("SET-ENTRY");
     }
 
     public RunMode getRunMode() {
@@ -127,5 +132,15 @@ public class ApplicationState {
     }
     public void setBurning(boolean burning) {
         this.burning.set(burning);
+    }
+
+    public void addLoading(String fileName) {
+        loadNotCompleted.add(fileName);
+    }
+    public void removeLoading(String fileName) {
+        loadNotCompleted.remove(fileName);
+    }
+    public boolean isLoading(String fileName) {
+        return loadNotCompleted.contains(fileName);
     }
 }

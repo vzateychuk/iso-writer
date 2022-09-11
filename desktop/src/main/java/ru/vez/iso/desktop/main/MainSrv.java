@@ -36,7 +36,7 @@ public interface MainSrv {
      * This method will reschedule "loadOpsDay" with the refreshPeriod
      *
      * @param refreshPeriod - in minutes
-     * @param filterDays
+     * @param filterDays - количество опер.дней за которые будет выполняться запрос на сервер
      */
     void scheduleReadInterval(int refreshPeriod, int filterDays);
 
@@ -47,12 +47,9 @@ public interface MainSrv {
     void loadISOAsync(StorageUnitFX objectId);
 
     /**
-     * Загрузить ISO файл в локальный файловый кэш. Async
-     * */
-    void readFileCacheAsync();
-
-    /**
      * Delete the file and invoke reload
+     *
+     * @param fileName - имя удаляемого файла
      * */
     void deleteFileAsync(String fileName);
 

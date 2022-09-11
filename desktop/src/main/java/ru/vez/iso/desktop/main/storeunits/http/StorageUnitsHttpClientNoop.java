@@ -23,8 +23,8 @@ public class StorageUnitsHttpClientNoop implements StorageUnitsHttpClient {
 
     @Override
     public StorageUnitListResponse loadISOList(String url, String token, LocalDate from) {
-
-        logger.debug("API: {}, date from: {}, token: {}", url, from.format(DateTimeFormatter.ISO_LOCAL_DATE), token);
+        final String formatted = from.format(DateTimeFormatter.ISO_LOCAL_DATE);
+        logger.debug("API: {}, date from: {}, token: {}", url, formatted, token);
 
         UtilsHelper.makeDelaySec(1);
 
@@ -46,6 +46,14 @@ public class StorageUnitsHttpClientNoop implements StorageUnitsHttpClient {
         byte[] strToBytes = url.getBytes();
 
         try {
+            Thread.sleep(500L);
+        } catch (InterruptedException ex) {
+            logger.error(ex);
+            // Restore interrupted state...
+            Thread.currentThread().interrupt();
+        }
+
+        try {
             Files.write(path, strToBytes);
         } catch (IOException ex) {
             logger.error(ex);
@@ -54,15 +62,14 @@ public class StorageUnitsHttpClientNoop implements StorageUnitsHttpClient {
     }
 
     @Override
-    public StorageUnitDetailResponse getHashCode(String API, String token) {
+    public StorageUnitDetailResponse getHashCode(String api, String token) {
 
-        logger.debug("URL: {}, token: {}", API, token);
+        logger.debug("URL: {}, token: {}", api, token);
 
         UtilsHelper.makeDelaySec(1);
 
         String json = UtilsHelper.readJsonFromFile("noop/data/storageUnit.json");
-        StorageUnitDetailResponse response = new Gson().fromJson(json, StorageUnitDetailResponse.class);
-        return response;
+        return new Gson().fromJson(json, StorageUnitDetailResponse.class);
     }
 
 }

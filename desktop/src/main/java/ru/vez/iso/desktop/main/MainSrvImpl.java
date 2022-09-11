@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.burn.BurnSrv;
 import ru.vez.iso.desktop.burn.RecorderInfo;
+import ru.vez.iso.desktop.main.exceptions.FileCacheException;
 import ru.vez.iso.desktop.main.filecache.FileCacheSrv;
 import ru.vez.iso.desktop.main.operdays.OperatingDayFX;
 import ru.vez.iso.desktop.main.operdays.OperationDaysSrv;
@@ -67,7 +68,7 @@ public class MainSrvImpl implements MainSrv {
             return;
         }
 
-        logger.debug("period: " + period);
+        logger.debug("period: {}", period);
         if (period < 1) {
             throw new IllegalArgumentException("Incorrect period: " + period);
         }
@@ -95,7 +96,7 @@ public class MainSrvImpl implements MainSrv {
                     state.setOperatingDays(opsDaysList);
                     return opsDaysList;
                 }).thenAccept(list -> logger.debug("loaded: {}", list.size()))
-                .exceptionally((ex) -> {
+                .exceptionally(ex -> {
                     logger.error(ex);
                     return null;
                 });
@@ -137,10 +138,10 @@ public class MainSrvImpl implements MainSrv {
             // unzip iso to local folder
             try {
                 UtilsHelper.isoToFolder(isoPath, targetPath);
-            } catch (IOException ioException) {
+            } catch (IOException ioe) {
                 String msg = String.format("Unable to open ISO: %s, and copy to: %s", isoPath, targetPath);
-                logger.error(msg, ioException);
-                throw new RuntimeException(msg, ioException);
+                logger.error(msg, ioe);
+                throw new FileCacheException(msg, ioe);
             }
             // start burning ISO
             int burnSpeed = state.getSettings().getBurnSpeed();
@@ -172,7 +173,7 @@ public class MainSrvImpl implements MainSrv {
             this.storageUnitsSrv.requestCreateISO(su.getObjectId());
             this.msgSrv.news("Начат процесс формирования iso-образа для ЕХ: " + su.getNumberSu());
         }, exec)
-                .exceptionally((ex) -> {
+                .exceptionally(ex -> {
                     logger.error(ex);
                     return null;
                 });
@@ -204,34 +205,36 @@ public class MainSrvImpl implements MainSrv {
     @Override
     public void loadISOAsync(StorageUnitFX su) {
 
-        String dir = state.getSettings().getIsoCachePath();
+        String fileName = su.getObjectId() + ".iso";
+        if (state.isLoading(fileName)) {
+            logger.debug("File {} already loading, exit", fileName);
+            msgSrv.news(String.format("Загрузка ISO образа для EX '%s' начата, подождите.", su.getNumberSu()));
+            return;
+        }
+        msgSrv.news(String.format("Начата загрузка ISO образа для EX '%s'", su.getNumberSu()));
+
+        String cachePath = state.getSettings().getIsoCachePath();
 
         // will trigger update of StorageUnits table
         CompletableFuture.supplyAsync(() -> {
+            state.addLoading(fileName);
             this.storageUnitsSrv.loadFile(su.getObjectId());
             msgSrv.news(String.format("ISO образ для EX: '%s' успешно скачан и готов для записи", su.getNumberSu()));
             return null;
         }, exec)
-                .thenAccept(nm -> state.setFileNames( fileCacheSrv.readFileCache(dir) ) )
-                .exceptionally((ex) -> {
-                    logger.error(ex);
-                    String msg = String.format("Загрузка ISO образа для EX: '%s' не удалась", su.getNumberSu());
-                    msg += ex.getCause() instanceof Http404Exception ? "ISO образ не сформирован на сервере." : "Неизвестная ошибка";
-                    msgSrv.news(msg);
-                    return null;
-                });
-    }
-
-    @Override
-    public void readFileCacheAsync() {
-
-        String dir = state.getSettings().getIsoCachePath();
-
-        logger.debug("dir: {}", dir);
-
-        CompletableFuture.runAsync(() -> state.setFileNames( fileCacheSrv.readFileCache(dir) ), exec)
-                .exceptionally((ex) -> {
-                    logger.error(ex);
+        .handle(
+                (s, ex) -> {
+                    if (ex != null) {
+                        logger.error(ex);
+                        String msg = String.format("Загрузка ISO образа для EX: '%s' не удалась: ", su.getNumberSu());
+                        msg += ex.getCause() instanceof Http404Exception
+                                        ? "ISO образ не сформирован на сервере."
+                                        : "Неизвестная ошибка";
+                        msgSrv.news(msg);
+                    }
+                    // finally remove file from list of loading and refresh fileNames list
+                    state.removeLoading(fileName);
+                    state.setFileNames(fileCacheSrv.readFileCache(cachePath));
                     return null;
                 });
     }
@@ -248,12 +251,13 @@ public class MainSrvImpl implements MainSrv {
                             state.setFileNames(isoFiles);
                             msgSrv.news("Удален " + fileName);
                         }
-                ).exceptionally((ex) ->
-                        {
-                            logger.error(ex);
-                            msgSrv.news("Не удалось удалить: " + fileName);
-                            return null;
-                        });
+                )
+                .exceptionally(ex ->
+                {
+                    logger.error(ex);
+                    msgSrv.news("Не удалось удалить: " + fileName);
+                    return null;
+                });
 
     }
 
