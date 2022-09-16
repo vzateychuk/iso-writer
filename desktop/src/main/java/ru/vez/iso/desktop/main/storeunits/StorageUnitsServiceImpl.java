@@ -121,7 +121,6 @@ public class StorageUnitsServiceImpl implements StorageUnitsService {
         final String token = this.getAuthTokenOrException(this.state);
         // API
         final String API = state.getSettings().getBackendAPI() + API_STORAGE_UNITS + "/" + objectId + "/recorded";
-        // this.httpClient.post(API, token, msg);
-        this.httpClient.post(API, token, "");
+        this.httpClient.post(API, token, msg);
     }
 }
