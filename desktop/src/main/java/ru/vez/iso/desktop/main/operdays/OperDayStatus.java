@@ -11,6 +11,7 @@ public enum OperDayStatus {
     SIGNING("На подписании"),
     SIGNED("Подписан"),
     READY_TO_RECORDING("Готов для записи на EX"),
+    CREATING_SU("Формирование ЕХ"),
     UNKNOWN("Неопределен");
 
     private final String title;

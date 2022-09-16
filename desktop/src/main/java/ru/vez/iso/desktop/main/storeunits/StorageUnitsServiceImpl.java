@@ -99,7 +99,7 @@ public class StorageUnitsServiceImpl implements StorageUnitsService {
         // API
         final String API = state.getSettings().getBackendAPI() + API_STORAGE_UNITS + "/" + objectId + "/iso";
         // request
-        this.httpClient.post(API, token, null);
+        this.httpClient.post(API, token, "");
     }
 
     @Override
@@ -117,11 +117,11 @@ public class StorageUnitsServiceImpl implements StorageUnitsService {
     @Override
     public void sendBurnComplete(String objectId, Throwable ex) {
 
-        String msg = ex != null ? "{\"errorMessage\":\"" + ex.getMessage() + "\"}" : null;
-        // Get Authentication token or raise exception
+        String msg = ex == null ? "" : "{\"errorMessage\":\"" + ex.getMessage() + "\"}" ;
         final String token = this.getAuthTokenOrException(this.state);
         // API
-        final String API = state.getSettings().getBackendAPI() + API_STORAGE_UNITS + "/" + objectId + "/iso";
-        this.httpClient.post(API, token, msg);
+        final String API = state.getSettings().getBackendAPI() + API_STORAGE_UNITS + "/" + objectId + "/recorded";
+        // this.httpClient.post(API, token, msg);
+        this.httpClient.post(API, token, "");
     }
 }

@@ -127,7 +127,7 @@ public class StorageUnitFX {
         return present;
     }
     public StringProperty presentProperty() {
-        return new SimpleStringProperty(present ? "Да" : "");
+        return new SimpleStringProperty(present ? "Да" : "Нет");
     }
 
     @Override

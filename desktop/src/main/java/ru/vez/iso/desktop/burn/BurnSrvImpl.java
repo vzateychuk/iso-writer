@@ -20,6 +20,7 @@ public class BurnSrvImpl implements BurnSrv {
     private static final Logger logger = LogManager.getLogger();
     // see https://stackoverflow.com/questions/5616986/how-to-retrieve-and-set-burn-speed-using-imapi2
     private static final int IMAPI_SECTORS_PER_SECOND_AT_1X_DVD = 680;
+    public static final String IMAP_IV_2 = "IMAPIv2";
 
     private IDiscMaster2 dm;
 
@@ -59,9 +60,9 @@ public class BurnSrvImpl implements BurnSrv {
         //  Define the new disc format and set the recorder
         IDiscFormat2Data dataWriter = ClassFactory.createMsftDiscFormat2Data();
         dataWriter.recorder(recorder);
-        dataWriter.clientName("IMAPIv2");
+        dataWriter.clientName(IMAP_IV_2);
 
-        logger.info("Using recorder: " + recorder.vendorId() + " " + recorder.productId());
+        logger.info("Using recorder: {} {}", recorder.vendorId(), recorder.productId());
 
         IMAPI_FORMAT2_DATA_MEDIA_STATE mediaState = IMAPI_FORMAT2_DATA_MEDIA_STATE_UNKNOWN;
         IMAPI_MEDIA_PHYSICAL_TYPE mediaType = IMAPI_MEDIA_TYPE_UNKNOWN;
@@ -109,8 +110,8 @@ public class BurnSrvImpl implements BurnSrv {
         //  Define the new disc format and set the recorder
         IDiscFormat2Data dataWriter = ClassFactory.createMsftDiscFormat2Data();
         dataWriter.recorder(recorder);
-        dataWriter.clientName("IMAPIv2");
-        logger.debug("Using recorder {}", recorder.vendorId() + " " + recorder.productId());
+        dataWriter.clientName(IMAP_IV_2);
+        logger.info("Using recorder: {} {}", recorder.vendorId(), recorder.productId());
 
         // Validate recorder/media status
         if (!dataWriter.isRecorderSupported(recorder)) {
@@ -125,9 +126,9 @@ public class BurnSrvImpl implements BurnSrv {
         // Check if Media is write protected / not empty
         IDiscFormat2Data discData = ClassFactory.createMsftDiscFormat2Data();
         discData.recorder(recorder);
-        discData.clientName("IMAPIv2");
+        discData.clientName(IMAP_IV_2);
         IMAPI_FORMAT2_DATA_MEDIA_STATE mediaStatus = discData.currentMediaStatus();
-        logger.debug("Media status: " + mediaStatus);
+        logger.debug("Media status: {}", mediaStatus);
         if ((mediaStatus.comEnumValue() & IMAPI_FORMAT2_DATA_MEDIA_STATE.IMAPI_FORMAT2_DATA_MEDIA_STATE_WRITE_PROTECTED.comEnumValue()) != 0) {
             logger.error("Media is write protected / not empty.");
             throw new IllegalStateException("Media is write protected / not empty.");
@@ -163,26 +164,14 @@ public class BurnSrvImpl implements BurnSrv {
         IFileSystemImageResult fileSystemImageResult = fileSystemImage.createResultImage();
         // fileSystemImageResult.setName("IMAPIv2");
         IStream stream = fileSystemImageResult.imageStream();
+
+        // https://stackoverflow.com/questions/5616986/how-to-retrieve-and-set-burn-speed-using-imapi2/55039084#55039084
+        // Write spped: dataWriter.setWriteSpeed(sectorsPerSecSpeed, false);
+
         // Write stream to disc using the specified recorder.
-        /**
-         * https://stackoverflow.com/questions/5616986/how-to-retrieve-and-set-burn-speed-using-imapi2/55039084#55039084
-         * Unit = Disc sectors per second.
-         *         Values: -
-         *         -1 = "Default OR Fastest" as documented in IMAPI documentation.
-         *         [ANY VALUE] = Actual writing speed to set.
-         #define IMAPI_SECTORS_PER_SECOND_AT_1X_CD      75
-         #define IMAPI_SECTORS_PER_SECOND_AT_1X_DVD     680
-         * */
-/*
-        int sectorsPerSecSpeed = IMAPI_SECTORS_PER_SECOND_AT_1X_DVD * writeSpeed;
-        dataWriter.setWriteSpeed(sectorsPerSecSpeed, false);
-*/
         logger.debug("Start writing content to disc with speed: {} ...", dataWriter.currentWriteSpeed());
-        // dataWriter.
         dataWriter.write(stream);
         logger.debug("Finished writing content, open tray...");
-
-        // recorder.ejectMedia();
     }
 
     /**
@@ -195,7 +184,7 @@ public class BurnSrvImpl implements BurnSrv {
         String recorderUniqueId = dm.item(0);
         // initialize disk recorder
         recorder.initializeDiscRecorder(recorderUniqueId);
-        logger.info("Using recorder: " + recorder.vendorId() + " " + recorder.productId());
+        logger.info("Using recorder: {} {}", recorder.vendorId(), recorder.productId());
 
         // Create a DiscRecorder object for the specified burning device.
         recorder.ejectMedia();

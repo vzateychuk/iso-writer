@@ -62,12 +62,6 @@ public class MainSrvImpl implements MainSrv {
     @Override
     public void refreshDataAsync(int period) {
 
-        // Avoid multiply invocation
-        if (future != null && !future.isDone()) {
-            logger.debug("Async operation in progress, skipping");
-            return;
-        }
-
         logger.debug("period: {}", period);
         if (period < 1) {
             throw new IllegalArgumentException("Incorrect period: " + period);
@@ -84,7 +78,8 @@ public class MainSrvImpl implements MainSrv {
                 exec
         );
 
-        future = operationDaysFuture.thenCombine(
+        future = operationDaysFuture
+                .thenCombine(
                 storeUnitsFuture,
                 (opsDaysList, storeUnitList) -> {
                     opsDaysList.forEach(day -> {
@@ -94,8 +89,14 @@ public class MainSrvImpl implements MainSrv {
                     });
 
                     state.setOperatingDays(opsDaysList);
+                    logger.debug("loaded: {}", opsDaysList.size());
                     return opsDaysList;
-                }).thenAccept(list -> logger.debug("loaded: {}", list.size()))
+                })
+                .thenAccept( list ->
+                        state.setFileNames(
+                                fileCacheSrv.readFileCache( state.getSettings().getIsoCachePath() )
+                        )
+                )
                 .exceptionally(ex -> {
                     logger.error(ex);
                     return null;
@@ -121,7 +122,7 @@ public class MainSrvImpl implements MainSrv {
     @Override
     public void burnISOAsync(StorageUnitFX su, String diskTitle) {
 
-        this.msgSrv.news("Старт записи на диск: " + su.getNumberSu());
+        this.msgSrv.news("Старт записи на диск: " + su.getNumberSu() + ", метка диска: " + diskTitle);
 
         // Avoid multiply invocation
         if (!future.isDone()) {
@@ -148,10 +149,8 @@ public class MainSrvImpl implements MainSrv {
             int recorderIndex = 0;
             this.state.setBurning(true);
             burner.burn(recorderIndex, burnSpeed, targetPath, diskTitle);
-            this.refreshDataAsync(this.period);
         }, exec)
                 .whenComplete((v, ex) -> {
-                    this.state.setBurning(false);
                     if (ex == null) {
                         this.msgSrv.news("Записана EX: '" + su.getNumberSu() + "'");
                     } else {
@@ -159,7 +158,9 @@ public class MainSrvImpl implements MainSrv {
                         String msg = String.format("При записи EX: '%s', возникли ошибки. Запись не завершена. Запустите запись снова", su.getNumberSu());
                         this.msgSrv.news(msg);
                     }
+                    this.state.setBurning(false);
                     this.storageUnitsSrv.sendBurnComplete(su.getObjectId(), ex);
+                    this.refreshDataAsync(this.period);
                 });
     }
 

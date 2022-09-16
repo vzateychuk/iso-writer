@@ -23,6 +23,8 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+import static org.apache.http.entity.ContentType.APPLICATION_JSON;
+
 /**
  * StorageUnits HttpClient wrapper
  * */
@@ -32,10 +34,10 @@ public class StorageUnitsHttpClientImpl implements StorageUnitsHttpClient {
     private static final DateTimeFormatter YYYY_MM_DD = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @Override
-    public StorageUnitListResponse loadISOList(String API, String token, LocalDate from) {
+    public StorageUnitListResponse loadISOList(String api, String token, LocalDate from) {
 
         // Create HTTP request
-        HttpPost httpPost = new HttpPost(API);
+        HttpPost httpPost = new HttpPost(api);
         httpPost.setHeader("Accept", "application/json");
         httpPost.setHeader("Content-type", "application/json");
         httpPost.setHeader("Authorization", token);
@@ -75,21 +77,20 @@ public class StorageUnitsHttpClientImpl implements StorageUnitsHttpClient {
     }
 
     @Override
-    public void post(String API, String token, String body) {
+    public void post(String api, String token, String body) {
 
-        HttpPost httpPost = new HttpPost(API);
+        HttpPost httpPost = new HttpPost(api);
         httpPost.setHeader("Authorization", token);
+        httpPost.setHeader("Content-Type", APPLICATION_JSON.getMimeType());
 
         logger.debug("HttpPost: {}", httpPost);
 
-        if (body != null) {
-            try {
-                StringEntity entity = new StringEntity(body);
-                httpPost.setEntity(entity);
-            } catch (UnsupportedEncodingException ex) {
-                logger.error(ex);
-                throw new RuntimeException(ex);
-            }
+        try {
+            StringEntity entity = new StringEntity(body);
+            httpPost.setEntity(entity);
+        } catch (UnsupportedEncodingException ex) {
+            logger.error(ex);
+            throw new RuntimeException(ex);
         }
 
         try (
@@ -99,6 +100,7 @@ public class StorageUnitsHttpClientImpl implements StorageUnitsHttpClient {
                 CloseableHttpResponse response = httpClient.execute(httpPost);
         ) {
             int code = response.getStatusLine().getStatusCode();
+            logger.debug("HttpPost response code: {}", code);
             if (code != HttpStatus.SC_OK) {
                 throw new IllegalStateException("Server response: " + code);
             }
@@ -112,10 +114,11 @@ public class StorageUnitsHttpClientImpl implements StorageUnitsHttpClient {
      * @See https://gist.github.com/rponte/09ddc1aa7b9918b52029
      */
     @Override
-    public void downloadAndSaveFile(String API, String token, String fileName) {
+    public void downloadAndSaveFile(String api, String token, String fileName) {
 
-        HttpGet httpGet = new HttpGet(API);
+        HttpGet httpGet = new HttpGet(api);
         httpGet.setHeader("Authorization", token);
+        httpGet.setHeader("Content-Type", APPLICATION_JSON.getMimeType());
 
         logger.debug("HttpGet: {}", httpGet);
 
