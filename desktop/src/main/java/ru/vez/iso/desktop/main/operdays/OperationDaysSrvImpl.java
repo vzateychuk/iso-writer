@@ -44,10 +44,10 @@ public class OperationDaysSrvImpl implements OperationDaysSrv {
         final String token = this.getAuthTokenOrException(this.state);
 
         // Getting backend API
-        final String API = state.getSettings().getBackendAPI() + API_OP_DAYS;
+        final String api = state.getSettings().getBackendAPI() + API_OP_DAYS;
 
         // Create HTTP request
-        OperationDaysHttpResponse resp = this.httpClient.loadOperationDays(API, token, from);
+        OperationDaysHttpResponse resp = this.httpClient.loadOperationDays(api, token, from);
         if (!resp.isOk()) {
             throw new IllegalStateException("Server response: " + resp.isOk());
         }

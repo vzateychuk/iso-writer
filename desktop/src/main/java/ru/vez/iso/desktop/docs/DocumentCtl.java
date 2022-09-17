@@ -307,7 +307,7 @@ public class DocumentCtl implements Initializable {
                     String checksumTxtHash = readCheckSumTxtHash.join();
                     String dirZipHash = calcDirZipHash.join();
                     String serverHash = requestBackendHash.join();
-                    logger.debug("Hash check.\nchecksum.txt:\t{}\nDir.zip     :\t{}\nServer      :\t{}",
+                    logger.debug("Hash check:\nchecksum.txt:\t{}\nDir.zip     :\t{}\nServer      :\t{}",
                             checksumTxtHash, dirZipHash, serverHash);
                     String msg = "Проверка целостности диска выполнена. ";
                     if (dirZipHash.equals(checksumTxtHash) && (!authenticated || dirZipHash.equals(serverHash))) {

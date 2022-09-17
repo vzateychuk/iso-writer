@@ -12,7 +12,9 @@ import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.vez.iso.desktop.exceptions.HttpRequestException;
 import ru.vez.iso.desktop.main.operdays.dto.OperationDaysHttpResponse;
+import ru.vez.iso.desktop.shared.MyConst;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -20,7 +22,6 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 /**
  * HttpClientWrapper for OperationDays to work with backend API
@@ -28,7 +29,6 @@ import java.time.format.DateTimeFormatter;
 public class OperationDayHttpClientImpl implements OperationDayHttpClient {
 
     private static final Logger logger = LogManager.getLogger();
-    private static final DateTimeFormatter YYYY_MM_DD = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @Override
     public OperationDaysHttpResponse loadOperationDays(String API, String token, LocalDate from) {
@@ -40,14 +40,17 @@ public class OperationDayHttpClientImpl implements OperationDayHttpClient {
         httpPost.setHeader("Authorization", token);
         String jsonRequest = String.format(
                 "{\"page\":1,\"rowsPerPage\":500,\"criterias\":[{\"fields\":[\"operatingDayDate\"],\"operator\":\"GREATER_OR_EQUALS\",\"value\":\"%s\"}]}",
-                from.format(YYYY_MM_DD)
+                from.format(MyConst.YYYY_MM_DD)
         );
+
+        logger.debug("HttpPost: {}, body: {}", httpPost, jsonRequest);
+
         try {
             StringEntity entity = new StringEntity(jsonRequest);
             httpPost.setEntity(entity);
         } catch (UnsupportedEncodingException ex) {
             logger.error(ex);
-            throw new RuntimeException(ex);
+            throw new HttpRequestException(ex);
         }
 
         try (
@@ -58,7 +61,7 @@ public class OperationDayHttpClientImpl implements OperationDayHttpClient {
         ) {
             // Create response handler
             if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-                throw new RuntimeException("Server response: " + response.getStatusLine().getStatusCode());
+                throw new HttpRequestException("Server response: " + response.getStatusLine().getStatusCode());
             }
             final HttpEntity resEntity = response.getEntity();
             Reader reader = new InputStreamReader(resEntity.getContent(), StandardCharsets.UTF_8);
@@ -66,7 +69,7 @@ public class OperationDayHttpClientImpl implements OperationDayHttpClient {
             EntityUtils.consume(resEntity);
             return resp;
         } catch (IOException ex) {
-            throw new RuntimeException(ex);
+            throw new HttpRequestException(ex);
         }
 
     }

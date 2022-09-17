@@ -11,6 +11,7 @@ import ru.vez.iso.desktop.main.operdays.OperationDaysSrv;
 import ru.vez.iso.desktop.main.storeunits.StorageUnitFX;
 import ru.vez.iso.desktop.main.storeunits.StorageUnitsService;
 import ru.vez.iso.desktop.main.storeunits.exceptions.Http404Exception;
+import ru.vez.iso.desktop.shared.FileISO;
 import ru.vez.iso.desktop.shared.MessageSrv;
 import ru.vez.iso.desktop.shared.UtilsHelper;
 import ru.vez.iso.desktop.state.ApplicationState;
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
@@ -35,7 +37,8 @@ public class MainSrvImpl implements MainSrv {
     private final FileCacheSrv fileCacheSrv;
     private final BurnSrv burner;
 
-    private Future<Void> future;
+    private Future<Void> burnOperation = CompletableFuture.allOf();
+    private Future<Void> loadDataOperation = CompletableFuture.allOf();
     private ScheduledFuture<?> scheduledReload;
     private int period;
 
@@ -63,40 +66,60 @@ public class MainSrvImpl implements MainSrv {
     public void refreshDataAsync(int period) {
 
         logger.debug("period: {}", period);
-        if (period < 1) {
-            throw new IllegalArgumentException("Incorrect period: " + period);
+
+        // Avoid multiply invocation
+        if (!loadDataOperation.isDone()) {
+            this.msgSrv.news("Загрузка выполняется, подождите...");
+            return;
         }
+
+        assert period > 0 : "Incorrect period: " + period;
 
         this.period = period;
         LocalDate from = LocalDate.now().minusDays(period);
-        CompletableFuture<List<OperatingDayFX>> operationDaysFuture = CompletableFuture.supplyAsync(
+        CompletableFuture<List<OperatingDayFX>> loadOperationDays = CompletableFuture.supplyAsync(
                 () -> this.operDaysSrv.loadOperationDays(from),
                 exec
         );
-        CompletableFuture<List<StorageUnitFX>> storeUnitsFuture = CompletableFuture.supplyAsync(
+        CompletableFuture<List<StorageUnitFX>> loadStorageUnits = CompletableFuture.supplyAsync(
                 () -> storageUnitsSrv.loadStorageUnits(from),
                 exec
         );
+        CompletableFuture<List<FileISO>> readFileCache = CompletableFuture.supplyAsync(
+                () -> fileCacheSrv.readFileCache( state.getSettings().getIsoCachePath() ),
+                exec
+        );
 
-        future = operationDaysFuture
-                .thenCombine(
-                storeUnitsFuture,
-                (opsDaysList, storeUnitList) -> {
-                    opsDaysList.forEach(day -> {
-                        List<StorageUnitFX> units = storeUnitList.stream()
-                                .filter(u -> u.getOperatingDayId().equals(day.getObjectId())).collect(Collectors.toList());
-                        day.setStorageUnits(units);
+        loadDataOperation = CompletableFuture.allOf(loadOperationDays, loadStorageUnits, readFileCache)
+                .thenAccept( (Void) -> {
+                    List<OperatingDayFX> opDaysList = loadOperationDays.join();
+                    List<StorageUnitFX> storeUnitsList = loadStorageUnits.join();
+                    List<FileISO> isoFilesList = readFileCache.join();
+                    state.setFileNames(isoFilesList);
+
+                    // update isoFile property for storageUnitsList from local file cache
+                    storeUnitsList.stream()
+                            .sorted( Comparator.comparing(StorageUnitFX::getNumberSu) )
+                            .forEach( su -> {
+                                String expectedFileName = su.getObjectId() + ".iso";
+                                if (isoFilesList.stream().anyMatch(
+                                        fileISO -> expectedFileName.equals(fileISO.getFileName())
+                                )) {
+                                    su.setIsoFileName(expectedFileName);
+                                }
+                            });
+
+                    // update storageUnitsList for opDays
+                    opDaysList.forEach(day -> {
+                        List<StorageUnitFX> storageUnitsForOpDay = storeUnitsList.stream()
+                                .filter(u -> u.getOperatingDayId().equals(day.getObjectId()))
+                                .collect(Collectors.toList());
+                        day.setStorageUnits(storageUnitsForOpDay);
                     });
 
-                    state.setOperatingDays(opsDaysList);
-                    logger.debug("loaded: {}", opsDaysList.size());
-                    return opsDaysList;
+                    state.setOperatingDays(opDaysList);
+                    logger.debug("loaded operationDays: {}, storageUnits: {}, cache files: {}", opDaysList.size(), storeUnitsList.size(), isoFilesList.size());
                 })
-                .thenAccept( list ->
-                        state.setFileNames(
-                                fileCacheSrv.readFileCache( state.getSettings().getIsoCachePath() )
-                        )
-                )
                 .exceptionally(ex -> {
                     logger.error(ex);
                     return null;
@@ -122,15 +145,15 @@ public class MainSrvImpl implements MainSrv {
     @Override
     public void burnISOAsync(StorageUnitFX su, String diskTitle) {
 
-        this.msgSrv.news("Старт записи на диск: " + su.getNumberSu() + ", метка диска: " + diskTitle);
-
         // Avoid multiply invocation
-        if (!future.isDone()) {
-            this.msgSrv.news("Операция выполняется, подождите...");
+        if (!burnOperation.isDone()) {
+            this.msgSrv.news("Запись диска выполняется, подождите...");
             return;
         }
 
-        future = CompletableFuture.runAsync(() -> {
+        this.msgSrv.news("Старт записи на диск: " + su.getNumberSu() + ", метка диска: " + diskTitle);
+
+        burnOperation = CompletableFuture.runAsync(() -> {
             logger.debug("id: {}:{}", su.getObjectId(), su.getNumberSu());
 
             // su.getObjectId()

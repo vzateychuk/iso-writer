@@ -23,9 +23,9 @@ public class StorageUnitFX {
     private final StringProperty storageDate;
     private final ObjectProperty<StorageUnitStatus> storageUnitStatus;
     private final ObjectProperty<LocalDate> savingDate;
-    private final StringProperty isoFileName;
     private final boolean deleted;          // Признак что ISO удален на сервере
     private final boolean present;          // Признак что ISO "Сформирован" на сервере
+    private StringProperty isoFileName;
 
     public StorageUnitFX(
             String objectId,
@@ -36,7 +36,6 @@ public class StorageUnitFX {
             String storageDate,
             StorageUnitStatus storageUnitStatus,
             LocalDate savingDate,
-            String isoFileName,
             boolean deleted,
             boolean present) {
         this.objectId = objectId;
@@ -47,7 +46,7 @@ public class StorageUnitFX {
         this.storageDate = new SimpleStringProperty(storageDate);
         this.storageUnitStatus = new SimpleObjectProperty<>(storageUnitStatus);
         this.savingDate = new SimpleObjectProperty<>(savingDate);
-        this.isoFileName = new SimpleStringProperty(isoFileName);
+        this.isoFileName = new SimpleStringProperty("");
         this.deleted = deleted;
         this.present = present;
     }
@@ -104,6 +103,9 @@ public class StorageUnitFX {
         return new SimpleStringProperty(result);
     }
 
+    public void setIsoFileName(String fileName){
+        this.isoFileName = new SimpleStringProperty(fileName);
+    }
     public String getIsoFileName() {
         return isoFileName.get();
     }

@@ -26,7 +26,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 /**
  * Controller for: "Выбор Единицы хранения для записи на диск"
@@ -37,6 +36,13 @@ public class MainCtl implements Initializable {
     //region Properties
 
     private static final Logger logger = LogManager.getLogger();
+    private static final List<StorageUnitStatus> AVAILABLE_FOR_BURN = Collections.unmodifiableList(
+            Arrays.asList(
+                    StorageUnitStatus.READY_TO_RECORDING,
+                    StorageUnitStatus.RECORDED
+            )
+    );
+
     private final DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     // Sort string representation of LocalDateTime columns
@@ -104,17 +110,11 @@ public class MainCtl implements Initializable {
 
     Predicate<StorageUnitFX> disableIsoLoad =
             su -> su == null || !Strings.isBlank(su.getIsoFileName())
-                    || !Collections.unmodifiableList(
-                            Arrays.asList(StorageUnitStatus.READY_TO_RECORDING, StorageUnitStatus.RECORDED)
-                        )
-                    .contains(su.getStorageUnitStatus());
+                    || !AVAILABLE_FOR_BURN.contains( su.getStorageUnitStatus() );
 
     Predicate<StorageUnitFX> disableBurn =
             su -> su == null || Strings.isBlank(su.getIsoFileName())
-                    || !Collections.unmodifiableList(
-                        Arrays.asList(StorageUnitStatus.READY_TO_RECORDING, StorageUnitStatus.RECORDED)
-                        )
-                    .contains(su.getStorageUnitStatus());
+                    || !AVAILABLE_FOR_BURN.contains( su.getStorageUnitStatus() );
 
     //endregion
 
@@ -139,18 +139,14 @@ public class MainCtl implements Initializable {
             this.mainSrv.scheduleReadInterval( refreshIntervalMin, filterDays);
         };
         this.isoFilesChangeListener = (o, old, newVal) -> {
-            List<StorageUnitFX> withFileNames = this.getWithFileName(this.storageUnits, newVal);
             // filter and display a storage Units with fileNames
-            Platform.runLater( ()-> this.filterAndDisplayStorageUnits(withFileNames, statusesFilter) );
+            Platform.runLater( ()-> this.filterAndDisplayStorageUnits(this.storageUnits, statusesFilter) );
         };
         this.operationDaysListener = (ob, old, newVal) -> Platform.runLater(()-> displayOperatingDays(newVal));
         this.selectOperationDayListener = (o, old, newValue) -> {
             if (newValue != null) {
-                // need to update storage units with isoFileName, stored in local file-cache
-                final List<FileISO> fileCache = this.state.getIsoFiles();
-                List<StorageUnitFX> withFileNames = this.getWithFileName(newValue.getStorageUnits(), fileCache);
                 // filter and display a storage Units
-                Platform.runLater(() -> this.filterAndDisplayStorageUnits(withFileNames, statusesFilter));
+                Platform.runLater(() -> this.filterAndDisplayStorageUnits(newValue.getStorageUnits(), statusesFilter));
             }
         };
         this.selectStorageUnitListener = (o, old, selectedSU) -> {
@@ -160,6 +156,7 @@ public class MainCtl implements Initializable {
                     butDelete.setDisable(selectedSU == null || Strings.isBlank(selectedSU.getIsoFileName()));
                 };
 
+        // сделать доступной/недоступной кнопку Burn если мы уже прожигаем или
         this.burningListener = (o, old, isBurning) -> Platform.runLater( () -> {
             butBurn.setDisable( isBurning || disableBurn.test(tblStorageUnits.getSelectionModel().getSelectedItem()) );
         });
@@ -258,9 +255,14 @@ public class MainCtl implements Initializable {
      * Choice filterStatusAvailable - Доступные для записи
      * */
     @FXML public void onStatusAvailableChoice(ActionEvent ev) {
-        logger.debug("");
+        logger.debug("storageUnits filter: READY_TO_RECORDING + RECORDED");
         this.radioButtonsToggle.setActive(radioStatusAvailable);
-        this.statusesFilter = Collections.unmodifiableList(Arrays.asList(StorageUnitStatus.READY_TO_RECORDING, StorageUnitStatus.RECORDED));
+        this.statusesFilter = Collections.unmodifiableList(
+                Arrays.asList(
+                        StorageUnitStatus.READY_TO_RECORDING,
+                        StorageUnitStatus.RECORDED
+                )
+        );
         this.filterAndDisplayStorageUnits(storageUnits, this.statusesFilter);
     }
 
@@ -268,7 +270,7 @@ public class MainCtl implements Initializable {
      * Choice filterStatusPrepared - Готовые для записи
      * */
     @FXML public void onStatusShowPrepChoice(ActionEvent ev) {
-        logger.debug("");
+        logger.debug("storageUnits filter: PREPARATION_FOR_RECORDING");
         this.radioButtonsToggle.setActive(radioStatusPrepared);
         this.statusesFilter = Collections.singletonList(StorageUnitStatus.PREPARATION_FOR_RECORDING);
         this.filterAndDisplayStorageUnits(storageUnits, this.statusesFilter);
@@ -381,6 +383,7 @@ public class MainCtl implements Initializable {
     /**
      * Update storeUnit fileName property if there is a filename in fileCache found
      * */
+/*
     List<StorageUnitFX> getWithFileName(List<StorageUnitFX> storageUnits, List<FileISO> fileCache) {
 
         return storageUnits.stream()
@@ -408,6 +411,7 @@ public class MainCtl implements Initializable {
                 .sorted( Comparator.comparing(StorageUnitFX::getNumberSu) )
                 .collect(Collectors.toList());
     }
+*/
 
     /**
      * Refresh master OperatingDays table
@@ -417,7 +421,7 @@ public class MainCtl implements Initializable {
         this.operatingDays = FXCollections.observableList(operatingDays);
         tblOperatingDays.setItems(this.operatingDays);
         // select first row
-        if (operatingDays.size()>0) {
+        if (!operatingDays.isEmpty()) {
             tblOperatingDays.requestFocus();
             tblOperatingDays.getSelectionModel().select(0);
             tblOperatingDays.getFocusModel().focus(0);
@@ -433,8 +437,7 @@ public class MainCtl implements Initializable {
         logger.debug("filter: {}", filter);
         this.storageUnits = FXCollections.observableList(storageUnits);
         // filter storageUnits if filter is not null
-        ObservableList<StorageUnitFX> filtered =
-                filter == null
+        ObservableList<StorageUnitFX> filtered = filter == null
                         ? this.storageUnits
                         : this.storageUnits.filtered(su -> filter.stream().anyMatch(f -> f.equals(su.getStorageUnitStatus())));
         // disable the storageUnits filter (radio-buttons) if no data available
