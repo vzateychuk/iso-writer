@@ -1,7 +1,7 @@
 package ru.vez.iso.desktop.docs;
 
-import java.io.IOException;
 import java.nio.file.Path;
+import java.util.List;
 
 public interface DocSrv {
 
@@ -10,7 +10,7 @@ public interface DocSrv {
      *
      * @param dirZip - полный путь к файлу архиву DIR.zip
      * */
-    void loadAsync(Path dirZip);
+    List<DocumentFX> loadREESTR(Path dirZip);
 
     /**
      * Расчитывает checkSum файла по алгоритму algo
@@ -19,6 +19,12 @@ public interface DocSrv {
      * @param path - путь к файлу
      * @param algo - алгоритм, например MyConst.ALGO_GOST
      * */
-    String calculateFileHash(Path path, String algo) throws IOException;
+    String calculateFileHash(Path path, String algo);
 
+    /**
+     * Зачитывает содержимое файла
+     *
+     * @param filePath - путь к файлу
+     * */
+    String readFile(Path filePath);
 }

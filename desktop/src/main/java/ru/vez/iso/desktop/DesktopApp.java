@@ -246,8 +246,8 @@ public class DesktopApp extends Application {
 
         // DocumentView + DocumentService
         DocMapper mapper = new DocMapperImpl();
-        DocSrv docSrv = new DocSrvImpl(state, exec, mapper, msgSrv);
-        viewCache.put(ViewType.DOCUMENTS, buildView( ViewType.DOCUMENTS, t->new DocumentCtl(state, docSrv, msgSrv, suSrv)) );
+        DocSrv docSrv = new DocSrvImpl(state, mapper);
+        viewCache.put(ViewType.DOCUMENTS, buildView( ViewType.DOCUMENTS, t->new DocumentCtl(state, docSrv, msgSrv, suSrv, exec)) );
 
         // MainView + MainService
         viewCache.put(ViewType.MAIN_VIEW, buildView(ViewType.MAIN_VIEW, t->new MainCtl(state, mainSrv, msgSrv)));

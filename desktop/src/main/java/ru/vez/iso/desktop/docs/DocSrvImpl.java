@@ -8,7 +8,6 @@ import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import ru.vez.iso.desktop.docs.reestr.Reestr;
 import ru.vez.iso.desktop.exceptions.FileCacheException;
-import ru.vez.iso.desktop.shared.MessageSrv;
 import ru.vez.iso.desktop.shared.MyConst;
 import ru.vez.iso.desktop.shared.UtilsHelper;
 import ru.vez.iso.desktop.state.ApplicationState;
@@ -16,13 +15,14 @@ import ru.vez.iso.desktop.state.ApplicationState;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.Security;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
@@ -31,59 +31,34 @@ public class DocSrvImpl implements DocSrv {
     private static final Logger logger = LogManager.getLogger();
 
     private final ApplicationState state;
-    private final Executor exec;
     private final DocMapper mapper;
-    private final MessageSrv msgSrv;
 
     private Future<Void> future = CompletableFuture.allOf();
 
-    public DocSrvImpl(ApplicationState appState,
-                      Executor exec,
-                      DocMapper mapper,
-                      MessageSrv msgSrv) {
+    public DocSrvImpl(ApplicationState appState, DocMapper mapper) {
         this.state = appState;
-        this.exec = exec;
         this.mapper = mapper;
-        this.msgSrv = msgSrv;
 
         // это таинственное заклинание необходимо для выполнения проверки checksum в методе isChecksumEquals
         Security.addProvider(new BouncyCastleProvider());
     }
 
     @Override
-    public void loadAsync(Path fromZipPath) {
+    public List<DocumentFX> loadREESTR(Path zipFile) {
 
-        // Avoid multiply invocation
-        if (!future.isDone()) {
-            logger.debug("Async operation in progress, skipping");
-            return;
-        }
+        // Clear unzipped files: delete path where unzip files will be stored
+        String cachePath = state.getSettings().getIsoCachePath();
+        Path unzipDir = Paths.get(cachePath, MyConst.UNZIP_FOLDER);
+        UtilsHelper.clearFolder(unzipDir);
+        UtilsHelper.unzipToFolder(zipFile, unzipDir);
 
-        logger.debug(fromZipPath);
+        // Read REESTR and save application state
+        Path reestrPath = Paths.get(unzipDir.toString(), MyConst.REESTR_FILE);
+        Reestr reestr = readREESTRFile(reestrPath);
+        state.setReestr(reestr);
 
-        future = CompletableFuture.supplyAsync(() -> {
-
-            // Clear unzipped files: delete path where unzip files will be stored
-            String cachePath = state.getSettings().getIsoCachePath();
-            Path unzippedPath = Paths.get(cachePath, MyConst.UNZIP_FOLDER);
-            UtilsHelper.clearFolder(unzippedPath);
-            UtilsHelper.unzipToFolder(fromZipPath, unzippedPath);
-
-            // Read REESTR and save application state
-            Path reestrPath = Paths.get(unzippedPath.toString(), MyConst.REESTR_FILE);
-            Reestr reestr = readReestrFrom(reestrPath);
-            state.setReestr(reestr);
-
-            // REESTR Map and return list of DocumentFX
-            return reestr.getDocs().stream().map(mapper::mapToDocFX).collect(Collectors.toList());
-
-        }, exec)
-            .thenAccept(state::setDocumentFXs)
-            .exceptionally( ex -> {
-                logger.error("unable to create Reestr object: {}", fromZipPath, ex);
-                this.msgSrv.news("Ошибка чтения DIR.zip");
-                return null;
-        });
+        // REESTR Map and return list of DocumentFX
+        return reestr.getDocs().stream().map(mapper::mapToDocFX).collect(Collectors.toList());
     }
 
     @Override
@@ -98,12 +73,21 @@ public class DocSrvImpl implements DocSrv {
         }
     }
 
+    @Override
+    public String readFile(Path filePath) {
+        try {
+            return new String(Files.readAllBytes(filePath), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new FileCacheException("Unable to read checksums from file: " + filePath, e);
+        }
+    }
+
     //region PRIVATE
 
     /**
      * Read and deserialize a REESTR file to POJO
      * */
-    private Reestr readReestrFrom(Path path) {
+    private Reestr readREESTRFile(Path path) {
 
         try( BufferedReader reader = Files.newBufferedReader(path) ) {
             String fromFile = reader.readLine();

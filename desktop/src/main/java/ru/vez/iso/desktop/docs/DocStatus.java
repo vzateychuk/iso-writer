@@ -5,6 +5,7 @@ package ru.vez.iso.desktop.docs;
  * */
 public enum DocStatus {
     CREATED("Создан"),
+    SIGNED("Подписан"),
     UNKNOWN_STATE("Неизвестный статус");
 
     private final String title;
