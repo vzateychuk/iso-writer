@@ -28,12 +28,14 @@ public class RecorderInfo {
     private Integer nextWritableAddress;        // 0 value means the disc is empty
 
     private IMAPI_FORMAT2_DATA_MEDIA_STATE mediaState; // The state (usability) of the current media
-    private IMAPI_MEDIA_PHYSICAL_TYPE mediaType;    // Physical type of the optical media
+    private IMAPI_MEDIA_PHYSICAL_TYPE mediaType;    // Physical type of the optical media loaded
 
-    public boolean isReady() {
+    public boolean isReady(DiskType expectedType) {
+
         return this.isRecorderSupported && this.isCurrentMediaSupported && !isMediaProtected
+                && expectedType.getPhysicalTypes().contains(this.mediaType)
                 && Optional.ofNullable(nextWritableAddress).orElse(-1) == 0;
-    };
+    }
 
     @Override
     public String toString() {

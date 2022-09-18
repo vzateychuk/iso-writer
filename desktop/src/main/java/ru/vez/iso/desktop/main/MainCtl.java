@@ -14,6 +14,7 @@ import lombok.extern.java.Log;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
+import ru.vez.iso.desktop.burn.DiskType;
 import ru.vez.iso.desktop.burn.RecorderInfo;
 import ru.vez.iso.desktop.main.operdays.OperatingDayFX;
 import ru.vez.iso.desktop.main.storeunits.StorageUnitFX;
@@ -160,9 +161,9 @@ public class MainCtl implements Initializable {
                 };
 
         // сделать доступной/недоступной кнопку Burn если мы уже прожигаем или
-        this.burningListener = (o, old, isBurning) -> Platform.runLater( () -> {
-            butBurn.setDisable( isBurning || disableBurn.test(tblStorageUnits.getSelectionModel().getSelectedItem()) );
-        });
+        this.burningListener = (o, old, isBurning) -> Platform.runLater( () ->
+            butBurn.setDisable( isBurning || disableBurn.test(tblStorageUnits.getSelectionModel().getSelectedItem()) )
+        );
 
     }
 
@@ -360,9 +361,16 @@ public class MainCtl implements Initializable {
 
         // check if the disk is ready
         RecorderInfo info = mainSrv.getRecorderInfo(recorderIndex);
-        logger.debug(info.toString());
+        logger.debug(info);
+
         String msg = "Для продолжения записи вставьте новый диск в дисковод.";
-        while (!info.isReady()) {
+
+        // check mediaType allowed
+        String typeSU = this.tblOperatingDays.getSelectionModel().getSelectedItem().getTypeSu();
+        assert !Strings.isBlank(typeSU) : "Expected storageUnitType not blank, but got: " + typeSU;
+
+        DiskType diskType = this.parseDiskType(typeSU);
+        while (!info.isReady(diskType)) {
             if (!UtilsHelper.getConfirmation(msg)) {
                 mainSrv.openTray(recorderIndex);
                 return;
@@ -399,16 +407,8 @@ public class MainCtl implements Initializable {
      * Must be executed in Main Application Thread only!
      */
     private void displayOperatingDays(List<OperatingDayFX> operatingDays) {
-        // this.operatingDays = FXCollections.observableList(operatingDays);
+
         tblOperatingDays.setItems( FXCollections.observableList(operatingDays) );
-        // select first row
-/*
-        if (!operatingDays.isEmpty()) {
-            tblOperatingDays.requestFocus();
-            tblOperatingDays.getSelectionModel().select(0);
-            tblOperatingDays.getFocusModel().focus(0);
-        }
-*/
     }
 
     /**
@@ -464,7 +464,6 @@ public class MainCtl implements Initializable {
         return updated;
     }
 
-
     private int getOperationDaysFilter(int fallbackValue) {
 
         int days;
@@ -478,6 +477,20 @@ public class MainCtl implements Initializable {
             logger.error("Bad value: {}, returning fallback value: {}", operDaysFilter.getText(), days, ex);
         }
         return days;
+    }
+
+
+    DiskType parseDiskType(String typeSU) {
+
+        if (typeSU.toUpperCase().contains("DVD/CD")) {
+            return DiskType.DVD_CD;
+        } else if (typeSU.toUpperCase().contains("DVD")) {
+            return DiskType.DVD;
+        } else if (typeSU.toUpperCase().contains("CD")) {
+            return DiskType.CD;
+        } else {
+            throw new RuntimeException("Can't parse DiskType value: " + typeSU);
+        }
     }
 
     //endregion

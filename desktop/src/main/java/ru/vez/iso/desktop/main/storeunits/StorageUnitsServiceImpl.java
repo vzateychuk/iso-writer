@@ -44,7 +44,8 @@ public class StorageUnitsServiceImpl implements StorageUnitsService {
     @Override
     public List<StorageUnitFX> loadStorageUnits(LocalDate from) {
 
-        logger.debug("Start load from: {}", from.format(DateTimeFormatter.ISO_LOCAL_DATE));
+        String formatted = from.format(DateTimeFormatter.ISO_LOCAL_DATE);
+        logger.debug("Start load from: {}", formatted);
 
         // get Authentication token or raise exception
         final String token = this.getAuthTokenOrException(this.state);
@@ -125,7 +126,6 @@ public class StorageUnitsServiceImpl implements StorageUnitsService {
         final String token = this.getAuthTokenOrException(this.state);
         // API
         final String API = state.getSettings().getBackendAPI() + API_STORAGE_UNITS + "/" + objectId + "/recorded";
-        // this.httpClient.post(API, token, msg);
-        this.httpClient.post(API, token, "");
+        this.httpClient.post(API, token, msg);
     }
 }

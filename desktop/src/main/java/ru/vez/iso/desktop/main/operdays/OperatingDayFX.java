@@ -20,10 +20,10 @@ public class OperatingDayFX {
 
     private final String objectId;
     private final ObjectProperty<LocalDate> operatingDay = new SimpleObjectProperty<>();
-    private final StringProperty typeSu = new SimpleStringProperty();
+    private final StringProperty typeSu = new SimpleStringProperty();   // Тип носителя, строковое значение
     private final ObjectProperty<OperDayStatus> status = new SimpleObjectProperty<>();
     private final ObjectProperty<LocalDate> createdAt = new SimpleObjectProperty<>();
-    private final StringProperty numberSu = new SimpleStringProperty();;
+    private final StringProperty numberSu = new SimpleStringProperty();
 
     public OperatingDayFX(String objectId,
                           LocalDate operatingDay,
