@@ -4,12 +4,9 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import ru.vez.iso.desktop.main.storeunits.StorageUnitFX;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -26,7 +23,6 @@ public class OperatingDayFX {
     private final StringProperty typeSu = new SimpleStringProperty();
     private final ObjectProperty<OperDayStatus> status = new SimpleObjectProperty<>();
     private final ObjectProperty<LocalDate> createdAt = new SimpleObjectProperty<>();
-    private List<StorageUnitFX> storageUnits = Collections.emptyList();
     private final StringProperty numberSu = new SimpleStringProperty();;
 
     public OperatingDayFX(String objectId,
@@ -73,13 +69,6 @@ public class OperatingDayFX {
     }
     public StringProperty createdAtProperty() {
         return new SimpleStringProperty(createdAt.get().format(formatter));
-    }
-
-    public List<StorageUnitFX> getStorageUnits() {
-        return storageUnits;
-    }
-    public void setStorageUnits(List<StorageUnitFX> storageUnits) {
-        this.storageUnits = storageUnits == null ? Collections.emptyList() : storageUnits;
     }
 
     public String getNumberSu() {

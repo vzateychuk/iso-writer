@@ -4,6 +4,7 @@ import javafx.beans.property.*;
 import ru.vez.iso.desktop.docs.DocumentFX;
 import ru.vez.iso.desktop.docs.reestr.Reestr;
 import ru.vez.iso.desktop.main.operdays.OperatingDayFX;
+import ru.vez.iso.desktop.main.storeunits.StorageUnitFX;
 import ru.vez.iso.desktop.shared.AppSettings;
 import ru.vez.iso.desktop.shared.FileISO;
 import ru.vez.iso.desktop.shared.UserDetails;
@@ -20,6 +21,7 @@ public class ApplicationState {
     private final StringProperty zipDir;                        // Путь к файлу DIR.zip открытый пользователем в форме "Документы"
     private final ObjectProperty<UserDetails> userDetails;      // Режим запуска приложения: Enum RunMode
     private final ObjectProperty<List<OperatingDayFX>> operatingDays;   // Операционные дни
+    private final ObjectProperty<List<StorageUnitFX>> storageUnits;             // Список EX
     private final ObjectProperty<List<FileISO>>  fileNames;     // Список ISO файлов, загруженных из backend и хранящихся в cache
     private final ObjectProperty<List<DocumentFX>> documentFXs; // Список документов загруженных из REESTR файла
     private final ObjectProperty<Reestr>  reestr;               // Загруженный реестр документов (из DirZip.zip)
@@ -29,13 +31,13 @@ public class ApplicationState {
     /**
      * Создает ApplicationState с пустыми значениями
      * */
-    public ApplicationState(
-    ) {
+    public ApplicationState () {
         this.runMode = new SimpleObjectProperty<>(RunMode.NOOP);
         this.settings = new SimpleObjectProperty<>(AppSettings.builder().build());
         this.zipDir = new SimpleStringProperty("");
         this.userDetails = new SimpleObjectProperty<>(UserDetails.NOT_SIGNED_USER);
         this.operatingDays = new SimpleObjectProperty<>(Collections.emptyList());
+        this.storageUnits = new SimpleObjectProperty<>(Collections.emptyList());
         this.fileNames = new SimpleObjectProperty<>(Collections.emptyList());
         this.documentFXs = new SimpleObjectProperty<>(Collections.emptyList());
         this.reestr = new SimpleObjectProperty<>(new Reestr());
@@ -82,6 +84,16 @@ public class ApplicationState {
     }
     public void setOperatingDays(List<OperatingDayFX> operatingDays) {
         this.operatingDays.set(operatingDays);
+    }
+
+    public List<StorageUnitFX> getStorageUnits() {
+        return storageUnits.get();
+    }
+    public ObjectProperty<List<StorageUnitFX>> storageUnitsProperty() {
+        return storageUnits;
+    }
+    public void setStorageUnits(List<StorageUnitFX> storageUnits) {
+        this.storageUnits.set(storageUnits);
     }
 
     public List<DocumentFX> getDocumentFXs() {

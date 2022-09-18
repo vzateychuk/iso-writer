@@ -25,9 +25,11 @@ public interface StorageUnitsService {
     List<StorageUnitFX> loadStorageUnits(LocalDate from);
 
     /**
-     * Получить образ ЕХ по коду (ISO file)
+     * Загрузить с сервера образ ЕХ по идентификатору store-unit (ISO file) и сохранить в локальном файловом кэше
+     *
+     * @param objectId - Store Unit Id
      * */
-    void loadFile(String objectId);
+    void downloadAndSaveFile(String objectId);
 
     /**
      * Request backend API to create a storageUnit (ISO file)

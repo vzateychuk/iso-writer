@@ -3,12 +3,14 @@ package ru.vez.iso.desktop.main;
 import ru.vez.iso.desktop.burn.RecorderInfo;
 import ru.vez.iso.desktop.main.storeunits.StorageUnitFX;
 
+import java.util.function.Consumer;
+
 public interface MainSrv {
 
     /**
      * Загрузить список операционных дней и StorageUnits
      */
-    void refreshDataAsync(int period);
+    void refreshDataAsync(int period, Runnable postAction);
 
     /**
      * Получить информацию о рекордере и о диске
@@ -44,7 +46,7 @@ public interface MainSrv {
      * Load ISO file async
      *  @param objectId - ISO file
      * */
-    void loadISOAsync(StorageUnitFX objectId);
+    void loadISOAsync(StorageUnitFX objectId, Consumer<StorageUnitFX> postAction);
 
     /**
      * Delete the file and invoke reload

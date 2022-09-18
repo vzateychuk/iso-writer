@@ -23,7 +23,7 @@ import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.*;
-import java.util.stream.Collectors;
+import java.util.function.Consumer;
 
 public class MainSrvImpl implements MainSrv {
 
@@ -63,7 +63,7 @@ public class MainSrvImpl implements MainSrv {
      * Загрузка списков операционных дней и единиц хранения
      */
     @Override
-    public void refreshDataAsync(int period) {
+    public void refreshDataAsync(int period, Runnable postAction) {
 
         logger.debug("period: {}", period);
 
@@ -93,11 +93,13 @@ public class MainSrvImpl implements MainSrv {
         loadDataOperation = CompletableFuture.allOf(loadOperationDays, loadStorageUnits, readFileCache)
                 .thenAccept( (Void) -> {
                     List<OperatingDayFX> opDaysList = loadOperationDays.join();
+                    state.setOperatingDays(opDaysList);
+
                     List<StorageUnitFX> storeUnitsList = loadStorageUnits.join();
                     List<FileISO> isoFilesList = readFileCache.join();
                     state.setFileNames(isoFilesList);
 
-                    // update isoFile property for storageUnitsList from local file cache
+                    // Update isoFile property for storageUnitsList from local file cache
                     storeUnitsList.stream()
                             .sorted( Comparator.comparing(StorageUnitFX::getNumberSu) )
                             .forEach( su -> {
@@ -106,19 +108,14 @@ public class MainSrvImpl implements MainSrv {
                                         fileISO -> expectedFileName.equals(fileISO.getFileName())
                                 )) {
                                     su.setIsoFileName(expectedFileName);
+                                } else {
+                                    su.setIsoFileName("");
                                 }
                             });
+                    state.setStorageUnits(storeUnitsList);
 
-                    // update storageUnitsList for opDays
-                    opDaysList.forEach(day -> {
-                        List<StorageUnitFX> storageUnitsForOpDay = storeUnitsList.stream()
-                                .filter(u -> u.getOperatingDayId().equals(day.getObjectId()))
-                                .collect(Collectors.toList());
-                        day.setStorageUnits(storageUnitsForOpDay);
-                    });
-
-                    state.setOperatingDays(opDaysList);
                     logger.debug("loaded operationDays: {}, storageUnits: {}, cache files: {}", opDaysList.size(), storeUnitsList.size(), isoFilesList.size());
+                    postAction.run();
                 })
                 .exceptionally(ex -> {
                     logger.error(ex);
@@ -183,7 +180,7 @@ public class MainSrvImpl implements MainSrv {
                     }
                     this.state.setBurning(false);
                     this.storageUnitsSrv.sendBurnComplete(su.getObjectId(), ex);
-                    this.refreshDataAsync(this.period);
+                    // this.refreshDataAsync(this.period);
                 });
     }
 
@@ -218,7 +215,7 @@ public class MainSrvImpl implements MainSrv {
         }
 
         this.scheduledReload = exec.scheduleWithFixedDelay(
-                () -> this.refreshDataAsync(filterDays),
+                () -> this.refreshDataAsync(filterDays, ()->{}),
                 0,
                 refreshMinutes * 60L,
                 TimeUnit.SECONDS
@@ -227,7 +224,7 @@ public class MainSrvImpl implements MainSrv {
     }
 
     @Override
-    public void loadISOAsync(StorageUnitFX su) {
+    public void loadISOAsync(StorageUnitFX su, Consumer<StorageUnitFX> postAction) {
 
         String fileName = su.getObjectId() + ".iso";
         if (state.isLoading(fileName)) {
@@ -237,16 +234,18 @@ public class MainSrvImpl implements MainSrv {
         }
         msgSrv.news(String.format("Начата загрузка ISO образа для EX '%s'", su.getNumberSu()));
 
-        String cachePath = state.getSettings().getIsoCachePath();
+        // String cachePath = state.getSettings().getIsoCachePath();
 
         // will trigger update of StorageUnits table
-        CompletableFuture.supplyAsync(() -> {
+        CompletableFuture.runAsync(() -> {
             state.addLoading(fileName);
-            this.storageUnitsSrv.loadFile(su.getObjectId());
-            msgSrv.news(String.format("ISO образ для EX: '%s' успешно скачан и готов для записи", su.getNumberSu()));
-            return null;
+            this.storageUnitsSrv.downloadAndSaveFile(su.getObjectId());
+            msgSrv.news(String.format("ISO образ для EX: '%s' загружен и готов для записи", su.getNumberSu()));
+            state.getIsoFiles().add(new FileISO(fileName, LocalDate.now()));
+            su.setIsoFileName(fileName);
+            postAction.accept(su);
         }, exec)
-        .handle(
+        .whenComplete(
                 (s, ex) -> {
                     if (ex != null) {
                         logger.error(ex);
@@ -258,8 +257,6 @@ public class MainSrvImpl implements MainSrv {
                     }
                     // finally remove file from list of loading and refresh fileNames list
                     state.removeLoading(fileName);
-                    state.setFileNames(fileCacheSrv.readFileCache(cachePath));
-                    return null;
                 });
     }
 

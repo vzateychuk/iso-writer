@@ -104,7 +104,7 @@ public class StorageUnitFX {
     }
 
     public void setIsoFileName(String fileName){
-        this.isoFileName = new SimpleStringProperty(fileName);
+        this.isoFileName.set(fileName);
     }
     public String getIsoFileName() {
         return isoFileName.get();

@@ -26,6 +26,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * Controller for: "Выбор Единицы хранения для записи на диск"
@@ -96,8 +97,10 @@ public class MainCtl implements Initializable {
     private final MainSrv mainSrv;
     private final MessageSrv msgSrv;
 
+/*
     private ObservableList<OperatingDayFX> operatingDays;
     private ObservableList<StorageUnitFX> storageUnits;
+*/
     private List<StorageUnitStatus> statusesFilter;
 
     // Listeners
@@ -140,13 +143,13 @@ public class MainCtl implements Initializable {
         };
         this.isoFilesChangeListener = (o, old, newVal) -> {
             // filter and display a storage Units with fileNames
-            Platform.runLater( ()-> this.filterAndDisplayStorageUnits(this.storageUnits, statusesFilter) );
+            // Platform.runLater( ()->this.filterAndDisplayStorageUnits(this.storageUnits, statusesFilter) );
         };
-        this.operationDaysListener = (ob, old, newVal) -> Platform.runLater(()-> displayOperatingDays(newVal));
-        this.selectOperationDayListener = (o, old, newValue) -> {
-            if (newValue != null) {
+        this.operationDaysListener = (ob, old, opDaysList) -> Platform.runLater(()-> displayOperatingDays(opDaysList));
+        this.selectOperationDayListener = (o, old, selectedOpDay) -> {
+            if (selectedOpDay != null) {
                 // filter and display a storage Units
-                Platform.runLater(() -> this.filterAndDisplayStorageUnits(newValue.getStorageUnits(), statusesFilter));
+                Platform.runLater(() -> this.filterAndDisplayStorageUnits(selectedOpDay.getObjectId(), statusesFilter));
             }
         };
         this.selectStorageUnitListener = (o, old, selectedSU) -> {
@@ -168,8 +171,8 @@ public class MainCtl implements Initializable {
         logger.debug(location);
 
         // Setting table Operation Days
-        this.operatingDays = FXCollections.emptyObservableList();
-        this.tblOperatingDays.setItems(operatingDays);
+        // this.operatingDays = FXCollections.emptyObservableList();
+        this.tblOperatingDays.setItems(FXCollections.emptyObservableList());
         this.tblOperatingDays.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         // set selection mode to only 1 row
         this.tblOperatingDays.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
@@ -182,8 +185,8 @@ public class MainCtl implements Initializable {
         this.numberSU.setCellValueFactory(cell -> cell.getValue().numberSuProperty());
 
         // Таблица "Список единиц хранения"
-        this.storageUnits = FXCollections.emptyObservableList();
-        this.tblStorageUnits.setItems(storageUnits);
+        // this.storageUnits = FXCollections.emptyObservableList();
+        this.tblStorageUnits.setItems(FXCollections.emptyObservableList());
         this.tblStorageUnits.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         // set selection mode to only 1 row
         this.tblStorageUnits.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
@@ -248,7 +251,8 @@ public class MainCtl implements Initializable {
         logger.debug("");
         this.radioButtonsToggle.setActive(radioStatusAll);
         this.statusesFilter = null;
-        this.filterAndDisplayStorageUnits(storageUnits, null);
+        String opDayId = tblOperatingDays.getSelectionModel().getSelectedItem().getObjectId();
+        this.filterAndDisplayStorageUnits(opDayId, null);
     }
 
     /**
@@ -263,7 +267,8 @@ public class MainCtl implements Initializable {
                         StorageUnitStatus.RECORDED
                 )
         );
-        this.filterAndDisplayStorageUnits(storageUnits, this.statusesFilter);
+        String opDayId = tblOperatingDays.getSelectionModel().getSelectedItem().getObjectId();
+        this.filterAndDisplayStorageUnits(opDayId, this.statusesFilter);
     }
 
     /**
@@ -273,7 +278,8 @@ public class MainCtl implements Initializable {
         logger.debug("storageUnits filter: PREPARATION_FOR_RECORDING");
         this.radioButtonsToggle.setActive(radioStatusPrepared);
         this.statusesFilter = Collections.singletonList(StorageUnitStatus.PREPARATION_FOR_RECORDING);
-        this.filterAndDisplayStorageUnits(storageUnits, this.statusesFilter);
+        String opDayId = tblOperatingDays.getSelectionModel().getSelectedItem().getObjectId();
+        this.filterAndDisplayStorageUnits(opDayId, this.statusesFilter);
     }
 
     /**
@@ -293,7 +299,12 @@ public class MainCtl implements Initializable {
             logger.error("Bad value: {}", operDaysFilter.getText(), ex);
         }
 
-        mainSrv.refreshDataAsync(days);
+        String opDayId = tblOperatingDays.getSelectionModel().getSelectedItem().getObjectId();
+        mainSrv.refreshDataAsync(days,
+                ()->Platform.runLater(
+                        ()-> this.filterAndDisplayStorageUnits(opDayId, this.statusesFilter)
+                )
+        );
     }
 
     /**
@@ -325,7 +336,10 @@ public class MainCtl implements Initializable {
         logger.debug("");
         StorageUnitFX selected = tblStorageUnits.getSelectionModel().getSelectedItem();
         logger.info("SU: {}, objectId: {}", selected.getNumberSu(), selected.getObjectId());
-        mainSrv.loadISOAsync( selected );
+        String opDayId = tblOperatingDays.getSelectionModel().getSelectedItem().getObjectId();
+        mainSrv.loadISOAsync( selected,
+                su -> Platform.runLater( ()->this.filterAndDisplayStorageUnits(opDayId,this.statusesFilter) )
+        );
     }
 
     /**
@@ -381,66 +395,44 @@ public class MainCtl implements Initializable {
     //region PRIVATE
 
     /**
-     * Update storeUnit fileName property if there is a filename in fileCache found
-     * */
-/*
-    List<StorageUnitFX> getWithFileName(List<StorageUnitFX> storageUnits, List<FileISO> fileCache) {
-
-        return storageUnits.stream()
-                .map(su -> {
-                    StorageUnitFX updated = su;
-                    if ( !Strings.isBlank(su.getObjectId()) ) {
-                        String fullName = su.getObjectId() + ".iso";
-                        final String fileName = fileCache.stream().anyMatch(f -> f.getFileName().equals(fullName)) ? fullName : "";
-                        updated = new StorageUnitFX(
-                                        su.getObjectId(),
-                                        su.getOperatingDayId(),
-                                        su.getNumberSu(),
-                                        su.getCreationDate(),
-                                        su.getDataSize(),
-                                        su.getStorageDate(),
-                                        su.getStorageUnitStatus(),
-                                        su.getSavingDate(),
-                                        fileName,
-                                        su.isDeleted(),
-                                        su.isPresent()
-                                    );
-                    }
-                    return updated;
-                })
-                .sorted( Comparator.comparing(StorageUnitFX::getNumberSu) )
-                .collect(Collectors.toList());
-    }
-*/
-
-    /**
      * Refresh master OperatingDays table
      * Must be executed in Main Application Thread only!
      */
     private void displayOperatingDays(List<OperatingDayFX> operatingDays) {
-        this.operatingDays = FXCollections.observableList(operatingDays);
-        tblOperatingDays.setItems(this.operatingDays);
+        // this.operatingDays = FXCollections.observableList(operatingDays);
+        tblOperatingDays.setItems( FXCollections.observableList(operatingDays) );
         // select first row
+/*
         if (!operatingDays.isEmpty()) {
             tblOperatingDays.requestFocus();
             tblOperatingDays.getSelectionModel().select(0);
             tblOperatingDays.getFocusModel().focus(0);
         }
+*/
     }
 
     /**
      * Refresh slave storageUnits table
      * Must be executed in Main Application Thread only!
      */
-    private void filterAndDisplayStorageUnits(List<StorageUnitFX> storageUnits, List<StorageUnitStatus> filter) {
+    private void filterAndDisplayStorageUnits(String opDayId, List<StorageUnitStatus> statuses) {
 
-        logger.debug("filter: {}", filter);
-        this.storageUnits = FXCollections.observableList(storageUnits);
+        logger.debug("filter: {}", statuses);
+        List<StorageUnitStatus> statusFilter = statuses == null
+                ? Arrays.stream(StorageUnitStatus.values()).collect(Collectors.toList())
+                : statuses;
+
         // filter storageUnits if filter is not null
-        ObservableList<StorageUnitFX> filtered = filter == null
-                        ? this.storageUnits
-                        : this.storageUnits.filtered(su -> filter.stream().anyMatch(f -> f.equals(su.getStorageUnitStatus())));
-        // disable the storageUnits filter (radio-buttons) if no data available
+        ObservableList<StorageUnitFX> filtered = FXCollections.observableArrayList(
+                this.state.getStorageUnits().stream()
+                .filter( su ->
+                        opDayId.equals(su.getOperatingDayId()) &&
+                        statusFilter.stream().anyMatch(
+                                f -> f.equals(su.getStorageUnitStatus())
+                        )
+                )
+                .collect(Collectors.toList() ) );
+
         this.tblStorageUnits.setItems(filtered);
     }
 

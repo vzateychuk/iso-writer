@@ -68,9 +68,13 @@ public class StorageUnitsServiceImpl implements StorageUnitsService {
         return loaded;
     }
 
-    /** Получить образ ЕХ по коду (ISO file) */
+    /**
+     * Загрузить с сервера образ ЕХ по идентификатору store-unit (ISO file) и сохранить в локальном файловом кэше
+     *
+     * @param objectId - Store Unit Id
+     * */
     @Override
-    public void loadFile(String objectId) {
+    public void downloadAndSaveFile(String objectId) {
 
         logger.debug("objectId: {}", objectId);
 
