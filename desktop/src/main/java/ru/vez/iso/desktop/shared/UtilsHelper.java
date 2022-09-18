@@ -56,7 +56,7 @@ public class UtilsHelper {
 
         try{
             int val = Integer.parseInt(text);
-            if (val > 1 && val < 100) {
+            if (val > 1 && val < 10_000) {
                 return val;
             } else {
                 logger.warn("Incorrect value {}, default {} will be used", text, defaultVal);

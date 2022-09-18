@@ -423,7 +423,7 @@ public class MainCtl implements Initializable {
                 : statuses;
 
         // filter storageUnits if filter is not null
-        ObservableList<StorageUnitFX> filtered = FXCollections.observableArrayList(
+        ObservableList<StorageUnitFX> filtered = FXCollections.observableList(
                 this.state.getStorageUnits().stream()
                 .filter( su ->
                         opDayId.equals(su.getOperatingDayId()) &&

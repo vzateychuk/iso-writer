@@ -22,6 +22,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.*;
 import java.util.function.Consumer;
 
@@ -242,7 +243,15 @@ public class MainSrvImpl implements MainSrv {
             this.storageUnitsSrv.downloadAndSaveFile(su.getObjectId());
             msgSrv.news(String.format("ISO образ для EX: '%s' загружен и готов для записи", su.getNumberSu()));
             state.getIsoFiles().add(new FileISO(fileName, LocalDate.now()));
-            su.setIsoFileName(fileName);
+            List<StorageUnitFX> storageUnis = state.getStorageUnits();
+            Optional<StorageUnitFX> optFound = storageUnis.stream().filter(s -> s.getObjectId().equals(su.getObjectId())).findAny();
+            StorageUnitFX found = optFound.orElseThrow( ()->new RuntimeException("Not found in local storage objectId : " + su.getObjectId()) );
+            storageUnis.remove(found);
+            found.setIsoFileName(fileName);
+            storageUnis.add(found);
+            state.setStorageUnits(storageUnis);
+
+            // su.setIsoFileName(fileName);
             postAction.accept(su);
         }, exec)
         .whenComplete(

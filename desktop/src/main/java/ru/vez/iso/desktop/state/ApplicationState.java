@@ -9,6 +9,7 @@ import ru.vez.iso.desktop.shared.AppSettings;
 import ru.vez.iso.desktop.shared.FileISO;
 import ru.vez.iso.desktop.shared.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -21,12 +22,12 @@ public class ApplicationState {
     private final StringProperty zipDir;                        // Путь к файлу DIR.zip открытый пользователем в форме "Документы"
     private final ObjectProperty<UserDetails> userDetails;      // Режим запуска приложения: Enum RunMode
     private final ObjectProperty<List<OperatingDayFX>> operatingDays;   // Операционные дни
-    private final ObjectProperty<List<StorageUnitFX>> storageUnits;             // Список EX
+    private final ObjectProperty<List<StorageUnitFX>> storageUnits;     // Список EX
     private final ObjectProperty<List<FileISO>>  fileNames;     // Список ISO файлов, загруженных из backend и хранящихся в cache
     private final ObjectProperty<List<DocumentFX>> documentFXs; // Список документов загруженных из REESTR файла
     private final ObjectProperty<Reestr>  reestr;               // Загруженный реестр документов (из DirZip.zip)
     private final BooleanProperty burning;                      // Флаг обозначающий что идет процесс записи на диск
-    private final Set<String> loadNotCompleted;            // Список загружаемых в текущий момент (еще не загруженных) ISO файлов
+    private final Set<String> loadNotCompleted;                 // Список загружаемых в текущий момент (еще не загруженных) ISO файлов
 
     /**
      * Создает ApplicationState с пустыми значениями
@@ -93,7 +94,7 @@ public class ApplicationState {
         return storageUnits;
     }
     public void setStorageUnits(List<StorageUnitFX> storageUnits) {
-        this.storageUnits.set(storageUnits);
+        this.storageUnits.set(new ArrayList<>(storageUnits));
     }
 
     public List<DocumentFX> getDocumentFXs() {

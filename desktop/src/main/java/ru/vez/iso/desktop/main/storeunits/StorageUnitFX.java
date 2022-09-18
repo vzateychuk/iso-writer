@@ -113,8 +113,8 @@ public class StorageUnitFX {
         return isoFileName;
     }
     public StringProperty downloadedProperty() {
-        String dowloaded = Strings.isBlank(isoFileName.get()) ? "Нет" : "Да";
-        return new SimpleStringProperty(dowloaded);
+        String downloaded = Strings.isBlank(isoFileName.get()) ? "Нет" : "Да";
+        return new SimpleStringProperty(downloaded);
 
     }
 
@@ -157,13 +157,14 @@ public class StorageUnitFX {
     public String toString() {
         return "StorageUnit{" +
                 "objectId='" + objectId + '\'' +
+                ", numberSu=" + numberSu.get() +
+                ", file=" + isoFileName.get() +
                 ", operatingDayId='" + operatingDayId + '\'' +
-                ", numberSu=" + numberSu +
-                ", creationDate=" + creationDate +
-                ", dataSize=" + dataSize +
-                ", storageDate=" + storageDate +
-                ", storageUnitStatus=" + storageUnitStatus +
-                ", savingDate=" + savingDate +
+                ", creationDate=" + creationDate.getValue() +
+                ", dataSize=" + dataSize.get() +
+                ", storageDate=" + storageDate.get() +
+                ", storageUnitStatus=" + storageUnitStatus.get() +
+                ", savingDate=" + savingDate.get() +
                 '}';
     }
 }
