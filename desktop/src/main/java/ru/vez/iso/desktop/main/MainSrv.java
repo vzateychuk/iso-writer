@@ -3,8 +3,6 @@ package ru.vez.iso.desktop.main;
 import ru.vez.iso.desktop.burn.RecorderInfo;
 import ru.vez.iso.desktop.main.storeunits.StorageUnitFX;
 
-import java.util.function.Consumer;
-
 public interface MainSrv {
 
     /**
@@ -27,7 +25,7 @@ public interface MainSrv {
      *
      *
      * */
-    void burnISOAsync(StorageUnitFX storageUnit, String diskTitle);
+    void burnISOAsync(StorageUnitFX storageUnit, String diskTitle, Runnable postAction);
 
     /**
      * Запрос на создание ISO файла (EX в статусе "Удален")
@@ -40,13 +38,13 @@ public interface MainSrv {
      * @param refreshPeriod - in minutes
      * @param filterDays - количество опер.дней за которые будет выполняться запрос на сервер
      */
-    void scheduleReadInterval(int refreshPeriod, int filterDays);
+    void scheduleReadInterval(int refreshPeriod, int filterDays, Runnable postAction);
 
     /**
      * Load ISO file async
      *  @param objectId - ISO file
      * */
-    void loadISOAsync(StorageUnitFX objectId, Consumer<StorageUnitFX> postAction);
+    void loadISOAsync(StorageUnitFX objectId, Runnable postAction);
 
     /**
      * Delete the file and invoke reload

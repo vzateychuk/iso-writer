@@ -97,10 +97,6 @@ public class MainCtl implements Initializable {
     private final MainSrv mainSrv;
     private final MessageSrv msgSrv;
 
-/*
-    private ObservableList<OperatingDayFX> operatingDays;
-    private ObservableList<StorageUnitFX> storageUnits;
-*/
     private List<StorageUnitStatus> statusesFilter;
 
     // Listeners
@@ -139,11 +135,15 @@ public class MainCtl implements Initializable {
             }  );
             // re-schedule data operationDays load
             int refreshIntervalMin = state.getSettings().getRefreshMin();
-            this.mainSrv.scheduleReadInterval( refreshIntervalMin, filterDays);
+            this.mainSrv.scheduleReadInterval( refreshIntervalMin, filterDays, () -> {
+                        String opDayId = this.tblOperatingDays.getSelectionModel().getSelectedItem().getObjectId();
+                        Platform.runLater( ()->this.filterAndDisplayStorageUnits(opDayId, statusesFilter) );
+                    });
         };
         this.isoFilesChangeListener = (o, old, newVal) -> {
             // filter and display a storage Units with fileNames
-            // Platform.runLater( ()->this.filterAndDisplayStorageUnits(this.storageUnits, statusesFilter) );
+            String opDayId = this.tblOperatingDays.getSelectionModel().getSelectedItem().getObjectId();
+            Platform.runLater( ()->this.filterAndDisplayStorageUnits(opDayId, statusesFilter) );
         };
         this.operationDaysListener = (ob, old, opDaysList) -> Platform.runLater(()-> displayOperatingDays(opDaysList));
         this.selectOperationDayListener = (o, old, selectedOpDay) -> {
@@ -163,6 +163,7 @@ public class MainCtl implements Initializable {
         this.burningListener = (o, old, isBurning) -> Platform.runLater( () -> {
             butBurn.setDisable( isBurning || disableBurn.test(tblStorageUnits.getSelectionModel().getSelectedItem()) );
         });
+
     }
 
     @Override
@@ -171,7 +172,6 @@ public class MainCtl implements Initializable {
         logger.debug(location);
 
         // Setting table Operation Days
-        // this.operatingDays = FXCollections.emptyObservableList();
         this.tblOperatingDays.setItems(FXCollections.emptyObservableList());
         this.tblOperatingDays.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         // set selection mode to only 1 row
@@ -185,7 +185,6 @@ public class MainCtl implements Initializable {
         this.numberSU.setCellValueFactory(cell -> cell.getValue().numberSuProperty());
 
         // Таблица "Список единиц хранения"
-        // this.storageUnits = FXCollections.emptyObservableList();
         this.tblStorageUnits.setItems(FXCollections.emptyObservableList());
         this.tblStorageUnits.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         // set selection mode to only 1 row
@@ -222,7 +221,10 @@ public class MainCtl implements Initializable {
                     // schedule data operationDays load
                     int filterDays = state.getSettings().getFilterOpsDays();
                     int refreshIntervalMin = state.getSettings().getRefreshMin();
-                    this.mainSrv.scheduleReadInterval( refreshIntervalMin, filterDays);
+                    this.mainSrv.scheduleReadInterval( refreshIntervalMin, filterDays, ()->{
+                        String opDayId = this.tblOperatingDays.getSelectionModel().getSelectedItem().getObjectId();
+                        Platform.runLater( ()->this.filterAndDisplayStorageUnits(opDayId, statusesFilter) );
+                    });
                 } else {
                     this.state.operatingDaysProperty().removeListener(operationDaysListener); // Operation Days table listener
                     this.tblOperatingDays.getSelectionModel().selectedItemProperty().removeListener( selectOperationDayListener ); // OperationDays: when select row should refresh StorageUnits table
@@ -240,7 +242,6 @@ public class MainCtl implements Initializable {
                 operDaysFilter.setText(newValue.replaceAll("[^\\d]", ""));
             }
         });
-
     }
 
     /**
@@ -289,16 +290,7 @@ public class MainCtl implements Initializable {
 
         logger.debug("days: {}", operDaysFilter.getText());
 
-        int days = this.state.getSettings().getFilterOpsDays();
-        try {
-            days = Integer.parseUnsignedInt(operDaysFilter.getText());
-            if (days == 0) {
-                throw new IllegalArgumentException(operDaysFilter.getText());
-            }
-        } catch ( IllegalArgumentException ex) {
-            logger.error("Bad value: {}", operDaysFilter.getText(), ex);
-        }
-
+        int days = this.getOperationDaysFilter( this.state.getSettings().getFilterOpsDays() );
         String opDayId = tblOperatingDays.getSelectionModel().getSelectedItem().getObjectId();
         mainSrv.refreshDataAsync(days,
                 ()->Platform.runLater(
@@ -338,7 +330,7 @@ public class MainCtl implements Initializable {
         logger.info("SU: {}, objectId: {}", selected.getNumberSu(), selected.getObjectId());
         String opDayId = tblOperatingDays.getSelectionModel().getSelectedItem().getObjectId();
         mainSrv.loadISOAsync( selected,
-                su -> Platform.runLater( ()->this.filterAndDisplayStorageUnits(opDayId,this.statusesFilter) )
+                () -> Platform.runLater( ()->this.filterAndDisplayStorageUnits(opDayId,this.statusesFilter) )
         );
     }
 
@@ -378,8 +370,16 @@ public class MainCtl implements Initializable {
             info = mainSrv.getRecorderInfo(recorderIndex);
             msg = "Диск поврежден. Запись невозможна. Вставьте в дисковод новый диск.";
         }
-
-        mainSrv.burnISOAsync(su, su.getNumberSu() + "_" + labelMainOrReserve + "_носитель");
+        String diskTitle = su.getNumberSu() + "_" + labelMainOrReserve + "_носитель";
+        String opDayId = tblOperatingDays.getSelectionModel().getSelectedItem().getObjectId();
+        int days = this.getOperationDaysFilter( this.state.getSettings().getFilterOpsDays() );
+        mainSrv.burnISOAsync(su, diskTitle, ()->
+                    mainSrv.refreshDataAsync(days,
+                            ()->Platform.runLater(
+                                    ()-> this.filterAndDisplayStorageUnits(opDayId, this.statusesFilter)
+                            )
+                    )
+        );
     }
 
     /**
@@ -422,6 +422,7 @@ public class MainCtl implements Initializable {
                 ? Arrays.stream(StorageUnitStatus.values()).collect(Collectors.toList())
                 : statuses;
 
+        List<FileISO> isoFiles = state.getIsoFiles();
         // filter storageUnits if filter is not null
         ObservableList<StorageUnitFX> filtered = FXCollections.observableList(
                 this.state.getStorageUnits().stream()
@@ -431,9 +432,52 @@ public class MainCtl implements Initializable {
                                 f -> f.equals(su.getStorageUnitStatus())
                         )
                 )
+                .map( su -> this.updateWithFileName(su, isoFiles))
+                .sorted( Comparator.comparing(StorageUnitFX::getNumberSu) )
                 .collect(Collectors.toList() ) );
 
         this.tblStorageUnits.setItems(filtered);
+    }
+
+    /**
+     * Update storeUnit fileName property if there is a filename in fileCache found
+     * */
+    StorageUnitFX updateWithFileName(StorageUnitFX su, List<FileISO> fileCache) {
+
+        assert !Strings.isBlank(su.getObjectId()) : "Expected storeUnitId is not blank";
+
+        final String fullName = su.getObjectId() + ".iso";
+        final String fileName = fileCache.stream().anyMatch(f -> f.getFileName().equals(fullName)) ? fullName : "";
+        StorageUnitFX updated = new StorageUnitFX(
+                su.getObjectId(),
+                su.getOperatingDayId(),
+                su.getNumberSu(),
+                su.getCreationDate(),
+                su.getDataSize(),
+                su.getStorageDate(),
+                su.getStorageUnitStatus(),
+                su.getSavingDate(),
+                su.isDeleted(),
+                su.isPresent()
+        );
+        updated.setIsoFileName(fileName);
+        return updated;
+    }
+
+
+    private int getOperationDaysFilter(int fallbackValue) {
+
+        int days;
+        try {
+            days = Integer.parseUnsignedInt(operDaysFilter.getText());
+            if (days == 0) {
+                throw new IllegalArgumentException(operDaysFilter.getText());
+            }
+        } catch ( IllegalArgumentException ex) {
+            days = fallbackValue;
+            logger.error("Bad value: {}, returning fallback value: {}", operDaysFilter.getText(), days, ex);
+        }
+        return days;
     }
 
     //endregion

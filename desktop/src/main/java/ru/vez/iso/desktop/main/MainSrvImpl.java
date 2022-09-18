@@ -22,9 +22,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.*;
-import java.util.function.Consumer;
 
 public class MainSrvImpl implements MainSrv {
 
@@ -141,7 +139,7 @@ public class MainSrvImpl implements MainSrv {
      * Стартует прожиг диска
      */
     @Override
-    public void burnISOAsync(StorageUnitFX su, String diskTitle) {
+    public void burnISOAsync(StorageUnitFX su, String diskTitle, Runnable postAction) {
 
         // Avoid multiply invocation
         if (!burnOperation.isDone()) {
@@ -181,7 +179,7 @@ public class MainSrvImpl implements MainSrv {
                     }
                     this.state.setBurning(false);
                     this.storageUnitsSrv.sendBurnComplete(su.getObjectId(), ex);
-                    // this.refreshDataAsync(this.period);
+                    postAction.run();
                 });
     }
 
@@ -202,7 +200,7 @@ public class MainSrvImpl implements MainSrv {
     }
 
     @Override
-    public void scheduleReadInterval(int refreshMinutes, int filterDays) {
+    public void scheduleReadInterval(int refreshMinutes, int filterDays, Runnable postAction) {
 
         logger.debug("periodMin: {}, filterDays: {}", refreshMinutes, filterDays);
 
@@ -216,7 +214,7 @@ public class MainSrvImpl implements MainSrv {
         }
 
         this.scheduledReload = exec.scheduleWithFixedDelay(
-                () -> this.refreshDataAsync(filterDays, ()->{}),
+                () -> this.refreshDataAsync(filterDays, postAction),
                 0,
                 refreshMinutes * 60L,
                 TimeUnit.SECONDS
@@ -225,7 +223,7 @@ public class MainSrvImpl implements MainSrv {
     }
 
     @Override
-    public void loadISOAsync(StorageUnitFX su, Consumer<StorageUnitFX> postAction) {
+    public void loadISOAsync(StorageUnitFX su, Runnable postAction) {
 
         String fileName = su.getObjectId() + ".iso";
         if (state.isLoading(fileName)) {
@@ -235,24 +233,14 @@ public class MainSrvImpl implements MainSrv {
         }
         msgSrv.news(String.format("Начата загрузка ISO образа для EX '%s'", su.getNumberSu()));
 
-        // String cachePath = state.getSettings().getIsoCachePath();
-
         // will trigger update of StorageUnits table
         CompletableFuture.runAsync(() -> {
             state.addLoading(fileName);
             this.storageUnitsSrv.downloadAndSaveFile(su.getObjectId());
-            msgSrv.news(String.format("ISO образ для EX: '%s' загружен и готов для записи", su.getNumberSu()));
             state.getIsoFiles().add(new FileISO(fileName, LocalDate.now()));
-            List<StorageUnitFX> storageUnis = state.getStorageUnits();
-            Optional<StorageUnitFX> optFound = storageUnis.stream().filter(s -> s.getObjectId().equals(su.getObjectId())).findAny();
-            StorageUnitFX found = optFound.orElseThrow( ()->new RuntimeException("Not found in local storage objectId : " + su.getObjectId()) );
-            storageUnis.remove(found);
-            found.setIsoFileName(fileName);
-            storageUnis.add(found);
-            state.setStorageUnits(storageUnis);
 
-            // su.setIsoFileName(fileName);
-            postAction.accept(su);
+            // replace storageUnit by value with fileName
+            msgSrv.news(String.format("ISO образ для EX: '%s' загружен и готов для записи", su.getNumberSu()));
         }, exec)
         .whenComplete(
                 (s, ex) -> {
@@ -266,6 +254,7 @@ public class MainSrvImpl implements MainSrv {
                     }
                     // finally remove file from list of loading and refresh fileNames list
                     state.removeLoading(fileName);
+                    postAction.run();
                 });
     }
 

@@ -83,7 +83,7 @@ public class StorageUnitsHttpClientImpl implements StorageUnitsHttpClient {
         httpPost.setHeader("Authorization", token);
         httpPost.setHeader("Content-Type", APPLICATION_JSON.getMimeType());
 
-        logger.debug("HttpPost: {}", httpPost);
+        logger.debug("HttpPost: {}, body: {}", httpPost, body);
 
         try {
             StringEntity entity = new StringEntity(body);
