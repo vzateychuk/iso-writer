@@ -257,7 +257,7 @@ public class DesktopApp extends Application {
 
     private Parent buildView(ViewType view, Callback<Class<?>, Object> controllerFactory) throws IOException {
 
-        logger.debug("BuildView from: " + view.getFileName());
+        logger.debug("BuildView from: {}", view.getFileName());
         FXMLLoader loader = new FXMLLoader(getClass().getResource(view.getFileName()));
         loader.setControllerFactory(controllerFactory);
         return loader.load();
@@ -272,7 +272,7 @@ public class DesktopApp extends Application {
             try {
                 Files.createDirectories(path);
             } catch (IOException ex) {
-                logger.debug("Unable to create directory: " + cachePath);
+                logger.debug("Unable to create directory: {}", cachePath);
                 throw new RuntimeException(ex);
             }
         }

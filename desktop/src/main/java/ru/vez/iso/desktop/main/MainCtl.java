@@ -137,20 +137,18 @@ public class MainCtl implements Initializable {
             // re-schedule data operationDays load
             int refreshIntervalMin = state.getSettings().getRefreshMin();
             this.mainSrv.scheduleReadInterval( refreshIntervalMin, filterDays, () -> {
-                        String opDayId = this.tblOperatingDays.getSelectionModel().getSelectedItem().getObjectId();
-                        Platform.runLater( ()->this.filterAndDisplayStorageUnits(opDayId, statusesFilter) );
+                        Platform.runLater( ()->this.filterAndDisplayStorageUnits(this.statusesFilter) );
                     });
         };
         this.isoFilesChangeListener = (o, old, newVal) -> {
             // filter and display a storage Units with fileNames
-            String opDayId = this.tblOperatingDays.getSelectionModel().getSelectedItem().getObjectId();
-            Platform.runLater( ()->this.filterAndDisplayStorageUnits(opDayId, statusesFilter) );
+            Platform.runLater( ()->this.filterAndDisplayStorageUnits(this.statusesFilter) );
         };
         this.operationDaysListener = (ob, old, opDaysList) -> Platform.runLater(()-> displayOperatingDays(opDaysList));
         this.selectOperationDayListener = (o, old, selectedOpDay) -> {
             if (selectedOpDay != null) {
                 // filter and display a storage Units
-                Platform.runLater(() -> this.filterAndDisplayStorageUnits(selectedOpDay.getObjectId(), statusesFilter));
+                Platform.runLater(() -> this.filterAndDisplayStorageUnits(this.statusesFilter));
             }
         };
         this.selectStorageUnitListener = (o, old, selectedSU) -> {
@@ -223,8 +221,7 @@ public class MainCtl implements Initializable {
                     int filterDays = state.getSettings().getFilterOpsDays();
                     int refreshIntervalMin = state.getSettings().getRefreshMin();
                     this.mainSrv.scheduleReadInterval( refreshIntervalMin, filterDays, ()->{
-                        String opDayId = this.tblOperatingDays.getSelectionModel().getSelectedItem().getObjectId();
-                        Platform.runLater( ()->this.filterAndDisplayStorageUnits(opDayId, statusesFilter) );
+                        Platform.runLater( ()->this.filterAndDisplayStorageUnits(statusesFilter) );
                     });
                 } else {
                     this.state.operatingDaysProperty().removeListener(operationDaysListener); // Operation Days table listener
@@ -253,8 +250,7 @@ public class MainCtl implements Initializable {
         logger.debug("");
         this.radioButtonsToggle.setActive(radioStatusAll);
         this.statusesFilter = null;
-        String opDayId = tblOperatingDays.getSelectionModel().getSelectedItem().getObjectId();
-        this.filterAndDisplayStorageUnits(opDayId, null);
+        this.filterAndDisplayStorageUnits(null);
     }
 
     /**
@@ -269,8 +265,7 @@ public class MainCtl implements Initializable {
                         StorageUnitStatus.RECORDED
                 )
         );
-        String opDayId = tblOperatingDays.getSelectionModel().getSelectedItem().getObjectId();
-        this.filterAndDisplayStorageUnits(opDayId, this.statusesFilter);
+        this.filterAndDisplayStorageUnits(this.statusesFilter);
     }
 
     /**
@@ -280,8 +275,7 @@ public class MainCtl implements Initializable {
         logger.debug("storageUnits filter: PREPARATION_FOR_RECORDING");
         this.radioButtonsToggle.setActive(radioStatusPrepared);
         this.statusesFilter = Collections.singletonList(StorageUnitStatus.PREPARATION_FOR_RECORDING);
-        String opDayId = tblOperatingDays.getSelectionModel().getSelectedItem().getObjectId();
-        this.filterAndDisplayStorageUnits(opDayId, this.statusesFilter);
+        this.filterAndDisplayStorageUnits(this.statusesFilter);
     }
 
     /**
@@ -292,10 +286,9 @@ public class MainCtl implements Initializable {
         logger.debug("days: {}", operDaysFilter.getText());
 
         int days = this.getOperationDaysFilter( this.state.getSettings().getFilterOpsDays() );
-        String opDayId = tblOperatingDays.getSelectionModel().getSelectedItem().getObjectId();
         mainSrv.refreshDataAsync(days,
                 ()->Platform.runLater(
-                        ()-> this.filterAndDisplayStorageUnits(opDayId, this.statusesFilter)
+                        ()-> this.filterAndDisplayStorageUnits(this.statusesFilter)
                 )
         );
     }
@@ -329,9 +322,8 @@ public class MainCtl implements Initializable {
         logger.debug("");
         StorageUnitFX selected = tblStorageUnits.getSelectionModel().getSelectedItem();
         logger.info("SU: {}, objectId: {}", selected.getNumberSu(), selected.getObjectId());
-        String opDayId = tblOperatingDays.getSelectionModel().getSelectedItem().getObjectId();
         mainSrv.loadISOAsync( selected,
-                () -> Platform.runLater( ()->this.filterAndDisplayStorageUnits(opDayId,this.statusesFilter) )
+                () -> Platform.runLater( ()->this.filterAndDisplayStorageUnits(this.statusesFilter) )
         );
     }
 
@@ -379,12 +371,11 @@ public class MainCtl implements Initializable {
             msg = "Диск поврежден. Запись невозможна. Вставьте в дисковод новый диск.";
         }
         String diskTitle = su.getNumberSu() + "_" + labelMainOrReserve + "_носитель";
-        String opDayId = tblOperatingDays.getSelectionModel().getSelectedItem().getObjectId();
         int days = this.getOperationDaysFilter( this.state.getSettings().getFilterOpsDays() );
         mainSrv.burnISOAsync(su, diskTitle, ()->
                     mainSrv.refreshDataAsync(days,
                             ()->Platform.runLater(
-                                    ()-> this.filterAndDisplayStorageUnits(opDayId, this.statusesFilter)
+                                    ()-> this.filterAndDisplayStorageUnits(this.statusesFilter)
                             )
                     )
         );
@@ -415,7 +406,14 @@ public class MainCtl implements Initializable {
      * Refresh slave storageUnits table
      * Must be executed in Main Application Thread only!
      */
-    private void filterAndDisplayStorageUnits(String opDayId, List<StorageUnitStatus> statuses) {
+    private void filterAndDisplayStorageUnits(List<StorageUnitStatus> statuses) {
+
+        if (tblOperatingDays.getSelectionModel().getSelectedItem() == null) {
+            logger.warn("No selected items, returning");
+            return;
+        }
+
+        final String opDayId = tblOperatingDays.getSelectionModel().getSelectedItem().getObjectId();
 
         logger.debug("filter: {}", statuses);
         List<StorageUnitStatus> statusFilter = statuses == null
