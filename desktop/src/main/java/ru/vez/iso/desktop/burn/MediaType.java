@@ -8,7 +8,7 @@ import java.util.List;
 
 import static com.ms.imapi2.IMAPI_MEDIA_PHYSICAL_TYPE.*;
 
-public enum DiskType {
+public enum MediaType {
 
     DVD("DVD", Arrays.asList(
             IMAPI_MEDIA_TYPE_DVDPLUSR, IMAPI_MEDIA_TYPE_DVDPLUSRW,
@@ -21,18 +21,18 @@ public enum DiskType {
     ));
 
     private final String title;
-    private final List<IMAPI_MEDIA_PHYSICAL_TYPE> physicalTypes;
+    private final List<IMAPI_MEDIA_PHYSICAL_TYPE> physicalTypesAllowed;
 
-    DiskType(String title, List<IMAPI_MEDIA_PHYSICAL_TYPE> physicalTypes) {
+    MediaType(String title, List<IMAPI_MEDIA_PHYSICAL_TYPE> physicalTypes) {
         this.title = title;
-        this.physicalTypes = physicalTypes;
+        this.physicalTypesAllowed = physicalTypes;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public List<IMAPI_MEDIA_PHYSICAL_TYPE> getPhysicalTypes() {
-        return Collections.unmodifiableList(this.physicalTypes);
+    public List<IMAPI_MEDIA_PHYSICAL_TYPE> getPhysicalTypesAllowed() {
+        return Collections.unmodifiableList(this.physicalTypesAllowed);
     }
 }

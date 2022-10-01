@@ -86,7 +86,7 @@
                     <graphic>
                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@image/check-primary.png"/>
+                                <Image url="@image/approve.png"/>
                             </image>
                         </ImageView>
                     </graphic>
@@ -119,7 +119,7 @@
     <center>
         <TableView fx:id="tblDocuments" maxHeight="1.7976931348623157E308">
             <placeholder>
-                <Label text="Не выбран диск для просмотра списка документов"/>
+                <Label text="На диске не найдено ни одного документа. Измените параметр запроса и повторите поиск."/>
             </placeholder>
             <columns>
                 <TableColumn fx:id="docNumber" prefWidth="100.0" text="Номер документа"/>

@@ -30,10 +30,10 @@ public class RecorderInfo {
     private IMAPI_FORMAT2_DATA_MEDIA_STATE mediaState; // The state (usability) of the current media
     private IMAPI_MEDIA_PHYSICAL_TYPE mediaType;    // Physical type of the optical media loaded
 
-    public boolean isReady(DiskType expectedType) {
+    public boolean isReady(MediaType expectedType) {
 
         return this.isRecorderSupported && this.isCurrentMediaSupported && !isMediaProtected
-                && expectedType.getPhysicalTypes().contains(this.mediaType)
+                && expectedType.getPhysicalTypesAllowed().contains(this.mediaType)
                 && Optional.ofNullable(nextWritableAddress).orElse(-1) == 0;
     }
 

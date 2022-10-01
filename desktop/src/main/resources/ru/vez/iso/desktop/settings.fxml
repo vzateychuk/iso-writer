@@ -90,7 +90,7 @@
     <TextField fx:id="refreshPeriod" layoutX="260.0" layoutY="164.0" maxWidth="1.7976931348623157E308" prefHeight="26.0"
                promptText="Мин." styleClass="desktop-input" GridPane.columnIndex="2" GridPane.rowIndex="6"/>
 
-    <Label styleClass="desktop-label" text="Сервер API:" textAlignment="RIGHT" GridPane.columnIndex="1"
+    <Label styleClass="desktop-label" text="Сервер АБДД:" textAlignment="RIGHT" GridPane.columnIndex="1"
            GridPane.rowIndex="7">
     </Label>
 

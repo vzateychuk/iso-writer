@@ -14,7 +14,7 @@ import lombok.extern.java.Log;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
-import ru.vez.iso.desktop.burn.DiskType;
+import ru.vez.iso.desktop.burn.MediaType;
 import ru.vez.iso.desktop.burn.RecorderInfo;
 import ru.vez.iso.desktop.main.operdays.OperatingDayFX;
 import ru.vez.iso.desktop.main.storeunits.StorageUnitFX;
@@ -136,23 +136,21 @@ public class MainCtl implements Initializable {
             }  );
             // re-schedule data operationDays load
             int refreshIntervalMin = state.getSettings().getRefreshMin();
-            this.mainSrv.scheduleReadInterval( refreshIntervalMin, filterDays, () -> {
-                        Platform.runLater( ()->this.filterAndDisplayStorageUnits(this.statusesFilter) );
-                    });
+            this.mainSrv.scheduleReadInterval( refreshIntervalMin, filterDays, 
+                    () -> Platform.runLater(this::filterAndDisplayStorageUnits)
+            );
         };
-        this.isoFilesChangeListener = (o, old, newVal) -> {
-            // filter and display a storage Units with fileNames
-            Platform.runLater( ()->this.filterAndDisplayStorageUnits(this.statusesFilter) );
-        };
+        // filter and display a storage Units with fileNames
+        this.isoFilesChangeListener = (o, old, newVal) -> Platform.runLater(this::filterAndDisplayStorageUnits);
         this.operationDaysListener = (ob, old, opDaysList) -> Platform.runLater(()-> displayOperatingDays(opDaysList));
-        this.selectOperationDayListener = (o, old, selectedOpDay) -> {
-            if (selectedOpDay != null) {
+        this.selectOperationDayListener = (o, old, selected) -> {
+            if (selected != null) {
                 // filter and display a storage Units
-                Platform.runLater(() -> this.filterAndDisplayStorageUnits(this.statusesFilter));
+                Platform.runLater(this::filterAndDisplayStorageUnits);
             }
         };
         this.selectStorageUnitListener = (o, old, selectedSU) -> {
-                    butIsoLoad.setDisable( disableIsoLoad.test(selectedSU) );
+                    butIsoLoad.setDisable( disableIsoLoad.test(selectedSU) || !selectedSU.isPresent() );
                     butIsoCreate.setDisable(selectedSU == null || selectedSU.isPresent());
                     butBurn.setDisable( disableBurn.test(selectedSU) || this.state.isBurning() );
                     butDelete.setDisable(selectedSU == null || Strings.isBlank(selectedSU.getIsoFileName()));
@@ -220,9 +218,9 @@ public class MainCtl implements Initializable {
                     // schedule data operationDays load
                     int filterDays = state.getSettings().getFilterOpsDays();
                     int refreshIntervalMin = state.getSettings().getRefreshMin();
-                    this.mainSrv.scheduleReadInterval( refreshIntervalMin, filterDays, ()->{
-                        Platform.runLater( ()->this.filterAndDisplayStorageUnits(statusesFilter) );
-                    });
+                    this.mainSrv.scheduleReadInterval( refreshIntervalMin, filterDays, 
+                            ()-> Platform.runLater(this::filterAndDisplayStorageUnits)
+                    );
                 } else {
                     this.state.operatingDaysProperty().removeListener(operationDaysListener); // Operation Days table listener
                     this.tblOperatingDays.getSelectionModel().selectedItemProperty().removeListener( selectOperationDayListener ); // OperationDays: when select row should refresh StorageUnits table
@@ -245,18 +243,18 @@ public class MainCtl implements Initializable {
     /**
      * Choice filterStatusAll - Все
      * */
-    @FXML public void onStatusAllChoice(ActionEvent ev) {
+    @FXML public void onStatusAllChoice(ActionEvent a) {
 
         logger.debug("");
         this.radioButtonsToggle.setActive(radioStatusAll);
         this.statusesFilter = null;
-        this.filterAndDisplayStorageUnits(null);
+        this.filterAndDisplayStorageUnits();
     }
 
     /**
      * Choice filterStatusAvailable - Доступные для записи
      * */
-    @FXML public void onStatusAvailableChoice(ActionEvent ev) {
+    @FXML public void onStatusAvailableChoice(ActionEvent a) {
         logger.debug("storageUnits filter: READY_TO_RECORDING + RECORDED");
         this.radioButtonsToggle.setActive(radioStatusAvailable);
         this.statusesFilter = Collections.unmodifiableList(
@@ -265,31 +263,29 @@ public class MainCtl implements Initializable {
                         StorageUnitStatus.RECORDED
                 )
         );
-        this.filterAndDisplayStorageUnits(this.statusesFilter);
+        this.filterAndDisplayStorageUnits();
     }
 
     /**
      * Choice filterStatusPrepared - Готовые для записи
      * */
-    @FXML public void onStatusShowPrepChoice(ActionEvent ev) {
+    @FXML public void onStatusShowPrepChoice(ActionEvent a) {
         logger.debug("storageUnits filter: PREPARATION_FOR_RECORDING");
         this.radioButtonsToggle.setActive(radioStatusPrepared);
         this.statusesFilter = Collections.singletonList(StorageUnitStatus.PREPARATION_FOR_RECORDING);
-        this.filterAndDisplayStorageUnits(this.statusesFilter);
+        this.filterAndDisplayStorageUnits();
     }
 
     /**
      * Reload starts OperationDay's and StorageUnit's refresh
      * */
-    @FXML public void onReload(ActionEvent ev) {
+    @FXML public void onReload(ActionEvent a) {
 
         logger.debug("days: {}", operDaysFilter.getText());
 
         int days = this.getOperationDaysFilter( this.state.getSettings().getFilterOpsDays() );
         mainSrv.refreshDataAsync(days,
-                ()->Platform.runLater(
-                        ()-> this.filterAndDisplayStorageUnits(this.statusesFilter)
-                )
+                ()->Platform.runLater(this::filterAndDisplayStorageUnits)
         );
     }
 
@@ -304,9 +300,9 @@ public class MainCtl implements Initializable {
     }
 
     /**
-     * Request backend (ABDD system) to create the ISO
+     * Request backend to create the ISO
      * */
-    @FXML public void onIsoCreate(ActionEvent ev) {
+    @FXML public void onIsoCreate(ActionEvent a) {
 
         logger.debug("");
         StorageUnitFX selected = tblStorageUnits.getSelectionModel().getSelectedItem();
@@ -317,20 +313,20 @@ public class MainCtl implements Initializable {
     /**
      * Load ISO file from ABDD server
      * */
-    @FXML void onStartIsoLoad(ActionEvent ev) {
+    @FXML void onStartIsoLoad(ActionEvent a) {
 
         logger.debug("");
         StorageUnitFX selected = tblStorageUnits.getSelectionModel().getSelectedItem();
         logger.info("SU: {}, objectId: {}", selected.getNumberSu(), selected.getObjectId());
         mainSrv.loadISOAsync( selected,
-                () -> Platform.runLater( ()->this.filterAndDisplayStorageUnits(this.statusesFilter) )
+                () -> Platform.runLater(this::filterAndDisplayStorageUnits)
         );
     }
 
     /**
      * Burn ISO disk
      * */
-    @FXML public void onBurnIso(ActionEvent event) {
+    @FXML public void onBurnIso(ActionEvent aent) {
 
         logger.debug("");
         // check if previous burning session hasn't completed
@@ -358,11 +354,19 @@ public class MainCtl implements Initializable {
         String msg = "Для продолжения записи вставьте новый диск в дисковод.";
 
         // check mediaType allowed
-        String typeSU = this.tblOperatingDays.getSelectionModel().getSelectedItem().getTypeSu();
-        assert !Strings.isBlank(typeSU) : "Expected storageUnitType not blank, but got: " + typeSU;
+        String typeSuAllowed = this.tblOperatingDays.getSelectionModel().getSelectedItem().getTypeSu();
+        assert !Strings.isBlank(typeSuAllowed) : "Expected: storageUnit type not blank, but got: " + typeSuAllowed;
+        MediaType mediaTypeAllowed = this.parseMediaType(typeSuAllowed);
 
-        DiskType diskType = this.parseDiskType(typeSU);
-        while (!info.isReady(diskType)) {
+        if ( !mediaTypeAllowed.getPhysicalTypesAllowed().contains(info.getMediaType()) &&
+             !UtilsHelper.getConfirmation(String.format("Тип диска: %s не совпадает с типом носителя, выбранного для единицы хранения '%s'. %s",
+                     info.getMediaType().getDesc(), typeSuAllowed, msg)))
+        {
+            mainSrv.openTray(recorderIndex);
+            return;
+        }
+
+        while (!info.isReady(mediaTypeAllowed)) {
             if (!UtilsHelper.getConfirmation(msg)) {
                 mainSrv.openTray(recorderIndex);
                 return;
@@ -373,18 +377,14 @@ public class MainCtl implements Initializable {
         String diskTitle = su.getNumberSu() + "_" + labelMainOrReserve + "_носитель";
         int days = this.getOperationDaysFilter( this.state.getSettings().getFilterOpsDays() );
         mainSrv.burnISOAsync(su, diskTitle, ()->
-                    mainSrv.refreshDataAsync(days,
-                            ()->Platform.runLater(
-                                    ()-> this.filterAndDisplayStorageUnits(this.statusesFilter)
-                            )
-                    )
+                    mainSrv.refreshDataAsync(days, ()->Platform.runLater(this::filterAndDisplayStorageUnits))
         );
     }
 
     /**
      * Delete ISO files from cache
      * */
-    @FXML public void onDeleteIso(ActionEvent ev) {
+    @FXML public void onDeleteIso(ActionEvent a) {
         logger.debug("");
         StorageUnitFX su = tblStorageUnits.getSelectionModel().selectedItemProperty().getValue();
         logger.debug(su.getIsoFileName());
@@ -406,13 +406,15 @@ public class MainCtl implements Initializable {
      * Refresh slave storageUnits table
      * Must be executed in Main Application Thread only!
      */
-    private void filterAndDisplayStorageUnits(List<StorageUnitStatus> statuses) {
+    private void filterAndDisplayStorageUnits() {
 
         if (tblOperatingDays.getSelectionModel().getSelectedItem() == null) {
             logger.warn("No selected items, returning");
             return;
         }
 
+        List<StorageUnitStatus> statuses = this.statusesFilter;
+        
         final String opDayId = tblOperatingDays.getSelectionModel().getSelectedItem().getObjectId();
 
         logger.debug("filter: {}", statuses);
@@ -478,16 +480,16 @@ public class MainCtl implements Initializable {
     }
 
 
-    DiskType parseDiskType(String typeSU) {
+    MediaType parseMediaType(String typeSU) {
 
         if (typeSU.toUpperCase().contains("DVD/CD")) {
-            return DiskType.DVD_CD;
+            return MediaType.DVD_CD;
         } else if (typeSU.toUpperCase().contains("DVD")) {
-            return DiskType.DVD;
+            return MediaType.DVD;
         } else if (typeSU.toUpperCase().contains("CD")) {
-            return DiskType.CD;
+            return MediaType.CD;
         } else {
-            throw new RuntimeException("Can't parse DiskType value: " + typeSU);
+            throw new IllegalArgumentException("Can't parse DiskType value: " + typeSU);
         }
     }
 
