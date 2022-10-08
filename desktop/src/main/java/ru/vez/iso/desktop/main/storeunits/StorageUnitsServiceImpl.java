@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -22,7 +23,7 @@ import java.util.stream.Collectors;
 public class StorageUnitsServiceImpl implements StorageUnitsService {
 
     private static final Logger logger = LogManager.getLogger();
-    private static final String API_STORAGE_UNITS = "/abdd/storageunits";
+    public static final String API_STORAGE_UNITS = "/abdd/storageunits";
 
     private final ApplicationState state;
     private final StorageUnitsHttpClient httpClient;
@@ -122,10 +123,16 @@ public class StorageUnitsServiceImpl implements StorageUnitsService {
     @Override
     public void sendBurnComplete(String objectId, Throwable ex) {
 
-        String msg = ex == null ? "" : "{\"errorMessage\":\"" + ex.getMessage() + "\"}" ;
+        String msg = ex == null ? "" : "{\"errorMessage\":\"" + this.shieldSpecialCharacters(ex.getMessage()) + "\"}" ;
         final String token = this.getAuthTokenOrException(this.state);
         // API
         final String API = state.getSettings().getBackendAPI() + API_STORAGE_UNITS + "/" + objectId + "/recorded";
         this.httpClient.post(API, token, msg);
+    }
+
+    private String shieldSpecialCharacters(String src) {
+        return Pattern
+                .compile("[^\\w+$]", Pattern.CASE_INSENSITIVE)
+                .matcher(src).replaceAll("*");
     }
 }
