@@ -132,7 +132,7 @@ public class StorageUnitsServiceImpl implements StorageUnitsService {
 
     private String shieldSpecialCharacters(String src) {
         return Pattern
-                .compile("[^\\w+$]", Pattern.CASE_INSENSITIVE)
+                .compile("[^\\w*$]", Pattern.CASE_INSENSITIVE)
                 .matcher(src).replaceAll("*");
     }
 }
