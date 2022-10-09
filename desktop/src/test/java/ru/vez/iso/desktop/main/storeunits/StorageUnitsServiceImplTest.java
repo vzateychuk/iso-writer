@@ -42,7 +42,7 @@ class StorageUnitsServiceImplTest {
     void sendBurnComplete_WhenExceptionString_ThenShieldSpecialSymbols() {
 
         // arrange
-        Exception e = new RuntimeException("com4j.ComException: ('error'): если !@#$%^&*=+_true.: .\\invoke.cpp:517 \"");
+        Exception e = new RuntimeException("com4j.ComException: ('error'): ЁЕсли !@#$%^&*=+_true.: .\\invoke.cpp:517 \"");
         final String objectId = "objectID";
 
         // act
@@ -51,7 +51,7 @@ class StorageUnitsServiceImplTest {
         // assert
         Mockito.verify(httpClient).post(apiCaptor.capture(), eq("token"), bodyCaptor.capture());
         assertEquals(API + API_STORAGE_UNITS + "/" + objectId + "/recorded", apiCaptor.getValue());
-        final String expectedBody = "{\"errorMessage\":\"com4j*ComException****error************$******_true*****invoke*cpp*517**\"}";
+        final String expectedBody = "{\"errorMessage\":\"com4j.ComException* **error*** ЁЕсли **********_true.* .*invoke.cpp*517 *\"}";
         assertEquals(expectedBody, bodyCaptor.getValue());
     }
 
