@@ -333,7 +333,7 @@ public class DocumentCtl implements Initializable {
         Reestr reestr = this.state.getReestr();
         ReestrFile jsonFile = ReestrHelper.findFileInReestrOrException(reestr, doc.getObjectId(), RFileType.JSON);
         Path jsonFilePath = Paths.get(cachePath, MyConst.UNZIP_FOLDER, doc.getObjectId(), jsonFile.getPath());
-        logger.debug("jsonFilePath: {}", jsonFilePath);
+        logger.debug("jsonFile: {}, path: {}", jsonFile, jsonFilePath);
 
         // проверяем есть ли json файл в кэш фактически
         if (!Files.exists(jsonFilePath)) {
@@ -342,24 +342,22 @@ public class DocumentCtl implements Initializable {
             return;
         }
 
-        try {
+        asyncOperation = CompletableFuture.runAsync(() -> {
             String expectedHash = jsonFile.getHash();
             String jsonFileHash = docSrv.calculateFileHash(jsonFilePath, MyConst.SHA256);
 
-            logger.debug("Document #'{}'(id={}) hash checking.\nReestr   hash:\t{}\nJsonFile hash:\t{}",
-                    doc.getDocNumber(), doc.getObjectId(), expectedHash, jsonFileHash);
+            logger.debug("Compare result: {}, Doc: '{}'(id={}).\nReestr   hash:\t{}\nJsonFile hash:\t{}",
+                    jsonFileHash.equals(expectedHash), doc.getDocNumber(), doc.getObjectId(), expectedHash, jsonFileHash);
 
             String msg = "Проверка целостности документа выполнена";
-            if (jsonFileHash.equals(expectedHash)) {
-                msg += " успешно.";
-            } else {
-                msg += ". Обнаружены несовпадения хэш-сумм.";
-            }
-            UtilsHelper.getConfirmation(msg);
-        } catch (Exception ex) {
-            logger.error("unable to check hash", ex);
-            this.msgSrv.news("Ошибка при проверке контрольной суммы документа.");
-        }
+            msg += jsonFileHash.equals(expectedHash) ? " успешно." : ". Обнаружены несовпадения хэш-сумм.";
+            this.msgSrv.news(msg);
+        }, exec)
+                .exceptionally(ex -> {
+                    logger.error("Unable to compare document HashSum: {}", jsonFilePath, ex);
+                    this.msgSrv.news("Невозможно выполнить проверку целостности диска");
+                    return null;
+                });
     }
 
     //region PRIVATE
@@ -369,7 +367,7 @@ public class DocumentCtl implements Initializable {
      * (set to the TableView)
      *
      * @param docs - list of documents
-     * @param filter
+     * @param filter - filter
      * */
     private void filterAndDisplay(List<DocumentFX> docs, String filter) {
 
