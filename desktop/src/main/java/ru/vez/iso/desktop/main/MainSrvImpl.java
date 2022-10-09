@@ -271,8 +271,7 @@ public class MainSrvImpl implements MainSrv {
                             msgSrv.news("Удален " + fileName);
                         }
                 )
-                .exceptionally(ex ->
-                {
+                .exceptionally(ex -> {
                     logger.error(ex);
                     msgSrv.news("Не удалось удалить: " + fileName);
                     return null;

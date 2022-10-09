@@ -13,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.burn.BurnSrv;
 import ru.vez.iso.desktop.burn.BurnSrvImpl;
 import ru.vez.iso.desktop.docs.*;
+import ru.vez.iso.desktop.exceptions.FileCacheException;
 import ru.vez.iso.desktop.login.HttpClientLoginNoopImpl;
 import ru.vez.iso.desktop.login.LoginCtl;
 import ru.vez.iso.desktop.login.LoginSrv;
@@ -151,8 +152,14 @@ public class DesktopApp extends Application {
         List<FileISO> toEvict = isoList.stream()
                 .filter(f -> f.getCreatedAt().isBefore(LocalDate.now().minusDays(settings.getEvictCacheDays())))
                 .collect(Collectors.toList());
-        toEvict.forEach(f -> fileCache.deleteFile(f.getFileName()));
-        isoList.removeAll(toEvict);
+        toEvict.forEach(f -> {
+            try {
+                fileCache.deleteFile(f.getFileName());
+                isoList.remove(f);
+            } catch (FileCacheException e) {
+                logger.warn("Error when trying to evict file: {}", f.getFileName(), e);
+            }
+        });
         state.setFileNames( isoList );
 
         // Set OnClose confirmation hook
@@ -186,7 +193,7 @@ public class DesktopApp extends Application {
 
         // parse command argument to define application run-mode
         runMode = getAppRunMode(args);
-        logger.debug("Run mode: " + runMode);
+        logger.debug("Run mode: {}", runMode);
         launch(args);
     }
 
@@ -273,7 +280,7 @@ public class DesktopApp extends Application {
                 Files.createDirectories(path);
             } catch (IOException ex) {
                 logger.debug("Unable to create directory: {}", cachePath);
-                throw new RuntimeException(ex);
+                throw new FileCacheException(ex);
             }
         }
     }
