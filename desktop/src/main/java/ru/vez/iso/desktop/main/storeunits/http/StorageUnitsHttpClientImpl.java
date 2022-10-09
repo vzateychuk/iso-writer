@@ -42,7 +42,7 @@ public class StorageUnitsHttpClientImpl implements StorageUnitsHttpClient {
         httpPost.setHeader("Content-type", "application/json");
         httpPost.setHeader("Authorization", token);
         String jsonRequest = String.format(
-                "{\"page\":1,\"rowsPerPage\":500,\"criterias\":[{\"fields\":[\"operatingDay.operatingDayDate\"],\"operator\":\"GREATER_OR_EQUALS\",\"value\":\"%s\"}]}",
+                "{\"page\":1,\"rowsPerPage\":10000,\"criterias\":[{\"fields\":[\"operatingDay.operatingDayDate\"],\"operator\":\"GREATER_OR_EQUALS\",\"value\":\"%s\"}]}",
                 from.format(MyConst.YYYY_MM_DD)
         );
 

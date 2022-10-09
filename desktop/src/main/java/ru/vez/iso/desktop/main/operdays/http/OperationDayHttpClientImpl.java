@@ -31,15 +31,15 @@ public class OperationDayHttpClientImpl implements OperationDayHttpClient {
     private static final Logger logger = LogManager.getLogger();
 
     @Override
-    public OperationDaysHttpResponse loadOperationDays(String API, String token, LocalDate from) {
+    public OperationDaysHttpResponse loadOperationDays(String api, String token, LocalDate from) {
 
         // Create HTTP request
-        HttpPost httpPost = new HttpPost(API);
+        HttpPost httpPost = new HttpPost(api);
         httpPost.setHeader("Accept", "application/json");
         httpPost.setHeader("Content-type", "application/json");
         httpPost.setHeader("Authorization", token);
         String jsonRequest = String.format(
-                "{\"page\":1,\"rowsPerPage\":500,\"criterias\":[{\"fields\":[\"operatingDayDate\"],\"operator\":\"GREATER_OR_EQUALS\",\"value\":\"%s\"}]}",
+                "{\"page\":1,\"rowsPerPage\":10000,\"criterias\":[{\"fields\":[\"operatingDayDate\"],\"operator\":\"GREATER_OR_EQUALS\",\"value\":\"%s\"}]}",
                 from.format(MyConst.YYYY_MM_DD)
         );
 
