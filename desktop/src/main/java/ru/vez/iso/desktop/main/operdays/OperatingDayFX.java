@@ -16,7 +16,7 @@ import java.util.Objects;
  * */
 public class OperatingDayFX {
 
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private final DateTimeFormatter displayFmt = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
     private final String objectId;
     private final ObjectProperty<LocalDate> operatingDay = new SimpleObjectProperty<>();
@@ -47,7 +47,7 @@ public class OperatingDayFX {
         return operatingDay.get();
     }
     public StringProperty operatingDayProperty() {
-        return new SimpleStringProperty(operatingDay.get().format(formatter));
+        return new SimpleStringProperty(operatingDay.get().format(displayFmt));
     }
 
     public String getTypeSu() {
@@ -68,7 +68,7 @@ public class OperatingDayFX {
         return createdAt.get();
     }
     public StringProperty createdAtProperty() {
-        return new SimpleStringProperty(createdAt.get().format(formatter));
+        return new SimpleStringProperty(createdAt.get().format(displayFmt));
     }
 
     public String getNumberSu() {
@@ -98,10 +98,10 @@ public class OperatingDayFX {
     @Override
     public String toString() {
         return "OperatingDay{" +
-                "operationDate=" + this.getOperatingDay().format(formatter) +
+                "operationDate=" + this.getOperatingDay().format(displayFmt) +
                 ", typeSU=" + this.getTypeSu() +
                 ", status=" + this.getStatus() +
-                ", created=" + this.getCreatedAt().format(formatter) +
+                ", created=" + this.getCreatedAt().format(displayFmt) +
                 ", numberSU=" + this.getNumberSu() +
                 '}';
     }

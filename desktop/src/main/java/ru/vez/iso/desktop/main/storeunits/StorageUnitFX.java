@@ -13,7 +13,7 @@ import java.util.Objects;
  * */
 public class StorageUnitFX {
 
-    private final DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private final DateTimeFormatter displayFmt = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
     private final String objectId;
     private final String operatingDayId;     // ID операционного дня
@@ -70,7 +70,7 @@ public class StorageUnitFX {
         return creationDate.get();
     }
     public StringProperty creationDateProperty() {
-        String result = creationDate.get() != null ? creationDate.get().format(fmt) : "";
+        String result = creationDate.get() != null ? creationDate.get().format(displayFmt) : "";
         return new SimpleStringProperty(result);
     }
 
@@ -99,7 +99,7 @@ public class StorageUnitFX {
         return savingDate.get();
     }
     public StringProperty savingDateProperty() {
-        String result = savingDate.get() != null ? savingDate.get().format(fmt) : "";
+        String result = savingDate.get() != null ? savingDate.get().format(displayFmt) : "";
         return new SimpleStringProperty(result);
     }
 

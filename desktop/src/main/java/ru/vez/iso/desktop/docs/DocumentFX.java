@@ -11,7 +11,7 @@ import java.util.Objects;
  * */
 public class DocumentFX {
 
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private final DateTimeFormatter displayFmt = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
     private final String objectId;              // Уникальный идентификатор из вебсервиса
     private final StringProperty docNumber;     // Уникальный номер ЕХ
@@ -57,7 +57,7 @@ public class DocumentFX {
         return operDayDate.get();
     }
     public StringProperty operDayDateProperty() {
-        return new SimpleStringProperty(operDayDate.get().format(formatter));
+        return new SimpleStringProperty(operDayDate.get().format(displayFmt));
     }
 
     public String getKindName() {
@@ -71,7 +71,7 @@ public class DocumentFX {
         return docDate.get();
     }
     public StringProperty docDateProperty() {
-        return new SimpleStringProperty(docDate.get().format(formatter));
+        return new SimpleStringProperty(docDate.get().format(displayFmt));
     }
 
     public String getBranchName() {
@@ -113,9 +113,9 @@ public class DocumentFX {
                 "objectId='" + this.getObjectId() + '\'' +
                 ", docNumber=" + this.getDocNumber() +
                 ", sumDoc=" + this.getSumDoc() +
-                ", operDayDate=" + this.getDocDate().format(formatter) +
+                ", operDayDate=" + this.getDocDate().format(displayFmt) +
                 ", kindName=" + this.getKindName() +
-                ", docDate=" + this.getDocDate().format(formatter) +
+                ", docDate=" + this.getDocDate().format(displayFmt) +
                 ", branch=" + this.getBranchName() +
                 ", docStatusName=" + this.getDocStatusName() +
                 '}';

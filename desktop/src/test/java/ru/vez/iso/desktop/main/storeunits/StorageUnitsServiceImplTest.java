@@ -51,7 +51,7 @@ class StorageUnitsServiceImplTest {
         // assert
         Mockito.verify(httpClient).post(apiCaptor.capture(), eq("token"), bodyCaptor.capture());
         assertEquals(API + API_STORAGE_UNITS + "/" + objectId + "/recorded", apiCaptor.getValue());
-        final String expectedBody = "{\"errorMessage\":\"com4j.ComException* **error*** ЁЕсли **********_true.* .*invoke.cpp*517 *\"}";
+        final String expectedBody = "{\"errorMessage\":\"Error when burn disk. ObjectId: " + objectId + "\"}";
         assertEquals(expectedBody, bodyCaptor.getValue());
     }
 

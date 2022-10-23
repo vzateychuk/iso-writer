@@ -123,7 +123,8 @@ public class StorageUnitsServiceImpl implements StorageUnitsService {
     @Override
     public void sendBurnComplete(String objectId, Throwable ex) {
 
-        String msg = ex == null ? "" : "{\"errorMessage\":\"" + this.shieldSpecialCharacters(ex.getMessage()) + "\"}" ;
+        String msg = ex == null ? "" : "{\"errorMessage\":\"Error when burn disk. ObjectId: "
+                + this.shieldSpecialCharacters(objectId) + "\"}" ;
         final String token = this.getAuthTokenOrException(this.state);
         // API
         final String API = state.getSettings().getBackendAPI() + API_STORAGE_UNITS + "/" + objectId + "/recorded";
@@ -132,7 +133,7 @@ public class StorageUnitsServiceImpl implements StorageUnitsService {
 
     private String shieldSpecialCharacters(String src) {
         return Pattern
-                .compile("[^\\w.а-яё ]", Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE)
-                .matcher(src).replaceAll("*");
+                .compile("[^\\w. ]", Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE)
+                .matcher(src).replaceAll("");
     }
 }
