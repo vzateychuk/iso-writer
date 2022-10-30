@@ -4,86 +4,74 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<BorderPane fx:id="navigationView" prefHeight="400.0" prefWidth="800.0" stylesheets="@style.css"
+<BorderPane fx:id="navigationView" prefHeight="600.0" prefWidth="800.0" stylesheets="@style.css"
             xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="ru.vez.iso.desktop.nav.NavigationCtl">
     <left>
         <Pane prefHeight="380.0" prefWidth="200.0" styleClass="navigation-pane-left" BorderPane.alignment="CENTER">
-            <children>
-                <VBox layoutY="-1.0" prefHeight="245.0" prefWidth="200.0" spacing="5.0">
-                    <HBox alignment="CENTER" maxWidth="200" prefHeight="55.0" prefWidth="145.0">
-                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                            <image>
-                                <Image url="@image/logo.png"/>
-                            </image>
-                            <VBox.margin>
-                                <Insets bottom="10.0" top="10.0"/>
-                            </VBox.margin>
-                        </ImageView>
-                        <TextArea editable="false" prefHeight="60.0" prefWidth="162.0" styleClass="desktop-title"
-                                  wrapText="true">
-                            Запись документов опердня
-                        </TextArea>
-                        <padding>
-                            <Insets left="5.0"/>
-                        </padding>
-                    </HBox>
-                    <Button fx:id="butLogin" onAction="#onLoginLogout" styleClass="desktop-nav-button" text="Вход">
-                        <tooltip>
-                            <Tooltip text="Подключиться к серверу"/>
-                        </tooltip>
-                        <graphic>
-                            <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                                <image>
-                                    <Image url="@image/login.png"/>
-                                </image>
-                            </ImageView>
-                        </graphic>
-                    </Button>
-                    <Button fx:id="butMain" disable="true" onAction="#onShowMain" styleClass="desktop-nav-button"
-                            text="Запись EX">
-                        <tooltip>
-                            <Tooltip text="Загрузить/Записать ЕХ"/>
-                        </tooltip>
-                        <graphic>
-                            <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                                <image>
-                                    <Image url="@image/disk.png"/>
-                                </image>
-                            </ImageView>
-                        </graphic>
-                    </Button>
-                    <Button fx:id="butDocuments" layoutX="15.0" layoutY="93.0" onAction="#onShowDocuments"
-                            styleClass="desktop-nav-button" text="Документы">
-                        <tooltip>
-                            <Tooltip text="Открыть документы"/>
-                        </tooltip>
-                        <graphic>
-                            <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                                <image>
-                                    <Image url="@image/docs.png"/>
-                                </image>
-                            </ImageView>
-                        </graphic>
-                    </Button>
-                    <Button fx:id="butSettings" onAction="#onShowSettings" styleClass="desktop-nav-button"
-                            text="Настройки">
-                        <tooltip>
-                            <Tooltip text="Изменить настройки"/>
-                        </tooltip>
-                        <graphic>
-                            <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                                <image>
-                                    <Image url="@image/settings.png"/>
-                                </image>
-                            </ImageView>
-                        </graphic>
-                    </Button>
+            <VBox layoutY="-1.0" prefHeight="245.0" prefWidth="200.0" spacing="5.0">
+                <HBox alignment="CENTER" maxWidth="200" prefHeight="55.0" prefWidth="145.0">
+                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                        <Image url="@image/logo.png"/>
+                        <VBox.margin>
+                            <Insets bottom="10.0" top="10.0"/>
+                        </VBox.margin>
+                    </ImageView>
+                    <TextArea editable="false" prefHeight="60.0" prefWidth="162.0" styleClass="desktop-title"
+                              wrapText="true">
+                        Запись документов опердня
+                    </TextArea>
                     <padding>
-                        <Insets bottom="3.0" left="5.0" right="3.0" top="3.0"/>
+                        <Insets left="5.0"/>
                     </padding>
-                </VBox>
-            </children>
+                </HBox>
+                <Button fx:id="butLogin" onAction="#onLoginLogout" styleClass="desktop-nav-button" text="Вход">
+                    <tooltip>
+                        <Tooltip text="Подключиться к серверу"/>
+                    </tooltip>
+                    <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                            <Image url="@image/login.png"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Button fx:id="butMain" disable="true" onAction="#onShowMain" styleClass="desktop-nav-button"
+                        text="Запись EX">
+                    <tooltip>
+                        <Tooltip text="Загрузить/Записать ЕХ"/>
+                    </tooltip>
+                    <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                            <Image url="@image/disk.png"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Button fx:id="butDocuments" layoutX="15.0" layoutY="93.0" onAction="#onShowDocuments"
+                        styleClass="desktop-nav-button" text="Документы">
+                    <tooltip>
+                        <Tooltip text="Открыть документы"/>
+                    </tooltip>
+                    <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                            <Image url="@image/docs.png"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Button fx:id="butSettings" onAction="#onShowSettings" styleClass="desktop-nav-button"
+                        text="Настройки">
+                    <tooltip>
+                        <Tooltip text="Изменить настройки"/>
+                    </tooltip>
+                    <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                            <Image url="@image/settings.png"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <padding>
+                    <Insets bottom="3.0" left="5.0" right="3.0" top="3.0"/>
+                </padding>
+            </VBox>
         </Pane>
     </left>
     <center>
@@ -92,15 +80,13 @@
     <bottom>
         <HBox maxHeight="20.0" maxWidth="1.7976931348623157E308" minHeight="20.0" prefHeight="21.0" prefWidth="800.0"
               BorderPane.alignment="CENTER_RIGHT">
-            <children>
-                <Label alignment="BOTTOM_RIGHT" prefHeight="17.0" prefWidth="60.0" text="Статус: "
-                       textAlignment="RIGHT"/>
-                <Label fx:id="labelMessages" maxWidth="1.7976931348623157E308" prefHeight="17.0" text="...">
-                    <tooltip>
-                        <Tooltip fx:id="statusMessage" autoHide="true" style="-fx-show-delay: 250ms;" text="Сообщения"/>
-                    </tooltip>
-                </Label>
-            </children>
+            <Label alignment="BOTTOM_RIGHT" prefHeight="17.0" prefWidth="60.0" text="Статус: "
+                   textAlignment="RIGHT"/>
+            <Label fx:id="labelMessages" maxWidth="1.7976931348623157E308" prefHeight="17.0" text="...">
+                <tooltip>
+                    <Tooltip fx:id="statusMessage" autoHide="true" style="-fx-show-delay: 250ms;" text="Сообщения"/>
+                </tooltip>
+            </Label>
         </HBox>
     </bottom>
 </BorderPane>

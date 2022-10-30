@@ -1,13 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.*?>
-<?import java.lang.String?>
-<GridPane stylesheets="@style.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1"
-          fx:controller="ru.vez.iso.desktop.settings.SettingsCtl">
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<GridPane minHeight="-Infinity" minWidth="-Infinity" stylesheets="@style.css" xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.vez.iso.desktop.settings.SettingsCtl">
 
     <Label alignment="BOTTOM_CENTER" layoutX="179.0" layoutY="52.0" maxWidth="1.7976931348623157E308" prefHeight="54.0"
            styleClass="desktop-header-1" text="Настройки" textAlignment="CENTER" GridPane.columnIndex="1"
@@ -25,59 +33,59 @@
             <HBox.margin>
                 <Insets right="5.0"/>
             </HBox.margin>
-            <Button fx:id="radioQuarter" onAction="#onQuarterChoice" alignment="CENTER" contentDisplay="CENTER"
-                    ellipsisString="" styleClass="desktop-radio-active" textAlignment="CENTER">
+            <Button fx:id="radioQuarter" alignment="CENTER" contentDisplay="CENTER" ellipsisString=""
+                    onAction="#onQuarterChoice" styleClass="desktop-radio-active" textAlignment="CENTER">
                 <graphic>
-                    <Button fx:id="radioQuarterInner" visible="false" styleClass="desktop-radio-active-inner"
-                            alignment="CENTER" contentDisplay="CENTER" ellipsisString="" textAlignment="CENTER"/>
+                    <Button fx:id="radioQuarterInner" alignment="CENTER" contentDisplay="CENTER" ellipsisString=""
+                            styleClass="desktop-radio-active-inner" textAlignment="CENTER" visible="false"/>
                 </graphic>
             </Button>
-            <Label text="Квартал" styleClass="desktop-radio-label"/>
+            <Label styleClass="desktop-radio-label" text="Квартал"/>
         </HBox>
         <HBox alignment="CENTER_LEFT">
             <HBox.margin>
                 <Insets right="5.0"/>
             </HBox.margin>
-            <Button fx:id="radioMonth" onAction="#onMonthChoice" alignment="CENTER" contentDisplay="CENTER"
-                    ellipsisString="" styleClass="desktop-radio-active" textAlignment="CENTER">
+            <Button fx:id="radioMonth" alignment="CENTER" contentDisplay="CENTER" ellipsisString=""
+                    onAction="#onMonthChoice" styleClass="desktop-radio-active" textAlignment="CENTER">
                 <graphic>
                     <Button fx:id="radioMonthInner" alignment="CENTER" contentDisplay="CENTER" ellipsisString=""
                             styleClass="desktop-radio-active-inner" textAlignment="CENTER"/>
                 </graphic>
             </Button>
-            <Label text="Месяц" styleClass="desktop-radio-label"/>
+            <Label styleClass="desktop-radio-label" text="Месяц"/>
         </HBox>
         <HBox alignment="CENTER_LEFT">
             <HBox.margin>
                 <Insets right="5.0"/>
             </HBox.margin>
-            <Button fx:id="radioWeek" onAction="#onWeekChoice" alignment="CENTER" contentDisplay="CENTER"
-                    ellipsisString="" styleClass="desktop-radio-active" textAlignment="CENTER">
+            <Button fx:id="radioWeek" alignment="CENTER" contentDisplay="CENTER" ellipsisString=""
+                    onAction="#onWeekChoice" styleClass="desktop-radio-active" textAlignment="CENTER">
                 <graphic>
                     <Button fx:id="radioWeekInner" alignment="CENTER" contentDisplay="CENTER" ellipsisString=""
                             styleClass="desktop-radio-active-inner" textAlignment="CENTER"/>
                 </graphic>
             </Button>
-            <Label text="Неделя" styleClass="desktop-radio-label"/>
+            <Label styleClass="desktop-radio-label" text="Неделя"/>
         </HBox>
         <HBox alignment="CENTER_LEFT">
             <HBox.margin>
                 <Insets right="5.0"/>
             </HBox.margin>
-            <Button fx:id="radioCustom" onAction="#onCustomChoice" alignment="CENTER" contentDisplay="CENTER"
-                    ellipsisString="" styleClass="desktop-radio-active" textAlignment="CENTER">
+            <Button fx:id="radioCustom" alignment="CENTER" contentDisplay="CENTER" ellipsisString=""
+                    onAction="#onCustomChoice" styleClass="desktop-radio-active" textAlignment="CENTER">
                 <graphic>
                     <Button fx:id="radioCustomInner" alignment="CENTER" contentDisplay="CENTER" ellipsisString=""
                             styleClass="desktop-radio-active-inner" textAlignment="CENTER"/>
                 </graphic>
             </Button>
-            <Label text="Выбрать период" styleClass="desktop-radio-label"/>
+            <Label styleClass="desktop-radio-label" text="Выбрать период"/>
         </HBox>
 
     </HBox>
 
-    <Label layoutX="92.0" layoutY="132.0" styleClass="desktop-label" text="Отображать опер.дни за:" textAlignment="RIGHT"
-           GridPane.columnIndex="1" GridPane.rowIndex="5">
+    <Label layoutX="92.0" layoutY="132.0" styleClass="desktop-label" text="Отображать опер.дни за:"
+           textAlignment="RIGHT" GridPane.columnIndex="1" GridPane.rowIndex="5">
     </Label>
 
     <TextField fx:id="operationDays" layoutX="260.0" layoutY="114.0" maxWidth="1.7976931348623157E308" prefHeight="26.0"
@@ -90,29 +98,30 @@
     <TextField fx:id="refreshPeriod" layoutX="260.0" layoutY="164.0" maxWidth="1.7976931348623157E308" prefHeight="26.0"
                promptText="Мин." styleClass="desktop-input" GridPane.columnIndex="2" GridPane.rowIndex="6"/>
 
-    <Label styleClass="desktop-label" text="Сервер АБДД:" textAlignment="RIGHT" GridPane.columnIndex="1"
+    <Label styleClass="desktop-label" text="Сервер данных АБДД:" textAlignment="RIGHT" GridPane.columnIndex="1"
            GridPane.rowIndex="7">
     </Label>
 
-    <TextField fx:id="backendAPI" maxWidth="1.7976931348623157E308" prefHeight="26.0"
-               promptText="http://localhost:8080/api" styleClass="desktop-input" GridPane.columnIndex="2"
-               GridPane.rowIndex="7"/>
+    <TextField fx:id="backendAPI" maxWidth="1.7976931348623157E308" prefHeight="26.0" promptText="http://172.29.73.102:8080"
+               styleClass="desktop-input" GridPane.columnIndex="2" GridPane.rowIndex="7"/>
 
-    <Label styleClass="desktop-label" text="Хранить iso-образы, дней:" textAlignment="RIGHT" GridPane.columnIndex="1" GridPane.rowIndex="8">
+    <Label styleClass="desktop-label" text="Хранить iso-образы, дней:" textAlignment="RIGHT" GridPane.columnIndex="1"
+           GridPane.rowIndex="10">
     </Label>
 
-    <TextField fx:id="evictCacheDays" maxWidth="1.7976931348623157E308" prefHeight="26.0" promptText="Период хранения файлов в кэше"
-               styleClass="desktop-input" GridPane.columnIndex="2" GridPane.rowIndex="8"/>
+    <TextField fx:id="evictCacheDays" maxWidth="1.7976931348623157E308" prefHeight="26.0"
+               promptText="Период хранения файлов в кэше" styleClass="desktop-input" GridPane.columnIndex="2"
+               GridPane.rowIndex="10"/>
 
     <Label disable="true" styleClass="desktop-label" text="Папка файловый кэш:" textAlignment="RIGHT"
-           GridPane.columnIndex="1" GridPane.rowIndex="9">
+           GridPane.columnIndex="1" GridPane.rowIndex="11">
     </Label>
 
     <TextField fx:id="fileCache" disable="true" editable="false" maxWidth="1.7976931348623157E308" prefHeight="26.0"
-               promptText="temp" styleClass="desktop-input" GridPane.columnIndex="2" GridPane.rowIndex="9"/>
+               promptText="temp" styleClass="desktop-input" GridPane.columnIndex="2" GridPane.rowIndex="11"/>
 
     <ButtonBar nodeOrientation="LEFT_TO_RIGHT" prefHeight="40.0" prefWidth="200.0" GridPane.columnIndex="1"
-               GridPane.columnSpan="2" GridPane.rowIndex="10">
+               GridPane.columnSpan="2" GridPane.rowIndex="12">
         <buttons>
             <Button fx:id="driveInfo" onAction="#onDriveInfo" text="DVD-ROM Info">
                 <tooltip>
@@ -120,9 +129,7 @@
                 </tooltip>
                 <graphic>
                     <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                        <image>
-                            <Image url="@image/disk.png"/>
-                        </image>
+                        <Image url="@image/disk.png"/>
                     </ImageView>
                 </graphic>
                 <styleClass>
@@ -139,9 +146,7 @@
                 </tooltip>
                 <graphic>
                     <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                        <image>
-                            <Image url="@image/write.png"/>
-                        </image>
+                        <Image url="@image/write.png"/>
                     </ImageView>
                 </graphic>
                 <styleClass>
@@ -153,6 +158,15 @@
             </Button>
         </buttons>
     </ButtonBar>
+    <Label styleClass="desktop-label" text="Сервер авторизации:" textAlignment="RIGHT" GridPane.columnIndex="1"
+           GridPane.rowIndex="8"/>
+    <TextField fx:id="authAPI" maxWidth="1.7976931348623157E308" prefHeight="26.0" promptText="http://172.29.73.59:8080"
+               styleClass="desktop-input" GridPane.columnIndex="2" GridPane.rowIndex="8"/>
+    <Label styleClass="desktop-label" text="Путь авторизации:" textAlignment="RIGHT" GridPane.columnIndex="1"
+           GridPane.rowIndex="9"/>
+    <TextField fx:id="authPath" maxWidth="1.7976931348623157E308" prefHeight="26.0"
+               promptText="/realms/ABDD/protocol/openid-connect/token" styleClass="desktop-input"
+               GridPane.columnIndex="2" GridPane.rowIndex="9"/>
 
     <columnConstraints>
         <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" minWidth="10.0"/>
@@ -169,6 +183,8 @@
         <RowConstraints prefHeight="40.0"/>
         <RowConstraints prefHeight="40.0"/>
         <RowConstraints prefHeight="40.0"/>
+        <RowConstraints minHeight="10.0" prefHeight="40.0"/>
+        <RowConstraints minHeight="10.0" prefHeight="40.0"/>
         <RowConstraints prefHeight="40.0"/>
         <RowConstraints prefHeight="40.0"/>
         <RowConstraints minHeight="10.0" valignment="BOTTOM" vgrow="ALWAYS"/>

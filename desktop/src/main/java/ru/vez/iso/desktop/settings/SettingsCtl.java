@@ -28,11 +28,13 @@ public class SettingsCtl implements Initializable {
 
     private static final Logger logger = LogManager.getLogger();
 
-    //
+    // Settings controls
     @FXML public Button driveInfo;
     @FXML private TextField operationDays;
     @FXML private TextField refreshPeriod;
     @FXML private TextField backendAPI;
+    @FXML public TextField authAPI;
+    @FXML public TextField authPath;
     @FXML private TextField fileCache;
     @FXML private TextField evictCacheDays; // Days, period of cache eviction
 
@@ -125,20 +127,33 @@ public class SettingsCtl implements Initializable {
         }
         int evictDays = UtilsHelper.parseIntOrDefault(evictCacheDays.getText(), SettingType.EVICT_CACHE_DAYS.getDefaultValue());
 
-
         if (Strings.isBlank(backendAPI.getText())) {
             logger.warn("Empty backendAPI: {}", backendAPI.getText());
-            UtilsHelper.getConfirmation("Необходимо указать адрес сервера.");
+            UtilsHelper.getConfirmation("Необходимо указать адрес сервера данных.");
+            return;
+        }
+
+        if (Strings.isBlank(authAPI.getText())) {
+            logger.warn("Empty authAPI: {}", authAPI.getText());
+            UtilsHelper.getConfirmation("Необходимо указать адрес сервера авторизации.");
+            return;
+        }
+
+        if (Strings.isBlank(authPath.getText())) {
+            logger.warn("Empty authPath: {}", authPath.getText());
+            UtilsHelper.getConfirmation("Необходимо указать путь для авторизации.");
             return;
         }
 
         AppSettings newSetting = AppSettings.builder()
-                .backendAPI(backendAPI.getText())
                 .filterOpsDays(operDays)
                 .settingFile(currentSettings.getSettingFile())
                 .isoCachePath(fileCache.getText())
                 .refreshMin(refreshMin)
                 .evictCacheDays(evictDays)
+                .backendAPI(backendAPI.getText())
+                .authAPI(authAPI.getText())
+                .authPath(authPath.getText())
                 .build();
 
         service.saveAsync(newSetting);
@@ -169,7 +184,7 @@ public class SettingsCtl implements Initializable {
 
     @FXML  public void onDriveInfo(ActionEvent av) {
         RecorderInfo info = burnSrv.recorderInfo(0);
-        logger.info(info.toString());
+        logger.info(info);
         UtilsHelper.getConfirmation(info.toString());
     }
 
@@ -204,6 +219,8 @@ public class SettingsCtl implements Initializable {
         refreshPeriod.setText( String.valueOf(sets.getRefreshMin()) );
         fileCache.setText( sets.getIsoCachePath() );
         backendAPI.setText( sets.getBackendAPI() );
+        authAPI.setText( sets.getAuthAPI() );
+        authPath.setText( sets.getAuthPath() );
         evictCacheDays.setText( String.valueOf(sets.getEvictCacheDays()) );
     }
 

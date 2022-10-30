@@ -106,6 +106,8 @@ public class DesktopApp extends Application {
                     .refreshMin( Integer.parseInt(SettingType.REFRESH_PERIOD.getDefaultValue()) )
                     .isoCachePath( SettingType.ISO_CACHE_PATH.getDefaultValue() )
                     .evictCacheDays( Integer.parseUnsignedInt(SettingType.EVICT_CACHE_DAYS.getDefaultValue()) )
+                    .authAPI( SettingType.AUTH_API.getDefaultValue() )
+                    .authPath( SettingType.AUTH_PATH.getDefaultValue() )
                     .build();
             settingsSrv.save(settingsFileName, settings);
         }

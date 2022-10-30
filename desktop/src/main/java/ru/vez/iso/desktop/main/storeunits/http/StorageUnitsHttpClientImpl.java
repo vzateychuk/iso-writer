@@ -14,6 +14,7 @@ import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.vez.iso.desktop.exceptions.ExceptionHelper;
 import ru.vez.iso.desktop.exceptions.HttpRequestException;
 import ru.vez.iso.desktop.main.storeunits.dto.StorageUnitDetailResponse;
 import ru.vez.iso.desktop.main.storeunits.dto.StorageUnitListResponse;
@@ -64,7 +65,7 @@ public class StorageUnitsHttpClientImpl implements StorageUnitsHttpClient {
         ) {
             // Create response handler
             if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-                throw new HttpRequestException("Server response: " + response.getStatusLine().getStatusCode());
+                ExceptionHelper.handleHttExceptionStatus(response.getStatusLine().getStatusCode());
             }
             final HttpEntity resEntity = response.getEntity();
             Reader reader = new InputStreamReader(resEntity.getContent(), StandardCharsets.UTF_8);
@@ -94,15 +95,15 @@ public class StorageUnitsHttpClientImpl implements StorageUnitsHttpClient {
         }
 
         try (
-                CloseableHttpClient httpClient = HttpClients.custom() // CloseableHttpClient httpClient = HttpClients.createDefault();
-                        .setRedirectStrategy(new LaxRedirectStrategy()) // adds HTTP REDIRECT support to GET and POST methods
+                CloseableHttpClient httpClient = HttpClients.custom()
+                        .setRedirectStrategy(new LaxRedirectStrategy())
                         .build();
-                CloseableHttpResponse response = httpClient.execute(httpPost);
+                CloseableHttpResponse response = httpClient.execute(httpPost)
         ) {
             int code = response.getStatusLine().getStatusCode();
             logger.debug("HttpPost response code: {}", code);
             if (code != HttpStatus.SC_OK) {
-                throw new IllegalStateException("Server response: " + code);
+                ExceptionHelper.handleHttExceptionStatus(response.getStatusLine().getStatusCode());
             }
         } catch (IOException ex) {
             throw new IllegalStateException(ex);
@@ -111,7 +112,7 @@ public class StorageUnitsHttpClientImpl implements StorageUnitsHttpClient {
 
     /**
      * Downloading file using Apache HttpClient (>= v4.2) with support to HTTP REDIRECT 301 and 302 when using HTTP method GET
-     * @See https://gist.github.com/rponte/09ddc1aa7b9918b52029
+     * https://gist.github.com/rponte/09ddc1aa7b9918b52029
      */
     @Override
     public void downloadAndSaveFile(String api, String token, String fileName) {
@@ -123,10 +124,10 @@ public class StorageUnitsHttpClientImpl implements StorageUnitsHttpClient {
         logger.debug("HttpGet: {}", httpGet);
 
         try (
-            CloseableHttpClient httpClient = HttpClients.custom() // CloseableHttpClient httpClient = HttpClients.createDefault();
-                    .setRedirectStrategy(new LaxRedirectStrategy()) // adds HTTP REDIRECT support to GET and POST methods
+            CloseableHttpClient httpClient = HttpClients.custom()
+                    .setRedirectStrategy(new LaxRedirectStrategy())
                     .build();
-            CloseableHttpResponse response = httpClient.execute(httpGet);
+            CloseableHttpResponse response = httpClient.execute(httpGet)
         ) {
             // response handler
             int code = response.getStatusLine().getStatusCode();
@@ -134,7 +135,7 @@ public class StorageUnitsHttpClientImpl implements StorageUnitsHttpClient {
             if (code == HttpStatus.SC_NOT_FOUND) {
                 throw new Http404Exception();
             } else if (code != HttpStatus.SC_OK) {
-                throw new IllegalStateException("Wrong response: " + code);
+                ExceptionHelper.handleHttExceptionStatus(response.getStatusLine().getStatusCode());
             }
             InputStream source = response.getEntity().getContent();
             FileUtils.copyInputStreamToFile(source, new File(fileName));
@@ -144,9 +145,9 @@ public class StorageUnitsHttpClientImpl implements StorageUnitsHttpClient {
     }
 
     @Override
-    public StorageUnitDetailResponse getHashCode(String API, String token) {
+    public StorageUnitDetailResponse getHashCode(String api, String token) {
 
-        HttpGet httpGet = new HttpGet(API);
+        HttpGet httpGet = new HttpGet(api);
         httpGet.setHeader("Authorization", token);
 
         logger.debug("HttpGet: {}", httpGet);
@@ -155,11 +156,11 @@ public class StorageUnitsHttpClientImpl implements StorageUnitsHttpClient {
                 CloseableHttpClient httpClient = HttpClients.custom()
                         .setRedirectStrategy(new LaxRedirectStrategy())
                         .build();
-                CloseableHttpResponse response = httpClient.execute(httpGet);
+                CloseableHttpResponse response = httpClient.execute(httpGet)
         ) {
             int code = response.getStatusLine().getStatusCode();
             if (code != HttpStatus.SC_OK) {
-                throw new IllegalStateException("Server response: " + code);
+                ExceptionHelper.handleHttExceptionStatus(response.getStatusLine().getStatusCode());
             }
             final HttpEntity resEntity = response.getEntity();
             Reader reader = new InputStreamReader(resEntity.getContent(), StandardCharsets.UTF_8);

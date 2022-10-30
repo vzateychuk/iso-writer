@@ -46,7 +46,7 @@ public class LoginSrvImpl implements LoginSrv {
 
         // Avoid multiply invocation
         if (!future.isDone()) {
-            this.msgSrv.news("Операция выполняется");
+            this.msgSrv.news("Операция выполняется, подождите...");
             return;
         }
         // Trying to login async
@@ -87,7 +87,6 @@ public class LoginSrvImpl implements LoginSrv {
 
         String token = this.httpClient.postDataRequest(httpPost);
 
-        // String token = this.removeBearer(resp);
         return !Strings.isBlank(token)
                 ? new UserDetails(username, password, token)
                 : UserDetails.NOT_SIGNED_USER;

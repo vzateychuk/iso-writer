@@ -2,6 +2,7 @@ package ru.vez.iso.desktop.settings;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.vez.iso.desktop.exceptions.CantSaveSettingsException;
 import ru.vez.iso.desktop.shared.AppSettings;
 import ru.vez.iso.desktop.shared.MessageSrv;
 import ru.vez.iso.desktop.shared.SettingType;
@@ -65,6 +66,8 @@ public class SettingsSrvImpl implements SettingsSrv {
                 .evictCacheDays( Integer.parseInt(
                         props.getProperty(SettingType.EVICT_CACHE_DAYS.name(), SettingType.EVICT_CACHE_DAYS.getDefaultValue())
                 ) )
+                .authAPI(props.getProperty(SettingType.AUTH_API.name(), SettingType.AUTH_API.getDefaultValue()))
+                .authPath(props.getProperty(SettingType.AUTH_PATH.name(), SettingType.AUTH_PATH.getDefaultValue()))
                 .burnSpeed( burnSpeed )
                 .build();
     }
@@ -80,7 +83,7 @@ public class SettingsSrvImpl implements SettingsSrv {
             props.store(outputStream, "ISO Writer");
             this.msgSrv.news("Настройки сохранены");
         } catch (IOException ex) {
-            throw new RuntimeException(ex);
+            throw new CantSaveSettingsException(ex);
         }
         return sets;
     }
@@ -91,7 +94,7 @@ public class SettingsSrvImpl implements SettingsSrv {
         String filePath = sets.getSettingFile();
         CompletableFuture.supplyAsync( () -> this.save(filePath, sets), exec )
                 .thenAccept( state::setSettings )
-                .exceptionally( (ex) -> {
+                .exceptionally(ex -> {
                     this.msgSrv.news("Не удалось сохранить настройки");
                     logger.error("Unable to save settings: ", ex);
                     return null;
@@ -107,7 +110,7 @@ public class SettingsSrvImpl implements SettingsSrv {
 
         CompletableFuture.supplyAsync(() -> this.load(filePath), exec)
                 .thenAccept(state::setSettings)
-                .exceptionally((ex) -> {
+                .exceptionally(ex -> {
                     this.msgSrv.news("Не удалось загрузить настройки");
                     logger.error("Unable to load settings: ", ex);
                     return null;

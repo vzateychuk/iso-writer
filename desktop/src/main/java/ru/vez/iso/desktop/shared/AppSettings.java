@@ -19,6 +19,8 @@ public class AppSettings {
     private final String backendAPI;
     private final int evictCacheDays;
     private final int burnSpeed;
+    private final String authAPI;
+    private final String authPath;
 
     public Properties getProperties() {
 
@@ -30,6 +32,8 @@ public class AppSettings {
         p.setProperty(SettingType.BACKEND_API.name(), this.backendAPI);
         p.setProperty(SettingType.EVICT_CACHE_DAYS.name(), String.valueOf(this.evictCacheDays));
         p.setProperty(SettingType.BURN_SPEED.name(), String.valueOf(this.burnSpeed));
+        p.setProperty(SettingType.AUTH_API.name(), String.valueOf(this.authAPI));
+        p.setProperty(SettingType.AUTH_PATH.name(), String.valueOf(this.authPath));
         return p;
     }
 }

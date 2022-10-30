@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.burn.BurnSrv;
 import ru.vez.iso.desktop.burn.RecorderInfo;
 import ru.vez.iso.desktop.exceptions.FileCacheException;
+import ru.vez.iso.desktop.exceptions.HttpNotAuthorizedException;
 import ru.vez.iso.desktop.main.filecache.FileCacheSrv;
 import ru.vez.iso.desktop.main.operdays.OperatingDayFX;
 import ru.vez.iso.desktop.main.operdays.OperationDaysSrv;
@@ -13,6 +14,7 @@ import ru.vez.iso.desktop.main.storeunits.StorageUnitsService;
 import ru.vez.iso.desktop.main.storeunits.exceptions.Http404Exception;
 import ru.vez.iso.desktop.shared.FileISO;
 import ru.vez.iso.desktop.shared.MessageSrv;
+import ru.vez.iso.desktop.shared.UserDetails;
 import ru.vez.iso.desktop.shared.UtilsHelper;
 import ru.vez.iso.desktop.state.ApplicationState;
 
@@ -39,7 +41,6 @@ public class MainSrvImpl implements MainSrv {
     private Future<Void> burnOperation = CompletableFuture.allOf();
     private Future<Void> loadDataOperation = CompletableFuture.allOf();
     private ScheduledFuture<?> scheduledReload;
-    private int period;
 
     public MainSrvImpl(
             ApplicationState state,
@@ -74,7 +75,6 @@ public class MainSrvImpl implements MainSrv {
 
         assert period > 0 : "Incorrect period: " + period;
 
-        this.period = period;
         LocalDate from = LocalDate.now().minusDays(period);
         CompletableFuture<List<OperatingDayFX>> loadOperationDays = CompletableFuture.supplyAsync(
                 () -> this.operDaysSrv.loadOperationDays(from),
@@ -90,7 +90,7 @@ public class MainSrvImpl implements MainSrv {
         );
 
         loadDataOperation = CompletableFuture.allOf(loadOperationDays, loadStorageUnits, readFileCache)
-                .thenAccept( (Void) -> {
+                .thenAccept( Void -> {
                     List<OperatingDayFX> opDaysList = loadOperationDays.join();
                     state.setOperatingDays(opDaysList);
 
@@ -118,6 +118,7 @@ public class MainSrvImpl implements MainSrv {
                 })
                 .exceptionally(ex -> {
                     logger.error(ex);
+                    this.checkIfNotAuthorizedException(ex.getCause());
                     return null;
                 });
     }
@@ -195,6 +196,7 @@ public class MainSrvImpl implements MainSrv {
         }, exec)
                 .exceptionally(ex -> {
                     logger.error(ex);
+                    this.checkIfNotAuthorizedException(ex.getCause());
                     return null;
                 });
     }
@@ -246,6 +248,8 @@ public class MainSrvImpl implements MainSrv {
                 (s, ex) -> {
                     if (ex != null) {
                         logger.error(ex);
+                        this.checkIfNotAuthorizedException(ex.getCause());
+
                         String msg = String.format("Загрузка ISO образа для EX: '%s' не удалась: ", su.getNumberSu());
                         msg += ex.getCause() instanceof Http404Exception
                                         ? "ISO образ не сформирован на сервере."
@@ -279,4 +283,14 @@ public class MainSrvImpl implements MainSrv {
 
     }
 
+    //region PRIVATE
+
+    private void checkIfNotAuthorizedException(Throwable throwable) {
+        if ((throwable instanceof HttpNotAuthorizedException)) {
+            this.msgSrv.news("Пользователь не залогинен, выход.");
+            this.state.setUserDetails(UserDetails.NOT_SIGNED_USER);
+        }
+    }
+
+    //endregion
 }

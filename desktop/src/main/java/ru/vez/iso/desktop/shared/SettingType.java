@@ -26,7 +26,7 @@ public enum SettingType {
     /**
      * API бэкэнд сервера
      * */
-    BACKEND_API("http://localhost:8080/abdd/api"),
+    BACKEND_API("http://172.29.73.101:8080"),
 
     /**
      * Дней хранятся файлы в кэше
@@ -36,7 +36,17 @@ public enum SettingType {
     /**
      * Скорость прожига(записи) iso диска
      * */
-    BURN_SPEED("1")
+    BURN_SPEED("1"),
+
+    /**
+     * Адрес сервера аутентификации
+     * */
+    AUTH_API("http://172.29.73.101:8080"),
+
+    /**
+     * API path аутентификации
+     * */
+    AUTH_PATH("/realms/ABDD/protocol/openid-connect/token"),
     ;
 
     private final String defaultValue;

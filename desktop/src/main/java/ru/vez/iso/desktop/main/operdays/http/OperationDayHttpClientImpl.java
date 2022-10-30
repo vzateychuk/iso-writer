@@ -12,6 +12,7 @@ import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.vez.iso.desktop.exceptions.ExceptionHelper;
 import ru.vez.iso.desktop.exceptions.HttpRequestException;
 import ru.vez.iso.desktop.main.operdays.dto.OperationDaysHttpResponse;
 import ru.vez.iso.desktop.shared.MyConst;
@@ -61,7 +62,7 @@ public class OperationDayHttpClientImpl implements OperationDayHttpClient {
         ) {
             // Create response handler
             if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-                throw new HttpRequestException("Server response: " + response.getStatusLine().getStatusCode());
+                ExceptionHelper.handleHttExceptionStatus(response.getStatusLine().getStatusCode());
             }
             final HttpEntity resEntity = response.getEntity();
             Reader reader = new InputStreamReader(resEntity.getContent(), StandardCharsets.UTF_8);
