@@ -84,9 +84,9 @@ public class LoginSrvImpl implements LoginSrv {
         List<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair("username", username));
         params.add(new BasicNameValuePair("password", password));
-        params.add(new BasicNameValuePair("client_id", "abdd-client"));
-        params.add(new BasicNameValuePair("grant_type", "password"));
-        params.add(new BasicNameValuePair("client_secret", "To2MJyImPgjZ9dL5YZhzY6gQUX1PkqkC"));
+        params.add(new BasicNameValuePair("client_id", this.state.getSettings().getClientId()));
+        params.add(new BasicNameValuePair("grant_type", this.state.getSettings().getGrantType()));
+        params.add(new BasicNameValuePair("client_secret", this.state.getSettings().getClientSecret()));
         try {
             httpPost.setEntity(new UrlEncodedFormEntity(params));
         } catch (UnsupportedEncodingException e) {

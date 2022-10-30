@@ -68,6 +68,9 @@ public class SettingsSrvImpl implements SettingsSrv {
                 ) )
                 .authAPI(props.getProperty(SettingType.AUTH_API.name(), SettingType.AUTH_API.getDefaultValue()))
                 .authPath(props.getProperty(SettingType.AUTH_PATH.name(), SettingType.AUTH_PATH.getDefaultValue()))
+                .clientSecret(props.getProperty(SettingType.CLIENT_SECRET.name(), SettingType.CLIENT_SECRET.getDefaultValue()))
+                .clientId(props.getProperty(SettingType.CLIENT_ID.name(), SettingType.CLIENT_ID.getDefaultValue()))
+                .grantType(props.getProperty(SettingType.GRANT_TYPE.name(), SettingType.GRANT_TYPE.getDefaultValue()))
                 .burnSpeed( burnSpeed )
                 .build();
     }

@@ -43,10 +43,6 @@ import com.ms.imapi2.*;
 public class BurnDisk {
 
     // *** CD/DVD disc file system types
-    private static int FsiFileSystemISO9660 = 1;
-    private static int FsiFileSystemJoliet  = 2;
-    private static int FsiFileSystemUDF102  = 4;
-
     public static void main(String[] args) {
 
         IDiscMaster2 discMaster = ClassFactory.createMsftDiscMaster2();
@@ -54,7 +50,7 @@ public class BurnDisk {
 
         //
         if (count > 1) {
-            throw new IllegalStateException("Expected only one recorder, got: " + String.valueOf(count));
+            throw new IllegalStateException("Expected only one recorder, got: " + count);
         }
         // Expected the disc device is the first drive on the system.
         String recorderUniqueId = discMaster.item(0);
@@ -66,7 +62,7 @@ public class BurnDisk {
 
         // Create a new file system image and retrieve root directory
         IFileSystemImage3 fileSystemImage = ClassFactory.createMsftFileSystemImage();
-        // fileSystemImage.root("C:\\Users\\vez\\tmp\\burndir");
+        // fileSystemImage.root("...\\burndir");
         IFsiDirectoryItem directoryItem = fileSystemImage.root();
 
         // Create the new disc format and set the recorder
@@ -77,7 +73,7 @@ public class BurnDisk {
         fileSystemImage.chooseImageDefaults(recorder);
 
         // Add the directory and its contents to the file system
-        directoryItem.addTree("C:\\Users\\vez\\tmp\\burndir", false);
+        directoryItem.addTree("./burndir", false);
 
         // Create an image from the file system
         IFileSystemImageResult fileSystemImageResult = fileSystemImage.createResultImage();

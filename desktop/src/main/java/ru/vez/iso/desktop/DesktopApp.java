@@ -52,7 +52,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
@@ -108,6 +108,9 @@ public class DesktopApp extends Application {
                     .evictCacheDays( Integer.parseUnsignedInt(SettingType.EVICT_CACHE_DAYS.getDefaultValue()) )
                     .authAPI( SettingType.AUTH_API.getDefaultValue() )
                     .authPath( SettingType.AUTH_PATH.getDefaultValue() )
+                    .clientId( SettingType.CLIENT_ID.getDefaultValue() )
+                    .grantType( SettingType.GRANT_TYPE.getDefaultValue() )
+                    .clientSecret(SettingType.CLIENT_SECRET.getDefaultValue())
                     .build();
             settingsSrv.save(settingsFileName, settings);
         }
@@ -245,7 +248,7 @@ public class DesktopApp extends Application {
             MainSrv mainSrv,
             StorageUnitsService suSrv) throws IOException {
 
-        Map<ViewType, Parent> viewCache = new HashMap<>();
+        Map<ViewType, Parent> viewCache = new EnumMap<>(ViewType.class);
 
         // SettingsView + SettingService
         viewCache.put(ViewType.SETTINGS, buildView( ViewType.SETTINGS, t->new SettingsCtl(state, settingsSrv, burnSrv) ));

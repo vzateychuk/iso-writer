@@ -26,7 +26,7 @@ public enum SettingType {
     /**
      * API бэкэнд сервера
      * */
-    BACKEND_API("http://172.29.73.101:8080"),
+    BACKEND_API("http://172.29.73.102:8080"),
 
     /**
      * Дней хранятся файлы в кэше
@@ -41,12 +41,27 @@ public enum SettingType {
     /**
      * Адрес сервера аутентификации
      * */
-    AUTH_API("http://172.29.73.101:8080"),
+    AUTH_API("http://172.29.73.59:8080"),
 
     /**
      * API path аутентификации
      * */
     AUTH_PATH("/realms/ABDD/protocol/openid-connect/token"),
+
+    /**
+     * ClientId параметр используемый при KeyCloak login
+     * */
+    CLIENT_ID("abdd-client"),
+
+    /**
+     * GrandType параметр используемый при KeyCloak login
+     * */
+    GRANT_TYPE("password"),
+
+    /**
+     * ClientSecret параметр используемый при KeyCloak login
+     * */
+    CLIENT_SECRET("To2MJyImPgjZ9dL5YZhzY6gQUX1PkqkC"),
     ;
 
     private final String defaultValue;

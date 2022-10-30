@@ -21,6 +21,10 @@ public class AppSettings {
     private final int burnSpeed;
     private final String authAPI;
     private final String authPath;
+    // KeyCloak authentication params
+    private final String clientId;
+    private final String grantType;
+    private final String clientSecret;
 
     public Properties getProperties() {
 
@@ -34,6 +38,10 @@ public class AppSettings {
         p.setProperty(SettingType.BURN_SPEED.name(), String.valueOf(this.burnSpeed));
         p.setProperty(SettingType.AUTH_API.name(), String.valueOf(this.authAPI));
         p.setProperty(SettingType.AUTH_PATH.name(), String.valueOf(this.authPath));
+        // KeyCloak authentication
+        p.setProperty(SettingType.CLIENT_ID.name(), String.valueOf(this.clientId));
+        p.setProperty(SettingType.GRANT_TYPE.name(), String.valueOf(this.grantType));
+        p.setProperty(SettingType.CLIENT_SECRET.name(), String.valueOf(this.clientSecret));
         return p;
     }
 }

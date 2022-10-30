@@ -154,6 +154,9 @@ public class SettingsCtl implements Initializable {
                 .backendAPI(backendAPI.getText())
                 .authAPI(authAPI.getText())
                 .authPath(authPath.getText())
+                .grantType( state.getSettings().getGrantType() )
+                .clientId( state.getSettings().getClientId() )
+                .clientSecret( state.getSettings().getClientSecret() )
                 .build();
 
         service.saveAsync(newSetting);
