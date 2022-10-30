@@ -1,5 +1,6 @@
 package ru.vez.iso.desktop.shared;
 
+import com.google.gson.JsonObject;
 import org.apache.http.client.methods.HttpPost;
 
 /**
@@ -7,6 +8,6 @@ import org.apache.http.client.methods.HttpPost;
  * */
 public interface HttpClientWrap {
 
-    String postDataRequest(HttpPost httpPost);
+    JsonObject postDataRequest(HttpPost httpPost);
 
 }

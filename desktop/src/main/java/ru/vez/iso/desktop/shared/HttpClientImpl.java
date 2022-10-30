@@ -12,6 +12,8 @@ import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.vez.iso.desktop.exceptions.HttpNotAuthorizedException;
+import ru.vez.iso.desktop.exceptions.HttpRequestException;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -26,13 +28,13 @@ public class HttpClientImpl implements HttpClientWrap {
     private static final Logger logger = LogManager.getLogger();
 
     @Override
-    public String postDataRequest(HttpPost httpPost) {
+    public JsonObject postDataRequest(HttpPost httpPost) {
 
-        logger.debug(httpPost.toString());
+        logger.debug(httpPost);
 
         try (
-                CloseableHttpClient httpClient = HttpClients.custom() // CloseableHttpClient httpClient = HttpClients.createDefault();
-                        .setRedirectStrategy(new LaxRedirectStrategy()) // adds HTTP REDIRECT support to GET and POST methods
+                CloseableHttpClient httpClient = HttpClients.custom()
+                        .setRedirectStrategy(new LaxRedirectStrategy())
                         .build();
                 CloseableHttpResponse response = httpClient.execute(httpPost)
         ) {
@@ -40,17 +42,14 @@ public class HttpClientImpl implements HttpClientWrap {
             int code = response.getStatusLine().getStatusCode();
             final HttpEntity resEntity = response.getEntity();
             if (code != HttpStatus.SC_OK || resEntity == null) {
-                throw new RuntimeException("Server response: " + code);
+                throw new HttpNotAuthorizedException("Server response: " + code);
             }
             Reader reader = new InputStreamReader(resEntity.getContent(), StandardCharsets.UTF_8);
             JsonObject jsonObject = new Gson().fromJson(reader, JsonObject.class);
             EntityUtils.consume(resEntity);
-            if (!jsonObject.get("ok").getAsBoolean()) {
-                throw new RuntimeException("Server resp OK: " + jsonObject.get("ok").getAsBoolean());
-            }
-            return jsonObject.get("data").getAsString();
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
+            return jsonObject;
+        } catch (IOException e) {
+            throw new HttpRequestException(e);
         }
     }
 

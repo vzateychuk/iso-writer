@@ -3,6 +3,7 @@ package ru.vez.iso.desktop.main.storeunits.http;
 import com.google.gson.Gson;
 import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -39,9 +40,9 @@ public class StorageUnitsHttpClientImpl implements StorageUnitsHttpClient {
 
         // Create HTTP request
         HttpPost httpPost = new HttpPost(api);
-        httpPost.setHeader("Accept", "application/json");
-        httpPost.setHeader("Content-type", "application/json");
-        httpPost.setHeader("Authorization", token);
+        httpPost.setHeader(HttpHeaders.ACCEPT, APPLICATION_JSON.getMimeType());
+        httpPost.setHeader(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON.getMimeType());
+        httpPost.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + token);
         String jsonRequest = String.format(
                 "{\"page\":1,\"rowsPerPage\":10000,\"criterias\":[{\"fields\":[\"operatingDay.operatingDayDate\"],\"operator\":\"GREATER_OR_EQUALS\",\"value\":\"%s\"}]}",
                 from.format(MyConst.YYYY_MM_DD)
@@ -81,8 +82,8 @@ public class StorageUnitsHttpClientImpl implements StorageUnitsHttpClient {
     public void post(String api, String token, String body) {
 
         HttpPost httpPost = new HttpPost(api);
-        httpPost.setHeader("Authorization", token);
-        httpPost.setHeader("Content-Type", APPLICATION_JSON.getMimeType());
+        httpPost.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + token);
+        httpPost.setHeader(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON.getMimeType());
 
         logger.debug("HttpPost: {}, body: {}", httpPost, body);
 
@@ -118,8 +119,8 @@ public class StorageUnitsHttpClientImpl implements StorageUnitsHttpClient {
     public void downloadAndSaveFile(String api, String token, String fileName) {
 
         HttpGet httpGet = new HttpGet(api);
-        httpGet.setHeader("Authorization", token);
-        httpGet.setHeader("Content-Type", APPLICATION_JSON.getMimeType());
+        httpGet.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + token);
+        httpGet.setHeader(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON.getMimeType());
 
         logger.debug("HttpGet: {}", httpGet);
 
@@ -148,7 +149,7 @@ public class StorageUnitsHttpClientImpl implements StorageUnitsHttpClient {
     public StorageUnitDetailResponse getHashCode(String api, String token) {
 
         HttpGet httpGet = new HttpGet(api);
-        httpGet.setHeader("Authorization", token);
+        httpGet.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + token);
 
         logger.debug("HttpGet: {}", httpGet);
 

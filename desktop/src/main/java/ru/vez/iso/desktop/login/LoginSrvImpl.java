@@ -1,8 +1,10 @@
 package ru.vez.iso.desktop.login;
 
-import org.apache.http.HttpEntity;
+import com.google.gson.JsonObject;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
@@ -11,6 +13,9 @@ import ru.vez.iso.desktop.shared.MessageSrv;
 import ru.vez.iso.desktop.shared.UserDetails;
 import ru.vez.iso.desktop.state.ApplicationState;
 
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
@@ -18,7 +23,6 @@ import java.util.concurrent.Future;
 public class LoginSrvImpl implements LoginSrv {
 
     private static final Logger logger = LogManager.getLogger();
-    private static final String API_LOGIN = "/login";
 
     private final ApplicationState state;
     private final Executor exec;
@@ -50,16 +54,14 @@ public class LoginSrvImpl implements LoginSrv {
             return;
         }
         // Trying to login async
-        future = CompletableFuture.supplyAsync(() -> {
+        future = CompletableFuture.runAsync(() -> {
             this.msgSrv.news("Подключение: " + username);
-            return this.login(username, password);
-        }, exec).thenAccept(userDetails -> {
-            this.state.setUserDetails(userDetails);
+            UserDetails logged = this.login(username, password);
+            this.state.setUserDetails(logged);
             this.msgSrv.news(
-                    "Выполнен " + (userDetails.isLogged() ? String.format("вход: %s", userDetails.getUsername()) : "выход")
+                    "Выполнен " + (logged.isLogged() ? String.format("вход: %s", logged.getUsername()) : "выход")
             );
-            logger.debug("logged in: {}", username);
-        }).exceptionally(ex -> {
+        }, exec).exceptionally(ex -> {
             this.msgSrv.news("Подключение не удалось: " + ex.getCause().getLocalizedMessage());
             logger.error(ex);
             return null;
@@ -77,23 +79,28 @@ public class LoginSrvImpl implements LoginSrv {
     UserDetails login(String username, String password) {
 
         // Create multipart POST request
-        final String api = this.state.getSettings().getBackendAPI() + API_LOGIN;
+        final String api = this.state.getSettings().getAuthAPI() + this.state.getSettings().getAuthPath();
         final HttpPost httpPost = new HttpPost(api);
-        final HttpEntity multipart = MultipartEntityBuilder.create()
-                .addTextBody("username", username)
-                .addTextBody("password", password)
-                .build();
-        httpPost.setEntity(multipart);
+        List<NameValuePair> params = new ArrayList<>();
+        params.add(new BasicNameValuePair("username", username));
+        params.add(new BasicNameValuePair("password", password));
+        params.add(new BasicNameValuePair("client_id", "abdd-client"));
+        params.add(new BasicNameValuePair("grant_type", "password"));
+        params.add(new BasicNameValuePair("client_secret", "To2MJyImPgjZ9dL5YZhzY6gQUX1PkqkC"));
+        try {
+            httpPost.setEntity(new UrlEncodedFormEntity(params));
+        } catch (UnsupportedEncodingException e) {
+            this.msgSrv.news("Ошибка кодировки параметров Http запроса, свяжитесь с администратором.");
+            logger.debug("Can't create HttpPOST request for: {}", username);
+        }
 
-        String token = this.httpClient.postDataRequest(httpPost);
+        JsonObject jsonObject = this.httpClient.postDataRequest(httpPost);
+        String token = jsonObject.get("access_token").getAsString();
+        logger.debug("User: {} logged successfully, token: {}", username, token);
 
         return !Strings.isBlank(token)
                 ? new UserDetails(username, password, token)
                 : UserDetails.NOT_SIGNED_USER;
-    }
-
-    String removeBearer(String source) {
-        return source.contains("Bearer ") ? source.substring("Bearer ".length()) : source;
     }
 
     //endregion

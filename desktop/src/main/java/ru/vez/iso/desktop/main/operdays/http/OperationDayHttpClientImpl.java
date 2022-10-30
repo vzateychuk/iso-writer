@@ -2,6 +2,7 @@ package ru.vez.iso.desktop.main.operdays.http;
 
 import com.google.gson.Gson;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -24,6 +25,8 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 
+import static org.apache.http.entity.ContentType.APPLICATION_JSON;
+
 /**
  * HttpClientWrapper for OperationDays to work with backend API
  * */
@@ -36,9 +39,9 @@ public class OperationDayHttpClientImpl implements OperationDayHttpClient {
 
         // Create HTTP request
         HttpPost httpPost = new HttpPost(api);
-        httpPost.setHeader("Accept", "application/json");
-        httpPost.setHeader("Content-type", "application/json");
-        httpPost.setHeader("Authorization", token);
+        httpPost.setHeader(HttpHeaders.ACCEPT, APPLICATION_JSON.getMimeType());
+        httpPost.setHeader(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON.getMimeType());
+        httpPost.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + token);
         String jsonRequest = String.format(
                 "{\"page\":1,\"rowsPerPage\":10000,\"criterias\":[{\"fields\":[\"operatingDayDate\"],\"operator\":\"GREATER_OR_EQUALS\",\"value\":\"%s\"}]}",
                 from.format(MyConst.YYYY_MM_DD)
