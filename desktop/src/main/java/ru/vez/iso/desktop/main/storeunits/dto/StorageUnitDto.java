@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class StorageUnitDto {
 
     private String objectId;        // "45352fba-8818-4fbe-8ee1-04c47a1c9f75",
-    private String operatingDayId;  // "03f8fae4-5057-4195-866d-19704e37c9c7"
+    private StorageUnitOperDayDto operatingDay;  // object
     private String objectName;      // "Операционный день АБДД",
     private String typeName;        // StorageUnitAbdd
     private boolean hasFile;        // false,

@@ -1,2 +1,2 @@
 # iso-writer-desktop
-Desktop application to read/write ISO files
+Desktop application to read/write CD/DVD disks

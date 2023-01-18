@@ -16,7 +16,11 @@
         "typeName": "StorageUnitAbdd",
         "hasFile": false,
         "timeStamp": null,
-        "operatingDayId": "63136e57-ba05-4fd6-9518-d0a2b379f381",
+        "operatingDay": {
+          "objectId": "63136e57-ba05-4fd6-9518-d0a2b379f381",
+          "objectName": "Операционный день АБДД",
+          "numberSu": "SUxXx948"
+        },
         "numberSu": "2022-06-14_new_1-2",
         "capacity": 393216,
         "branchId": null,

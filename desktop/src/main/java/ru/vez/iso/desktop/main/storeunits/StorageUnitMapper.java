@@ -3,6 +3,7 @@ package ru.vez.iso.desktop.main.storeunits;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.vez.iso.desktop.main.storeunits.dto.StorageUnitDto;
+import ru.vez.iso.desktop.main.storeunits.dto.StorageUnitOperDayDto;
 import ru.vez.iso.desktop.shared.DataMapper;
 
 import java.time.LocalDate;
@@ -37,9 +38,18 @@ public class StorageUnitMapper implements DataMapper<StorageUnitDto, StorageUnit
 
         Long dataSize = Optional.ofNullable(dto.getCapacity()).orElse(0L);
 
+        StorageUnitOperDayDto operDayDto = dto.getOperatingDay();
+        String operDayId;
+        if (operDayDto != null) {
+            operDayId = operDayDto.getObjectId();
+        } else {
+            logger.warn("Bad operationDay value = NULL in StorageUnit: '{}'", dto.getObjectId());
+            operDayId = "";
+        }
+
         return new StorageUnitFX (
                 dto.getObjectId(),
-                dto.getOperatingDayId(),
+                operDayId,
                 dto.getNumberSu(),
                 creationDate,
                 dataSize,

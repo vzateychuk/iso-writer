@@ -1,3 +1,3 @@
-# state package
+# Shared folder
 
-Keep and change ApplicationState
+this code shared between packages

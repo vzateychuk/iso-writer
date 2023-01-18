@@ -45,7 +45,7 @@ public class MainCtl implements Initializable {
             )
     );
 
-    private final DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private final DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
     // Sort string representation of LocalDateTime columns
     private final Comparator<String> sortDateStrings = (s1, s2) -> {

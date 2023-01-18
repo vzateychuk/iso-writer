@@ -1,6 +1,7 @@
 package ru.vez.iso.desktop.main.storeunits;
 
 import com.google.gson.Gson;
+import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.vez.iso.desktop.main.storeunits.dto.StorageUnitListResponse;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Log4j2
 class StorageUnitMapperTest {
 
     private StorageUnitMapper mapper;
@@ -33,7 +35,12 @@ class StorageUnitMapperTest {
 
         // Act
         List<StorageUnitFX> listDays = dto.getObjects().stream()
-                .peek(su -> System.out.println(su.isDeleted()))
+                .peek(
+                        su -> log.debug("SU: '{}', OperDay: '{}'",
+                                su.getObjectId(),
+                                su.getOperatingDay().getObjectId()
+                        )
+                )
                 .map(mapper::map)
                 .collect(Collectors.toList());
 

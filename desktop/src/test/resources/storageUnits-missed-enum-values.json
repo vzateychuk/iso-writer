@@ -16,7 +16,11 @@
                 "typeName": "StorageUnitAbdd",
                 "hasFile": false,
                 "timeStamp": null,
-                "operatingDayId": "63136e57-ba05-4fd6-9518-d0a2b379f381",
+                "operatingDay": {
+                    "objectId": "63136e57-ba05-4fd6-9518-d0a2b379f381",
+                    "objectName": "Операционный день АБДД",
+                    "numberSu": "SUxXx948"
+                },
                 "numberSu": "2",
                 "capacity": null,
                 "branchId": "aec7e48b-b1e8-4720-8e46-db3d3c1a6398",
@@ -60,7 +64,11 @@
                 "typeName": "StorageUnitAbdd",
                 "hasFile": false,
                 "timeStamp": null,
-                "operatingDayId": "63136e57-ba05-4fd6-9518-d0a2b379f381",
+                "operatingDay": {
+                    "objectId": "63136e57-ba05-4fd6-9518-d0a2b379f381",
+                    "objectName": "Операционный день АБДД",
+                    "numberSu": "SUxXx948"
+                },
                 "numberSu": "123456789033-8",
                 "capacity": 512000,
                 "branchId": "aec7e48b-b1e8-4720-8e46-db3d3c1a6398",
@@ -104,7 +112,11 @@
                 "typeName": "StorageUnitAbdd",
                 "hasFile": false,
                 "timeStamp": null,
-                "operatingDayId": "63136e57-ba05-4fd6-9518-d0a2b379f381",
+                "operatingDay": {
+                    "objectId": "63136e57-ba05-4fd6-9518-d0a2b379f381",
+                    "objectName": "Операционный день АБДД",
+                    "numberSu": "SUxXx948"
+                },
                 "numberSu": "1",
                 "capacity": null,
                 "branchId": "aec7e48b-b1e8-4720-8e46-db3d3c1a6398",
@@ -148,7 +160,11 @@
                 "typeName": "StorageUnitAbdd",
                 "hasFile": false,
                 "timeStamp": null,
-                "operatingDayId": "56f7756d-e263-43af-9ffe-9b8d1f3f02cd",
+                "operatingDay": {
+                    "objectId": "63136e57-ba05-4fd6-9518-d0a2b379f381",
+                    "objectName": "Операционный день АБДД",
+                    "numberSu": "SUxXx948"
+                },
                 "numberSu": "123456789033-5",
                 "capacity": 479232,
                 "branchId": "aec7e48b-b1e8-4720-8e46-db3d3c1a6398",
@@ -192,7 +208,11 @@
                 "typeName": "StorageUnitAbdd",
                 "hasFile": false,
                 "timeStamp": null,
-                "operatingDayId": "56f7756d-e263-43af-9ffe-9b8d1f3f02cd",
+                "operatingDay": {
+                    "objectId": "63136e57-ba05-4fd6-9518-d0a2b379f381",
+                    "objectName": "Операционный день АБДД",
+                    "numberSu": "SUxXx948"
+                },
                 "numberSu": "123456789033-9",
                 "capacity": 528384,
                 "branchId": "aec7e48b-b1e8-4720-8e46-db3d3c1a6398",
@@ -236,7 +256,11 @@
                 "typeName": "StorageUnitAbdd",
                 "hasFile": false,
                 "timeStamp": null,
-                "operatingDayId": "56f7756d-e263-43af-9ffe-9b8d1f3f02cd",
+                "operatingDay": {
+                    "objectId": "63136e57-ba05-4fd6-9518-d0a2b379f381",
+                    "objectName": "Операционный день АБДД",
+                    "numberSu": "SUxXx948"
+                },
                 "numberSu": "123456789033-1",
                 "capacity": 749568,
                 "branchId": "aec7e48b-b1e8-4720-8e46-db3d3c1a6398",
@@ -280,7 +304,11 @@
                 "typeName": "StorageUnitAbdd",
                 "hasFile": false,
                 "timeStamp": null,
-                "operatingDayId": "4025a829-0fc9-4d0a-a56a-17495a074218",
+                "operatingDay": {
+                    "objectId": "63136e57-ba05-4fd6-9518-d0a2b379f381",
+                    "objectName": "Операционный день АБДД",
+                    "numberSu": "SUxXx948"
+                },
                 "numberSu": "123456789033-2",
                 "capacity": 464896,
                 "branchId": "aec7e48b-b1e8-4720-8e46-db3d3c1a6398",
@@ -324,7 +352,11 @@
                 "typeName": "StorageUnitAbdd",
                 "hasFile": false,
                 "timeStamp": null,
-                "operatingDayId": "4025a829-0fc9-4d0a-a56a-17495a074218",
+                "operatingDay": {
+                    "objectId": "63136e57-ba05-4fd6-9518-d0a2b379f381",
+                    "objectName": "Операционный день АБДД",
+                    "numberSu": "SUxXx948"
+                },
                 "numberSu": "123456789033-3",
                 "capacity": 778240,
                 "branchId": "aec7e48b-b1e8-4720-8e46-db3d3c1a6398",
@@ -368,7 +400,11 @@
                 "typeName": "StorageUnitAbdd",
                 "hasFile": false,
                 "timeStamp": null,
-                "operatingDayId": "4ab9070d-f445-4cab-897f-27cf655a1ce5",
+                "operatingDay": {
+                    "objectId": "4ab9070d-f445-4cab-897f-27cf655a1ce5",
+                    "objectName": "Операционный день АБДД",
+                    "numberSu": "SUxXx948"
+                },
                 "numberSu": "123456789033-4",
                 "capacity": 557056,
                 "branchId": "aec7e48b-b1e8-4720-8e46-db3d3c1a6398",
@@ -412,7 +448,11 @@
                 "typeName": "StorageUnitAbdd",
                 "hasFile": false,
                 "timeStamp": null,
-                "operatingDayId": "4ab9070d-f445-4cab-897f-27cf655a1ce5",
+                "operatingDay": {
+                    "objectId": "4ab9070d-f445-4cab-897f-27cf655a1ce5",
+                    "objectName": "Операционный день АБДД",
+                    "numberSu": "SUxXx948"
+                },
                 "numberSu": "123456789033-6",
                 "capacity": 481280,
                 "branchId": "aec7e48b-b1e8-4720-8e46-db3d3c1a6398",
@@ -456,7 +496,11 @@
                 "typeName": "StorageUnitAbdd",
                 "hasFile": false,
                 "timeStamp": null,
-                "operatingDayId": "f0489fab-1708-498a-9f2b-7480cb87ecb1",
+                "operatingDay": {
+                    "objectId": "f0489fab-1708-498a-9f2b-7480cb87ecb1",
+                    "objectName": "Операционный день АБДД",
+                    "numberSu": "SUxXx948"
+                },
                 "numberSu": "123456789033-7",
                 "capacity": 458752,
                 "branchId": "aec7e48b-b1e8-4720-8e46-db3d3c1a6398",
